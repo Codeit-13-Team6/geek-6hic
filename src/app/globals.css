@@ -1,1 +1,96 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("/fonts/PretendardVariable.ttf") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tenada";
+  src: url("/fonts/Tenada.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* 1. Grayscale 컬러 등록 */
+  --color-gray-50: #f6f7f9;
+  --color-gray-100: #edeff1;
+  --color-gray-200: #dddddd;
+  --color-gray-300: #cccccc;
+  --color-gray-400: #bbbbbb;
+  --color-gray-500: #a4a4a4;
+  --color-gray-600: #737373;
+  --color-gray-700: #4a4a4a;
+  --color-gray-800: #333333;
+  --color-gray-900: #191919;
+
+  /* 2. Green 컬러 등록 */
+  --color-main-green-100: #edfff5;
+  --color-main-green-200: #dffaeb;
+  --color-main-green-300: #c5f1d9;
+  --color-main-green-400: #afefd1;
+  --color-main-green-500: #00bb86;
+  --color-main-green-600: #009973;
+  --color-main-green-700: #0c7665;
+
+  /* 3. Blue & Error 컬러 등록 */
+  --color-blue-100: #d6f9ff;
+  --color-blue-500: #2099fd;
+  --color-blue-600: #337aff;
+  --color-error: #e91616;
+
+  /* 4. 배경 이미지 그라데이션 등록 */
+  --background-image-gradient-100: linear-gradient(
+    135deg,
+    #e9fbf1 0%,
+    #e9fcfc 100%
+  );
+  --background-image-gradient-200: linear-gradient(
+    135deg,
+    #def8ea 0%,
+    #d9f6f4 100%
+  );
+  --background-image-gradient-500: linear-gradient(
+    135deg,
+    #17da71 0%,
+    #08ddf0 100%
+  );
+  --background-image-gradient-600: linear-gradient(
+    135deg,
+    #00d361 0%,
+    #00b9de 100%
+  );
+
+  /* 5. 폰트 등록 */
+  --font-pretendard: "Pretendard", sans-serif;
+  --font-tenada: "Tenada", sans-serif;
+
+  /* Text Sizes */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+
+  /* Display 스타일 */
+  --text-display-md: 40px;
+  --text-display-lg: 48px;
+  --text-display-xl: 56px;
+
+  /*Text Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  /* Tenada 전용 스타일 */
+
+  --text-tenada: 24px;
+}
