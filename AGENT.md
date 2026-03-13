@@ -8,17 +8,17 @@
   - Use `const`. Avoid `let`, NEVER use `var`.
   - Boolean: Start with `is`, `has`, `can`.
   - Array: End with `List` (e.g., `artistList`).
+- **Constant (Static Data)**: Use `UPPER_CASE` with underscores (e.g., `NAV_LINKS`, `MAX_COUNT`).
 - **Function**:
   - Event Handler: Start with `handle` (e.g., `handleClick`).
   - Props: Use `on` prefix (e.g., `onClick`).
   - API Call: Use method name as prefix (e.g., `getUserId`, `postKeyword`).
 - **Interface & Type**: Use `PascalCase` for names, `camelCase` for members.
-  - **Object Definition**: MUST use `interface`. NEVER use `type` for objects.
-  - **Type Alias**: Use only for Unions, Intersections, or Primitives.
-  - **Naming**: NEVER use `I` as a prefix for interfaces.
-- **Constant**: Use `UPPER_CASE` with underscores.
+  - **Interface**: MUST use for Object definitions. NEVER use `I` as a prefix (e.g., Use `User`, NOT `IUser`).
+  - **Type**: Use ONLY for Unions, Intersections, or Primitives.
 - **Component**: Use `PascalCase`.
   - Button components MUST start with `Btn` (e.g., `BtnSubmit`).
+  - _Exception_: Do NOT change the names of components inside `src/components/ui/` (shadcn/ui auto-generated files).
 
 ## 2. Component Architecture
 
@@ -38,13 +38,13 @@
 - **Underscores (\_)**: NEVER use underscores in URIs.
 - **Lowercase**: All URI paths MUST be lowercase.
 
-### 4. Styling (Tailwind CSS)
+## 4. Styling (Tailwind CSS - Updated)
 
-- **Units (Strict)**: NEVER use arbitrary values like `w-[24px]`.
-  - Use numeric classes based on Figma px values (e.g., `w-24`, `h-40`, `text-16`, `rounded-10`).
-  - Avoid standard aliases like `text-sm`, `rounded-lg` in favor of numeric classes.
-- **Hardcoding**: NEVER hardcode Hex colors. Use CSS variables from `globals.css` (e.g., `bg-main-green-500`).
-- **Dynamic Classes**: MUST use `cn()` utility function.
+- **Units (표준 Tailwind 단위 사용)**:
+  - `shadcn/ui`와의 완벽한 호환성을 위해 **Tailwind 기본 단위(1 = 0.25rem = 4px)**를 사용한다.
+  - 피그마 수치를 적용할 때: **피그마 px 값 ÷ 4 = 클래스 숫자** (예: 40px -> `w-10`, 24px -> `gap-6`)
+  - 폰트/모서리: 기본 별명을 적극 활용한다. (14px -> `text-sm`, 16px -> `text-base`, 8px -> `rounded-lg`)
+  - 4배수가 딱 떨어지지 않는 픽셀 값은 임의 값 `[]`을 허용한다. (예: `w-[18px]`, `text-[13px]`)
 
 ## 5. SEO & Development Rules
 
