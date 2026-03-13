@@ -13,9 +13,9 @@
   - Props: Use `on` prefix (e.g., `onClick`).
   - API Call: Use method name as prefix (e.g., `getUserId`, `postKeyword`).
 - **Interface & Type**: Use `PascalCase` for names, `camelCase` for members.
-  - **Interface**: NEVER use `I` as a prefix (e.g., Use `User`, NOT `IUser`).
-  - **Type**: Use for Unions/Intersections. Use `Foo[]` instead of `Array<Foo>`.
-  - **Interface**: Use for `extends` or `implements`.
+  - **Object Definition**: MUST use `interface`. NEVER use `type` for objects.
+  - **Type Alias**: Use only for Unions, Intersections, or Primitives.
+  - **Naming**: NEVER use `I` as a prefix for interfaces.
 - **Constant**: Use `UPPER_CASE` with underscores.
 - **Component**: Use `PascalCase`.
   - Button components MUST start with `Btn` (e.g., `BtnSubmit`).
@@ -38,12 +38,13 @@
 - **Underscores (\_)**: NEVER use underscores in URIs.
 - **Lowercase**: All URI paths MUST be lowercase.
 
-## 4. Styling (Tailwind CSS)
+### 4. Styling (Tailwind CSS)
 
-- **Hardcoding**: NEVER hardcode Hex colors. Use theme variables from `tailwind.config.ts`.
-- **Dynamic Classes**: MUST use `cn()` utility function (from `@/lib/utils`).
-- **Units**: Use Tailwind default units. Avoid arbitrary values `[]` unless strictly necessary.
-- **Responsive**: Mobile-first design (base styles for mobile, `md:`, `lg:` for larger screens).
+- **Units (Strict)**: NEVER use arbitrary values like `w-[24px]`.
+  - Use numeric classes based on Figma px values (e.g., `w-24`, `h-40`, `text-16`, `rounded-10`).
+  - Avoid standard aliases like `text-sm`, `rounded-lg` in favor of numeric classes.
+- **Hardcoding**: NEVER hardcode Hex colors. Use CSS variables from `globals.css` (e.g., `bg-main-green-500`).
+- **Dynamic Classes**: MUST use `cn()` utility function.
 
 ## 5. SEO & Development Rules
 
