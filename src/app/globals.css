@@ -75,29 +75,12 @@
   --font-pretendard: "Pretendard", sans-serif;
   --font-tenada: "Tenada", sans-serif;
 
-  /* Text Sizes */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  --text-2xl: 24px;
-  --text-3xl: 30px;
-
-  /* Display 스타일 */
-  --text-display-md: 40px;
-  --text-display-lg: 48px;
-  --text-display-xl: 56px;
-
   /*Text Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
-  --font-weight-semi-bold: 600;
+  --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extra-bold: 800;
-  /* Tenada 전용 스타일 */
-
-  --text-tenada: 24px;
 }
 
 :root {
