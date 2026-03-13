@@ -54,7 +54,7 @@ const eslintConfig = defineConfig([
           leadingUnderscore: "allow",
         },
         {
-          // const로 선언된 변수(상수)는 UPPER_CASE 허용!
+          // const로 선언된 변수(상수)는 UPPER_CASE 허용
           selector: "variable",
           modifiers: ["const"],
           format: ["camelCase", "PascalCase", "UPPER_CASE"],
