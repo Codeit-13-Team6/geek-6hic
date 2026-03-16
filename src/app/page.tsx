@@ -1,3 +1,8 @@
+import { CalendarCommon } from "@/components/common/CalendarCommon";
 export default function Home() {
-  return;
+  return(
+    <>
+      <CalendarCommon mode="single" />
+    </>
+  );
 }
