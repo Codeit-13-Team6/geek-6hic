@@ -23,7 +23,9 @@ interface DetailCardCommonProps {
   participantCount?: number;
   capacity?: number;
   defaultLiked?: boolean;
+  showLikeBtn?: boolean;
   onHeartClick?: (liked: boolean) => void;
+  onDetailClick?: () => void;
 }
 
 export function DetailCardCommon({
@@ -34,7 +36,9 @@ export function DetailCardCommon({
   defaultLiked = false,
   participantCount = 0,
   capacity = 20,
+  showLikeBtn = true,
   onHeartClick,
+  onDetailClick,
 }: DetailCardCommonProps) {
   const [liked, setLiked] = useState(defaultLiked);
 
@@ -44,44 +48,55 @@ export function DetailCardCommon({
     onHeartClick?.(next);
   };
 
+  const handleDetailClick = () => {
+    onDetailClick?.();
+  };
+
   return (
-    <Card className="h-[280px] h-fit w-full gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row">
+    <Card
+      className="h-[280px] h-fit w-full gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row cursor-pointer"
+      onClick={handleDetailClick}
+    >
       <section className="relative h-[158px] w-full shrink-0 overflow-hidden rounded-t-[24px] rounded-b-none sm:m-6 sm:h-[188px] sm:w-[188px] sm:rounded-[32px]">
         <img
           src={imageSrc}
           alt="Event cover"
           className="h-full w-full object-cover brightness-60 grayscale dark:brightness-40"
         />
-        <BtnCommon
-          size="icon-md"
-          variant="teritary"
-          className="absolute top-[16px] right-[16px] sm:hidden"
-          onClick={handleHeartClick}
-        >
-          <Image
-            src={liked ? heartsTrue : heartsFalse}
-            alt="heart"
-            width={24}
-            height={24}
-          />
-        </BtnCommon>
+        {showLikeBtn && (
+          <BtnCommon
+            size="icon-md"
+            variant="teritary"
+            className="absolute top-[16px] right-[16px] sm:hidden"
+            onClick={handleHeartClick}
+          >
+            <Image
+              src={liked ? heartsTrue : heartsFalse}
+              alt="heart"
+              width={24}
+              height={24}
+            />
+          </BtnCommon>
+        )}
       </section>
       <div className="flex flex-1 flex-col justify-between">
         <CardHeader className="gap-0 p-[16px] pb-[16px] sm:py-[24px]">
           <CardAction>
-            <BtnCommon
-              size="icon-md"
-              variant="teritary"
-              className="hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex"
-              onClick={handleHeartClick}
-            >
-              <Image
-                src={liked ? heartsTrue : heartsFalse}
-                alt="heart"
-                width={24}
-                height={24}
-              />
-            </BtnCommon>
+            {showLikeBtn && (
+              <BtnCommon
+                size="icon-md"
+                variant="teritary"
+                className="hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex"
+                onClick={handleHeartClick}
+              >
+                <Image
+                  src={liked ? heartsTrue : heartsFalse}
+                  alt="heart"
+                  width={24}
+                  height={24}
+                />
+              </BtnCommon>
+            )}
           </CardAction>
           <CardTitle className="text-xl font-semibold sm:mt-[13px]">
             {title}
