@@ -54,7 +54,7 @@ export function DetailCardCommon({
 
   return (
     <Card
-      className="h-[280px] h-fit w-full gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row cursor-pointer"
+      className="mb-[24px] h-[280px] h-fit w-full cursor-pointer gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row"
       onClick={handleDetailClick}
     >
       <section className="relative h-[158px] w-full shrink-0 overflow-hidden rounded-t-[24px] rounded-b-none sm:m-6 sm:h-[188px] sm:w-[188px] sm:rounded-[32px]">
