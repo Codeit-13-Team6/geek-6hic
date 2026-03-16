@@ -20,6 +20,8 @@ interface DetailCardCommonProps {
   type?: string;
   date?: Date;
   imageSrc?: string;
+  participantCount?: number;
+  capacity?: number;
   defaultLiked?: boolean;
   onHeartClick?: (liked: boolean) => void;
 }
@@ -30,6 +32,8 @@ export function DetailCardCommon({
   date = new Date(),
   imageSrc = "https://avatar.vercel.sh/shadcn1",
   defaultLiked = false,
+  participantCount = 0,
+  capacity = 20,
   onHeartClick,
 }: DetailCardCommonProps) {
   const [liked, setLiked] = useState(defaultLiked);
@@ -41,7 +45,7 @@ export function DetailCardCommon({
   };
 
   return (
-    <Card className="h-[280px] w-full h-fit gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row">
+    <Card className="h-[280px] h-fit w-full gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row">
       <section className="relative h-[158px] w-full shrink-0 overflow-hidden rounded-t-[24px] rounded-b-none sm:m-6 sm:h-[188px] sm:w-[188px] sm:rounded-[32px]">
         <img
           src={imageSrc}
@@ -95,7 +99,9 @@ export function DetailCardCommon({
               height={16}
               className="mr-[2px]"
             />
-            <p className="text-sm text-black">20/20</p>
+            <p className="text-sm text-black">
+              {participantCount}/{capacity}
+            </p>
           </div>
           <div className="flex items-center justify-between text-sm">
             <p className="pr-[6px] text-gray-500">날짜</p>
