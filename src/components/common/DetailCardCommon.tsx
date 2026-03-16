@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { BtnCommon } from "@/components/common/BtnCommon";
 
-
 interface DetailCardCommonProps {
   title?: string;
   type?: string;
@@ -33,7 +32,6 @@ export function DetailCardCommon({
   defaultLiked = false,
   onHeartClick,
 }: DetailCardCommonProps) {
-
   const [liked, setLiked] = useState(defaultLiked);
 
   const handleHeartClick = () => {
@@ -43,18 +41,36 @@ export function DetailCardCommon({
   };
 
   return (
-    <Card className="w-full rounded-[32px] pt-0! ring-0! gap-0! sm:h-[236px] sm:flex-row mb-[24px]">
-      <section className="relative m-6 h-[188px] w-[188px] shrink-0 rounded-[24px]">
+    <Card className="h-[280px] w-full h-fit gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row">
+      <section className="relative h-[158px] w-full shrink-0 overflow-hidden rounded-t-[24px] rounded-b-none sm:m-6 sm:h-[188px] sm:w-[188px] sm:rounded-[32px]">
         <img
           src={imageSrc}
           alt="Event cover"
-          className="h-full w-full rounded-[24px] object-cover brightness-60 grayscale dark:brightness-40"
+          className="h-full w-full object-cover brightness-60 grayscale dark:brightness-40"
         />
+        <BtnCommon
+          size="icon-md"
+          variant="teritary"
+          className="absolute top-[16px] right-[16px] sm:hidden"
+          onClick={handleHeartClick}
+        >
+          <Image
+            src={liked ? heartsTrue : heartsFalse}
+            alt="heart"
+            width={24}
+            height={24}
+          />
+        </BtnCommon>
       </section>
       <div className="flex flex-1 flex-col justify-between">
-        <CardHeader className="px-0 py-[24px] gap-0">
+        <CardHeader className="gap-0 p-[16px] pb-[16px] sm:py-[24px]">
           <CardAction>
-            <BtnCommon size="icon-md" variant="teritary" className="my-[10px] mx-[24px]" onClick={handleHeartClick}>
+            <BtnCommon
+              size="icon-md"
+              variant="teritary"
+              className="hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex"
+              onClick={handleHeartClick}
+            >
               <Image
                 src={liked ? heartsTrue : heartsFalse}
                 alt="heart"
@@ -63,15 +79,15 @@ export function DetailCardCommon({
               />
             </BtnCommon>
           </CardAction>
-          <CardTitle className="mt-[13px] text-xl font-semibold">
+          <CardTitle className="text-xl font-semibold sm:mt-[13px]">
             {title}
           </CardTitle>
           <CardDescription className="text-sm font-bold text-gray-500">
             {type}
           </CardDescription>
         </CardHeader>
-        <CardFooter className="flex-col items-start border-0! bg-white! py-[34px] text-sm font-medium px-0">
-          <div className="flex items-center pb-[10px]">
+        <CardFooter className="flex-col items-start border-0! bg-white! px-[16px] pt-0 pb-[20px] text-sm font-medium sm:py-[34px]">
+          <div className="flex items-center pb-[6px] sm:pb-[10px]">
             <Image
               src={personIcon}
               alt="person"
