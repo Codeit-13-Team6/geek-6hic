@@ -27,8 +27,8 @@ export default function LoungePostCard({
 }: LoungePostProps) {
   return (
     <article className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 md:flex-row md:gap-8">
-      {thumbnailUrl && (
-        <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] md:block lg:size-35">
+      {thumbnailUrl ? (
+        <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] md:block lg:size-50">
           <Image
             src={thumbnailUrl}
             alt="게시물 썸네일"
@@ -36,14 +36,16 @@ export default function LoungePostCard({
             className="object-cover"
           />
         </div>
+      ) : (
+        <div className="hidden size-40 shrink-0 rounded-[12px] bg-gray-200 md:block lg:size-50" />
       )}
 
-      <div className="flex flex-1 flex-col border-b border-slate-200 pt-3 pb-6">
-        <h3 className="mb-3 text-base font-bold text-gray-800 md:mb-2 md:text-lg">
+      <div className="flex flex-1 flex-col border-b border-slate-200 pt-4 pb-6">
+        <h3 className="mb-3 text-base font-bold text-gray-800 md:mb-2 md:text-xl">
           {title}
         </h3>
 
-        {thumbnailUrl && (
+        {thumbnailUrl ? (
           <div className="relative mb-3 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] md:hidden">
             <Image
               src={thumbnailUrl}
@@ -52,9 +54,11 @@ export default function LoungePostCard({
               className="object-cover"
             />
           </div>
+        ) : (
+          <div className="mb-3 block aspect-video w-full shrink-0 rounded-[12px] bg-gray-200 md:hidden" />
         )}
 
-        <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:mb-0 md:flex-1 md:text-base">
+        <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:mb-0 md:text-lg">
           {content}
         </p>
 
