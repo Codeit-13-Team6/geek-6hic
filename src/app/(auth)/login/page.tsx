@@ -1,26 +1,45 @@
-'use client'
+"use client";
+import { useLogin } from "@/hooks/useLogin";
 import { InputCommon } from "@/components/common/InputCommon";
 import { BtnCommon } from "@/components/common/BtnCommon";
-import { useState } from "react";
-import Link from "next/link"
+import { FormEvent, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 
 export default function Login() {
-  const [name, setName] = useState("");
+  const { handleLogin, isLoading, error } = useLogin();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [introduce, setIntroduce] = useState("");
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const res = await handleLogin(email, password); // 로그인 요청 실행
+
+    if (res?.ok) {
+      router.push("/");
+    }
+  };
 
   return (
     <>
-      <section className="py-6 md:py-25 min-h-[calc(100vh-48px)] md:min-h-[calc(100vh-88px)] flex items-center bg-[#F6F7F9]" aria-labelledby="login-header">
-        <div className="px-4 md:px-0 md:max-w-142 w-full md:mx-auto">
-          <div className="py-6 px-4 md:py-10 md:px-16 bg-white rounded-xl md:rounded-[40px] border">
-            <h1 id="login-header" className="text-center text-base md:text-2xl text-gray-900 font-semibold">로그인</h1>
-            <form className="flex flex-col gap-6 pt-10">
+      <section
+        className="flex min-h-[calc(100vh-48px)] items-center bg-[#F6F7F9] py-6 md:min-h-[calc(100vh-88px)] md:py-25"
+        aria-labelledby="login-header"
+      >
+        <div className="w-full px-4 md:mx-auto md:max-w-142 md:px-0">
+          <div className="rounded-xl border bg-white px-4 py-6 md:rounded-[40px] md:px-16 md:py-10">
+            <h1
+              id="login-header"
+              className="text-center text-base font-semibold text-gray-900 md:text-2xl"
+            >
+              로그인
+            </h1>
+            <form className="flex flex-col gap-6 pt-10" onSubmit={onSubmit}>
               <InputCommon
                 label="이메일"
                 type="email"
@@ -28,7 +47,7 @@ export default function Login() {
                 placeholder="이메일을 입력해주세요."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onClear={() => setEmail('')}
+                onClear={() => setEmail("")}
                 inputSize={"sm"}
                 className="md:text-base"
               />
@@ -39,30 +58,58 @@ export default function Login() {
                 placeholder="비밀번호를 입력해주세요."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onClear={() => setPassword('')}
+                onClear={() => setPassword("")}
                 inputSize={"sm"}
                 className="md:text-base"
               />
-              <BtnCommon variant={"default"} size={"md"} type="submit" children="로그인" />
+              <BtnCommon variant={"default"} size={"md"} type="submit">
+                {isLoading ? "로그인 중..." : "로그인"}
+              </BtnCommon>
             </form>
-            <div className="flex items-center gap-4 mt-8 mb-6">
-              <div className="flex-1 h-px bg-gray-300"></div>
-              <p className="shrink text-[15px] font-medium text-gray-500">SNS 계정으로 회원가입</p>
-              <div className="flex-1 h-px bg-gray-300"></div>
+            {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+            <div className="mt-8 mb-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-gray-300"></div>
+              <p className="shrink text-[15px] font-medium text-gray-500">
+                SNS 계정으로 회원가입
+              </p>
+              <div className="h-px flex-1 bg-gray-300"></div>
             </div>
-            <div className="flex flex-col md:flex-row gap-3">
-              <BtnCommon className={`bg-white border md:w-1/2 border-gray-200 text-gray-800 text-base`} size={"fixedSize"}>
-                <Image src={googleIcon} width="24" height="24" alt="구글 아이콘" />
+            <div className="flex flex-col gap-3 md:flex-row">
+              <BtnCommon
+                className={`border border-gray-200 bg-white text-base text-gray-800 md:w-1/2`}
+                size={"fixedSize"}
+              >
+                <Image
+                  src={googleIcon}
+                  width="24"
+                  height="24"
+                  alt="구글 아이콘"
+                />
                 <p className="ml-3">구글로 계속하기</p>
               </BtnCommon>
-              <BtnCommon className="bg-[#FFEE01] md:w-1/2 text-gray-800 text-base" size={"fixedSize"}>
-                <Image src={kakaoIcon} width="24" height="24" alt="카카오 아이콘" />
+              <BtnCommon
+                className="bg-[#FFEE01] text-base text-gray-800 md:w-1/2"
+                size={"fixedSize"}
+              >
+                <Image
+                  src={kakaoIcon}
+                  width="24"
+                  height="24"
+                  alt="카카오 아이콘"
+                />
                 <p className="ml-3">카카오로 계속하기</p>
               </BtnCommon>
             </div>
-            <div className="flex gap-1 justify-center items-center mt-8">
-              <p className="text-sm font-regular text-gray-800">같이달램이 처음이신가요?</p>
-              <Link href="/signup" className="text-sm text-green-600 font-semibold underline">회원가입</Link>
+            <div className="mt-8 flex items-center justify-center gap-1">
+              <p className="font-regular text-sm text-gray-800">
+                같이달램이 처음이신가요?
+              </p>
+              <Link
+                href="/signup"
+                className="text-sm font-semibold text-green-600 underline"
+              >
+                회원가입
+              </Link>
             </div>
           </div>
         </div>
