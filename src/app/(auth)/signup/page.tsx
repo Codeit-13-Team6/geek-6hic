@@ -16,8 +16,8 @@ export default function SignUp() {
 
   return (
     <>
-      <section className="py-6 md:py-25 min-h-[calc(100vh-88px)] md:flex md:items-center bg-[#F6F7F9]" aria-labelledby="signup-heading">
-        <div className="px-4 md:px-0 md:max-w-142 md:w-full md:mx-auto">
+      <section className="py-6 md:py-25 min-h-[calc(100vh-48px)] md:min-h-[calc(100vh-88px)] flex items-center bg-[#F6F7F9]" aria-labelledby="sing-up-header">
+        <div className="px-4 md:px-0 md:max-w-142 w-full md:mx-auto">
           <div className="py-6 px-4 md:py-10 md:px-16 bg-white rounded-xl md:rounded-[40px] border">
             <h1 id="sign-up-header" className="text-center text-base md:text-2xl text-gray-900 font-semibold">회원가입</h1>
             <form className="flex flex-col gap-6 pt-10">
