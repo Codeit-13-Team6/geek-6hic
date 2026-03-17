@@ -26,10 +26,12 @@ import { HotListCardCommon } from "@/components/common/HotListCardCommon";
 
 export default function LoungePage() {
   const [searchValue, setSearchValue] = useState("");
-  const filterItems = [
-    { value: "최신순" },
-    { value: "인기순" },
-    { value: "오래된순" },
+  const [sortValue, setSortValue] = useState("latest");
+
+  const sortOptions = [
+    { value: "latest", label: "최신순" },
+    { value: "popular", label: "인기순" },
+    { value: "oldest", label: "오래된순" },
   ];
 
   return (
@@ -55,10 +57,9 @@ export default function LoungePage() {
           </BtnCommon>
         </div>
 
-        {/* 2. 이번주 HOT 게시물 영역 */}
         <section className="mt-8 sm:mt-12">
           <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
-            이번주 HOT 게시물!
+            이번주 HOT 게시물
           </h2>
 
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
@@ -80,15 +81,24 @@ export default function LoungePage() {
           </div>
 
           <div className="flex w-full justify-end sm:w-auto">
-            <Select defaultValue="최신순">
+            <Select
+              value={sortValue}
+              onValueChange={(value) => {
+                if (value) {
+                  setSortValue(value);
+                }
+              }}
+            >
               <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
-                <SelectValue />
+                <SelectValue>
+                  {sortOptions.find((item) => item.value === sortValue)?.label}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-[120px] sm:w-[140px]">
                 <SelectGroup>
-                  {filterItems.map((item) => (
+                  {sortOptions.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
-                      {item.value}
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -98,7 +108,10 @@ export default function LoungePage() {
         </section>
 
         <section className="mt-6 sm:mt-8">
-          <LoungePostListCommon />
+          <LoungePostListCommon
+            searchValue={searchValue}
+            sortValue={sortValue}
+          />
         </section>
 
         {/* 추후 로직 추가 */}
