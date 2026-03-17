@@ -27,6 +27,7 @@ import {
   PaginationLink,
   PaginationNext,
 } from "@/components/common/PaginationCommon";
+import { HotListCardCommon } from "@/components/common/HotListCardCommon";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -147,6 +148,8 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
+            <HotListCardCommon/>
+
             <TabCommon>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
