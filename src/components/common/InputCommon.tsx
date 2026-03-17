@@ -31,12 +31,12 @@ const inputVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-error aria-invalid:border-error focus:ring-[1px] focus:ring-error/20",
+        true: "border-error aria-invalid:border-error focus:ring-[1px] focus:ring-error",
         false:
           "border-gray-300 focus:border-main-green-500 focus:ring-[1px] focus:ring-green-500",
       },
       inputSize: {
-        sm: "h-10 px-3 py-2 text-sm md:h-12 md:p-3",
+        sm: "h-10 px-3 py-2 text-sm md:text-base md:h-12 md:p-3",
         lg: "h-[50px] px-4 py-3 text-base",
       },
     },
