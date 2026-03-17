@@ -3,37 +3,29 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export { TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+const tabsRoot = "w-full !border-b-2 !border-border !h-[40px] md:!h-[60px]";
 
-const tabsRoot = {
-  lg: "w-full !h-[60px] !border-b-2 !border-border",
-  sm: "w-full !h-[40px] !border-b-2 !border-border",
-};
-
-const lineList = {
-  lg: cn(
-    "!flex !gap-0 w-full justify-start items-end p-0 !h-[60px] ",
-  ),
-  sm: cn(
-    "!flex !gap-0 w-full justify-start items-end p-0 !h-[40px] ",
-  ),
-};
-
+const lineList = cn(
+  "!flex !h-[40px] w-full items-end justify-center !gap-0 p-0 sm:justify-start md:!h-[60px]",
+);
 
 const triggerBase = cn(
-  "after:hidden font-bold flex-none rounded-none !px-0 cursor-pointer !h-[60px]",
-  "border-0 border-b-2 border-border w-160 ",
-  "text-gray-600 hover:text-main-green-600",
+  "!h-[40px] flex-none rounded-none !p-0 font-bold after:hidden md:!h-[60px] md:cursor-pointer",
+  "border-border w-160 border-0 border-b-2",
+  "hover:text-main-green-600 text-gray-600",
   "data-active:!border-main-green-600 data-active:text-main-green-600",
 );
 
+const triggerSize = cn(
+  triggerBase,
+  "h-[40px] w-[112px] text-[14px]",
+  "md:h-[60px] md:w-[160px] md:text-[20px]",
+);
 
-
-const triggerSize = {
-  lg: cn(triggerBase, "w-[160px] h-[60px] text-[20px] "),
-  sm: cn(triggerBase, "w-[112px] h-[40px] text-[14px]"),
-};
-
-interface TabItem { value: string; label: string };
+interface TabItem {
+  value: string;
+  label: string;
+}
 
 const defaultTabs: TabItem[] = [
   { value: "liked", label: "찜한 모임" },
@@ -41,12 +33,10 @@ const defaultTabs: TabItem[] = [
   { value: "lounge", label: "라운지 게시물" },
 ];
 
-
 interface TabsLineProps {
   tabs?: TabItem[];
   // defaultValue 는 기본적으로 선택되는 탭 , 탭의 value 값을 집어넣어주면 됨
   defaultValue?: string;
-  size?: "lg" | "sm";
 
   /**   children 사용 방법 간략하게 작성 , ui/tabs 에서 TabsContent 를 import 해서 사용해야함
    *  <TabCommon>
@@ -64,15 +54,19 @@ interface TabsLineProps {
   children?: ReactNode;
 }
 
-function TabCommon({ tabs = defaultTabs, defaultValue, size = "lg", children }: TabsLineProps) {
+function TabCommon({
+  tabs = defaultTabs,
+  defaultValue,
+  children,
+}: TabsLineProps) {
   return (
-    <Tabs defaultValue={defaultValue ?? tabs[0].value} className={tabsRoot[size]}>
-      <TabsList variant="line" className={lineList[size]}>
+    <Tabs defaultValue={defaultValue ?? tabs[0].value} className={tabsRoot}>
+      <TabsList variant="line" className={lineList}>
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className={triggerSize[size]}
+            className={triggerSize}
           >
             {tab.label}
           </TabsTrigger>
@@ -83,4 +77,4 @@ function TabCommon({ tabs = defaultTabs, defaultValue, size = "lg", children }: 
   );
 }
 
-export { TabCommon }
+export { TabCommon };
