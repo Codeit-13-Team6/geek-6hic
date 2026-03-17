@@ -21,7 +21,6 @@ export default function LoungePostCardCommon({
   content,
   authorName,
   date,
-  timeAgo,
   likeCount,
   commentCount,
   thumbnailUrl,
@@ -34,10 +33,10 @@ export default function LoungePostCardCommon({
   return (
     <article
       onClick={handleDetailClick}
-      className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 md:flex-row md:gap-8"
+      className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 sm:flex-row sm:gap-8"
     >
       {thumbnailUrl ? (
-        <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] md:block lg:size-50">
+        <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] sm:block lg:size-50">
           <Image
             src={thumbnailUrl}
             alt="게시물 썸네일"
@@ -46,16 +45,16 @@ export default function LoungePostCardCommon({
           />
         </div>
       ) : (
-        <div className="hidden size-40 shrink-0 rounded-[12px] bg-gray-200 md:block lg:size-50" />
+        <div className="hidden size-40 shrink-0 rounded-[12px] bg-gray-200 sm:block lg:size-50" />
       )}
 
       <div className="flex flex-1 flex-col border-b border-slate-200 pt-4 pb-6">
-        <h3 className="mb-3 text-base font-bold text-gray-800 md:mb-2 md:text-xl">
+        <h3 className="mb-3 text-base font-bold text-gray-800 sm:mb-2 sm:text-xl">
           {title}
         </h3>
 
         {thumbnailUrl ? (
-          <div className="relative mb-3 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] md:hidden">
+          <div className="relative mb-3 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] sm:hidden">
             <Image
               src={thumbnailUrl}
               alt="게시물 썸네일"
@@ -64,14 +63,14 @@ export default function LoungePostCardCommon({
             />
           </div>
         ) : (
-          <div className="mb-3 block aspect-video w-full shrink-0 rounded-[12px] bg-gray-200 md:hidden" />
+          <div className="mb-3 block aspect-video w-full shrink-0 rounded-[12px] bg-gray-200 sm:hidden" />
         )}
 
-        <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:mb-0 md:text-lg">
+        <p className="mb-4 line-clamp-2 text-sm text-gray-600 sm:mb-0 sm:text-lg">
           {content}
         </p>
 
-        <div className="mt-auto flex items-center justify-between text-xs text-gray-400 md:text-sm">
+        <div className="mt-auto flex items-center justify-between text-xs text-gray-400 sm:text-sm">
           <div className="flex items-center gap-2">
             <div className="flex size-6 items-center justify-center">
               <Image
@@ -83,12 +82,11 @@ export default function LoungePostCardCommon({
               />
             </div>
             <span>
-              {authorName} <span className="ml-1">{date}</span>
+              {authorName} <span className="ml-2">{date}</span>
             </span>
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="mr-2">{timeAgo}</span>
             <span className="flex items-center gap-0.5">
               <Image
                 src={thumbsUpIcon}

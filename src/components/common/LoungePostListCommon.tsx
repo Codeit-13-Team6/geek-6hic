@@ -7,9 +7,7 @@ import { Posts } from "@/types";
 import { useRouter } from "next/navigation";
 
 export default function LoungePostListCommon() {
-
   const router = useRouter();
-
 
   const { data: loungeList } = useQuery({
     queryKey: ["posts"],
@@ -17,8 +15,8 @@ export default function LoungePostListCommon() {
   });
 
   return (
-    <div className="flex w-full flex-col rounded-[24px] bg-white px-6 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
-      <div className="flex flex-col md:gap-12">
+    <div className="flex w-full flex-col rounded-[24px] bg-white px-6 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-8">
+      <div className="flex flex-col sm:gap-12">
         {loungeList?.map((post: Posts) => (
           <LoungePostCardCommon
             key={post.id}
