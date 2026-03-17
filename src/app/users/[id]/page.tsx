@@ -9,14 +9,17 @@ import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { TabCommon, TabsContent } from "@/components/common/TabCommon";
 import { DetailCardCommon } from "@/components/common/DetailCardCommon";
 import { getUser } from "@/api/user";
-import { Meeting } from "@/types/meeting";
+import { Meeting } from "@/types";
 import {
   createMeeting,
+  deleteFavorites,
   getFavorites,
   getMeeting,
   postMeetType,
   updateFavorites,
 } from "@/api/meeting";
+
+import LoungePostListCommon from "@/components/common/LoungePostListCommon";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -38,7 +41,7 @@ export default function Page() {
   const queryClient = useQueryClient();
 
   const { mutate: toggleFavorite } = useMutation({
-    mutationFn: (meetingId: number) => updateFavorites(meetingId),
+    mutationFn: (meetingId: number) => deleteFavorites(meetingId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
@@ -68,15 +71,13 @@ export default function Page() {
   return (
     <div className="mx-auto mt-[32px] flex flex-col gap-[56px] bg-gray-50 md:mt-[48px] md:w-[1280px] md:flex-row">
       <section className="w-full shrink-0 md:mt-[14px] md:w-[282px]">
-        <div onClick={() => postMeetType()}>모임 종류 생성</div>
+        {/*<div onClick={() => postMeetType()}>모임 종류 생성</div>*/}
 
-        <div onClick={() => updateFavorites(696)}>찜 추가</div>
+        {/*<div onClick={() => updateFavorites(698)}>찜 추가</div>*/}
+        {/*<div onClick={() => createMeeting(mockMeeting)}>모임생성</div>*/}
 
-        <h1
-          className="mb-[24px] text-4xl font-semibold md:mx-[10px] md:mb-[54px]"
-          onClick={() => createMeeting(mockMeeting)}
-        >
-          마이페이지 ( 모임 생성 static 으로 박아둠 )
+        <h1 className="mb-[24px] text-4xl font-semibold md:mx-[10px] md:mb-[54px]">
+          마이페이지
         </h1>
 
         <article className="bg-main-green-100 border-main-green-400 flex h-[124px] w-full items-center rounded-[24px] border-1! px-[24px] py-[24px] md:h-fit md:flex-col md:items-center md:justify-center md:py-[40px]">
@@ -124,6 +125,7 @@ export default function Page() {
                 imageSrc={item.meeting.image}
                 capacity={item.meeting.capacity}
                 participantCount={item.meeting.participantCount}
+                defaultLiked={true}
                 onDetailClick={() => router.push(`/meeting/${item.meetingId}`)}
                 onHeartClick={() => toggleFavorite(item.meetingId)}
               />
@@ -145,7 +147,7 @@ export default function Page() {
             ))}
           </TabsContent>
           <TabsContent value="lounge" className="md:mt-[42px]">
-            라운지
+            <LoungePostListCommon />
           </TabsContent>
         </TabCommon>
       </section>

@@ -42,7 +42,8 @@ export function DetailCardCommon({
 }: DetailCardCommonProps) {
   const [liked, setLiked] = useState(defaultLiked);
 
-  const handleHeartClick = () => {
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const next = !liked;
     setLiked(next);
     onHeartClick?.(next);
