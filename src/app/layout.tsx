@@ -32,6 +32,7 @@ export default function RootLayout({
       >
         <Gnb />
         <ToasterProvider />
+
         {children}
       </body>
     </html>
