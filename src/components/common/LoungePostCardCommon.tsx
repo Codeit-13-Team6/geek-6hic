@@ -13,9 +13,10 @@ interface LoungePostProps {
   likeCount: number;
   commentCount: number;
   thumbnailUrl?: string | null;
+  onDetailClick?: () => void;
 }
 
-export default function LoungePostCard({
+export default function LoungePostCardCommon({
   title,
   content,
   authorName,
@@ -24,9 +25,17 @@ export default function LoungePostCard({
   likeCount,
   commentCount,
   thumbnailUrl,
+  onDetailClick,
 }: LoungePostProps) {
+  const handleDetailClick = () => {
+    onDetailClick?.();
+  };
+
   return (
-    <article className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 md:flex-row md:gap-8">
+    <article
+      onClick={handleDetailClick}
+      className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 md:flex-row md:gap-8"
+    >
       {thumbnailUrl ? (
         <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] md:block lg:size-50">
           <Image
