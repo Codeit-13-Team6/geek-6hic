@@ -38,8 +38,7 @@ export default function Page() {
   const [meetList, setMeetList] = useState<any | null>(null);
   const [favoritesList, setFavoritesList] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
+  useEffect(() => {    const fetchUser = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -64,6 +63,7 @@ export default function Page() {
         setUser(data);
       }
     };
+
 
     fetchUser();
   }, []);

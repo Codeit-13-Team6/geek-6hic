@@ -20,7 +20,8 @@ const buttonVariants = cva(
       size: {
         default: "h-15 text-xl font-semibold rounded-2xl",
         sm: "h-10 text-sm font-semibold rounded-xl px-4",
-        md: "h-12 text-base font-semibold rounded-xl",
+        md: "h-12 text-base font-semibold rounded-xl md:h-14 md:text-xl",
+        fixedSize: "h-12 text-base font-semibold rounded-xl",
         icon: "size-8",
         "icon-xs": "size-4.5 rounded-full",
         "icon-sm": "size-10 rounded-full",
