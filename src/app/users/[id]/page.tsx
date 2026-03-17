@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { TabCommon, TabsContent } from "@/components/common/TabCommon";
 import { DetailCardCommon } from "@/components/common/DetailCardCommon";
 import { getUser } from "@/api/user";
-import { User } from "@/types/user";
 import { Meeting } from "@/types/meeting";
 import {
   createMeeting,
@@ -16,7 +17,6 @@ import {
   postMeetType,
   updateFavorites,
 } from "@/api/meeting";
-import { getRefresh } from "@/api/auth";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -34,72 +34,49 @@ const mockMeeting: Meeting = {
 
 export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [meetList, setMeetList] = useState<any | null>(null);
-  const [favoritesList, setFavoritesList] = useState<any | null>(null);
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  const { mutate: toggleFavorite } = useMutation({
+    mutationFn: (meetingId: number) => updateFavorites(meetingId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
 
-      try {
-        const data = await getUser(token);
-        const meetData = await getMeeting(token);
-        const favoritesList = await getFavorites(token);
-        setFavoritesList(favoritesList.data);
-        setUser(data);
-        setMeetList(meetData.data);
-      } catch {
-        const refresh = localStorage.getItem("refresh");
-        if (!refresh) return;
-        const { accessToken, refreshToken } = await getRefresh(refresh);
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("refresh", refreshToken);
-        const data = await getUser(accessToken);
-        const meetList = await getMeeting(accessToken);
-        const favoritesList = await getFavorites(accessToken);
-        setFavoritesList(favoritesList.data);
-        setMeetList(meetList.data);
-        setUser(data);
-      }
-    };
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
 
-    fetchUser();
-  }, []);
+  const { data: meetList } = useQuery({
+    queryKey: ["meetings", "my"],
+    queryFn: async () => {
+      const res = await getMeeting();
+      return res.data;
+    },
+  });
+
+  const { data: favoritesList } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: async () => {
+      const res = await getFavorites();
+      return res.data;
+    },
+  });
 
   return (
     <div className="mx-auto mt-[32px] flex flex-col gap-[56px] bg-gray-50 md:mt-[48px] md:w-[1280px] md:flex-row">
       <section className="w-full shrink-0 md:mt-[14px] md:w-[282px]">
-        <div
-          onClick={() => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            postMeetType(token);
-          }}
-        >
-          모임 종류 생성
-        </div>
+        <div onClick={() => postMeetType()}>모임 종류 생성</div>
 
-        <div
-          onClick={() => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            updateFavorites(696, token);
-          }}
-        >
-          찜 추가
-        </div>
+        <div onClick={() => updateFavorites(696)}>찜 추가</div>
 
         <h1
           className="mb-[24px] text-4xl font-semibold md:mx-[10px] md:mb-[54px]"
-          onClick={() => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            createMeeting(mockMeeting, token);
-          }}
+          onClick={() => createMeeting(mockMeeting)}
         >
-          마이페이지 ( 모임 생성 static 으로 박아둠  )
+          마이페이지 ( 모임 생성 static 으로 박아둠 )
         </h1>
 
         <article className="bg-main-green-100 border-main-green-400 flex h-[124px] w-full items-center rounded-[24px] border-1! px-[24px] py-[24px] md:h-fit md:flex-col md:items-center md:justify-center md:py-[40px]">
@@ -147,6 +124,8 @@ export default function Page() {
                 imageSrc={item.meeting.image}
                 capacity={item.meeting.capacity}
                 participantCount={item.meeting.participantCount}
+                onDetailClick={() => router.push(`/meeting/${item.meetingId}`)}
+                onHeartClick={() => toggleFavorite(item.meetingId)}
               />
             ))}
           </TabsContent>
@@ -160,6 +139,8 @@ export default function Page() {
                 imageSrc={item.image}
                 capacity={item.capacity}
                 participantCount={item.participantCount}
+                showLikeBtn={false}
+                onDetailClick={() => router.push(`/meeting/${item.id}`)}
               />
             ))}
           </TabsContent>
