@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import profileImg from "@/assets/img/profile/female1-m.jpg";
+import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { TabCommon, TabsContent } from "@/components/common/TabCommon";
 import { DetailCardCommon } from "@/components/common/DetailCardCommon";
@@ -69,12 +69,14 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="mx-auto mt-[32px] flex flex-col gap-[56px] bg-gray-50 md:mt-[48px] md:w-[1280px] md:flex-row">
-      <section className="w-full shrink-0 md:mt-[14px] md:w-[282px]">
-        <div
+    <div className="min-h-screen bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
+      <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
+        {/* <div
           onClick={() => {
             const token = localStorage.getItem("token");
+
             if (!token) return;
+
             postMeetType(token);
           }}
         >
@@ -84,90 +86,108 @@ export default function Page() {
         <div
           onClick={() => {
             const token = localStorage.getItem("token");
+
             if (!token) return;
+
             updateFavorites(696, token);
           }}
         >
           찜 추가
-        </div>
-
+        </div> */}
         <h1
-          className="mb-[24px] text-4xl font-semibold md:mx-[10px] md:mb-[54px]"
+          className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]"
           onClick={() => {
             const token = localStorage.getItem("token");
             if (!token) return;
             createMeeting(mockMeeting, token);
           }}
         >
-          마이페이지 ( 모임 생성 static 으로 박아둠  )
+          마이페이지
         </h1>
 
-        <article className="bg-main-green-100 border-main-green-400 flex h-[124px] w-full items-center rounded-[24px] border-1! px-[24px] py-[24px] md:h-fit md:flex-col md:items-center md:justify-center md:py-[40px]">
-          <Image
-            src={user?.image ?? profileImg}
-            alt="프로필 이미지"
-            width={114}
-            height={114}
-            className="mr-[12px] h-[54px] w-[54px] overflow-hidden rounded-full md:mr-0 md:mb-[24px] md:h-[114px] md:w-[114px]"
-          />
-          <div className="flex flex-row items-center justify-center align-middle text-lg font-semibold whitespace-nowrap text-gray-800 md:mb-[22px]">
-            {user?.name}
-            <Image
-              src={editImg}
-              alt="수정 이미지"
-              width={28}
-              height={28}
-              className="cursor-pointer md:h-[28px] md:w-[28px]"
-              onClick={() => setIsEditModalOpen(true)}
-            />
-          </div>
-          <div className="ml-[58px] flex flex-col md:ml-0">
-            <div className="bg-gradient-200 mb-[8px] rounded-[24px] px-[12px] py-[6px] whitespace-nowrap text-gray-600 md:mb-[30px]">
-              {user?.email}
-            </div>
-            <div className="flex flex-row items-center md:flex-col">
-              <p className="mr-[18px] font-medium whitespace-nowrap text-gray-500 md:mr-0 md:mb-[4px]">
-                한줄소개
-              </p>
-              <p className="font-medium text-gray-800">{user?.companyName}</p>
-            </div>
-          </div>
-        </article>
-      </section>
+        <div className="flex flex-col gap-5 md:gap-10 lg:flex-row lg:items-start lg:gap-[56px]">
+          <section className="w-full shrink-0 lg:w-[282px]">
+            <article className="border-main-green-400 bg-main-green-100 flex h-[100px] w-full shrink-0 items-center rounded-[24px] border px-4 md:h-[124px] md:px-6 lg:h-[370px] lg:w-[282px] lg:flex-col lg:justify-center lg:py-10">
+              <div className="flex shrink-0 items-center gap-2 lg:flex-col lg:gap-6">
+                <div className="relative size-[30px] overflow-hidden rounded-full sm:size-[36px] lg:size-[114px]">
+                  <Image
+                    src={user?.image ?? profileImg}
+                    alt="프로필 이미지"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex items-center gap-1 lg:mb-2">
+                  <span className="text-sm font-bold text-gray-800 sm:text-lg lg:text-xl">
+                    {user?.name}
+                  </span>
+                  <Image
+                    src={editImg}
+                    alt="수정 이미지"
+                    className="size-5 cursor-pointer sm:size-7"
+                    onClick={() => setIsEditModalOpen(true)}
+                  />
+                </div>
+              </div>
 
-      <section className="flex-1">
-        <TabCommon>
-          <TabsContent value="liked" className="md:mt-[42px]">
-            {favoritesList?.map((item: any) => (
-              <DetailCardCommon
-                key={item.id}
-                title={item.meeting.name}
-                type={item.meeting.type}
-                date={new Date(item.meeting.dateTime)}
-                imageSrc={item.meeting.image}
-                capacity={item.meeting.capacity}
-                participantCount={item.meeting.participantCount}
-              />
-            ))}
-          </TabsContent>
-          <TabsContent value="created" className="md:mt-[42px]">
-            {meetList?.map((item: any) => (
-              <DetailCardCommon
-                key={item.id}
-                title={item.name}
-                type={item.type}
-                date={new Date(item.dateTime)}
-                imageSrc={item.image}
-                capacity={item.capacity}
-                participantCount={item.participantCount}
-              />
-            ))}
-          </TabsContent>
-          <TabsContent value="lounge" className="md:mt-[42px]">
-            라운지
-          </TabsContent>
-        </TabCommon>
-      </section>
+              <div className="bg-main-green-400/50 mx-4 h-12 w-[1px] shrink-0 md:mx-6 lg:hidden" />
+
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 lg:items-center lg:gap-6">
+                <div className="lg:bg-gradient-200 flex items-center lg:rounded-[24px] lg:px-4 lg:py-1.5">
+                  <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:hidden">
+                    이메일
+                  </span>
+                  <span className="sm:text-md truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-600">
+                    {user?.email}
+                  </span>
+                </div>
+                <div className="flex items-center lg:flex-col lg:gap-1">
+                  <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:w-auto lg:text-base">
+                    한줄소개
+                  </span>
+                  <span className="truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-800">
+                    {user?.companyName}
+                  </span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section className="flex min-w-0 flex-1 flex-col">
+            <TabCommon>
+              <TabsContent value="liked" className="mt-6 md:mt-[42px]">
+                {favoritesList?.map((item: any) => (
+                  <DetailCardCommon
+                    key={item.id}
+                    title={item.meeting.name}
+                    type={item.meeting.type}
+                    date={new Date(item.meeting.dateTime)}
+                    imageSrc={item.meeting.image}
+                    capacity={item.meeting.capacity}
+                    participantCount={item.meeting.participantCount}
+                  />
+                ))}
+              </TabsContent>
+              <TabsContent value="created" className="mt-6 md:mt-[42px]">
+                {meetList?.map((item: any) => (
+                  <DetailCardCommon
+                    key={item.id}
+                    title={item.name}
+                    type={item.type}
+                    date={new Date(item.dateTime)}
+                    imageSrc={item.image}
+                    capacity={item.capacity}
+                    participantCount={item.participantCount}
+                  />
+                ))}
+              </TabsContent>
+              <TabsContent value="lounge" className="mt-6 md:mt-[42px]">
+                라운지
+              </TabsContent>
+            </TabCommon>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
