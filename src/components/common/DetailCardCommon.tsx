@@ -42,7 +42,8 @@ export function DetailCardCommon({
 }: DetailCardCommonProps) {
   const [liked, setLiked] = useState(defaultLiked);
 
-  const handleHeartClick = () => {
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const next = !liked;
     setLiked(next);
     onHeartClick?.(next);
@@ -82,21 +83,19 @@ export function DetailCardCommon({
       <div className="flex flex-1 flex-col justify-between">
         <CardHeader className="gap-0 p-[16px] pb-[16px] sm:py-[24px]">
           <CardAction>
-            {showLikeBtn && (
-              <BtnCommon
-                size="icon-md"
-                variant="teritary"
-                className="hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex"
-                onClick={handleHeartClick}
-              >
-                <Image
-                  src={liked ? heartsTrue : heartsFalse}
-                  alt="heart"
-                  width={24}
-                  height={24}
-                />
-              </BtnCommon>
-            )}
+            <BtnCommon
+              size="icon-md"
+              variant="teritary"
+              className={`hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex ${!showLikeBtn && "invisible"}`}
+              onClick={handleHeartClick}
+            >
+              <Image
+                src={liked ? heartsTrue : heartsFalse}
+                alt="heart"
+                width={24}
+                height={24}
+              />
+            </BtnCommon>
           </CardAction>
           <CardTitle className="text-xl font-semibold sm:mt-[13px]">
             {title}

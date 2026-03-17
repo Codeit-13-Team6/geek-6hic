@@ -1,23 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import profileImg from "@/assets/img/profile/female1-sm.jpg";
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { TabCommon, TabsContent } from "@/components/common/TabCommon";
 import { DetailCardCommon } from "@/components/common/DetailCardCommon";
 import { getUser } from "@/api/user";
-import { User } from "@/types/user";
-import { Meeting } from "@/types/meeting";
+import { Meeting } from "@/types";
 import {
   createMeeting,
+  deleteFavorites,
   getFavorites,
   getMeeting,
   postMeetType,
   updateFavorites,
 } from "@/api/meeting";
-import { getRefresh } from "@/api/auth";
-import LoungePostList from "@/app/mypage/components/LoungePostList";
+import LoungePostListCommon from "@/components/common/LoungePostListCommon";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -35,74 +37,44 @@ const mockMeeting: Meeting = {
 
 export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [meetList, setMeetList] = useState<any | null>(null);
-  const [favoritesList, setFavoritesList] = useState<any | null>(null);
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  const { mutate: toggleFavorite } = useMutation({
+    mutationFn: (meetingId: number) => deleteFavorites(meetingId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
 
-      try {
-        const data = await getUser(token);
-        const meetData = await getMeeting(token);
-        const favoritesList = await getFavorites(token);
-        setFavoritesList(favoritesList.data);
-        setUser(data);
-        setMeetList(meetData.data);
-      } catch {
-        const refresh = localStorage.getItem("refresh");
-        if (!refresh) return;
-        const { accessToken, refreshToken } = await getRefresh(refresh);
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("refresh", refreshToken);
-        const data = await getUser(accessToken);
-        const meetList = await getMeeting(accessToken);
-        const favoritesList = await getFavorites(accessToken);
-        setFavoritesList(favoritesList.data);
-        setMeetList(meetList.data);
-        setUser(data);
-      }
-    };
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
 
-    fetchUser();
-  }, []);
+  const { data: meetList } = useQuery({
+    queryKey: ["meetings", "my"],
+    queryFn: async () => {
+      const res = await getMeeting();
+      return res.data;
+    },
+  });
+
+  const { data: favoritesList } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: async () => {
+      const res = await getFavorites();
+      return res.data;
+    },
+  });
 
   return (
     <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
       <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
-        {/* <div
-          onClick={() => {
-            const token = localStorage.getItem("token");
-
-            if (!token) return;
-
-            postMeetType(token);
-          }}
-        >
-          모임 종류 생성
-        </div>
-
-        <div
-          onClick={() => {
-            const token = localStorage.getItem("token");
-
-            if (!token) return;
-
-            updateFavorites(696, token);
-          }}
-        >
-          찜 추가
-        </div> */}
-        <h1
-          className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]"
-          onClick={() => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            createMeeting(mockMeeting, token);
-          }}
-        >
+        {/*<div onClick={() => postMeetType()}>모임 종류 생성</div>*/}
+        {/*<div onClick={() => updateFavorites(698)}>찜 추가</div>*/}
+        {/*<div onClick={() => createMeeting(mockMeeting)}>모임생성</div>*/}
+        <h1 className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]">
           마이페이지
         </h1>
 
@@ -182,8 +154,8 @@ export default function Page() {
                   />
                 ))}
               </TabsContent>
-              <TabsContent value="lounge" className="mt-6 md:mt-[42px]">
-                <LoungePostList />
+              <TabsContent value="lounge" className="md:mt-[42px]">
+                <LoungePostListCommon />
               </TabsContent>
             </TabCommon>
           </section>
