@@ -24,41 +24,37 @@ export function Gnb() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:px-10 md:h-22">
-      <div className="flex h-8 w-full max-w-7xl items-center justify-between md:h-14 lg:pr-2">
-        {/* 좌측: 로고 및 네비게이션 */}
+    <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
+      <div className="flex h-8 w-full max-w-7xl items-center justify-between sm:h-14">
         <div className="flex items-center gap-4">
           <Link href="/">
             <Image
               src={logoSm}
               alt="로고"
               height={32}
-              className="block md:hidden"
+              className="block sm:hidden"
             />
             <Image
               src={logoLg}
               alt="로고"
               height={39}
-              className="hidden md:block"
+              className="hidden sm:block"
             />
           </Link>
 
-          <nav className="hidden items-center md:flex md:gap-2">
+          <nav className="hidden items-center sm:flex sm:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="font-pretendard hover:text-main-green-600 text-base font-medium text-slate-600 transition-all hover:font-semibold md:p-4"
+                className="font-pretendard hover:text-main-green-600 font-medium whitespace-nowrap text-slate-600 transition-all hover:font-semibold sm:px-2 sm:py-4 sm:text-base lg:px-4"
               >
                 {link.name}
               </Link>
             ))}
           </nav>
         </div>
-
-        {/* 우측: 로그인/프로필 영역 */}
-        <div className="flex h-full items-center justify-center gap-4 md:gap-6">
-          {/* 1. 알림 (로그인 시에만 렌더링. sm/lg 아이콘 스위칭) */}
+        <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
             <button className="flex items-center justify-center">
               <Image
@@ -66,20 +62,19 @@ export function Gnb() {
                 alt="알림"
                 width={20}
                 height={20}
-                className="block md:hidden"
+                className="block sm:hidden"
               />
               <Image
                 src={bellIconLg}
                 alt="알림"
                 width={24}
                 height={24}
-                className="hidden md:block"
+                className="hidden sm:block"
               />
             </button>
           )}
 
-          {/* 2. 데스크탑 전용 영역 (프로필 or 로그인 버튼) */}
-          <div className="hidden md:block">
+          <div className="hidden sm:block">
             {isLoggedIn ? (
               <button className="flex items-center justify-center">
                 <Image
@@ -94,7 +89,7 @@ export function Gnb() {
               <Link href="/login" className="p-4">
                 <span
                   onClick={() => setIsLoggedIn(true)}
-                  className="font-pretendard text-base font-medium text-slate-600 transition-colors hover:text-gray-900"
+                  className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
                 >
                   로그인
                 </span>
@@ -102,8 +97,7 @@ export function Gnb() {
             )}
           </div>
 
-          {/* 3. 모바일 전용 영역 (메뉴 & 사이드바. 로그인 여부 상관없이 항상 렌더링) */}
-          <div className="flex items-center justify-center md:hidden">
+          <div className="flex items-center justify-center sm:hidden">
             <Sheet>
               <SheetTrigger className="flex items-center justify-center">
                 <Image src={menu} alt="메뉴" width={24} height={24} />

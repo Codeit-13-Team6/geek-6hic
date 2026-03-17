@@ -27,17 +27,17 @@ import { cn } from "@/lib/utils";
 // 공용 input 스타일 정의입니다.
 // 에러 상태와 크기별 스타일을 variant로 분리합니다.
 const inputVariants = cva(
-  "flex w-full min-w-0 rounded-[8px] border bg-gray-50 text-gray-800 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:opacity-50",
+  "flex w-full min-w-0 bg-gray-50 rounded-[8px] text-gray-800 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:opacity-50",
   {
     variants: {
       isDestructive: {
-        true: "border-error aria-invalid:border-error focus:ring-[4px] focus:ring-error/20",
+        true: "border-error aria-invalid:border-error focus:ring-[1px] focus:ring-error",
         false:
-          "border-gray-300 focus:border-main-green-500 focus:ring-[4px] focus:ring-main-green-100",
+          "border-gray-300 focus:border-main-green-500 focus:ring-[1px] focus:ring-green-500",
       },
       inputSize: {
-        sm: "h-[40px] px-[12px] py-[8px] text-[14px]",
-        lg: "h-[50px] px-[16px] py-[12px] text-[16px]",
+        sm: "h-10 px-3 py-2 text-sm md:text-base md:h-12 md:p-3",
+        lg: "h-[50px] px-4 py-3 text-base",
       },
     },
     defaultVariants: {
@@ -96,7 +96,7 @@ export function InputCommon({
           )}
         >
           {label}
-          {isRequired && <span className="text-error ml-1">*</span>}
+          {isRequired && <span className="text-green-500 ml-1">*</span>}
         </label>
       )}
 

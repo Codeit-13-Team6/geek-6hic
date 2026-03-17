@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { Meeting } from "@/types/meeting";
+import { Meeting } from "@/types";
 
 export async function getMeetings(): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings");
@@ -16,9 +16,15 @@ export async function createMeeting(meeting: Meeting): Promise<Meeting> {
   return data;
 }
 
+
 export async function updateFavorites(meetingId: number): Promise<void> {
   await axiosInstance.post(`/meetings/${meetingId}/favorites`);
 }
+
+export async function deleteFavorites(meetingId: number): Promise<void> {
+  await axiosInstance.delete(`/meetings/${meetingId}/favorites`);
+}
+
 
 export async function getFavorites(): Promise<{ data: any[] }> {
   const { data } = await axiosInstance.get("/favorites");
