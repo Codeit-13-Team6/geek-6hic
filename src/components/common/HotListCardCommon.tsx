@@ -16,8 +16,8 @@ interface HotListCardCommonProps {
   title?: string;
   date?: Date;
   imageSrc?: string;
-  thumbsUp?: number
-  comment?: number
+  thumbsUp?: number;
+  comment?: number;
   onDetailClick?: () => void;
 }
 
@@ -35,7 +35,7 @@ export function HotListCardCommon({
 
   return (
     <Card
-      className="h-fit w-[162px] cursor-pointer gap-0! rounded-[24px] bg-gray-50 pt-0! pb-0! ring-0! sm:w-[300px]"
+      className="h-fit w-[162px] shrink-0 cursor-pointer gap-0! rounded-[24px] bg-gray-50 pt-0! pb-0! ring-0! sm:w-[300px]"
       onClick={handleDetailClick}
     >
       <section className="relative h-[162px] w-full shrink-0 overflow-hidden rounded-[24px] rounded-b-none sm:h-[180px] sm:w-[300px]">
@@ -69,7 +69,9 @@ export function HotListCardCommon({
               height={18}
               className="mr-[2px]"
             />
-            <p className="whitespace- text-sm text-gray-500">{thumbsUp}</p>
+            <p className="text-sm whitespace-nowrap text-gray-500">
+              {thumbsUp}
+            </p>
           </div>
 
           <div className="flex flex-row">
@@ -80,7 +82,7 @@ export function HotListCardCommon({
               height={18}
               className="mr-[2px]"
             />
-            <p className="whitespace- text-sm text-gray-500">{comment}</p>
+            <p className="text-sm whitespace-nowrap text-gray-500">{comment}</p>
           </div>
         </CardFooter>
       </div>

@@ -23,10 +23,9 @@ export default function LoungePostListCommon({ filterFn }: Props) {
 
   // 해당 컴포넌트가 라운지쪽과 마이페이지에서 사용하는데 필터링 하는 기준이 각각 달라서 외부에서 필터링 기준만 주입하는 형식으로 진행
   const list = filterFn ? loungeList?.filter(filterFn) : loungeList;
-
   return (
-    <div className="flex w-full flex-col rounded-[24px] bg-white px-6 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
-      <div className="flex flex-col md:gap-12">
+    <div className="flex w-full flex-col rounded-[24px] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
+      <div className="flex flex-col sm:gap-8">
         {list?.map((post: Posts) => (
           <LoungePostCardCommon
             key={post.id}

@@ -22,6 +22,7 @@ import {
   PaginationPrevious,
 } from "@/components/common/PaginationCommon";
 import { BtnCommon } from "@/components/common/BtnCommon";
+import { HotListCardCommon } from "@/components/common/HotListCardCommon";
 
 export default function LoungePage() {
   const [searchValue, setSearchValue] = useState("");
@@ -54,14 +55,14 @@ export default function LoungePage() {
           </BtnCommon>
         </div>
 
+        {/* 2. 이번주 HOT 게시물 영역 */}
         <section className="mt-8 sm:mt-12">
-          <h2 className="mb-4 text-base font-bold text-gray-900 sm:mb-6 sm:text-lg lg:text-xl">
-            이번주 HOT 게시물
+          <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
+            이번주 HOT 게시물!
           </h2>
+
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
-            <div className="h-[180px] w-[160px] shrink-0 rounded-[16px] bg-gray-200 sm:h-[220px] sm:w-[200px]" />
-            <div className="h-[180px] w-[160px] shrink-0 rounded-[16px] bg-gray-200 sm:h-[220px] sm:w-[200px]" />
-            <div className="h-[180px] w-[160px] shrink-0 rounded-[16px] bg-gray-200 sm:h-[220px] sm:w-[200px]" />
+            <HotListCardCommon title="제목1" thumbsUp={120} comment={45} />
           </div>
         </section>
 
@@ -100,7 +101,7 @@ export default function LoungePage() {
           <LoungePostListCommon />
         </section>
 
-        {/* 추후 로직 */}
+        {/* 추후 로직 추가 */}
         <section className="mt-8 flex justify-center sm:mt-12">
           <Pagination>
             <PaginationContent>
