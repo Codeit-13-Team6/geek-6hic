@@ -42,6 +42,7 @@ export default function LoungePostCardCommon({
             alt="게시물 썸네일"
             fill
             className="object-cover"
+            unoptimized
           />
         </div>
       ) : (
@@ -60,6 +61,7 @@ export default function LoungePostCardCommon({
               alt="게시물 썸네일"
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
         ) : (
@@ -79,6 +81,7 @@ export default function LoungePostCardCommon({
                 width={24}
                 height={24}
                 className="rounded-full"
+                unoptimized
               />
             </div>
             <span>
@@ -93,6 +96,7 @@ export default function LoungePostCardCommon({
                 alt="좋아요 아이콘"
                 width={15}
                 height={15}
+                unoptimized
               />
               {likeCount}
             </span>
@@ -102,6 +106,7 @@ export default function LoungePostCardCommon({
                 alt="댓글 아이콘"
                 width={15}
                 height={15}
+                unoptimized
               />
               {commentCount}
             </span>

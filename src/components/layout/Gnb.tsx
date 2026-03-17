@@ -10,7 +10,7 @@ import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
 import profileMd from "@/assets/img/profile/female1-m.jpg";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import SideBar from "@/components/layout/SideBar";
+import SideBar from "@/components/layout/sideBar";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
