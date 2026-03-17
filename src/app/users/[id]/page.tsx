@@ -17,6 +17,7 @@ import {
   updateFavorites,
 } from "@/api/meeting";
 import { getRefresh } from "@/api/auth";
+import LoungePostList from "@/app/mypage/components/LoungePostList";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -69,7 +70,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
+    <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
       <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
         {/* <div
           onClick={() => {
@@ -182,7 +183,7 @@ export default function Page() {
                 ))}
               </TabsContent>
               <TabsContent value="lounge" className="mt-6 md:mt-[42px]">
-                라운지
+                <LoungePostList />
               </TabsContent>
             </TabCommon>
           </section>
