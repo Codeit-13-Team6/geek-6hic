@@ -1,24 +1,39 @@
 "use client";
-import { useLogin } from "@/hooks/useLogin";
-import { InputCommon } from "@/components/common/InputCommon";
-import { BtnCommon } from "@/components/common/BtnCommon";
-import { FormEvent, useState } from "react";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { InputCommon } from "@/components/common/InputCommon";
+import { BtnCommon } from "@/components/common/BtnCommon";
+import { useLogin } from "@/hooks/useLogin";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
+import type { LoginFormValues } from "@/types/index";
 
 export default function Login() {
-  const { handleLogin, isLoading, error } = useLogin();
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { handleLogin, isLoading, error } = useLogin();
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // 유효성검사
+  // 로그인 폼 상태 및 유효성검사 관리 로직
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<LoginFormValues>({
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    const res = await handleLogin(email, password); // 로그인 요청 실행
+  // RHF 내장된 기능으로 제출 시, 유효성검사 통과하면 로직 탐
+  // 로그인 성공 시 메인 페이지 이동 로직
+  const onSubmit = async (data: LoginFormValues) => {
+    const res = await handleLogin(data.email, data.password);
 
     if (res?.ok) {
       router.push("/");
@@ -39,34 +54,56 @@ export default function Login() {
             >
               로그인
             </h1>
-            <form className="flex flex-col gap-6 pt-10" onSubmit={onSubmit}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
+              className="flex flex-col gap-6 pt-10"
+            >
+              {/* 인풋 : 이메일 */}
               <InputCommon
                 label="이메일"
                 type="email"
                 isRequired
                 placeholder="이메일을 입력해주세요."
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onClear={() => setEmail("")}
                 inputSize={"sm"}
-                className="md:text-base"
+                {...register("email", {
+                  required: "이메일을 입력해주세요.",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "이메일 형식이 올바르지 않습니다.",
+                  },
+                })}
+                isDestructive={!!errors.email}
+                hintText={errors.email?.message}
+                onClear={() => setValue("email", "")}
               />
+
+              {/* 인풋 : 비밀번호 */}
               <InputCommon
                 label="비밀번호"
                 type="password"
                 isRequired
                 placeholder="비밀번호를 입력해주세요."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onClear={() => setPassword("")}
                 inputSize={"sm"}
-                className="md:text-base"
+                {...register("password", {
+                  required: "비밀번호를 입력해주세요.",
+                  pattern: {
+                    value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                    message:
+                      "비밀번호는 영문과 숫자를 포함한 8자 이상이어야 합니다.",
+                  },
+                })}
+                isDestructive={!!errors.password}
+                hintText={errors.password?.message}
+                onClear={() => setValue("password", "")}
               />
+
               <BtnCommon variant={"default"} size={"md"} type="submit">
                 {isLoading ? "로그인 중..." : "로그인"}
               </BtnCommon>
             </form>
             {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+
             <div className="mt-8 mb-6 flex items-center gap-4">
               <div className="h-px flex-1 bg-gray-300"></div>
               <p className="shrink text-[15px] font-medium text-gray-500">
@@ -74,9 +111,10 @@ export default function Login() {
               </p>
               <div className="h-px flex-1 bg-gray-300"></div>
             </div>
+
             <div className="flex flex-col gap-3 md:flex-row">
               <BtnCommon
-                className={`border border-gray-200 bg-white text-base text-gray-800 md:w-1/2`}
+                className="border border-gray-200 bg-white text-base text-gray-800 hover:bg-white md:w-1/2"
                 size={"fixedSize"}
               >
                 <Image
@@ -88,7 +126,7 @@ export default function Login() {
                 <p className="ml-3">구글로 계속하기</p>
               </BtnCommon>
               <BtnCommon
-                className="bg-[#FFEE01] text-base text-gray-800 md:w-1/2"
+                className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] md:w-1/2"
                 size={"fixedSize"}
               >
                 <Image
@@ -100,6 +138,7 @@ export default function Login() {
                 <p className="ml-3">카카오로 계속하기</p>
               </BtnCommon>
             </div>
+
             <div className="mt-8 flex items-center justify-center gap-1">
               <p className="font-regular text-sm text-gray-800">
                 같이달램이 처음이신가요?

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -20,6 +20,14 @@ import {
   updateFavorites,
 } from "@/api/meeting";
 import LoungePostListCommon from "@/components/common/LoungePostListCommon";
+import { useAuthStore } from "@/store/useAuthStore";
+import {
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+} from "@/components/common/PaginationCommon";
+import { HotListCardCommon } from "@/components/common/HotListCardCommon";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -40,12 +48,19 @@ export default function Page() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+
+  // 라운지 게시물 필터링을 위해 id 세팅 , 추후 다른곳에서도 id 사용여지가있을것같아서 일단 전역으로 두었는데 상황에 따라서 전역관리 안해도 될것같으면 제외하는걸로
+  const userId = useAuthStore((state) => state.userId);
+  const setUserId = useAuthStore((state) => state.setUserId);
+
+
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
+
 
   const { data: user } = useQuery({
     queryKey: ["user"],
@@ -68,18 +83,24 @@ export default function Page() {
     },
   });
 
+
+  useEffect(() => {
+    if (user?.id) setUserId(user.id);
+  }, [user]);
+
+
   return (
     <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
       <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
         {/*<div onClick={() => postMeetType()}>모임 종류 생성</div>*/}
         {/*<div onClick={() => updateFavorites(698)}>찜 추가</div>*/}
         {/*<div onClick={() => createMeeting(mockMeeting)}>모임생성</div>*/}
-        <h1 className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]">
-          마이페이지
-        </h1>
 
         <div className="flex flex-col gap-5 md:gap-10 lg:flex-row lg:items-start lg:gap-[56px]">
-          <section className="w-full shrink-0 lg:w-[282px]">
+          <section className="mt-0 w-full shrink-0 lg:mt-[22px] lg:w-[282px]">
+            <h1 className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]">
+              마이페이지
+            </h1>
             <article className="border-main-green-400 bg-main-green-100 flex h-[100px] w-full shrink-0 items-center rounded-[24px] border px-4 md:h-[124px] md:px-6 lg:h-[370px] lg:w-[282px] lg:flex-col lg:justify-center lg:py-10">
               <div className="flex shrink-0 items-center gap-2 lg:flex-col lg:gap-6">
                 <div className="relative size-[30px] overflow-hidden rounded-full sm:size-[36px] lg:size-[114px]">
@@ -127,8 +148,10 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
+            <HotListCardCommon/>
+
             <TabCommon>
-              <TabsContent value="liked" className="mt-6 md:mt-[42px]">
+              <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
                   <DetailCardCommon
                     key={item.id}
@@ -138,10 +161,15 @@ export default function Page() {
                     imageSrc={item.meeting.image}
                     capacity={item.meeting.capacity}
                     participantCount={item.meeting.participantCount}
+                    defaultLiked={true}
+                    onDetailClick={() =>
+                      router.push(`/meeting/${item.meetingId}`)
+                    }
+                    onHeartClick={() => toggleFavorite(item.meetingId)}
                   />
                 ))}
               </TabsContent>
-              <TabsContent value="created" className="mt-6 md:mt-[42px]">
+              <TabsContent value="created" className="mt-6 md:mt-[32px]">
                 {meetList?.map((item: any) => (
                   <DetailCardCommon
                     key={item.id}
@@ -151,11 +179,15 @@ export default function Page() {
                     imageSrc={item.image}
                     capacity={item.capacity}
                     participantCount={item.participantCount}
+                    showLikeBtn={false}
+                    onDetailClick={() => router.push(`/meeting/${item.id}`)}
                   />
                 ))}
               </TabsContent>
-              <TabsContent value="lounge" className="md:mt-[42px]">
-                <LoungePostListCommon />
+              <TabsContent value="lounge" className="md:mt-[32px]">
+                <LoungePostListCommon
+                  filterFn={(post) => post.author.id === userId}
+                />
               </TabsContent>
             </TabCommon>
           </section>

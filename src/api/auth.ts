@@ -11,14 +11,17 @@ export async function getRefresh(
   return data;
 }
 
+// 로그인 응답 타입 정의
 export interface LoginResult {
   ok: boolean;
 }
 
+// 클라이언트 로그인 BFF 호출 함수
 export async function loginUser(data: {
   email: string;
   password: string;
 }): Promise<LoginResult> {
+  //중간서버 로그인 API 호출
   const res = await axios.post("/api/login", data, {
     withCredentials: true,
   });

@@ -1,3 +1,4 @@
+//로그인 상태 관리 레이어
 "use client";
 
 import { loginUser, type LoginResult } from "@/api/auth";
@@ -7,6 +8,7 @@ export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
 
+  // 로그인 API 호출 및 결과 반환 로직
   const handleLogin = async (
     email: string,
     password: string,
