@@ -30,8 +30,7 @@ export default function LoungeCreatePage() {
 
   const handleFetchPreview = async () => {
     if (!linkUrl.trim()) return alert("링크를 입력해주세요.");
-    if (linkList.some((item) => item.url === linkUrl.trim()))
-      return alert("이미 추가된 링크입니다.");
+
     setIsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
@@ -146,18 +145,21 @@ export default function LoungeCreatePage() {
                   key={link.id}
                   className={`relative flex items-center gap-3 rounded-[12px] border p-3 pr-10 transition-all sm:gap-4 sm:p-4 sm:pr-12 ${index === 0 ? "border-green-500 bg-green-50" : "border-gray-200 bg-gray-50"}`}
                 >
-                  {link.image ? (
-                    // Image 태그 사용 X -> Next.js의 Image 컴포넌트는 외부 이미지에 최적화되어 있지 않음
-                    <img
-                      src={link.image}
-                      alt="thumb"
-                      className="size-12 shrink-0 rounded-lg bg-gray-200 object-cover sm:size-16"
-                    />
-                  ) : (
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-200 sm:size-16">
-                      <Link2 className="text-gray-400" />
-                    </div>
-                  )}
+                  <div className="relative flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-200 sm:size-16">
+                    <Link2 className="absolute text-gray-400" />
+                    {link.image && (
+                      // Image 태그 사용 X -> Next.js의 Image 컴포넌트는 외부 이미지에 최적화되어 있지 않음
+                      <img
+                        src={link.image}
+                        alt="thumb"
+                        className="z-10 size-12 shrink-0 rounded-lg bg-gray-200 object-cover sm:size-16"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.opacity = "0";
+                          // 에러 나면 투명하게해서 기본 아이콘만 보이도록 처리
+                        }}
+                      />
+                    )}
+                  </div>
                   <div className="overflow-hidden">
                     <h4 className="truncate text-sm font-bold text-gray-900 sm:text-base">
                       {link.title}
