@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SheetContent, SheetClose, SheetTitle } from "@/components/ui/sheet";
+import { SheetContent, SheetClose, SheetTitle } from "@/components/shadcnOrigin/sheet";
 import { X } from "lucide-react";
 
 const NAV_LINKS = [

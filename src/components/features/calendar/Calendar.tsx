@@ -13,12 +13,12 @@ import ArrowRight from "@/assets/icon/arrow/arrow-right.svg"
 import ArrowDown from "@/assets/icon/arrow/arrow-down.svg"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/shadcnOrigin/button"
 import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon } from "lucide-react"
-import { BtnCommon } from "@/components/common/BtnCommon"
+import { BtnCommon } from "@/components/ui/BtnCommon"
 
 // 컴포넌트 사용시 프롭스로 mode="single" 필요
-function CalendarCommon({
+function Calendar({
   className,
   classNames,
   showOutsideDays = true,
@@ -250,4 +250,4 @@ function CalendarDayButton({
   )
 }
 
-export { CalendarCommon, CalendarDayButton }
+export { Calendar, CalendarDayButton }

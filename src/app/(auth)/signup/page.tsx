@@ -1,6 +1,6 @@
 'use client'
-import { InputCommon } from "@/components/common/InputCommon";
-import { BtnCommon } from "@/components/common/BtnCommon";
+import { InputCommon } from "@/components/ui/InputCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 import { useState } from "react";
 import Link from "next/link"
 import Image from "next/image";

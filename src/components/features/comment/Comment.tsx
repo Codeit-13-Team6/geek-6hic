@@ -1,19 +1,19 @@
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 
-interface CommentCommonProps {
+interface CommentProps {
   name?: string;
   img?: string;
   date?: Date;
   content?: string;
 }
 
-export default function CommentCommon({
+export default function Comment({
   name = "익명",
   img,
   date = new Date(),
   content = "",
-}: CommentCommonProps) {
+}: CommentProps) {
   return (
     <article className="flex flex-col py-[24px]">
       <div className="flex flex-row items-center gap-[6px] text-sm text-gray-500">

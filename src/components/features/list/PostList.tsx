@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import LoungePostCardCommon from "./LoungePostCardCommon";
+import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/posts";
 import { Posts } from "@/types";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ interface Props {
   sortValue?: string;
 }
 
-export default function LoungePostListCommon({
+export default function PostList({
   filterFn,
   searchValue = "",
   sortValue = "latest",
@@ -53,7 +53,7 @@ export default function LoungePostListCommon({
     <div className="flex w-full flex-col rounded-[24px] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
       <div className="flex flex-col sm:gap-8">
         {list.map((post: Posts) => (
-          <LoungePostCardCommon
+          <PostCard
             key={post.id}
             {...post}
             authorName={post.author.name}

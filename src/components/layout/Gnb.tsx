@@ -9,7 +9,7 @@ import menu from "@/assets/icon/menu/menu.svg";
 import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
 import profileMd from "@/assets/img/profile/female1-m.jpg";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import SideBar from "@/components/layout/SideBar";
 
 const NAV_LINKS = [

@@ -1,8 +1,8 @@
 "use client";
 
-import ModalCommon from "@/components/common/ModalCommon";
-import { CreateMeetingModalContent } from "@/components/modal/CreateMeetingModalContent";
-import { Button } from "@/components/ui/button";
+import ModalCommon from "@/components/ui/ModalCommon";
+import { CreateMeetingModalContent } from "@/app/meeting/modal/CreateMeetingModalContent";
+import { Button } from "@/components/shadcnOrigin/button";
 import { useState } from "react";
 
 export default function Home() {

@@ -17,7 +17,7 @@ const emptyText = {
   myCreatMeeting: "아직 내가만든 모임이 없어요",
 } as const;
 
-function EmptyDataCommon({ variant = 'meeting' } : EmptyStateProps) {
+function EmptyData({ variant = 'meeting' } : EmptyStateProps) {
   const text = emptyText[variant];
 
   return (
@@ -38,4 +38,4 @@ function EmptyDataCommon({ variant = 'meeting' } : EmptyStateProps) {
   )
 }
 
-export { EmptyDataCommon }
+export { EmptyData }

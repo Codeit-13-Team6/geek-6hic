@@ -3,7 +3,7 @@ import * as React from "react"
 import arrowLeft from "@/assets/icon/arrow/arrow-left.svg"
 import arrowRight from "@/assets/icon/arrow/arrow-right.svg"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/shadcnOrigin/button"
 import { MoreHorizontalIcon } from "lucide-react"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {

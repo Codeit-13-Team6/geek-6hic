@@ -3,7 +3,7 @@ import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 
-interface LoungePostProps {
+interface PostDetailCardProps {
   id: number;
   title: string;
   content: string;
@@ -16,7 +16,7 @@ interface LoungePostProps {
   onDetailClick?: () => void;
 }
 
-export default function LoungePostCardCommon({
+export default function PostCard({
   title,
   content,
   authorName,
@@ -25,7 +25,7 @@ export default function LoungePostCardCommon({
   commentCount,
   thumbnailUrl,
   onDetailClick,
-}: LoungePostProps) {
+}: PostDetailCardProps) {
   const handleDetailClick = () => {
     onDetailClick?.();
   };
