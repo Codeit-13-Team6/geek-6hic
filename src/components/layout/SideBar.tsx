@@ -25,7 +25,7 @@ export default function SideBar({ isLoggedIn, handleLogout, handleLogin }: SideB
   return (
     <SheetContent
       side="right"
-      className="flex h-full w-[314px] flex-col rounded-l-[20px] bg-white px-5 pt-6 pb-8 sm:max-w-[314px] [&>button.absolute]:hidden"
+      className="z-999999999 flex h-full w-[314px] flex-col rounded-l-[20px] bg-white px-5 pt-6 pb-8 sm:max-w-[314px] [&>button.absolute]:hidden"
     >
       <SheetTitle className="sr-only">모바일 네비게이션 메뉴</SheetTitle>
 
