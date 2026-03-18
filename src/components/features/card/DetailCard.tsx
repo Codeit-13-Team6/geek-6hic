@@ -12,10 +12,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { BtnCommon } from "@/components/common/BtnCommon";
+} from "@/components/shadcnOrigin/card";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 
-interface DetailCardCommonProps {
+interface DetailCardProps {
   title?: string;
   type?: string;
   date?: Date;
@@ -28,7 +28,7 @@ interface DetailCardCommonProps {
   onDetailClick?: () => void;
 }
 
-export function DetailCardCommon({
+export function DetailCard({
   title = "제목이 없습니다.",
   type = "유형이 없습니다.",
   date = new Date(),
@@ -39,7 +39,7 @@ export function DetailCardCommon({
   showLikeBtn = true,
   onHeartClick,
   onDetailClick,
-}: DetailCardCommonProps) {
+}: DetailCardProps) {
   const [liked, setLiked] = useState(defaultLiked);
 
   const handleHeartClick = (e: React.MouseEvent) => {

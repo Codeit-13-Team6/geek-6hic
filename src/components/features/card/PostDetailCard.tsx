@@ -10,16 +10,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
-import { BtnCommon } from "@/components/common/BtnCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 import { useAuthStore } from "@/store/useAuthStore";
 
-interface LoungePostCommonProps {
+interface PostDetailCardProps {
   title?: string;
   date?: Date;
   name?: string;
@@ -32,7 +32,7 @@ interface LoungePostCommonProps {
   authorId?: number;
 }
 
-export function LoungePostCommon({
+export function PostDetailCard({
   title = "제목이 없습니다.",
   date = new Date(),
   name = "익명",
@@ -43,7 +43,7 @@ export function LoungePostCommon({
   comment = 0,
   liked = false,
   authorId,
-}: LoungePostCommonProps) {
+}: PostDetailCardProps) {
 
   const userId = useAuthStore((state) => state.userId);
   const isOwner = userId !== null && userId === authorId;

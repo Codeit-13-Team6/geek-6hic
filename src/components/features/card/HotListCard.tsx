@@ -10,7 +10,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/shadcnOrigin/card";
 import { getRelativeTime } from "@/lib/date";
 
 interface HotListCardCommonProps {
@@ -22,7 +22,7 @@ interface HotListCardCommonProps {
   onDetailClick?: () => void;
 }
 
-export function HotListCardCommon({
+export function HotListCard({
   title = "제목이 없습니다.",
   date = new Date(),
   imageSrc,

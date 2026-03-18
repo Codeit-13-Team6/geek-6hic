@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 
-import LoungePostListCommon from "@/components/common/LoungePostListCommon";
-import { InputCommon } from "@/components/common/InputCommon";
+import PostList from "@/components/features/list/PostList";
+import { InputCommon } from "@/components/ui/InputCommon";
 import {
   Select,
   SelectContent,
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectGroup,
-} from "@/components/common/SelectCommon";
+} from "@/components/ui/SelectCommon";
 import {
   Pagination,
   PaginationContent,
@@ -20,9 +20,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/common/PaginationCommon";
-import { BtnCommon } from "@/components/common/BtnCommon";
-import { HotListCardCommon } from "@/components/common/HotListCardCommon";
+} from "@/components/ui/PaginationCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
+import { HotListCard } from "@/components/features/card/HotListCard";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "@/api/posts";
@@ -81,7 +81,7 @@ export default function LoungePage() {
 
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
             {hotList.map((post) => (
-              <HotListCardCommon
+              <HotListCard
                 key={post.id}
                 title={post.title}
                 date={post.createdAt}
@@ -135,7 +135,7 @@ export default function LoungePage() {
         </section>
 
         <section className="mt-6 sm:mt-8">
-          <LoungePostListCommon
+          <PostList
             searchValue={searchValue}
             sortValue={sortValue}
           />
