@@ -107,16 +107,20 @@ export function Gnb() {
                 />
               </button>
             ) : (
-              <button
-                onClick={handleLogin}
-                className="cursor-pointer p-4"
-              >
-                <span
-                  className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
+              // 로그인페이지 일 때 , 로그인 버튼 안보이게
+              isLoginPage ?
+                null
+                :
+                <button
+                  onClick={handleLogin}
+                  className="cursor-pointer p-4"
                 >
-                  로그인
-                </span>
-              </button>
+                  <span
+                    className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
+                  >
+                    로그인
+                  </span>
+                </button>
             )}
           </div>
           {isLoggedIn ? (
@@ -131,7 +135,7 @@ export function Gnb() {
               <SheetTrigger className="flex items-center justify-center">
                 <Image src={menu} alt="메뉴" width={24} height={24} />
               </SheetTrigger>
-              <SideBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+              <SideBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} handleLogin={handleLogin} />
             </Sheet>
           </div>
         </div>

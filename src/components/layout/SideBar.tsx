@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SheetContent, SheetClose, SheetTitle } from "@/components/shadcnOrigin/sheet";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -12,10 +13,15 @@ const NAV_LINKS = [
 interface SideBarProps {
   isLoggedIn: boolean;
   handleLogout: () => Promise<void>;
+  handleLogin: () => void;
 }
 
 // TO DO: 시간 관계상 추후 기능을 붙힐 수 있는 뼈대 ui 구현 -> 필요에 의해 디자인 수정 + 기능 추가
-export default function SideBar({ isLoggedIn, handleLogout }: SideBarProps) {
+export default function SideBar({ isLoggedIn, handleLogout, handleLogin }: SideBarProps) {
+
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login';
+
   return (
     <SheetContent
       side="right"
@@ -52,24 +58,22 @@ export default function SideBar({ isLoggedIn, handleLogout }: SideBarProps) {
 
       <div className="mt-auto flex justify-end">
         {isLoggedIn ? (
-          <SheetClose>
-            <Link
-              href="/login"
-              onClick={handleLogout}
-              className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
-            >
-              로그아웃
-            </Link>
+          <SheetClose
+            onClick={handleLogout}
+            className={"font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"}
+          >
+            로그아웃
           </SheetClose>
         ) : (
-          <SheetClose>
-            <Link
-              href="/login"
-              className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
+          isLoginPage ?
+            null
+            :
+            <SheetClose
+              onClick={handleLogin}
+              className={"font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"}
             >
               로그인
-            </Link>
-          </SheetClose>
+            </SheetClose>
         )}
       </div>
     </SheetContent >
