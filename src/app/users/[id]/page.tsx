@@ -7,8 +7,8 @@ import Image from "next/image";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
-import { TabCommon, TabsContent } from "@/components/common/TabCommon";
-import { DetailCardCommon } from "@/components/common/DetailCardCommon";
+import { Tab } from "@/components/features/tab/Tab";
+import { DetailCard } from "@/components/features/card/DetailCard";
 import { getUser } from "@/api/user";
 import { Meeting } from "@/types";
 import {
@@ -19,17 +19,33 @@ import {
   postMeetType,
   updateFavorites,
 } from "@/api/meeting";
-import LoungePostListCommon from "@/components/common/LoungePostListCommon";
+import LoungePostList from "@/components/features/list/LoungePostList";
 import { useAuthStore } from "@/store/useAuthStore";
 import {
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
-} from "@/components/common/PaginationCommon";
-import { HotListCardCommon } from "@/components/common/HotListCardCommon";
-import CommentCommon from "@/components/common/CommentCommon";
-import { LoungePostCommon } from "@/components/common/LoungePostCommon";
+} from "@/components/ui/PaginationCommon";
+import { HotListCard } from "@/components/features/card/HotListCard";
+import Comment from "@/components/features/comment/Comment";
+import { PostDetailCard } from "@/components/features/card/PostDetailCard";
+import { TabsContent } from "@/components/shadcnOrigin/tabs";
+
+
+
+interface TabItem {
+  value: string;
+  label: string;
+}
+
+const defaultTabs: TabItem[] = [
+  { value: "liked", label: "찜한 모임" },
+  { value: "created", label: "내가 만든 모임" },
+  { value: "lounge", label: "라운지 게시물" },
+];
+
+
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -150,13 +166,12 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
+            <PostDetailCard />
 
-            <LoungePostCommon/>
-
-            <TabCommon>
+            <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
-                  <DetailCardCommon
+                  <DetailCard
                     key={item.id}
                     title={item.meeting.name}
                     type={item.meeting.type}
@@ -174,7 +189,7 @@ export default function Page() {
               </TabsContent>
               <TabsContent value="created" className="mt-6 md:mt-[32px]">
                 {meetList?.map((item: any) => (
-                  <DetailCardCommon
+                  <DetailCard
                     key={item.id}
                     title={item.name}
                     type={item.type}
@@ -188,11 +203,11 @@ export default function Page() {
                 ))}
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
-                <LoungePostListCommon
+                <LoungePostList
                   filterFn={(post) => post.author.id === userId}
                 />
               </TabsContent>
-            </TabCommon>
+            </Tab>
           </section>
         </div>
       </div>

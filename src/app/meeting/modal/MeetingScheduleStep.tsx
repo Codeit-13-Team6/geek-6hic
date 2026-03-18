@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shadcnOrigin/input";
 import { MeetingScheduleStepProps } from "./modal";
 
 export function MeetingScheduleStep({

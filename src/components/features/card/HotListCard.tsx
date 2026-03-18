@@ -10,10 +10,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/shadcnOrigin/card";
 import { getRelativeTime } from "@/lib/date";
 
-interface HotListCardCommonProps {
+interface HotListCardProps {
   title?: string;
   date?: string | Date; // ⭐️ 서버에서 string(createdAt)으로 오니까 타입을 확장해줍니다.
   imageSrc?: string | null;
@@ -22,14 +22,14 @@ interface HotListCardCommonProps {
   onDetailClick?: () => void;
 }
 
-export function HotListCardCommon({
+export function HotListCard({
   title = "제목이 없습니다.",
   date = new Date(),
   imageSrc,
   onDetailClick,
   thumbsUp = 0,
   comment = 0,
-}: HotListCardCommonProps) {
+}: HotListCardProps) {
   const displayDate = typeof date === "string" ? new Date(date) : date;
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/shadcnOrigin/dialog";
 import { ReactNode } from "react";
 
 /**
