@@ -7,6 +7,7 @@ import { Link2, Loader2, X } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { toastCommon } from "@/lib/toastCommon";
+import axiosInstance from "@/lib/axios";
 
 interface OGData {
   id: string;
@@ -30,7 +31,8 @@ export default function LoungeCreatePage() {
   const contentWithoutSpaces = plainText.replace(/\s/g, "").length;
 
   const handleFetchPreview = async () => {
-    if (!linkUrl.trim()) return alert("링크를 입력해주세요.");
+    if (!linkUrl.trim())
+      return toastCommon({ message: "링크를 입력해주세요.", size: "sm" });
 
     setIsLoading(true);
     try {
@@ -83,15 +85,24 @@ export default function LoungeCreatePage() {
 
   const handleSubmit = async () => {
     if (!title.trim() || !plainText.trim())
-      return alert("제목과 내용을 모두 입력해주세요.");
+      return toastCommon({
+        message: "제목과 내용을 모두 입력해주세요.",
+        size: "sm",
+      });
     const firstLinkWithImage = linkList.find((link) => link.image);
     const postPayload = {
       title,
       content,
       image: firstLinkWithImage ? firstLinkWithImage.image : null,
     };
-    console.log("최종 데이터:", postPayload);
-    // TODO: API 연결
+    try {
+      await axiosInstance.post("/posts", postPayload);
+      toastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
+      router.push("/lounge");
+    } catch (error) {
+      console.error("게시글 등록 실패:", error);
+      toastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+    }
   };
 
   return (
