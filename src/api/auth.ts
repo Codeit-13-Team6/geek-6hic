@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { User } from "@/types/user"
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -14,6 +15,7 @@ export async function getRefresh(
 // 로그인 응답 타입 정의
 export interface LoginResult {
   ok: boolean;
+  user?: User; // 유저 데이터 있을 때 타입정의
 }
 
 // 클라이언트 로그인 BFF 호출 함수

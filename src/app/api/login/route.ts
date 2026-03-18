@@ -1,6 +1,7 @@
 //중간 서버
 import axios from "axios";
 import { NextResponse } from "next/server";
+import type { User } from "@/types/user";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,6 +14,7 @@ interface LoginRequestBody {
 }
 
 interface LoginResponseBody {
+  user: User; // 유저정보 타입 넣기
   accessToken: string;
   refreshToken: string;
 }
@@ -38,6 +40,7 @@ export async function POST(request: Request) {
     // 로그인 성공시 성공했다는 응답 생성 로직
     const response = NextResponse.json({
       ok: true,
+      user: loginData.user, // 유저정보 받아오기
     });
 
     // 액세스 토큰 쿠키 저장 로직

@@ -1,7 +1,8 @@
 import { create } from "zustand";
+import type { User } from "@/types/user";
 
 interface AuthState {
-  userId: number | null;
+  userId: User | null;
   setUserId: (id: number) => void;
 }
 
