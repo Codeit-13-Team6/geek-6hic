@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Link2, Loader2, X } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
+import { toastCommon } from "@/lib/toastCommon";
 
 interface OGData {
   id: string;
@@ -49,8 +50,28 @@ export default function LoungeCreatePage() {
         },
       ]);
       setLinkUrl("");
-    } catch (error) {
-      alert("데이터를 불러오는 중 오류가 발생했습니다.");
+    } catch (error: any) {
+      console.error("OG Fetch Error:", error);
+
+      const status = error.response?.status;
+      let errorMessage = "링크 정보를 가져올 수 없습니다.";
+
+      if (status === 403 || status === 502) {
+        errorMessage = "보안 정책상 미리보기를 제공하지 않는 사이트입니다.";
+        setLinkList((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            title: "미리보기를 지원하지 않는 링크",
+            image: "",
+            url: linkUrl,
+          },
+        ]);
+        setLinkUrl("");
+      } else if (status === 404) {
+        errorMessage = "존재하지 않거나 삭제된 페이지입니다.";
+      }
+      toastCommon({ message: `${errorMessage}`, size: "sm" });
     } finally {
       setIsLoading(false);
     }
