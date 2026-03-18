@@ -10,6 +10,7 @@ import { useLogin } from "@/hooks/useLogin";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types/index";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Login() {
   const router = useRouter();
@@ -30,12 +31,16 @@ export default function Login() {
     },
   });
 
+  // setUser 스토어에서 연결
+  const setUser = useAuthStore((s) => s.setUser);
+
   // RHF 내장된 기능으로 제출 시, 유효성검사 통과하면 로직 탐
   // 로그인 성공 시 메인 페이지 이동 로직
   const onSubmit = async (data: LoginFormValues) => {
     const res = await handleLogin(data.email, data.password);
 
-    if (res?.ok) {
+    if (res?.ok && res.user) {
+      setUser(res.user);
       router.push("/");
     }
   };
