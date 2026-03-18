@@ -29,3 +29,16 @@ export async function loginUser(data: {
   });
   return res.data;
 }
+
+
+// 클라이언트 유저 BFF 호출 함수
+export async function fetchMe(): Promise<User | null> {
+  try {
+    const res = await axios.get("/api/me", {
+      withCredentials: true,
+     });
+     return res.data.ok ? res.data.user : null;
+  } catch {
+    return null;
+  }
+}

@@ -1,7 +1,7 @@
 //중간 서버
 import axios from "axios";
 import { NextResponse } from "next/server";
-import type { User } from "@/types/user";
+import type { User } from "@/types/index";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
