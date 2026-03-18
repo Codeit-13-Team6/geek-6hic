@@ -23,8 +23,12 @@ import {
 } from "@/components/common/PaginationCommon";
 import { BtnCommon } from "@/components/common/BtnCommon";
 import { HotListCardCommon } from "@/components/common/HotListCardCommon";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getPosts } from "@/api/posts";
 
 export default function LoungePage() {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [sortValue, setSortValue] = useState("latest");
 
@@ -33,6 +37,15 @@ export default function LoungePage() {
     { value: "popular", label: "인기순" },
     { value: "oldest", label: "오래된순" },
   ];
+
+  const { data: hotResponse } = useQuery({
+    queryKey: ["posts", "best"],
+    queryFn: () => getPosts({ type: "best", size: 5 }),
+  });
+  const hotList = hotResponse?.data || [];
+  const handlePostCreate = () => {
+    router.push("/lounge/create");
+  };
 
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
@@ -52,7 +65,11 @@ export default function LoungePage() {
             </div>
           </div>
 
-          <BtnCommon size="fixedSize" className="hidden w-auto px-6 sm:flex">
+          <BtnCommon
+            onClick={handlePostCreate}
+            size="fixedSize"
+            className="hidden w-auto px-6 sm:flex"
+          >
             + 게시물 등록하기
           </BtnCommon>
         </div>
@@ -63,7 +80,17 @@ export default function LoungePage() {
           </h2>
 
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
-            <HotListCardCommon title="제목1" thumbsUp={120} comment={45} />
+            {hotList.map((post) => (
+              <HotListCardCommon
+                key={post.id}
+                title={post.title}
+                date={post.createdAt}
+                imageSrc={post.image}
+                thumbsUp={post.likeCount}
+                comment={post._count.comments}
+                onDetailClick={() => router.push(`/lounge/${post.id}`)}
+              />
+            ))}
           </div>
         </section>
 
@@ -141,6 +168,7 @@ export default function LoungePage() {
       </div>
 
       <BtnCommon
+        onClick={handlePostCreate}
         size="icon-md"
         className="fixed right-4 bottom-6 z-50 size-14 pb-1 text-3xl leading-none shadow-lg transition-transform hover:scale-105 sm:hidden"
       >
