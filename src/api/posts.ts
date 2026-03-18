@@ -21,6 +21,5 @@ export async function getPosts(
   params?: GetPostsParams,
 ): Promise<GetPostsResponse> {
   const { data } = await axiosInstance.get("/posts", { params });
-  console.log("게시물 데이터:", data);
   return data;
 }
