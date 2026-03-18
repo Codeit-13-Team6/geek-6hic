@@ -14,10 +14,11 @@ interface SideBarProps {
   isLoggedIn: boolean;
   handleLogout: () => Promise<void>;
   handleLogin: () => void;
+  onClose: () => void;
 }
 
 // TO DO: 시간 관계상 추후 기능을 붙힐 수 있는 뼈대 ui 구현 -> 필요에 의해 디자인 수정 + 기능 추가
-export default function SideBar({ isLoggedIn, handleLogout, handleLogin }: SideBarProps) {
+export default function SideBar({ isLoggedIn, handleLogout, handleLogin, onClose }: SideBarProps) {
 
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
@@ -40,6 +41,7 @@ export default function SideBar({ isLoggedIn, handleLogout, handleLogin }: SideB
           <Link
             key={link.name}
             href={link.href}
+            onClick={onClose}
             className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-600 transition-colors"
           >
             {link.name}

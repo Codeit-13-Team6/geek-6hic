@@ -33,6 +33,9 @@ export function Gnb() {
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === '/login';
 
+  // 태블릿, 모바일 sheetClose로 불가능해서 상태로관리
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleLogout = async () => {
     await axios.post('/api/logout', {}, { withCredentials: true });
     clearAuth();
@@ -62,7 +65,7 @@ export function Gnb() {
             />
           </Link>
 
-          <nav className="hidden items-center sm:flex sm:gap-2">
+          <nav className="items-center hidden lg:flex lg:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -77,20 +80,12 @@ export function Gnb() {
         <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
             <button className="flex items-center justify-center cursor-pointer">
-              {/* 모바일에서 알림 필요한지 */}
-              {/* <Image
-                src={bellIconSm}
-                alt="알림"
-                width={20}
-                height={20}
-                className="block sm:hidden"
-              /> */}
               <Image
                 src={bellIconLg}
                 alt="알림"
                 width={24}
                 height={24}
-                className="hidden sm:block"
+                className="hidden lg:block"
               />
             </button>
           )}
@@ -103,7 +98,7 @@ export function Gnb() {
                   alt="프로필"
                   width={54}
                   height={54}
-                  className="rounded-full"
+                  className="hidden lg:block rounded-full"
                 />
               </button>
             ) : (
@@ -113,7 +108,7 @@ export function Gnb() {
                 :
                 <button
                   onClick={handleLogin}
-                  className="cursor-pointer p-4"
+                  className="cursor-pointer hidden lg:block"
                 >
                   <span
                     className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
@@ -126,16 +121,27 @@ export function Gnb() {
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden md:block"
-            >로그아웃</button>
+              className="cursor-pointer hidden lg:block"
+            >
+              <span
+                className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
+              >
+                로그아웃
+              </span>
+            </button>
           ) : null}
 
-          <div className="flex items-center justify-center sm:hidden">
-            <Sheet>
+          <div className="flex items-center justify-center lg:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="flex items-center justify-center">
                 <Image src={menu} alt="메뉴" width={24} height={24} />
               </SheetTrigger>
-              <SideBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} handleLogin={handleLogin} />
+              <SideBar
+                isLoggedIn={isLoggedIn}
+                handleLogout={handleLogout}
+                handleLogin={handleLogin}
+                onClose={() => setIsOpen(false)}
+              />
             </Sheet>
           </div>
         </div>
