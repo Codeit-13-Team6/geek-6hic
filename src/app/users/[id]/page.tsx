@@ -29,6 +29,7 @@ import {
 } from "@/components/common/PaginationCommon";
 import { HotListCardCommon } from "@/components/common/HotListCardCommon";
 import CommentCommon from "@/components/common/CommentCommon";
+import { LoungePostCommon } from "@/components/common/LoungePostCommon";
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -150,11 +151,8 @@ export default function Page() {
 
           <section className="flex min-w-0 flex-1 flex-col">
 
-            <CommentCommon/>
-            <CommentCommon/>
-            <CommentCommon/>
-            <CommentCommon/>
-            <CommentCommon/>
+            <LoungePostCommon/>
+
             <TabCommon>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
