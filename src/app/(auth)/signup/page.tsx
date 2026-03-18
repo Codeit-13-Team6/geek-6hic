@@ -37,10 +37,10 @@ export default function SignUp() {
 
   return (
     <>
-      <section className="py-6 md:py-25 min-h-[calc(100vh-48px)] md:min-h-[calc(100vh-88px)] flex items-center bg-[#F6F7F9]" aria-labelledby="sing-up-header">
-        <div className="px-4 md:px-0 md:max-w-142 w-full md:mx-auto">
-          <div className="py-6 px-4 md:py-10 md:px-16 bg-white rounded-xl md:rounded-[40px] border">
-            <h1 id="sign-up-header" className="text-center text-base md:text-2xl text-gray-900 font-semibold">회원가입</h1>
+      <section className="py-6 sm:py-25 min-h-[calc(100vh-48px)] sm:min-h-[calc(100vh-88px)] flex items-center bg-[#F6F7F9]" aria-labelledby="sing-up-header">
+        <div className="px-4 sm:px-0 sm:max-w-142 w-full sm:mx-auto">
+          <div className="py-6 px-4 sm:py-10 sm:px-16 bg-white rounded-xl sm:rounded-[40px] border">
+            <h1 id="sign-up-header" className="text-center text-base sm:text-2xl text-gray-900 font-semibold">회원가입</h1>
             <form
               onSubmit={handleSubmit(onSubmit)}
               noValidate
@@ -139,12 +139,12 @@ export default function SignUp() {
               <p className="shrink text-[15px] font-medium text-gray-500">SNS 계정으로 회원가입</p>
               <div className="flex-1 h-px bg-gray-300"></div>
             </div>
-            <div className="flex flex-col md:flex-row gap-3">
-              <BtnCommon className={`bg-white border md:w-1/2 border-gray-200 text-gray-800 text-base hover:bg-white`} size={"fixedSize"}>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <BtnCommon className={`bg-white border sm:w-1/2 border-gray-200 text-gray-800 text-base hover:bg-white`} size={"fixedSize"}>
                 <Image src={googleIcon} width="24" height="24" alt="구글 아이콘" />
                 <p className="ml-3">구글로 계속하기</p>
               </BtnCommon>
-              <BtnCommon className="bg-[#FFEE01] md:w-1/2 text-gray-800 text-base hover:bg-[#FFEE01]" size={"fixedSize"}>
+              <BtnCommon className="bg-[#FFEE01] sm:w-1/2 text-gray-800 text-base hover:bg-[#FFEE01]" size={"fixedSize"}>
                 <Image src={kakaoIcon} width="24" height="24" alt="카카오 아이콘" />
                 <p className="ml-3">카카오로 계속하기</p>
               </BtnCommon>

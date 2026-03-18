@@ -48,14 +48,14 @@ export default function Login() {
   return (
     <>
       <section
-        className="flex min-h-[calc(100vh-48px)] items-center bg-[#F6F7F9] py-6 md:min-h-[calc(100vh-88px)] md:py-25"
+        className="flex min-h-[calc(100vh-48px)] items-center bg-[#F6F7F9] py-6 sm:min-h-[calc(100vh-88px)] sm:py-25"
         aria-labelledby="login-header"
       >
-        <div className="w-full px-4 md:mx-auto md:max-w-142 md:px-0">
-          <div className="rounded-xl border bg-white px-4 py-6 md:rounded-[40px] md:px-16 md:py-10">
+        <div className="w-full px-4 sm:mx-auto sm:max-w-142 sm:px-0">
+          <div className="rounded-xl border bg-white px-4 py-6 sm:rounded-[40px] sm:px-16 sm:py-10">
             <h1
               id="login-header"
-              className="text-center text-base font-semibold text-gray-900 md:text-2xl"
+              className="text-center text-base font-semibold text-gray-900 sm:text-2xl"
             >
               로그인
             </h1>
@@ -117,9 +117,9 @@ export default function Login() {
               <div className="h-px flex-1 bg-gray-300"></div>
             </div>
 
-            <div className="flex flex-col gap-3 md:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <BtnCommon
-                className="border border-gray-200 bg-white text-base text-gray-800 hover:bg-white md:w-1/2"
+                className="border border-gray-200 bg-white text-base text-gray-800 hover:bg-white sm:w-1/2"
                 size={"fixedSize"}
               >
                 <Image
@@ -131,7 +131,7 @@ export default function Login() {
                 <p className="ml-3">구글로 계속하기</p>
               </BtnCommon>
               <BtnCommon
-                className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] md:w-1/2"
+                className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] sm:w-1/2"
                 size={"fixedSize"}
               >
                 <Image
