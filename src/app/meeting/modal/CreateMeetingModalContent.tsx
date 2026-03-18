@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { MeetingCategoryStep } from "./MeetingCategoryStep";
-import { Button } from "../ui/button";
-import { MeetingBasicInfoStep } from "./MeetingBasicInfoStep";
-import { MeetingScheduleStep } from "./MeetingScheduleStep";
-
 import { toastCommon } from "@/lib/toastCommon";
 import {
   CreateMeetingFormValues,
   CreateMeetingModalContentProps,
 } from "./modal";
-import { uploadMeetingImage } from "./services/uploadMeetingImage";
 import axiosInstance from "@/lib/axios";
+import { uploadMeetingImage } from "./services/uploadMeetingImage";
+import { DialogHeader, DialogTitle } from "@/components/shadcnOrigin/dialog";
+import { Button } from "@/components/shadcnOrigin/button";
+import { MeetingCategoryStep } from "./MeetingCategoryStep";
+import { MeetingBasicInfoStep } from "./MeetingBasicInfoStep";
+import { MeetingScheduleStep } from "./MeetingScheduleStep";
 
 const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
   category: "",
