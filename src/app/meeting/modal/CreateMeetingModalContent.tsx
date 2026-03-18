@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { DialogHeader, DialogTitle } from "@/components/shadcnOrigin/dialog";
 import { MeetingCategoryStep } from "./MeetingCategoryStep";
-import { Button } from "../ui/button";
+import { Button } from "@/components/shadcnOrigin/button";
 import { MeetingBasicInfoStep } from "./MeetingBasicInfoStep";
 import { MeetingScheduleStep } from "./MeetingScheduleStep";
 
