@@ -15,7 +15,7 @@ import { getRelativeTime } from "@/lib/date";
 
 interface HotListCardCommonProps {
   title?: string;
-  date?: string | Date; // ⭐️ 서버에서 string(createdAt)으로 오니까 타입을 확장해줍니다.
+  date?: string | Date;
   imageSrc?: string | null;
   thumbsUp?: number;
   comment?: number;
@@ -30,8 +30,6 @@ export function HotListCardCommon({
   thumbsUp = 0,
   comment = 0,
 }: HotListCardCommonProps) {
-  const displayDate = typeof date === "string" ? new Date(date) : date;
-
   return (
     <Card
       className="h-fit w-[162px] shrink-0 cursor-pointer gap-0! rounded-[24px] bg-gray-50 pt-0! pb-0! ring-0! sm:w-[300px]"
