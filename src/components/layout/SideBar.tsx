@@ -11,11 +11,11 @@ const NAV_LINKS = [
 
 interface SideBarProps {
   isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  handleLogout: () => Promise<void>;
 }
 
 // TO DO: 시간 관계상 추후 기능을 붙힐 수 있는 뼈대 ui 구현 -> 필요에 의해 디자인 수정 + 기능 추가
-export default function SideBar({ isLoggedIn, setIsLoggedIn }: SideBarProps) {
+export default function SideBar({ isLoggedIn, handleLogout }: SideBarProps) {
   return (
     <SheetContent
       side="right"
@@ -50,17 +50,28 @@ export default function SideBar({ isLoggedIn, setIsLoggedIn }: SideBarProps) {
         )}
       </nav>
 
-      {!isLoggedIn && (
-        <div className="mt-auto flex justify-end">
-          <Link
-            href="/login"
-            onClick={() => setIsLoggedIn(true)}
-            className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
-          >
-            로그인
-          </Link>
-        </div>
-      )}
-    </SheetContent>
+      <div className="mt-auto flex justify-end">
+        {isLoggedIn ? (
+          <SheetClose>
+            <Link
+              href="/login"
+              onClick={handleLogout}
+              className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
+            >
+              로그아웃
+            </Link>
+          </SheetClose>
+        ) : (
+          <SheetClose>
+            <Link
+              href="/login"
+              className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
+            >
+              로그인
+            </Link>
+          </SheetClose>
+        )}
+      </div>
+    </SheetContent >
   );
 }
