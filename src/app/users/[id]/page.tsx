@@ -19,16 +19,9 @@ import {
   postMeetType,
   updateFavorites,
 } from "@/api/meeting";
-import LoungePostList from "@/components/features/list/LoungePostList";
+import PostList from "@/components/features/list/PostList";
 import { useAuthStore } from "@/store/useAuthStore";
-import {
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-} from "@/components/ui/PaginationCommon";
-import { HotListCard } from "@/components/features/card/HotListCard";
-import Comment from "@/components/features/comment/Comment";
+
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 
@@ -203,7 +196,7 @@ export default function Page() {
                 ))}
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
-                <LoungePostList
+                <PostList
                   filterFn={(post) => post.author.id === userId}
                 />
               </TabsContent>

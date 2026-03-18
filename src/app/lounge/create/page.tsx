@@ -17,7 +17,7 @@ import {
   AlignJustify,
 } from "lucide-react";
 
-import { BtnCommon } from "@/components/common/BtnCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 
 export default function LoungeCreatePage() {
   const router = useRouter();

@@ -22,7 +22,7 @@ interface HotListCardCommonProps {
   onDetailClick?: () => void;
 }
 
-export function HotListCardCommon({
+export function HotListCard({
   title = "제목이 없습니다.",
   date = new Date(),
   imageSrc,
