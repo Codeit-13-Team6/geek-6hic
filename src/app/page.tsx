@@ -1,6 +1,6 @@
 "use client";
 
-import ModalCommon from "@/components/ui/ModalCommon";
+import ModalBase from "@/components/features/modal/ModalBase";
 import { CreateMeetingModalContent } from "@/app/meeting/modal/CreateMeetingModalContent";
 import { Button } from "@/components/shadcnOrigin/button";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export default function Home() {
       <Button type="button" onClick={handleOpenModal}>
         모달 열기
       </Button>
-      <ModalCommon
+      <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={setIsOpen}
@@ -29,7 +29,7 @@ export default function Home() {
             setIsOpen(false);
           }}
         />
-      </ModalCommon>
+      </ModalBase>
     </>
   );
 }
