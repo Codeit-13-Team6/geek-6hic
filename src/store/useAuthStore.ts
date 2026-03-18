@@ -12,3 +12,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUser: (user) => set({ user }),
   clearAuth: () => set({ user: null }),
 }));
+
+// 페이지에서 사용 예시
+// import { useAuthStore } from '@/store/useAuthStore';
+// const user = useAuthStore((s) => s.user);
+// const clearAuth = useAuthStore((s) => s.clearAuth);
+// console.log(user);
+// console.log(user?.id);
