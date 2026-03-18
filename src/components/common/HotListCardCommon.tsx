@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getRelativeTime } from "@/lib/date";
 
 interface HotListCardCommonProps {
   title?: string;
@@ -54,7 +55,7 @@ export function HotListCardCommon({
         </CardHeader>
         <CardFooter className="flex-row items-start gap-[12px] border-0! px-[4px] pt-0 pt-[6px] pb-[10px] text-sm font-medium sm:pt-[4px]">
           <p className="whitespace-nowrap text-gray-600">
-            {displayDate.getHours()}시간 전
+            {getRelativeTime(date)}
           </p>
           <div className="flex flex-row">
             <Image
