@@ -23,7 +23,7 @@ axiosInstance.interceptors.response.use(
 
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-        { refreshToken: refresh }
+        { refreshToken: refresh },
       );
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("refresh", data.refreshToken);
@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(originalRequest);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
