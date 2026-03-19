@@ -27,6 +27,7 @@ export function Gnb() {
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const isLoggedIn = !!user;
 
@@ -35,6 +36,9 @@ export function Gnb() {
 
   // 태블릿, 모바일 sheetClose로 불가능해서 상태로관리
   const [isOpen, setIsOpen] = useState(false);
+
+  // 로딩상태
+  const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
     await axios.post('/api/logout', {}, { withCredentials: true });
@@ -91,10 +95,10 @@ export function Gnb() {
           )}
 
           <div className="hidden sm:block">
-            {isLoggedIn ? (
-              <button
-                onClick={() => router.push(`/users/${user.id}`)}
-                className="flex items-center justify-center cursor-pointer">
+            {!isAuthReady ? (
+              <div className="h-[22px] w-16" />
+            ) : isLoggedIn ? (
+              <button className="flex items-center justify-center cursor-pointer">
                 <Image
                   src={profileMd}
                   alt="프로필"
@@ -103,23 +107,18 @@ export function Gnb() {
                   className="hidden lg:block rounded-full"
                 />
               </button>
-            ) : (
-              // 로그인페이지 일 때 , 로그인 버튼 안보이게
-              isLoginPage ?
-                null
-                :
-                <button
-                  onClick={handleLogin}
-                  className="cursor-pointer hidden lg:block"
-                >
-                  <span
-                    className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
-                  >
-                    로그인
-                  </span>
-                </button>
+            ) : isLoginPage ? null : (
+              <button
+                onClick={handleLogin}
+                className="cursor-pointer hidden lg:block"
+              >
+                <span className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900">
+                  로그인
+                </span>
+              </button>
             )}
           </div>
+
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
