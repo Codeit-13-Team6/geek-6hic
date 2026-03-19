@@ -3,14 +3,18 @@ import type { User } from "@/types/index";
 
 interface AuthState {
   user: User | null;
+  isAuthLoading: boolean;
   setUser: (user: User | null) => void;
   clearAuth: () => void;
+  setAuthLoading: (isAuthLoading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  setUser: (user) => set({ user }),
-  clearAuth: () => set({ user: null }),
+  isAuthLoading: true,
+  setUser: (user) => set({ user, isAuthLoading: false }),
+  clearAuth: () => set({ user: null, isAuthLoading: false }),
+  setAuthLoading: (isAuthLoading) => set({ isAuthLoading }),
 }));
 
 // 페이지에서 사용 예시
