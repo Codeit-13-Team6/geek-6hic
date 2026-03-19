@@ -11,7 +11,7 @@ export function ToasterProvider({ ...props }: ToasterProps) {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
-      className="toaster group"
+      className="toaster group flex justify-center"
       position="top-center"
       toastOptions={{
         unstyled: true,
