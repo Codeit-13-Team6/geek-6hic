@@ -2,6 +2,7 @@ import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
+import defaultImg from "@/assets/img/empty/img-default.png";
 
 interface PostDetailCardProps {
   id: number;
@@ -33,16 +34,17 @@ export default function PostCard({
   return (
     <article
       onClick={handleDetailClick}
-      className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50/50 sm:flex-row sm:gap-8"
+      className="flex cursor-pointer flex-col gap-4 rounded-l-[12px] transition-colors hover:bg-gray-50 sm:flex-row sm:gap-8"
     >
       {thumbnailUrl ? (
         <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] sm:block lg:size-50">
-          <Image
-            src={thumbnailUrl}
-            alt="게시물 썸네일"
-            fill
-            className="object-cover"
-            unoptimized
+          <img
+            src={thumbnailUrl || defaultImg.src}
+            alt="썸네일"
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = defaultImg.src;
+            }}
           />
         </div>
       ) : (

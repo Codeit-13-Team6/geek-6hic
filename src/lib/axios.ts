@@ -2,7 +2,8 @@ import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api", // ** 모든 요청은 slug 프록시로 향함
+  withCredentials: true, // ** 브라우저가 자동으로 쿠키를 실어 보냄
 });
 
 // 1. 요청 인터셉터: 신분증(토큰)을 헤더에 실어주는 비서 역할
@@ -13,10 +14,6 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
   }
 
-  const token = getCookie("accessToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
   return config;
 });
 
@@ -37,25 +34,33 @@ axiosInstance.interceptors.response.use(
         // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)
         deleteCookie("accessToken");
         deleteCookie("refreshToken");
-        if (typeof window !== "undefined") {
+        if (
+          typeof window !== "undefined" &&
+          window.location.pathname !== "/login"
+        ) {
           window.location.href = "/login";
         }
         return Promise.reject(error);
       }
 
       try {
-        // 서버에 토큰 갱신 요청 (API 검증 단계)
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-          { refreshToken },
-        );
+        // // 서버에 토큰 갱신 요청 (API 검증 단계)
+        // const { data } = await axios.post(
+        //   `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+        //   { refreshToken },
+        // );
 
-        // 새 토큰 저장
-        setCookie("accessToken", data.accessToken);
-        if (data.refreshToken) setCookie("refreshToken", data.refreshToken);
+        // // 새 토큰 저장
+        // setCookie("accessToken", data.accessToken);
+        // if (data.refreshToken) setCookie("refreshToken", data.refreshToken);
 
-        // 실패했던 원래 API 요청을 다시 시도
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        // // 실패했던 원래 API 요청을 다시 시도
+        // originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
+        // ** 백엔드가 아닌 우리 BFF의 refresh 주소를 호출합
+        // ** 이 요청을 받은 app/api/auth/refresh/route.ts 가 새 쿠키를 구워줌
+        await axios.post("/api/auth/refresh", {}, { withCredentials: true });
+
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         // 리프레시 토큰마저 만료된 경우 (진짜 로그아웃)

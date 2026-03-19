@@ -8,7 +8,16 @@ const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  // console.log(process.env.NEXT_RUNTIME);
+
+  if (pathname === "/login") {
+    return NextResponse.next();
+  }
+
+  // ** API 요청(/api/...)은 프록시(미들웨어)가 간섭하지 않음
+  // ** API 응답(401)은 axios 인터셉터가 처리하도록함
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
 
   // 쿠키에서 토큰 조회
   const accessToken = request.cookies.get("accessToken")?.value;
