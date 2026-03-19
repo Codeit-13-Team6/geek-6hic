@@ -39,76 +39,131 @@ axiosCodeitInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// 2. 응답 인터셉터: 서버가 "너 신분증 만료됐어(401)"라고 할 때 수습
-axiosCodeitInstance.interceptors.response.use(
-  (res) => res,
-  async (error) => {
-    const originalRequest = error.config; //실패한 원래 요청 정보 -> 이거 채가오는거
-    // 401 에러(인증 실패)가 났고, 아직 재시도를 안 했다면
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; //재시도 중임 알리는 플래그
-      const refreshToken = getCookie("refreshToken");
-      console.log({ refreshToken });
+// TODO: any 타입 수정 필요
+export const withTokenCheck = (cookieStore: any) => {
+  // 기존 interceptor 제거 후 새로 등록
+  const interceptorId = axiosCodeitInstance.interceptors.response.use(
+    (response) => {
+      // 사용 후 interceptor 제거 (일회용)
+      axiosCodeitInstance.interceptors.response.eject(interceptorId);
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+      axiosCodeitInstance.interceptors.response.eject(interceptorId);
 
-      // 가능성
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true; //재시도 중임 알리는 플래그
+        const refreshToken = cookieStore.get("refreshToken")?.value;
 
-      // getCookie 함수는 어디서 가져오는가?
+        if (refreshToken) {
+          const { data } = await axiosCodeitInstance.post(`/auth/refresh`, {
+            refreshToken,
+          });
 
-      // Next.js 브라우저 -> Next.js 서버 -> 코드잇 백엔드
-      // 코드잇 백엔드 -> response interceptor 동작(getCookie) -> Next.js 서버 -> Next.js 브라우저로 온다.
-      // console.log("refreshToken: ", refreshToken);
-      // // 리프레시 토큰이 없으면 그냥 로그아웃 처리
-      // if (!refreshToken) {
-      //   // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)
-      //   deleteCookie("accessToken");
-      //   deleteCookie("refreshToken");
-      //   if (
-      //     typeof window !== "undefined" &&
-      //     window.location.pathname !== "/login"
-      //   ) {
-      //     window.location.href = "/login";
-      //   }
-      //   return Promise.reject(error);
-      // }
+          cookieStore.set("accessToken", data.accessToken);
 
-      try {
-        // // 서버에 토큰 갱신 요청 (API 검증 단계)
-        // const { data } = await axios.post(
-        //   `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-        //   { refreshToken },
-        // );
+          if (data.refreshToken)
+            cookieStore.set("refreshToken", data.refreshToken);
 
-        // // 새 토큰 저장
-        // setCookie("accessToken", data.accessToken);
-        // if (data.refreshToken) setCookie("refreshToken", data.refreshToken);
+          // 실패했던 원래 API 요청을 다시 시도
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
-        // // 실패했던 원래 API 요청을 다시 시도
-        // originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-
-        // ** 백엔드가 아닌 우리 BFF의 refresh 주소를 호출합
-        // ** 이 요청을 받은 app/api/auth/refresh/route.ts 가 새 쿠키를 구워줌
-        // Next.js 서버 -> Next.js 서버
-
-        // Next.js 브라우저 (fetchMe) -> Next.js 서버 (route handler) -> 코드잇 백엔드
-        // 코드잇 백엔드 -> interceptor (Next.js 서버)  -> Next.js 서버
-        // await axios.post("/api/auth/refresh", {}, { withCredentials: true });
-        // 바로 코드잇 백엔드로 보낸다.
-
-        return axiosCodeitInstance(originalRequest);
-      } catch (refreshError) {
-        // 리프레시 토큰마저 만료된 경우 (진짜 로그아웃)
-        // deleteCookie("accessToken");
-        // deleteCookie("refreshToken");
-        if (typeof window !== "undefined") {
-          // alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-          window.location.href = "/login";
+          return axiosCodeitInstance(originalRequest);
+        } else {
+          if (
+            typeof window !== "undefined" &&
+            window.location.pathname !== "/login"
+          ) {
+            window.location.href = "/login";
+          }
         }
-        console.log({ refreshError });
-        return Promise.reject(refreshError);
       }
-    }
-    return Promise.reject(error);
-  },
-);
+
+      return Promise.reject(error);
+    },
+  );
+
+  return axiosCodeitInstance;
+};
+
+// 2. 응답 인터셉터: 서버가 "너 신분증 만료됐어(401)"라고 할 때 수습
+
+// axiosCodeitInstance.interceptors.response.use(
+//   (res) => res,
+//   async (error) => {
+//     const originalRequest = error.config; //실패한 원래 요청 정보 -> 이거 채가오는거
+//     // 401 에러(인증 실패)가 났고, 아직 재시도를 안 했다면
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true; //재시도 중임 알리는 플래그
+//       const refreshToken = getCookie("refreshToken");
+
+//       console.log({ refreshToken });
+
+//       // 가능성
+
+//       // getCookie 함수는 어디서 가져오는가?
+
+//       // Next.js 브라우저 -> Next.js 서버 -> 코드잇 백엔드
+//       // 코드잇 백엔드 -> response interceptor 동작(getCookie) -> Next.js 서버 -> Next.js 브라우저로 온다.
+//       // console.log("refreshToken: ", refreshToken);
+//       // // 리프레시 토큰이 없으면 그냥 로그아웃 처리
+//       // if (!refreshToken) {
+//       //   // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)
+//       //   deleteCookie("accessToken");
+//       //   deleteCookie("refreshToken");
+//       //   if (
+//       //     typeof window !== "undefined" &&
+//       //     window.location.pathname !== "/login"
+//       //   ) {
+//       //     window.location.href = "/login";
+//       //   }
+//       //   return Promise.reject(error);
+//       // }
+
+//       try {
+//         // // 서버에 토큰 갱신 요청 (API 검증 단계)
+//         // const { data } = await axios.post(
+//         //   `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+//         //   { refreshToken },
+//         // );
+
+//         // // 새 토큰 저장
+//         // setCookie("accessToken", data.accessToken);
+//         // if (data.refreshToken) setCookie("refreshToken", data.refreshToken);
+
+//         // // 실패했던 원래 API 요청을 다시 시도
+//         // originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
+//         // ** 백엔드가 아닌 우리 BFF의 refresh 주소를 호출합
+//         // ** 이 요청을 받은 app/api/auth/refresh/route.ts 가 새 쿠키를 구워줌
+//         // Next.js 서버 -> Next.js 서버
+
+//         // Next.js 브라우저 (fetchMe) -> Next.js 서버 (route handler) -> 코드잇 백엔드
+//         // 코드잇 백엔드 -> interceptor (Next.js 서버)  -> Next.js 서버
+//         // await axios.post("/api/auth/refresh", {}, { withCredentials: true });
+//         // 바로 코드잇 백엔드로 보낸다.
+
+//         return axiosCodeitInstance(originalRequest);
+//       } catch (refreshError) {
+//         // 리프레시 토큰마저 만료된 경우 (진짜 로그아웃)
+//         // deleteCookie("accessToken");
+//         // deleteCookie("refreshToken");
+//         if (typeof window !== "undefined") {
+//           // alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+//           window.location.href = "/login";
+//         }
+//         console.log({ refreshError });
+//         deleteCookie("refreshToken");
+//         if (typeof window !== "undefined") {
+//           // alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+//           window.location.href = "/login";
+//         }
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   },
+// );
 
 export default axiosInstance;
