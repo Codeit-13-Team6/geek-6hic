@@ -11,19 +11,14 @@ import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { Tab } from "@/components/features/tab/Tab";
 import { DetailCard } from "@/components/features/card/DetailCard";
 import { getUser, updateUserProfile } from "@/api/user";
-import { Meeting, UserProfileUpdateProps } from "@/types";
-import {
-  createMeeting,
-  deleteFavorites,
-  getFavorites,
-  getMeeting,
-  postMeetType,
-  updateFavorites,
-} from "@/api/meeting";
+import { Meeting, User, UserProfileUpdateProps } from "@/types";
+import { deleteFavorites, getFavorites, getMeeting } from "@/api/meeting";
 import PostList from "@/components/features/list/PostList";
 import { useAuthStore } from "@/store/useAuthStore";
 
-import { PostDetailCard } from "@/components/features/card/PostDetailCard";
+import { getPosts } from "@/api/posts";
+
+
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ModalBase from "@/components/features/modal/ModalBase";
 import { DialogDescription } from "@/components/shadcnOrigin/dialog";
@@ -62,9 +57,11 @@ export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+
   // 라운지 게시물 필터링을 위해 id 세팅 , 추후 다른곳에서도 id 사용여지가있을것같아서 일단 전역으로 두었는데 상황에 따라서 전역관리 안해도 될것같으면 제외하는걸로
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((s) => s.setUser);
   // ** setUser로 데이터 한 번에 받아옴, useAuthStore에 userId 없어서 에러뜸
-  const setUser = useAuthStore((state) => state.setUser);
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },
@@ -81,15 +78,28 @@ export default function Page() {
     setIsEditModalOpen(true);
   };
 
+  // user data 업데이트 되면 그냥 바로 스토어에 집어넣음 , 마이페이지의 유저 정보는 store의 유저정보를 바라보고있음
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
-    onSuccess: () => {
+    onSuccess: (data: User) => {
+      setUser(data);
       setIsEditModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
+  // const { data: user } = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: getUser,
+  // queryFn: async () => {
+  //   const res = await axiosInstance.get("/api/users/me");
+  //   return res.data.user;
+  // },
+  // });
+
   // 일단 이메일 필드 추가될떄까지 이메일 제외 ,
+  // ** 여기서 유저 아이디 세팅, 라운지 게시물 필터링할 때 사용
+  const userId = user?.id;
   const onSubmitProfile = profileForm.handleSubmit(
     ({ email, image, ...data }) => {
       updateProfile({
@@ -98,19 +108,8 @@ export default function Page() {
       });
     },
   );
+
   // ** queryFn 전부 getUser, getMeeting, getFavorites로 바꿔줌 axiosInstance.get("/api/users/me") 이런식으로 직접 호출하는거는 이제 없어짐, queryFn은 api/user.ts의 getUser 이런식으로 깔끔하게 정리됨
-  const { data: user } = useQuery({
-    queryKey: ["user"],
-    queryFn: getUser,
-    // queryFn: async () => {
-    //   const res = await axiosInstance.get("/api/users/me");
-    //   return res.data.user;
-    // },
-  });
-
-  // ** 여기서 유저 아이디 세팅, 라운지 게시물 필터링할 때 사용
-  const userId = user?.id;
-
   const { data: meetList } = useQuery({
     queryKey: ["meetings", "my"],
     queryFn: getMeeting,
@@ -121,9 +120,32 @@ export default function Page() {
     queryFn: getFavorites,
   });
 
+  // 불필요한 api 호출을 막기위해 provider 에서 실행하는 userInfo store 의 값을 가져와서 사용
   useEffect(() => {
-    if (user) setUser(user);
+    if (user) {
+      profileForm.reset({
+        name: user.name ?? "",
+        email: user.email ?? "",
+        companyName: user.companyName ?? "",
+        image: user.image ?? null,
+      });
+    }
   }, [user]);
+
+  // 현재 PostList 의 api 호출 로직이 컴포넌트 내부에 있어서 상단 탭을 클릭했을때 api 가 호출되고 그로인해 초기 렌더링이 난리가 남
+  // 같은 key 로 프리패치함
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ["posts", "", "latest"],
+      queryFn: () =>
+        getPosts({
+          keyword: "",
+          sortBy: "createdAt",
+          sortOrder: "desc",
+          size: 10,
+        }),
+    });
+  }, []);
 
   return (
     <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
@@ -167,7 +189,7 @@ export default function Page() {
                   <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:hidden">
                     이메일
                   </span>
-                  <span className="sm:text-md truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-600">
+                  <span className="sm:text-md ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm md:ml-0 lg:text-gray-600">
                     {user?.email}
                   </span>
                 </div>
@@ -175,7 +197,7 @@ export default function Page() {
                   <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:w-auto lg:text-base">
                     한줄소개
                   </span>
-                  <span className="truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-800">
+                  <span className="ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm md:ml-0 lg:text-gray-800">
                     {user?.companyName}
                   </span>
                 </div>
@@ -184,7 +206,7 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
-            {/* <PostDetailCard /> */}
+            {/*<PostDetailCard />*/}
 
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">

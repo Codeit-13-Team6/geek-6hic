@@ -13,6 +13,7 @@ export function MemberProvider({ children }: MemberProviderProps) {
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
   useEffect(() => {
+    console.log('asdf')
     const init = async () => {
       const user = await fetchMe();
       if (user) setUser(user);

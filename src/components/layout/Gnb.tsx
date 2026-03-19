@@ -92,7 +92,9 @@ export function Gnb() {
 
           <div className="hidden sm:block">
             {isLoggedIn ? (
-              <button className="flex items-center justify-center cursor-pointer">
+              <button
+                onClick={() => router.push(`/users/${user.id}`)}
+                className="flex items-center justify-center cursor-pointer">
                 <Image
                   src={profileMd}
                   alt="프로필"
