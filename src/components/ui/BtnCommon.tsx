@@ -20,7 +20,7 @@ const buttonVariants = cva(
       size: {
         default: "h-15 text-xl font-semibold rounded-2xl",
         sm: "h-10 text-sm font-semibold rounded-xl px-4",
-        md: "h-12 text-base font-semibold rounded-xl md:h-14 md:text-xl",
+        md: "h-12 text-base font-semibold rounded-xl sm:h-14 sm:text-xl",
         fixedSize: "h-12 text-base font-semibold rounded-xl", // 반응형으로 변하지 않는 버튼(회원가입/로그인에서 사용 중)
         icon: "size-8",
         "icon-xs": "size-4.5 rounded-full",

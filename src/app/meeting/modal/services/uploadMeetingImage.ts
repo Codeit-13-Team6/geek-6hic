@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import axios from "axios";
-import { UploadImageResponse } from "../modal";
+import { UploadImageResponse } from "@/app/meeting/modal/modal";
 
 export async function uploadMeetingImage(file: File) {
   const fileName = file.name;

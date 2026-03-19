@@ -35,7 +35,7 @@ function Calendar({
 
   return (
     <div className="relative w-[300px]">
-      <div className="absolute p-6 border-box border border-gray-100 w-full shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)] rounded-[12]">
+      <div className="absolute bg-white p-6 border-box border border-gray-100 w-full shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)] rounded-[12]">
         <DayPicker
           showOutsideDays={showOutsideDays}
           className={cn(

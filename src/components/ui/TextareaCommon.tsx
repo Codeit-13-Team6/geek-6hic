@@ -73,7 +73,16 @@ export function TextareaCommon({
           )}
         >
           {label}
-          {isRequired && <span className="text-error ml-1">*</span>}
+          {isRequired && (
+            <span
+              className={cn(
+                "ml-1",
+                isDestructive ? "text-error" : "text-green-500",
+              )}
+            >
+              *
+            </span>
+          )}
         </label>
       )}
 
