@@ -45,7 +45,7 @@ export function PostDetailCard({
   authorId,
 }: PostDetailCardProps) {
 
-  const userId = useAuthStore((state) => state.userId);
+  const userId = useAuthStore((state) => state.user?.id);
   const isOwner = userId !== null && userId === authorId;
 
   return (
