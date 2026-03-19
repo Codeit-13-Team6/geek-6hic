@@ -30,6 +30,8 @@ import { DialogDescription } from "@/components/shadcnOrigin/dialog";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput";
+import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 interface TabItem {
   value: string;
@@ -56,15 +58,13 @@ const mockMeeting: Meeting = {
   description: "함께 운동하며 건강을 챙겨요!ㅇㅇㅇ",
 };
 
-
 export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-
   // 라운지 게시물 필터링을 위해 id 세팅 , 추후 다른곳에서도 id 사용여지가있을것같아서 일단 전역으로 두었는데 상황에 따라서 전역관리 안해도 될것같으면 제외하는걸로
-  const userId = useAuthStore((state) => state.userId);
-  const setUserId = useAuthStore((state) => state.setUserId);
+  // ** setUser로 데이터 한 번에 받아옴, useAuthStore에 userId 없어서 에러뜸
+  const setUser = useAuthStore((state) => state.setUser);
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },
@@ -89,47 +89,40 @@ export default function Page() {
     },
   });
 
-
   // 일단 이메일 필드 추가될떄까지 이메일 제외 ,
-  const onSubmitProfile = profileForm.handleSubmit(({email, image, ...data}) => {
-    updateProfile({
-      ...data,
-      ...(image && { image }),
-    });
-  });
-
-
+  const onSubmitProfile = profileForm.handleSubmit(
+    ({ email, image, ...data }) => {
+      updateProfile({
+        ...data,
+        ...(image && { image }),
+      });
+    },
+  );
+  // ** queryFn 전부 getUser, getMeeting, getFavorites로 바꿔줌 axiosInstance.get("/api/users/me") 이런식으로 직접 호출하는거는 이제 없어짐, queryFn은 api/user.ts의 getUser 이런식으로 깔끔하게 정리됨
   const { data: user } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
+    // queryFn: async () => {
+    //   const res = await axiosInstance.get("/api/users/me");
+    //   return res.data.user;
+    // },
   });
+
+  // ** 여기서 유저 아이디 세팅, 라운지 게시물 필터링할 때 사용
+  const userId = user?.id;
 
   const { data: meetList } = useQuery({
     queryKey: ["meetings", "my"],
-    queryFn: async () => {
-      const res = await getMeeting();
-      return res.data;
-    },
+    queryFn: getMeeting,
   });
 
   const { data: favoritesList } = useQuery({
     queryKey: ["favorites"],
-    queryFn: async () => {
-      const res = await getFavorites();
-      return res.data;
-    },
+    queryFn: getFavorites,
   });
 
   useEffect(() => {
-    if (user?.id) setUserId(user.id);
-    if (user) {
-      profileForm.reset({
-        name: user.name ?? "",
-        email: user.email ?? "",
-        companyName: user.companyName ?? "",
-        image: user.image ?? null,
-      });
-    }
+    if (user) setUser(user);
   }, [user]);
 
   return (
@@ -191,7 +184,7 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
-            <PostDetailCard />
+            {/* <PostDetailCard /> */}
 
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
@@ -323,7 +316,12 @@ export default function Page() {
               >
                 취소
               </BtnCommon>
-              <BtnCommon size={"md"} className="flex-1" type="submit" disabled={isPending}>
+              <BtnCommon
+                size={"md"}
+                className="flex-1"
+                type="submit"
+                disabled={isPending}
+              >
                 수정하기
               </BtnCommon>
             </div>
