@@ -28,8 +28,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   // 3. 실제 백엔드로 보낼 최종 주소 조립 (쿼리 스트링 포함)
   // 예: /api/users/me -> https://백엔드주소/users/me
   const targetPath = `/${slug.join("/")}`;
-  const targetUrl = `${API_BASE_URL}${targetPath}${request.nextUrl.search}`;
-
+  const targetUrl = `${targetPath}${request.nextUrl.search}`;
   // 4. 요청 본문(Body) 데이터 읽기 (POST, PUT 등일 때만)
   let body = null;
   if (["POST", "PUT", "PATCH"].includes(request.method)) {
@@ -57,8 +56,8 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
 
   try {
     // 7. BFF 서버가 백엔드에 대신 요청을 보냄 (Proxying)
+    console.log({ requestConfig });
     const { data, status } = await axiosCodeitInstance(requestConfig);
-
     // 8. 백엔드에서 받은 데이터와 상태 코드를 브라우저에 그대로 전달 -> accesstoken
     return NextResponse.json(data, { status });
   } catch (error: any) {

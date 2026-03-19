@@ -48,6 +48,7 @@ axiosCodeitInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; //재시도 중임 알리는 플래그
       const refreshToken = getCookie("refreshToken");
+      console.log({ refreshToken });
 
       // 가능성
 
@@ -55,20 +56,20 @@ axiosCodeitInstance.interceptors.response.use(
 
       // Next.js 브라우저 -> Next.js 서버 -> 코드잇 백엔드
       // 코드잇 백엔드 -> response interceptor 동작(getCookie) -> Next.js 서버 -> Next.js 브라우저로 온다.
-      console.log("refreshToken: ", refreshToken);
-      // 리프레시 토큰이 없으면 그냥 로그아웃 처리
-      if (!refreshToken) {
-        // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)
-        deleteCookie("accessToken");
-        deleteCookie("refreshToken");
-        if (
-          typeof window !== "undefined" &&
-          window.location.pathname !== "/login"
-        ) {
-          window.location.href = "/login";
-        }
-        return Promise.reject(error);
-      }
+      // console.log("refreshToken: ", refreshToken);
+      // // 리프레시 토큰이 없으면 그냥 로그아웃 처리
+      // if (!refreshToken) {
+      //   // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)
+      //   deleteCookie("accessToken");
+      //   deleteCookie("refreshToken");
+      //   if (
+      //     typeof window !== "undefined" &&
+      //     window.location.pathname !== "/login"
+      //   ) {
+      //     window.location.href = "/login";
+      //   }
+      //   return Promise.reject(error);
+      // }
 
       try {
         // // 서버에 토큰 갱신 요청 (API 검증 단계)
@@ -86,17 +87,23 @@ axiosCodeitInstance.interceptors.response.use(
 
         // ** 백엔드가 아닌 우리 BFF의 refresh 주소를 호출합
         // ** 이 요청을 받은 app/api/auth/refresh/route.ts 가 새 쿠키를 구워줌
-        await axios.post("/api/auth/refresh", {}, { withCredentials: true });
+        // Next.js 서버 -> Next.js 서버
 
-        return axiosInstance(originalRequest);
+        // Next.js 브라우저 (fetchMe) -> Next.js 서버 (route handler) -> 코드잇 백엔드
+        // 코드잇 백엔드 -> interceptor (Next.js 서버)  -> Next.js 서버
+        // await axios.post("/api/auth/refresh", {}, { withCredentials: true });
+        // 바로 코드잇 백엔드로 보낸다.
+
+        return axiosCodeitInstance(originalRequest);
       } catch (refreshError) {
         // 리프레시 토큰마저 만료된 경우 (진짜 로그아웃)
-        deleteCookie("accessToken");
-        deleteCookie("refreshToken");
+        // deleteCookie("accessToken");
+        // deleteCookie("refreshToken");
         if (typeof window !== "undefined") {
           // alert("세션이 만료되었습니다. 다시 로그인해주세요.");
           window.location.href = "/login";
         }
+        console.log({ refreshError });
         return Promise.reject(refreshError);
       }
     }
