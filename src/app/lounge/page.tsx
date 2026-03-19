@@ -92,7 +92,7 @@ export default function LoungePage() {
 
         <section className="mt-8 sm:mt-12">
           <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
-            이번주 HOT 게시물
+            | 이번주 HOT 게시물
           </h2>
 
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
