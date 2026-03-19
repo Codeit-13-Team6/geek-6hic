@@ -16,6 +16,8 @@ const buttonVariants = cva(
           "bg-background text-main-green-600 border border-main-green-500 hover:bg-main-green-100",
         teritary:
           "bg-white text-gray-600 border border-gray-200 hover:bg-main-green-100 aria-expanded:bg-secondary",
+        orange:
+          "bg-[#ffb900] text-gray-600 border border-gray-200 hover:bg-main-green-100 aria-expanded:bg-secondary",
       },
       size: {
         default: "h-15 text-xl font-semibold rounded-2xl",
