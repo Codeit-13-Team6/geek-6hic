@@ -3,6 +3,8 @@
 import Image from "next/image";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
+import defaultImg from "@/assets/img/empty/img-default.png";
+
 import {
   Card,
   CardAction,
@@ -15,7 +17,7 @@ import { getRelativeTime } from "@/lib/date";
 
 interface HotListCardCommonProps {
   title?: string;
-  date?: string | Date; // ⭐️ 서버에서 string(createdAt)으로 오니까 타입을 확장해줍니다.
+  date?: string | Date;
   imageSrc?: string | null;
   thumbsUp?: number;
   comment?: number;
@@ -30,20 +32,19 @@ export function HotListCard({
   thumbsUp = 0,
   comment = 0,
 }: HotListCardCommonProps) {
-  const displayDate = typeof date === "string" ? new Date(date) : date;
-
   return (
     <Card
       className="h-fit w-[162px] shrink-0 cursor-pointer gap-0! rounded-[24px] bg-gray-50 pt-0! pb-0! ring-0! sm:w-[300px]"
       onClick={onDetailClick}
     >
       <section className="relative h-[162px] w-full shrink-0 overflow-hidden rounded-[24px] rounded-b-none">
-        <Image
-          src={imageSrc || "/assets/images/default-thumbnail.png"} // 추후 fallback 이미지로 교체
+        <img
+          src={imageSrc || defaultImg.src}
           alt={title}
-          className="h-full w-full rounded-[24px] object-cover brightness-60 grayscale dark:brightness-40"
-          width={300}
-          height={180}
+          className="h-full w-full rounded-[24px] rounded-b-none object-cover"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = defaultImg.src;
+          }}
         />
       </section>
       <div className="flex flex-1 flex-col justify-between">

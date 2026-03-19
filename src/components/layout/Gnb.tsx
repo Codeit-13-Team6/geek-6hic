@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import bellIconSm from "@/assets/icon/bells/bell-default-sm-false.svg";
 import bellIconLg from "@/assets/icon/bells/bell-default-lg-false.svg";
@@ -11,6 +13,8 @@ import logoLg from "@/assets/img/logo/logo-lg.jpg";
 import profileMd from "@/assets/img/profile/female1-m.jpg";
 import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import SideBar from "@/components/layout/SideBar";
+import { useAuthStore } from "@/store/useAuthStore";
+
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -20,8 +24,24 @@ const NAV_LINKS = [
 ];
 
 export function Gnb() {
-  // TODO: 실제 프로젝트에서는 전역 상태나 세션 정보를 받아와서 사용
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const isLoggedIn = !!user;
+
+  // 로그인페이지에서 로그인버튼 삭제하기 위해서
+  const isLoginPage = pathname === '/login';
+
+  const handleLogout = async () => {
+    await axios.post('/api/logout', {}, { withCredentials: true });
+    clearAuth();
+    router.push('/login');
+  };
+
+  const handleLogin = async () => {
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
@@ -56,14 +76,15 @@ export function Gnb() {
         </div>
         <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button className="flex items-center justify-center">
-              <Image
+            <button className="flex items-center justify-center cursor-pointer">
+              {/* 모바일에서 알림 필요한지 */}
+              {/* <Image
                 src={bellIconSm}
                 alt="알림"
                 width={20}
                 height={20}
                 className="block sm:hidden"
-              />
+              /> */}
               <Image
                 src={bellIconLg}
                 alt="알림"
@@ -76,7 +97,7 @@ export function Gnb() {
 
           <div className="hidden sm:block">
             {isLoggedIn ? (
-              <button className="flex items-center justify-center">
+              <button className="flex items-center justify-center cursor-pointer">
                 <Image
                   src={profileMd}
                   alt="프로필"
@@ -86,23 +107,35 @@ export function Gnb() {
                 />
               </button>
             ) : (
-              <Link href="/login" className="p-4">
-                <span
-                  onClick={() => setIsLoggedIn(true)}
-                  className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
+              // 로그인페이지 일 때 , 로그인 버튼 안보이게
+              isLoginPage ?
+                null
+                :
+                <button
+                  onClick={handleLogin}
+                  className="cursor-pointer p-4"
                 >
-                  로그인
-                </span>
-              </Link>
+                  <span
+                    className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
+                  >
+                    로그인
+                  </span>
+                </button>
             )}
           </div>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="cursor-pointer hidden md:block"
+            >로그아웃</button>
+          ) : null}
 
           <div className="flex items-center justify-center sm:hidden">
             <Sheet>
               <SheetTrigger className="flex items-center justify-center">
                 <Image src={menu} alt="메뉴" width={24} height={24} />
               </SheetTrigger>
-              <SideBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+              <SideBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} handleLogin={handleLogin} />
             </Sheet>
           </div>
         </div>

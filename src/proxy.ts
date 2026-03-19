@@ -1,123 +1,59 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import axios from "axios";
 
-// 토큰 만료 시간 상수
-const ACCESS_TOKEN_MAX_AGE = 60 * 15; // 15분
+// 쿠키 만료 시간 (초 단위)
+const ACCESS_TOKEN_MAX_AGE = 60 * 15;
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
-
-// 보호 경로 목록
-const protectedPaths = [
-  "/lounge",
-  "/meetings",
-  "/users",
-  "/my-meetings",
-  "/ranking",
-];
-
-// 로그인 리다이렉트 처리
-function redirectToLogin(request: NextRequest) {
-  return NextResponse.redirect(new URL("/login", request.url));
-}
-
-// 보호 경로 확인
-function isProtectedPath(pathname: string) {
-  return protectedPaths.some((path) => pathname.startsWith(path));
-}
-
-// JWT payload 디코딩
-function decodeJwtPayload(token: string) {
-  const [, payload] = token.split(".");
-  if (!payload) return null;
-
-  try {
-    // base64url 형식 보정
-    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normalized.padEnd(
-      normalized.length + ((4 - (normalized.length % 4)) % 4),
-      "=",
-    );
-
-    return JSON.parse(atob(padded)) as { exp?: number };
-  } catch {
-    return null;
-  }
-}
-
-// 토큰 만료 여부 확인
-function isTokenExpired(token: string) {
-  const payload = decodeJwtPayload(token);
-
-  if (!payload?.exp) {
-    return true;
-  }
-
-  return payload.exp <= Math.floor(Date.now() / 1000);
-}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 공개 경로 통과
-  if (!isProtectedPath(pathname)) {
+  if (pathname === "/login") {
     return NextResponse.next();
   }
 
-  // 쿠키 토큰 조회
+  // ** API 요청(/api/...)은 프록시(미들웨어)가 간섭하지 않음
+  // ** API 응답(401)은 axios 인터셉터가 처리하도록함
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
+  // 쿠키에서 토큰 조회
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  // 유효한 액세스 토큰 통과
-  if (accessToken && !isTokenExpired(accessToken)) {
+  // 1. 액세스 토큰이 있으면 일단 통과 (유효성 검증은 API 레이어의 Axios가 담당)
+  if (accessToken) {
     return NextResponse.next();
   }
 
-  // 리프레시 토큰 부재 처리
+  // 2. 액세스 토큰이 없는데 리프레시 토큰도 없다면? 바로 로그인행
   if (!refreshToken) {
-    return redirectToLogin(request);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
   try {
-    // 토큰 재발급 요청
-    const refreshResponse = await fetch(
+    // 멘토님 조언대로 axios 사용 (단, 절대 경로 필요)
+    const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      },
+      { refreshToken },
     );
 
-    // 재발급 실패 처리
-    if (!refreshResponse.ok) {
-      return redirectToLogin(request);
-    }
-
-    // 재발급 응답 파싱
-    const data = (await refreshResponse.json()) as {
-      accessToken?: string;
-      refreshToken?: string;
-    };
-
-    // 액세스 토큰 검증
-    if (!data.accessToken) {
-      return redirectToLogin(request);
-    }
-
-    // 응답 객체 생성
     const response = NextResponse.next();
 
-    // 액세스 토큰 쿠키 갱신
-    response.cookies.set("accessToken", data.accessToken, {
-      httpOnly: true,
-      path: "/",
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: ACCESS_TOKEN_MAX_AGE,
-    });
+    // 새 토큰 쿠키 세팅
+    if (data.accessToken) {
+      response.cookies.set("accessToken", data.accessToken, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: ACCESS_TOKEN_MAX_AGE,
+      });
+    }
 
-    // 리프레시 토큰 쿠키 갱신
     if (data.refreshToken) {
       response.cookies.set("refreshToken", data.refreshToken, {
         httpOnly: true,
@@ -129,13 +65,14 @@ export async function proxy(request: NextRequest) {
     }
 
     return response;
-  } catch {
-    // 예외 상황 처리
-    return redirectToLogin(request);
+  } catch (error) {
+    // 갱신 실패 시 (리프레시 토큰 만료 등) 로그인 페이지로
+    console.error("Middleware refresh error:", error);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
-// 프록시 적용 경로 설정
+// 보호할 경로 설정 (matcher 활용으로 코드 내 protectedPaths 배열 생략 가능)
 export const config = {
   matcher: [
     "/lounge/:path*",

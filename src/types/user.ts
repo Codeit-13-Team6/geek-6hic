@@ -8,3 +8,11 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+
+export interface UserProfileUpdateProps {
+  name: string;
+  email?: string;
+  companyName: string;
+  image?: string | null;
+}

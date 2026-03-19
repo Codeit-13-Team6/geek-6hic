@@ -4,6 +4,7 @@ import "./globals.css";
 import { Gnb } from "@/components/layout/Gnb";
 import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { MemberProvider } from '@/providers/MemberProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +33,11 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <QueryProvider>
-          <Gnb />
-          <ToasterProvider />
-          {children}
+          <MemberProvider>
+            <Gnb />
+            <ToasterProvider />
+            {children}
+          </MemberProvider>
         </QueryProvider>
       </body>
     </html>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -9,8 +10,8 @@ import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { Tab } from "@/components/features/tab/Tab";
 import { DetailCard } from "@/components/features/card/DetailCard";
-import { getUser } from "@/api/user";
-import { Meeting } from "@/types";
+import { getUser, updateUserProfile } from "@/api/user";
+import { Meeting, UserProfileUpdateProps } from "@/types";
 import {
   createMeeting,
   deleteFavorites,
@@ -24,8 +25,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
-
-
+import ModalBase from "@/components/features/modal/ModalBase";
+import { DialogDescription } from "@/components/shadcnOrigin/dialog";
+import { InputCommon } from "@/components/ui/InputCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
+import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput";
+import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 interface TabItem {
   value: string;
@@ -37,8 +43,6 @@ const defaultTabs: TabItem[] = [
   { value: "created", label: "내가 만든 모임" },
   { value: "lounge", label: "라운지 게시물" },
 ];
-
-
 
 const mockMeeting: Meeting = {
   name: "달램핏ㅇ임7",
@@ -58,12 +62,13 @@ export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-
-
   // 라운지 게시물 필터링을 위해 id 세팅 , 추후 다른곳에서도 id 사용여지가있을것같아서 일단 전역으로 두었는데 상황에 따라서 전역관리 안해도 될것같으면 제외하는걸로
-  const userId = useAuthStore((state) => state.userId);
-  const setUserId = useAuthStore((state) => state.setUserId);
+  // ** setUser로 데이터 한 번에 받아옴, useAuthStore에 userId 없어서 에러뜸
+  const setUser = useAuthStore((state) => state.setUser);
 
+  const profileForm = useForm<UserProfileUpdateProps>({
+    defaultValues: { name: "", email: "", companyName: "", image: null },
+  });
 
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
@@ -72,33 +77,53 @@ export default function Page() {
     },
   });
 
+  const onOpenModal = () => {
+    setIsEditModalOpen(true);
+  };
 
+  const { mutate: updateProfile, isPending } = useMutation({
+    mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
+    onSuccess: () => {
+      setIsEditModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
+  // 일단 이메일 필드 추가될떄까지 이메일 제외 ,
+  const onSubmitProfile = profileForm.handleSubmit(
+    ({ email, image, ...data }) => {
+      updateProfile({
+        ...data,
+        ...(image && { image }),
+      });
+    },
+  );
+  // ** queryFn 전부 getUser, getMeeting, getFavorites로 바꿔줌 axiosInstance.get("/api/users/me") 이런식으로 직접 호출하는거는 이제 없어짐, queryFn은 api/user.ts의 getUser 이런식으로 깔끔하게 정리됨
   const { data: user } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
+    // queryFn: async () => {
+    //   const res = await axiosInstance.get("/api/users/me");
+    //   return res.data.user;
+    // },
   });
+
+  // ** 여기서 유저 아이디 세팅, 라운지 게시물 필터링할 때 사용
+  const userId = user?.id;
 
   const { data: meetList } = useQuery({
     queryKey: ["meetings", "my"],
-    queryFn: async () => {
-      const res = await getMeeting();
-      return res.data;
-    },
+    queryFn: getMeeting,
   });
 
   const { data: favoritesList } = useQuery({
     queryKey: ["favorites"],
-    queryFn: async () => {
-      const res = await getFavorites();
-      return res.data;
-    },
+    queryFn: getFavorites,
   });
 
-
   useEffect(() => {
-    if (user?.id) setUserId(user.id);
+    if (user) setUser(user);
   }, [user]);
-
 
   return (
     <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
@@ -130,7 +155,7 @@ export default function Page() {
                     src={editImg}
                     alt="수정 이미지"
                     className="size-5 cursor-pointer sm:size-7"
-                    onClick={() => setIsEditModalOpen(true)}
+                    onClick={onOpenModal}
                   />
                 </div>
               </div>
@@ -159,7 +184,7 @@ export default function Page() {
           </section>
 
           <section className="flex min-w-0 flex-1 flex-col">
-            <PostDetailCard />
+            {/* <PostDetailCard /> */}
 
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
@@ -196,14 +221,113 @@ export default function Page() {
                 ))}
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
-                <PostList
-                  filterFn={(post) => post.author.id === userId}
-                />
+                <PostList filterFn={(post) => post.author.id === userId} />
               </TabsContent>
             </Tab>
           </section>
         </div>
       </div>
+      <ModalBase
+        isOpen={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        title="프로필 수정하기"
+        disablePointerDismissal
+        contentClassName={"py-[32px] px-[24px] sm:p-[48px] sm:max-w-[544px]"}
+        titleClassName="text-2xl text-gray-900 font-semibold"
+      >
+        <form onSubmit={onSubmitProfile}>
+          <section className="mt-[32px] flex flex-col gap-4 sm:mt-[48px]">
+            <Controller
+              name="image"
+              control={profileForm.control}
+              render={({ field }) => (
+                <ImageUploadInput
+                  type="profile"
+                  size="sm"
+                  className="mx-auto"
+                  imageSrc={field.value ?? undefined}
+                  onFileSelect={(file) => {
+                    const url = URL.createObjectURL(file);
+                    field.onChange(url);
+                  }}
+                  onRemove={() => field.onChange(null)}
+                />
+              )}
+            />
+
+            <Controller
+              name="name"
+              control={profileForm.control}
+              rules={{ required: "이름을 입력해주세요." }}
+              render={({ field, fieldState }) => (
+                <InputCommon
+                  {...field}
+                  label="이름"
+                  isRequired
+                  placeholder="이름을 입력해주세요."
+                  onClear={() => field.onChange("")}
+                  isDestructive={!!fieldState.error}
+                  hintText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="email"
+              control={profileForm.control}
+              rules={{
+                required: "이메일을 입력해주세요.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "올바른 이메일 형식이 아닙니다.",
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <InputCommon
+                  {...field}
+                  label="이메일"
+                  isRequired
+                  placeholder="이메일을 입력해주세요."
+                  onClear={() => field.onChange("")}
+                  isDestructive={!!fieldState.error}
+                  hintText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="companyName"
+              control={profileForm.control}
+              render={({ field, fieldState }) => (
+                <InputCommon
+                  {...field}
+                  label="한줄소개"
+                  placeholder="한줄소개를 입력해주세요."
+                  onClear={() => field.onChange("")}
+                  isDestructive={!!fieldState.error}
+                  hintText={fieldState.error?.message}
+                />
+              )}
+            />
+            <div className="flex flex-row gap-[16px] pt-[40px] sm:pt-[56px]">
+              <BtnCommon
+                variant={"outline"}
+                size={"md"}
+                className="flex-1"
+                onClick={() => setIsEditModalOpen(false)}
+              >
+                취소
+              </BtnCommon>
+              <BtnCommon
+                size={"md"}
+                className="flex-1"
+                type="submit"
+                disabled={isPending}
+              >
+                수정하기
+              </BtnCommon>
+            </div>
+          </section>
+        </form>
+      </ModalBase>
     </div>
   );
 }

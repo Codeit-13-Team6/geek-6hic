@@ -2,7 +2,7 @@
 
 import { InputCommon } from "@/components/ui/InputCommon"; // 변경 (경로 수정)
 import { TextareaCommon } from "@/components/ui/TextareaCommon"; // 변경 (경로 수정)
-import { ImageUploadInputCommon } from "@/components/ui/ImageUploadInputCommon"; // 변경 (경로 수정)
+import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput"; // 변경 (경로 수정)
 import { MeetingBasicInfoStepProps } from "@/app/meeting/modal/modal";
 
 export function MeetingBasicInfoStep({
@@ -68,7 +68,7 @@ export function MeetingBasicInfoStep({
             <span className="ml-1 text-green-500">*</span>
           </p>
 
-          <ImageUploadInputCommon
+          <ImageUploadInput
             size="sm"
             imageSrc={values.previewImageUrl}
             onFileSelect={(file) => {

@@ -1,14 +1,15 @@
 "use client";
 
+import plusIcon from "@/assets/icon/plus/plus.svg";
+
+import Image from "next/image";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { MeetingCategoryStep } from "@/app/meeting/modal/MeetingCategoryStep";
 import { MeetingBasicInfoStep } from "@/app/meeting/modal/MeetingBasicInfoStep";
 import { MeetingScheduleStep } from "@/app/meeting/modal/MeetingScheduleStep";
-import {
-  CreateMeetingFormValues,
-  CreateMeetingModalContentProps,
-} from "@/app/meeting/modal/modal";
+import { CreateMeetingFormValues } from "@/app/meeting/modal/modal";
 import {
   getNormalizedMeetingLink,
   hasMeetingValidationError,
@@ -21,8 +22,8 @@ import { uploadMeetingImage } from "@/app/meeting/modal/services/uploadMeetingIm
 import axiosInstance from "@/lib/axios";
 import { toastCommon } from "@/lib/toastCommon";
 
-import { DialogHeader, DialogTitle } from "@/components/shadcnOrigin/dialog";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import ModalBase from "@/components/features/modal/ModalBase";
 
 const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
   category: "TEAM_MEETING",
@@ -45,9 +46,18 @@ const getIsoDateTime = (date: string, time: string) => {
   return new Date(`${date}T${time}`).toISOString();
 };
 
-export function CreateMeetingModalContent({
-  onClose,
-}: CreateMeetingModalContentProps) {
+export function CreateMeetingModal() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    resetCreateMeetingForm();
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
   const [currentStep, setCurrentStep] = useState(1);
   const [touchedStepList, setTouchedStepList] = useState<number[]>([]);
   const [formValues, setFormValues] =
@@ -198,6 +208,16 @@ export function CreateMeetingModalContent({
       description: formValues.description,
     };
   };
+  const resetCreateMeetingForm = () => {
+    revokePreviewImageUrl(previewImageUrlRef.current);
+    previewImageUrlRef.current = "";
+
+    setCurrentStep(1);
+    setTouchedStepList([]);
+    setFormValues(INITIAL_FORM_VALUES);
+    setIsImageUploading(false);
+    setImageErrorMessage("");
+  };
 
   const handleSubmitMeeting = async () => {
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
@@ -224,127 +244,143 @@ export function CreateMeetingModalContent({
 
     try {
       const payload = getCreateMeetingPayload();
+      console.log("제출 잘됨 ?", payload);
       const { data } = await axiosInstance.post("/meetings", payload);
 
       toastCommon({ message: `${data.name} 모임 생성완료` });
-      onClose();
+      handleCloseModal();
     } catch (error) {
       console.error("meeting create error", error);
       toastCommon({ message: "모임 생성에 실패했습니다." });
     }
   };
+  const handleOpenChangeModal = (nextIsOpen: boolean) => {
+    if (!nextIsOpen) {
+      handleCloseModal();
+      return;
+    }
+
+    setIsOpen(true);
+  };
 
   return (
     <>
-      <DialogHeader>
-        <DialogTitle>
-          모임 만들기 {currentStep}/{TOTAL_STEPS}
-        </DialogTitle>
-      </DialogHeader>
+      <BtnCommon className="gap-[4px]" type="button" onClick={handleOpenModal}>
+        <Image src={plusIcon} alt="모임 만들기 추가 아이콘" />
+        모임 만들기
+      </BtnCommon>
 
-      {currentStep === 1 ? (
-        <MeetingCategoryStep
-          value={formValues.category}
-          onChange={(value) => {
-            setFormValues((prev) => ({
-              ...prev,
-              category: value,
-            }));
-          }}
-        />
-      ) : null}
-
-      {currentStep === 2 ? (
-        <MeetingBasicInfoStep
-          values={{
-            name: formValues.name,
-            description: formValues.description,
-            link: formValues.link,
-            imageFile: formValues.imageFile,
-            previewImageUrl: formValues.previewImageUrl,
-            imageUrl: formValues.imageUrl,
-          }}
-          errors={{
-            name: isTouchedStep(2) ? basicInfoErrors.name : "",
-            description: isTouchedStep(2) ? basicInfoErrors.description : "",
-            link: isTouchedStep(2) ? basicInfoErrors.link : "",
-            imageUrl: imageErrorMessage,
-          }}
-          isImageUploading={isImageUploading}
-          onChange={handleChangeBasicInfo}
-          onChangeImage={handleChangeMeetingImage}
-          onRemoveImage={handleRemoveMeetingImage}
-        />
-      ) : null}
-
-      {currentStep === 3 ? (
-        <MeetingScheduleStep
-          values={{
-            startDate: formValues.startDate,
-            startTime: formValues.startTime,
-            endDate: formValues.endDate,
-            endTime: formValues.endTime,
-            capacity: formValues.capacity,
-          }}
-          errors={{
-            startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
-            startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
-            endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
-            endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
-            capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
-          }}
-          onChange={(nextValues) => {
-            setFormValues((prev) => ({
-              ...prev,
-              ...nextValues,
-            }));
-          }}
-        />
-      ) : null}
-
-      <div className="mt-8 flex gap-3">
+      <ModalBase
+        disablePointerDismissal
+        isOpen={isOpen}
+        onOpenChange={handleOpenChangeModal}
+        contentClassName="w-[544px] max-w-[calc(100vw-24px)] rounded-[40px] border-none px-12 py-12 shadow-2xl"
+        title={`모임 만들기 ${currentStep}/${TOTAL_STEPS}`}
+      >
         {currentStep === 1 ? (
-          <BtnCommon
-            type="button"
-            variant="outline"
-            size="md"
-            className="flex-1"
-            onClick={onClose}
-          >
-            취소
-          </BtnCommon>
-        ) : (
-          <BtnCommon
-            type="button"
-            variant="outline"
-            size="md"
-            className="flex-1"
-            onClick={handlePrevStep}
-          >
-            이전
-          </BtnCommon>
-        )}
+          <MeetingCategoryStep
+            value={formValues.category}
+            onChange={(value) => {
+              setFormValues((prev) => ({
+                ...prev,
+                category: value,
+              }));
+            }}
+          />
+        ) : null}
 
-        {currentStep < TOTAL_STEPS ? (
-          <BtnCommon
-            type="button"
-            size="md"
-            className="flex-1"
-            onClick={handleNextStep}
-          >
-            다음
-          </BtnCommon>
-        ) : (
-          <BtnCommon
-            type="button"
-            size="md"
-            className="flex-1"
-            onClick={handleSubmitMeeting}
-          >
-            모임 만들기
-          </BtnCommon>
-        )}
-      </div>
+        {currentStep === 2 ? (
+          <MeetingBasicInfoStep
+            values={{
+              name: formValues.name,
+              description: formValues.description,
+              link: formValues.link,
+              imageFile: formValues.imageFile,
+              previewImageUrl: formValues.previewImageUrl,
+              imageUrl: formValues.imageUrl,
+            }}
+            errors={{
+              name: isTouchedStep(2) ? basicInfoErrors.name : "",
+              description: isTouchedStep(2) ? basicInfoErrors.description : "",
+              link: isTouchedStep(2) ? basicInfoErrors.link : "",
+              imageUrl: imageErrorMessage,
+            }}
+            isImageUploading={isImageUploading}
+            onChange={handleChangeBasicInfo}
+            onChangeImage={handleChangeMeetingImage}
+            onRemoveImage={handleRemoveMeetingImage}
+          />
+        ) : null}
+
+        {currentStep === 3 ? (
+          <MeetingScheduleStep
+            values={{
+              startDate: formValues.startDate,
+              startTime: formValues.startTime,
+              endDate: formValues.endDate,
+              endTime: formValues.endTime,
+              capacity: formValues.capacity,
+            }}
+            errors={{
+              startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
+              startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
+              endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
+              endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
+              capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
+            }}
+            onChange={(nextValues) => {
+              setFormValues((prev) => ({
+                ...prev,
+                ...nextValues,
+              }));
+            }}
+          />
+        ) : null}
+
+        <div className="mt-8 flex gap-3">
+          {currentStep === 1 ? (
+            <BtnCommon
+              type="button"
+              variant="outline"
+              size="md"
+              className="flex-1"
+              onClick={handleCloseModal}
+            >
+              취소
+            </BtnCommon>
+          ) : (
+            <BtnCommon
+              type="button"
+              variant="outline"
+              size="md"
+              className="flex-1"
+              onClick={handlePrevStep}
+            >
+              이전
+            </BtnCommon>
+          )}
+
+          {currentStep < TOTAL_STEPS ? (
+            <BtnCommon
+              type="button"
+              size="md"
+              className="flex-1"
+              onClick={handleNextStep}
+            >
+              다음
+            </BtnCommon>
+          ) : (
+            <BtnCommon
+              type="button"
+              size="md"
+              className="flex-1"
+              onClick={handleSubmitMeeting}
+            >
+              모임 만들기
+            </BtnCommon>
+          )}
+        </div>
+      </ModalBase>
     </>
   );
 }
