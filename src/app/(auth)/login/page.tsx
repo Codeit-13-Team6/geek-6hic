@@ -45,6 +45,11 @@ export default function Login() {
     }
   };
 
+  // kakao 로그인
+  const handleKakaoLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao`;
+  };
+
   return (
     <>
       <section
@@ -133,6 +138,7 @@ export default function Login() {
               <BtnCommon
                 className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] sm:w-1/2"
                 size={"fixedSize"}
+                onClick={handleKakaoLogin}
               >
                 <Image
                   src={kakaoIcon}
