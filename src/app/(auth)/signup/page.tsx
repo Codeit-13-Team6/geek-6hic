@@ -75,6 +75,7 @@ export default function SignUp() {
             >
               회원가입
             </h1>
+
             <form
               onSubmit={handleSubmit(onSubmit)}
               noValidate
