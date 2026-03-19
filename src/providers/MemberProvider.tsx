@@ -14,6 +14,7 @@ export function MemberProvider({ children }: MemberProviderProps) {
   const setAuthLoading = useAuthStore((s) => s.setAuthLoading);
 
   useEffect(() => {
+    console.log('asdf')
     const init = async () => {
       setAuthLoading(true);
       const user = await fetchMe();
