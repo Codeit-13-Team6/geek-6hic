@@ -30,25 +30,16 @@ export default function PostCard({
   // 태그 제거 로직
   const getPlainText = (html: string) => {
     if (!html) return "";
-
-    return (
-      html
-        // 1. 줄바꿈이나 블록이 끝나는 태그들을 공백 한 칸으로 치환
-        // </p>, </li>, </div>, <br>, </h1>~</h6> 등을 찾아서 뒤에 공백을 넣습니다.
-        .replace(/<\/p>|<\/li>|<\/div>|<br\s*\/?>|<\/h[1-6]>/gi, " ")
-
-        // 2. 남은 모든 HTML 태그(<...>) 제거
-        .replace(/<[^>]*>?/gm, "")
-
-        // 3. &nbsp; 등 HTML 특수 엔티티 공백으로 변환
-        .replace(/&nbsp;/g, " ")
-
-        // 4. 태그 제거 후 발생한 연속된 공백("   ")을 단일 공백(" ")으로 축소
-        .replace(/\s\s+/g, " ")
-
-        // 5. 양 끝 공백 제거
-        .trim()
-    );
+    // 1. 먼저 <hr/>를 기준으로 자릅니다. ([0]번이 순수 본문, [1]번이 링크 영역)
+    const splitContent = html.split(/<hr\s*\/?>|<p><a|<a/i);
+    const contentOnly = splitContent[0]; // 무조건 첫 번째 덩어리(순수 본문)만 선택
+    // 2. 잘라낸 본문에서만 태그를 지웁니다.
+    return contentOnly
+      .replace(/<\/p>|<\/li>|<\/div>|<br\s*\/?>|<\/h[1-6]>/gi, " ")
+      .replace(/<[^>]*>?/gm, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/\s\s+/g, " ")
+      .trim();
   };
 
   const pureContent = getPlainText(content);
@@ -77,7 +68,7 @@ export default function PostCard({
         </h3>
 
         {/* 모바일 썸네일*/}
-        <div className="relative mb-3 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] sm:hidden">
+        <div className="relative mb-4 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] sm:hidden">
           <img
             src={thumbnailUrl || defaultImg.src}
             alt="게시물 썸네일"
@@ -89,7 +80,7 @@ export default function PostCard({
         </div>
 
         <p className="mb-4 line-clamp-2 text-sm text-gray-600 sm:mb-0 sm:text-lg">
-          {pureContent || "내용이 없는 게시글입니다."}{" "}
+          {pureContent || "내용이 없는 게시글입니다."}
         </p>
 
         <div className="mt-auto flex items-center justify-between text-xs text-gray-400 sm:text-sm">
