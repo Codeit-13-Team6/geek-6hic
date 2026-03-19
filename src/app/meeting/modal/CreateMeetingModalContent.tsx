@@ -1,26 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { MeetingCategoryStep } from "./MeetingCategoryStep";
-import { Button } from "../ui/button";
-import { MeetingBasicInfoStep } from "./MeetingBasicInfoStep";
-import { MeetingScheduleStep } from "./MeetingScheduleStep";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { toastCommon } from "@/lib/toastCommon";
+import { MeetingCategoryStep } from "@/app/meeting/modal/MeetingCategoryStep";
+import { MeetingBasicInfoStep } from "@/app/meeting/modal/MeetingBasicInfoStep";
+import { MeetingScheduleStep } from "@/app/meeting/modal/MeetingScheduleStep";
 import {
   CreateMeetingFormValues,
   CreateMeetingModalContentProps,
-} from "./modal";
-import { uploadMeetingImage } from "./services/uploadMeetingImage";
+} from "@/app/meeting/modal/modal";
+import {
+  getNormalizedMeetingLink,
+  hasMeetingValidationError,
+  validateMeetingBasicInfoStep,
+  validateMeetingCategoryStep,
+  validateMeetingScheduleStep,
+} from "@/app/meeting/modal/meetingValidation";
+import { uploadMeetingImage } from "@/app/meeting/modal/services/uploadMeetingImage";
+
 import axiosInstance from "@/lib/axios";
+import { toastCommon } from "@/lib/toastCommon";
+
+import { DialogHeader, DialogTitle } from "@/components/shadcnOrigin/dialog";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 
 const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
-  category: "",
+  category: "TEAM_MEETING",
   name: "",
   description: "",
   link: "",
   imageFile: null,
+  previewImageUrl: "",
   imageUrl: "",
   startDate: "",
   startTime: "",
@@ -31,64 +41,126 @@ const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
 
 const TOTAL_STEPS = 3;
 
+const getIsoDateTime = (date: string, time: string) => {
+  return new Date(`${date}T${time}`).toISOString();
+};
+
 export function CreateMeetingModalContent({
   onClose,
 }: CreateMeetingModalContentProps) {
   const [currentStep, setCurrentStep] = useState(1);
+  const [touchedStepList, setTouchedStepList] = useState<number[]>([]);
   const [formValues, setFormValues] =
     useState<CreateMeetingFormValues>(INITIAL_FORM_VALUES);
-
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [imageErrorMessage, setImageErrorMessage] = useState("");
 
-  const handleChangeBasicInfo = async (nextValues: {
-    name?: string;
-    description?: string;
-    link?: string;
-    imageFile?: File | null;
-  }) => {
-    if (nextValues.imageFile !== undefined) {
-      const nextFile = nextValues.imageFile;
+  const previewImageUrlRef = useRef("");
 
-      setFormValues((prev) => ({
-        ...prev,
-        imageFile: nextFile,
-      }));
-
-      if (!nextFile) {
-        setFormValues((prev) => ({
-          ...prev,
-          imageUrl: "",
-        }));
-        return;
-      }
-
-      try {
-        setIsImageUploading(true);
-
-        const nextImageUrl = await uploadMeetingImage(nextFile);
-
-        setFormValues((prev) => ({
-          ...prev,
-          imageFile: nextFile,
-          imageUrl: nextImageUrl,
-        }));
-      } catch (error) {
-        setFormValues((prev) => ({
-          ...prev,
-          imageFile: null,
-          imageUrl: "",
-        }));
-      } finally {
-        setIsImageUploading(false);
-      }
-
+  const revokePreviewImageUrl = (previewImageUrl: string) => {
+    if (!previewImageUrl) {
       return;
     }
 
+    URL.revokeObjectURL(previewImageUrl);
+  };
+
+  useEffect(() => {
+    return () => {
+      revokePreviewImageUrl(previewImageUrlRef.current);
+    };
+  }, []);
+
+  const categoryErrors = useMemo(() => {
+    return validateMeetingCategoryStep(formValues);
+  }, [formValues]);
+
+  const basicInfoErrors = useMemo(() => {
+    return validateMeetingBasicInfoStep(formValues);
+  }, [formValues]);
+
+  const scheduleErrors = useMemo(() => {
+    return validateMeetingScheduleStep(formValues);
+  }, [formValues]);
+
+  const isTouchedStep = (step: number) => {
+    return touchedStepList.includes(step);
+  };
+
+  const markTouchedStep = (step: number) => {
+    setTouchedStepList((prev) => {
+      if (prev.includes(step)) {
+        return prev;
+      }
+
+      return [...prev, step];
+    });
+  };
+
+  const handleChangeBasicInfo = (nextValues: {
+    name?: string;
+    description?: string;
+    link?: string;
+  }) => {
     setFormValues((prev) => ({
       ...prev,
       ...nextValues,
     }));
+  };
+
+  const handleChangeMeetingImage = async (nextFile: File | null) => {
+    if (!nextFile) {
+      return;
+    }
+
+    const nextPreviewImageUrl = URL.createObjectURL(nextFile);
+
+    revokePreviewImageUrl(previewImageUrlRef.current);
+    previewImageUrlRef.current = nextPreviewImageUrl;
+
+    setFormValues((prev) => ({
+      ...prev,
+      imageFile: nextFile,
+      previewImageUrl: nextPreviewImageUrl,
+      imageUrl: "",
+    }));
+    setImageErrorMessage("");
+    setIsImageUploading(true);
+
+    try {
+      const nextImageUrl = await uploadMeetingImage(nextFile);
+
+      setFormValues((prev) => ({
+        ...prev,
+        imageFile: nextFile,
+        imageUrl: nextImageUrl,
+      }));
+      setImageErrorMessage("");
+    } catch (error) {
+      setFormValues((prev) => ({
+        ...prev,
+        imageFile: nextFile,
+        imageUrl: "",
+      }));
+      setImageErrorMessage("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+      toastCommon({ message: "이미지 업로드에 실패했습니다." });
+    } finally {
+      setIsImageUploading(false);
+    }
+  };
+
+  const handleRemoveMeetingImage = () => {
+    revokePreviewImageUrl(previewImageUrlRef.current);
+    previewImageUrlRef.current = "";
+
+    setFormValues((prev) => ({
+      ...prev,
+      imageFile: null,
+      previewImageUrl: "",
+      imageUrl: "",
+    }));
+    setImageErrorMessage("");
+    setIsImageUploading(false);
   };
 
   const handlePrevStep = () => {
@@ -96,6 +168,18 @@ export function CreateMeetingModalContent({
   };
 
   const handleNextStep = () => {
+    const currentStepErrors =
+      currentStep === 1
+        ? categoryErrors
+        : currentStep === 2
+          ? basicInfoErrors
+          : scheduleErrors;
+
+    if (hasMeetingValidationError(currentStepErrors)) {
+      markTouchedStep(currentStep);
+      return;
+    }
+
     setCurrentStep((prev) => Math.min(TOTAL_STEPS, prev + 1));
   };
 
@@ -104,11 +188,11 @@ export function CreateMeetingModalContent({
       name: formValues.name,
       type: formValues.category,
       region: "온라인",
-      address: formValues.link,
+      address: getNormalizedMeetingLink(formValues.link),
       latitude: 0,
       longitude: 0,
-      dateTime: `${formValues.startDate}T${formValues.startTime}:00.000Z`,
-      registrationEnd: `${formValues.endDate}T${formValues.endTime}:00.000Z`,
+      dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
+      registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
       capacity: Number(formValues.capacity),
       image: formValues.imageUrl,
       description: formValues.description,
@@ -116,6 +200,28 @@ export function CreateMeetingModalContent({
   };
 
   const handleSubmitMeeting = async () => {
+    const nextCategoryErrors = validateMeetingCategoryStep(formValues);
+    const nextBasicInfoErrors = validateMeetingBasicInfoStep(formValues);
+    const nextScheduleErrors = validateMeetingScheduleStep(formValues);
+
+    if (hasMeetingValidationError(nextCategoryErrors)) {
+      markTouchedStep(1);
+      setCurrentStep(1);
+      return;
+    }
+
+    if (hasMeetingValidationError(nextBasicInfoErrors)) {
+      markTouchedStep(2);
+      setCurrentStep(2);
+      return;
+    }
+
+    if (hasMeetingValidationError(nextScheduleErrors)) {
+      markTouchedStep(3);
+      setCurrentStep(3);
+      return;
+    }
+
     try {
       const payload = getCreateMeetingPayload();
       const { data } = await axiosInstance.post("/meetings", payload);
@@ -124,33 +230,9 @@ export function CreateMeetingModalContent({
       onClose();
     } catch (error) {
       console.error("meeting create error", error);
+      toastCommon({ message: "모임 생성에 실패했습니다." });
     }
   };
-
-  const getIsCurrentStepValid = () => {
-    if (currentStep === 1) {
-      return Boolean(formValues.category);
-    }
-
-    if (currentStep === 2) {
-      return (
-        Boolean(formValues.name.trim()) &&
-        Boolean(formValues.description.trim()) &&
-        Boolean(formValues.link.trim()) &&
-        Boolean(formValues.imageUrl.trim())
-      );
-    }
-
-    return (
-      Boolean(formValues.startDate) &&
-      Boolean(formValues.startTime) &&
-      Boolean(formValues.endDate) &&
-      Boolean(formValues.endTime) &&
-      Boolean(formValues.capacity.trim())
-    );
-  };
-
-  const isNextDisabled = !getIsCurrentStepValid();
 
   return (
     <>
@@ -179,10 +261,19 @@ export function CreateMeetingModalContent({
             description: formValues.description,
             link: formValues.link,
             imageFile: formValues.imageFile,
+            previewImageUrl: formValues.previewImageUrl,
             imageUrl: formValues.imageUrl,
+          }}
+          errors={{
+            name: isTouchedStep(2) ? basicInfoErrors.name : "",
+            description: isTouchedStep(2) ? basicInfoErrors.description : "",
+            link: isTouchedStep(2) ? basicInfoErrors.link : "",
+            imageUrl: imageErrorMessage,
           }}
           isImageUploading={isImageUploading}
           onChange={handleChangeBasicInfo}
+          onChangeImage={handleChangeMeetingImage}
+          onRemoveImage={handleRemoveMeetingImage}
         />
       ) : null}
 
@@ -195,6 +286,13 @@ export function CreateMeetingModalContent({
             endTime: formValues.endTime,
             capacity: formValues.capacity,
           }}
+          errors={{
+            startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
+            startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
+            endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
+            endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
+            capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
+          }}
           onChange={(nextValues) => {
             setFormValues((prev) => ({
               ...prev,
@@ -206,43 +304,45 @@ export function CreateMeetingModalContent({
 
       <div className="mt-8 flex gap-3">
         {currentStep === 1 ? (
-          <Button
+          <BtnCommon
             type="button"
             variant="outline"
+            size="md"
             className="flex-1"
             onClick={onClose}
           >
             취소
-          </Button>
+          </BtnCommon>
         ) : (
-          <Button
+          <BtnCommon
             type="button"
             variant="outline"
+            size="md"
             className="flex-1"
             onClick={handlePrevStep}
           >
             이전
-          </Button>
+          </BtnCommon>
         )}
 
         {currentStep < TOTAL_STEPS ? (
-          <Button
+          <BtnCommon
             type="button"
+            size="md"
             className="flex-1"
             onClick={handleNextStep}
-            disabled={isNextDisabled}
           >
             다음
-          </Button>
+          </BtnCommon>
         ) : (
-          <Button
+          <BtnCommon
             type="button"
+            size="md"
             className="flex-1"
             onClick={handleSubmitMeeting}
-            disabled={isNextDisabled}
           >
             모임 만들기
-          </Button>
+          </BtnCommon>
         )}
       </div>
     </>

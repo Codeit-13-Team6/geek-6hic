@@ -96,7 +96,16 @@ export function InputCommon({
           )}
         >
           {label}
-          {isRequired && <span className="text-green-500 ml-1">*</span>}
+          {isRequired && (
+            <span
+              className={cn(
+                "ml-1",
+                isDestructive ? "text-error" : "text-green-500",
+              )}
+            >
+              *
+            </span>
+          )}
         </label>
       )}
 

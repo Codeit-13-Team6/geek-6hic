@@ -8,7 +8,10 @@ import JobIShoes from "@/assets/img/category/fitness-health.jpg";
 import teamBulb from "@/assets/img/bulb/elec-bulb.jpg";
 import studyImage from "@/assets/img/category/study.jpg";
 import { cn } from "@/lib/utils";
-import { MeetingCategoryItem, MeetingCategoryStepProps } from "./modal";
+import {
+  MeetingCategoryItem,
+  MeetingCategoryStepProps,
+} from "@/app/meeting/modal/modal";
 
 const meetingCategoryList: MeetingCategoryItem[] = [
   {
