@@ -10,12 +10,14 @@ interface Props {
   filterFn?: (post: Posts) => boolean;
   searchValue?: string;
   sortValue?: string;
+  refetchType?: boolean;
 }
 
 export default function PostList({
   filterFn,
   searchValue = "",
   sortValue = "latest",
+  refetchType = true
 }: Props) {
   const router = useRouter();
 
@@ -41,6 +43,7 @@ export default function PostList({
         sortOrder,
         size: filterFn ? 100 : 10,
       }),
+    refetchOnWindowFocus: refetchType,
   });
 
   let list = response?.data || [];
