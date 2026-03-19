@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Link2, Loader2, X } from "lucide-react";
@@ -8,6 +8,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { toastCommon } from "@/lib/toastCommon";
 import axiosInstance from "@/lib/axios";
+import { getOgData } from "@/api/og";
 
 interface OGData {
   id: string;
@@ -18,6 +19,8 @@ interface OGData {
 
 export default function LoungeCreatePage() {
   const router = useRouter();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
@@ -25,8 +28,8 @@ export default function LoungeCreatePage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const TITLE_MAX_LENGTH = 30;
-  // 글자 수 계산 로직
-  const plainText = content.replace(/<[^>]*>?/gm, "");
+  // 본문 글자 수 계산 로직
+  const plainText = useMemo(() => content.replace(/<[^>]*>?/gm, ""), [content]);
   const contentWithSpaces = plainText.length;
   const contentWithoutSpaces = plainText.replace(/\s/g, "").length;
 
@@ -36,12 +39,7 @@ export default function LoungeCreatePage() {
 
     setIsLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const baseUrl = new URL(apiUrl).origin;
-      const response = await axios.get(
-        `${baseUrl}/og?url=${encodeURIComponent(linkUrl)}`,
-      );
-      const result = response.data;
+      const result = await getOgData(linkUrl);
       setLinkList((prev) => [
         ...prev,
         {
@@ -89,6 +87,8 @@ export default function LoungeCreatePage() {
         message: "제목과 내용을 모두 입력해주세요.",
         size: "sm",
       });
+    setIsSubmitting(true);
+
     // 1. 대표 이미지 선정
     const firstLinkWithImage = linkList.find((link) => link.image);
     // 2. 추가한 링크들을 본문에 붙일 HTML로 변환
@@ -98,17 +98,17 @@ export default function LoungeCreatePage() {
         (link) =>
           `<p><a href="${link.url}" target="_blank" rel="noopener noreferrer" style="color: #10b981; text-decoration: underline;">🔗 ${link.title}</a></p>`,
       )
-      .join(" ");
+      .join("");
 
     // 3. 기존 본문 + 구분선 + 링크들
     const finalContent =
-      content + (linkList.length > 0 ? `<hr/>${linksHtml}` : "");
-
+      linkList.length > 0 ? `${content}<hr/>${linksHtml}` : content;
     const postPayload = {
       title,
       content: finalContent,
       image: firstLinkWithImage ? firstLinkWithImage.image : null,
     };
+
     try {
       await axiosInstance.post("/posts", postPayload);
       toastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
@@ -116,6 +116,8 @@ export default function LoungeCreatePage() {
     } catch (error) {
       console.error("게시글 등록 실패:", error);
       toastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -142,7 +144,8 @@ export default function LoungeCreatePage() {
           </div>
           <BtnCommon
             onClick={handleSubmit}
-            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold sm:!h-[50px] sm:px-6 sm:text-lg"
+            disabled={isSubmitting}
+            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
           >
             등록
           </BtnCommon>

@@ -46,14 +46,21 @@ export default function LoungePage() {
 
   const hotList = hotResponse?.data || [];
 
+  const currentSortLabel = sortOptions.find(
+    (opt) => opt.value === sortValue,
+  )?.label;
+
   const handlePostCreate = () => {
     router.push("/lounge/create");
   };
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setSearchKeyword(searchValue);
-    }
+  const triggerSearch = () => {
+    setSearchKeyword(searchValue);
+    // 여기에 추가로 '페이지를 1페이지로 리셋'하는 로직을 넣을 수 있음
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") triggerSearch();
   };
 
   return (
@@ -104,15 +111,15 @@ export default function LoungePage() {
         </section>
 
         <section className="mt-8 flex flex-col sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex w-full flex-row items-center gap-3 sm:max-w-[400px]">
+          <div className="flex w-full flex-row items-center gap-3 sm:max-w-[500px]">
             <InputCommon
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onClear={() => setSearchValue("")}
               placeholder="궁금한 내용을 검색해보세요."
-              className="rounded-4xl !bg-white !pl-5 !text-sm sm:!h-[50px] sm:!text-lg"
+              className="rounded-4xl !bg-white !pl-5 !text-sm sm:!h-[50px] sm:!text-base"
               inputSize="sm"
-              onKeyDown={handleSearch}
+              onKeyDown={handleKeyDown}
             />
             <Search
               className="size-6 cursor-pointer text-gray-400 hover:text-gray-600 sm:size-7"
@@ -130,9 +137,7 @@ export default function LoungePage() {
               }}
             >
               <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
-                <SelectValue>
-                  {sortOptions.find((item) => item.value === sortValue)?.label}
-                </SelectValue>
+                <SelectValue>{currentSortLabel}</SelectValue>
               </SelectTrigger>
               <SelectContent className="w-[120px] sm:w-[140px]">
                 <SelectGroup>
