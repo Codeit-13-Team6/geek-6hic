@@ -1,13 +1,35 @@
+/**
+ * 계획
+ * 문제점
+ * - interceptor는 무조건 서버측에서 실행되어야 한다.
+ * - 하지만 지금은 클라이언트 측에서 실행된다 -> refreshToken을 못가져온다.
+ *
+ * - fetchMe는 어디서 실행되고 있나?
+ * - 브라우저에서 실행되고 있음 -> 브라우저에서 axiosInstance를 호출하고 있음 -> refreshToken을 못가져온다.
+ *
+ * 해결책
+ * - axiosInstance는 무조건 서버에서 실행되게 만들어야 한다.
+ * 1. axiosCodeitInstance -> codeit에 요청하기
+ * 2. 기본 /api로 요청보낸다.
+ *
+ */
+
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
 const axiosInstance = axios.create({
-  baseURL: "/api", // ** 모든 요청은 slug 프록시로 향함
+  baseURL: "/api", // ** > 모든 요청은 slug 프록시로 향함
   withCredentials: true, // ** 브라우저가 자동으로 쿠키를 실어 보냄
 });
 
+// route handler는 얘를 이용하여 요청한다.
+export const axiosCodeitInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true, // 필요없으면 삭제
+});
+
 // 1. 요청 인터셉터: 신분증(토큰)을 헤더에 실어주는 비서 역할
-axiosInstance.interceptors.request.use((config) => {
+axiosCodeitInstance.interceptors.request.use((config) => {
   // 로그인, 회원가입 등 토큰이 필요 없는 경로는 패스
   const skipList = ["/auth/login", "/auth/signup"];
   if (skipList.some((url) => config.url?.includes(url))) {
@@ -18,17 +40,22 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 // 2. 응답 인터셉터: 서버가 "너 신분증 만료됐어(401)"라고 할 때 수습
-axiosInstance.interceptors.response.use(
+axiosCodeitInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config; //실패한 원래 요청 정보 -> 이거 채가오는거
-
     // 401 에러(인증 실패)가 났고, 아직 재시도를 안 했다면
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; //재시도 중임 알리는 플래그
-
       const refreshToken = getCookie("refreshToken");
 
+      // 가능성
+
+      // getCookie 함수는 어디서 가져오는가?
+
+      // Next.js 브라우저 -> Next.js 서버 -> 코드잇 백엔드
+      // 코드잇 백엔드 -> response interceptor 동작(getCookie) -> Next.js 서버 -> Next.js 브라우저로 온다.
+      console.log("refreshToken: ", refreshToken);
       // 리프레시 토큰이 없으면 그냥 로그아웃 처리
       if (!refreshToken) {
         // 클라이언트 사이드 로그아웃 로직 (예: 쿠키 삭제 및 이동)

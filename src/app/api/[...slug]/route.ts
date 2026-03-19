@@ -1,4 +1,5 @@
 import axios from "axios";
+import { axiosCodeitInstance } from "@/lib/axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -56,9 +57,9 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
 
   try {
     // 7. BFF 서버가 백엔드에 대신 요청을 보냄 (Proxying)
-    const { data, status } = await axios(requestConfig);
+    const { data, status } = await axiosCodeitInstance(requestConfig);
 
-    // 8. 백엔드에서 받은 데이터와 상태 코드를 브라우저에 그대로 전달
+    // 8. 백엔드에서 받은 데이터와 상태 코드를 브라우저에 그대로 전달 -> accesstoken
     return NextResponse.json(data, { status });
   } catch (error: any) {
     // 백엔드 통신 실패 시 로그를 남기고 에러 정보를 클라이언트에 토스

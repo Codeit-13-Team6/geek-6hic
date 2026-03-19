@@ -22,6 +22,7 @@ export async function proxy(request: NextRequest) {
   // 쿠키에서 토큰 조회
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  console.log("Middleware check - RefreshToken:", refreshToken);
 
   // 1. 액세스 토큰이 있으면 일단 통과 (유효성 검증은 API 레이어의 Axios가 담당)
   if (accessToken) {
@@ -30,6 +31,7 @@ export async function proxy(request: NextRequest) {
 
   // 2. 액세스 토큰이 없는데 리프레시 토큰도 없다면? 바로 로그인행
   if (!refreshToken) {
+    console.log("Middleware check - No tokens, redirecting to login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

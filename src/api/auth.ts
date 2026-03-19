@@ -37,7 +37,7 @@ export async function fetchMe(): Promise<User | null> {
     // ** 이제 /api/users/me 라는 물리적 파일은 없음
     // ** -> axiosInstance를 통해 baseURL: "/api" 설정 + withCredentials: true 자동으로 됨
     // ** 이 다음에 slug 프록시가 /api/users/me 요청을 받아서 백엔드로 전달
-    const res = await axiosInstance.get("/users/me");
+    const res = await axiosInstance.get("/users/me"); //인터셉터 걸면 안됨
 
     return res.data;
   } catch {
