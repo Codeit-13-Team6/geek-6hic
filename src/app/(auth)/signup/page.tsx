@@ -1,17 +1,19 @@
 'use client'
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link"
 import Image from "next/image";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
+import { signupUser } from "@/api/auth";
 
 // 유효성검사
 import { useForm } from 'react-hook-form';
 import type { SignUpFormValues } from '@/types/index';
 
 export default function SignUp() {
+  const router = useRouter();
 
   const {
     register,
@@ -32,7 +34,12 @@ export default function SignUp() {
 
   // RHF 내장된 기능으로 제출 시, 유효성검사 통과하면 로직 탐
   const onSubmit = async (data: SignUpFormValues) => {
-    console.log('login submit:', data);
+    const result = await signupUser(data);
+
+    // 회원가입 성공 후 로그인 페이지 이동용 로직.
+    if (result.ok) {
+      router.push("/login");
+    }
   };
 
   return (
