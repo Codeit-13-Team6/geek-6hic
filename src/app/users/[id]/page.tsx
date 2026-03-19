@@ -4,34 +4,23 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { Tab } from "@/components/features/tab/Tab";
 import { DetailCard } from "@/components/features/card/DetailCard";
-import { getUser, updateUserProfile } from "@/api/user";
-import { Meeting, UserProfileUpdateProps } from "@/types";
-import {
-  createMeeting,
-  deleteFavorites,
-  getFavorites,
-  getMeeting,
-  postMeetType,
-  updateFavorites,
-} from "@/api/meeting";
+import {  updateUserProfile } from "@/api/user";
+import {  User, UserProfileUpdateProps } from "@/types";
+import { deleteFavorites, getFavorites, getMeeting } from "@/api/meeting";
 import PostList from "@/components/features/list/PostList";
 import { useAuthStore } from "@/store/useAuthStore";
-
-import { PostDetailCard } from "@/components/features/card/PostDetailCard";
+import { getPosts } from "@/api/posts";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ModalBase from "@/components/features/modal/ModalBase";
-import { DialogDescription } from "@/components/shadcnOrigin/dialog";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput";
-import axios from "axios";
-import axiosInstance from "@/lib/axios";
+
 
 interface TabItem {
   value: string;
@@ -44,27 +33,14 @@ const defaultTabs: TabItem[] = [
   { value: "lounge", label: "라운지 게시물" },
 ];
 
-const mockMeeting: Meeting = {
-  name: "달램핏ㅇ임7",
-  type: "스터디",
-  region: "디스코드?2",
-  address: "스타벅스 강남역점, 서울 강남구 강남대로 390, 3층으아아아아",
-  latitude: 37.4979,
-  longitude: 127.0276,
-  dateTime: "2026-05-02T14:00:00.000Z",
-  registrationEnd: "2026-05-01T23:59:59.000Z",
-  capacity: 20,
-  image: "https://example.com/image.jpg",
-  description: "함께 운동하며 건강을 챙겨요!ㅇㅇㅇ",
-};
-
 export default function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+
   // 라운지 게시물 필터링을 위해 id 세팅 , 추후 다른곳에서도 id 사용여지가있을것같아서 일단 전역으로 두었는데 상황에 따라서 전역관리 안해도 될것같으면 제외하는걸로
-  // ** setUser로 데이터 한 번에 받아옴, useAuthStore에 userId 없어서 에러뜸
-  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((s) => s.setUser);
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },
@@ -81,11 +57,12 @@ export default function Page() {
     setIsEditModalOpen(true);
   };
 
+  // user data 업데이트 되면 그냥 바로 스토어에 집어넣음 , 마이페이지의 유저 정보는 store의 유저정보를 바라보고있음
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
-    onSuccess: () => {
+    onSuccess: (data: User) => {
+      setUser(data);
       setIsEditModalOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
@@ -98,40 +75,50 @@ export default function Page() {
       });
     },
   );
+
   // ** queryFn 전부 getUser, getMeeting, getFavorites로 바꿔줌 axiosInstance.get("/api/users/me") 이런식으로 직접 호출하는거는 이제 없어짐, queryFn은 api/user.ts의 getUser 이런식으로 깔끔하게 정리됨
-  const { data: user } = useQuery({
-    queryKey: ["user"],
-    queryFn: getUser,
-    // queryFn: async () => {
-    //   const res = await axiosInstance.get("/api/users/me");
-    //   return res.data.user;
-    // },
-  });
-
-  // ** 여기서 유저 아이디 세팅, 라운지 게시물 필터링할 때 사용
-  const userId = user?.id;
-
   const { data: meetList } = useQuery({
     queryKey: ["meetings", "my"],
     queryFn: getMeeting,
+    refetchOnWindowFocus: false,
   });
 
   const { data: favoritesList } = useQuery({
     queryKey: ["favorites"],
     queryFn: getFavorites,
+    refetchOnWindowFocus: false,
   });
 
+  // 불필요한 api 호출을 막기위해 provider 에서 실행하는 userInfo store 의 값을 가져와서 사용
   useEffect(() => {
-    if (user) setUser(user);
+    if (user) {
+      profileForm.reset({
+        name: user.name ?? "",
+        email: user.email ?? "",
+        companyName: user.companyName ?? "",
+        image: user.image ?? null,
+      });
+    }
   }, [user]);
 
-  return (
-    <div className="w-full flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
-      <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
-        {/*<div onClick={() => postMeetType()}>모임 종류 생성</div>*/}
-        {/*<div onClick={() => updateFavorites(698)}>찜 추가</div>*/}
-        {/*<div onClick={() => createMeeting(mockMeeting)}>모임생성</div>*/}
+  // 현재 PostList 의 api 호출 로직이 컴포넌트 내부에 있어서 상단 탭을 클릭했을때 api 가 호출되고 그로인해 초기 렌더링이 난리가 남
+  // 같은 key 로 프리패치함
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ["posts", "", "latest"],
+      queryFn: () =>
+        getPosts({
+          keyword: "",
+          sortBy: "createdAt",
+          sortOrder: "desc",
+          size: 10,
+        }),
+    });
+  }, []);
 
+  return (
+    <div className="flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
+      <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8">
         <div className="flex flex-col gap-5 md:gap-10 lg:flex-row lg:items-start lg:gap-[56px]">
           <section className="mt-0 w-full shrink-0 lg:mt-[22px] lg:w-[282px]">
             <h1 className="mb-4 ml-2 cursor-pointer text-xl font-bold text-gray-900 md:mb-8 md:text-2xl lg:mb-10 lg:text-[32px]">
@@ -167,7 +154,7 @@ export default function Page() {
                   <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:hidden">
                     이메일
                   </span>
-                  <span className="sm:text-md truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-600">
+                  <span className="sm:text-md ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm lg:ml-0 lg:text-gray-600">
                     {user?.email}
                   </span>
                 </div>
@@ -175,7 +162,7 @@ export default function Page() {
                   <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:w-auto lg:text-base">
                     한줄소개
                   </span>
-                  <span className="truncate text-xs font-medium text-gray-800 sm:ml-3 sm:text-sm lg:text-gray-800">
+                  <span className="ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm lg:ml-0 lg:text-gray-800">
                     {user?.companyName}
                   </span>
                 </div>
@@ -183,9 +170,7 @@ export default function Page() {
             </article>
           </section>
 
-          <section className="flex min-w-0 flex-1 flex-col">
-            {/* <PostDetailCard /> */}
-
+          <section className="flex min-w-0 flex-1 flex-col scroll-auto">
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
@@ -221,7 +206,10 @@ export default function Page() {
                 ))}
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
-                <PostList filterFn={(post) => post.author.id === userId} />
+                <PostList
+                  filterFn={(post) => post.author.id === user?.id}
+                  refetchType={false}
+                />
               </TabsContent>
             </Tab>
           </section>
@@ -230,7 +218,7 @@ export default function Page() {
       <ModalBase
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        title="프로필 수정하기"
+        title="프로필수정하기"
         disablePointerDismissal
         contentClassName={"py-[32px] px-[24px] sm:p-[48px] sm:max-w-[544px]"}
         titleClassName="text-2xl text-gray-900 font-semibold"

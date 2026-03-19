@@ -27,11 +27,18 @@ export function Gnb() {
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const isLoggedIn = !!user;
 
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === '/login';
+
+  // 태블릿, 모바일 sheetClose로 불가능해서 상태로관리
+  const [isOpen, setIsOpen] = useState(false);
+
+  // 로딩상태
+  const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
     await axios.post('/api/logout', {}, { withCredentials: true });
@@ -62,7 +69,7 @@ export function Gnb() {
             />
           </Link>
 
-          <nav className="hidden items-center sm:flex sm:gap-2">
+          <nav className="hidden items-center lg:flex lg:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -76,66 +83,67 @@ export function Gnb() {
         </div>
         <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button className="flex items-center justify-center cursor-pointer">
-              {/* 모바일에서 알림 필요한지 */}
-              {/* <Image
-                src={bellIconSm}
-                alt="알림"
-                width={20}
-                height={20}
-                className="block sm:hidden"
-              /> */}
+            <button className="flex cursor-pointer items-center justify-center">
               <Image
                 src={bellIconLg}
                 alt="알림"
                 width={24}
                 height={24}
-                className="hidden sm:block"
+                className="hidden lg:block"
               />
             </button>
           )}
 
           <div className="hidden sm:block">
-            {isLoggedIn ? (
-              <button className="flex items-center justify-center cursor-pointer">
+            {!isAuthReady ? (
+              <div className="h-[22px] w-16" />
+            ) : isLoggedIn ? (
+              <button
+                className="flex cursor-pointer items-center justify-center"
+                onClick={() => router.push(`/users/${user.id}`)}
+              >
                 <Image
                   src={profileMd}
                   alt="프로필"
                   width={54}
                   height={54}
-                  className="rounded-full"
+                  className="hidden rounded-full lg:block"
                 />
               </button>
-            ) : (
-              // 로그인페이지 일 때 , 로그인 버튼 안보이게
-              isLoginPage ?
-                null
-                :
-                <button
-                  onClick={handleLogin}
-                  className="cursor-pointer p-4"
-                >
-                  <span
-                    className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
-                  >
-                    로그인
-                  </span>
-                </button>
+            ) : isLoginPage ? null : (
+              <button
+                onClick={handleLogin}
+                className="hidden cursor-pointer lg:block"
+              >
+                <span className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900">
+                  로그인
+                </span>
+              </button>
             )}
           </div>
+
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden md:block"
-            >로그아웃</button>
+              className="hidden cursor-pointer lg:block"
+            >
+              <span className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900">
+                로그아웃
+              </span>
+            </button>
           ) : null}
 
-          <div className="flex items-center justify-center sm:hidden">
-            <Sheet>
+          <div className="flex items-center justify-center lg:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="flex items-center justify-center">
                 <Image src={menu} alt="메뉴" width={24} height={24} />
               </SheetTrigger>
-              <SideBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} handleLogin={handleLogin} />
+              <SideBar
+                isLoggedIn={isLoggedIn}
+                handleLogout={handleLogout}
+                handleLogin={handleLogin}
+                onClose={() => setIsOpen(false)}
+              />
             </Sheet>
           </div>
         </div>

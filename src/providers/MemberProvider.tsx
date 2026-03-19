@@ -11,15 +11,18 @@ interface MemberProviderProps {
 export function MemberProvider({ children }: MemberProviderProps) {
   const setUser = useAuthStore((s) => s.setUser);
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const setAuthLoading = useAuthStore((s) => s.setAuthLoading);
 
   useEffect(() => {
+    console.log('asdf')
     const init = async () => {
+      setAuthLoading(true);
       const user = await fetchMe();
       if (user) setUser(user);
       else clearAuth();
     };
     init();
-  }, [setUser, clearAuth]);
+  }, [setUser, clearAuth, setAuthLoading]);
 
   return <>{children}</>;
 }
