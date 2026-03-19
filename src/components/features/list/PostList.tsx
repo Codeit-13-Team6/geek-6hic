@@ -59,7 +59,7 @@ export default function PostList({
     );
 
   return (
-    <div className="flex w-full flex-col rounded-[24px] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
+    <div className="flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8">
       <div className="flex flex-col sm:gap-8">
         {list.length > 0 ? (
           list.map((post: Posts) => (
