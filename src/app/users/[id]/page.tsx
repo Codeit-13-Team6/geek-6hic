@@ -8,9 +8,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { Tab } from "@/components/features/tab/Tab";
-import { DetailCard } from "@/components/features/card/DetailCard";
-import {  updateUserProfile } from "@/api/user";
-import {  User, UserProfileUpdateProps } from "@/types";
+import { UserCard } from "@/components/features/card/UserCard";
+import { updateUserProfile } from "@/api/user";
+import { User, UserProfileUpdateProps } from "@/types";
 import { deleteFavorites, getFavorites, getMeeting } from "@/api/meeting";
 import PostList from "@/components/features/list/PostList";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -20,7 +20,6 @@ import ModalBase from "@/components/features/modal/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput";
-
 
 interface TabItem {
   value: string;
@@ -174,7 +173,7 @@ export default function Page() {
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 {favoritesList?.map((item: any) => (
-                  <DetailCard
+                  <UserCard
                     key={item.id}
                     title={item.meeting.name}
                     type={item.meeting.type}
@@ -192,7 +191,7 @@ export default function Page() {
               </TabsContent>
               <TabsContent value="created" className="mt-6 md:mt-[32px]">
                 {meetList?.map((item: any) => (
-                  <DetailCard
+                  <UserCard
                     key={item.id}
                     title={item.name}
                     type={item.type}

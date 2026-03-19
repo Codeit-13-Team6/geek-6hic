@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 
-interface DetailCardProps {
+interface UserCardProps {
   title?: string;
   type?: string;
   date?: Date;
@@ -28,7 +28,7 @@ interface DetailCardProps {
   onDetailClick?: () => void;
 }
 
-export function DetailCard({
+export function UserCard({
   title = "제목이 없습니다.",
   type = "유형이 없습니다.",
   date = new Date(),
@@ -39,13 +39,13 @@ export function DetailCard({
   showLikeBtn = true,
   onHeartClick,
   onDetailClick,
-}: DetailCardProps) {
-  const [liked, setLiked] = useState(defaultLiked);
+}: UserCardProps) {
+  const [isLiked, setIsLiked] = useState(defaultLiked);
 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const next = !liked;
-    setLiked(next);
+    const next = !isLiked;
+    setIsLiked(next);
     onHeartClick?.(next);
   };
 
@@ -72,7 +72,7 @@ export function DetailCard({
             onClick={handleHeartClick}
           >
             <Image
-              src={liked ? heartsTrue : heartsFalse}
+              src={isLiked ? heartsTrue : heartsFalse}
               alt="heart"
               width={24}
               height={24}
@@ -90,7 +90,7 @@ export function DetailCard({
               onClick={handleHeartClick}
             >
               <Image
-                src={liked ? heartsTrue : heartsFalse}
+                src={isLiked ? heartsTrue : heartsFalse}
                 alt="heart"
                 width={24}
                 height={24}
