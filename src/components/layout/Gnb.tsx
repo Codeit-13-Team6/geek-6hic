@@ -69,7 +69,7 @@ export function Gnb() {
             />
           </Link>
 
-          <nav className="items-center hidden lg:flex lg:gap-2">
+          <nav className="hidden items-center lg:flex lg:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -83,7 +83,7 @@ export function Gnb() {
         </div>
         <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button className="flex items-center justify-center cursor-pointer">
+            <button className="flex cursor-pointer items-center justify-center">
               <Image
                 src={bellIconLg}
                 alt="알림"
@@ -98,19 +98,22 @@ export function Gnb() {
             {!isAuthReady ? (
               <div className="h-[22px] w-16" />
             ) : isLoggedIn ? (
-              <button className="flex items-center justify-center cursor-pointer">
+              <button
+                className="flex cursor-pointer items-center justify-center"
+                onClick={() => router.push(`/users/${user.id}`)}
+              >
                 <Image
                   src={profileMd}
                   alt="프로필"
                   width={54}
                   height={54}
-                  className="hidden lg:block rounded-full"
+                  className="hidden rounded-full lg:block"
                 />
               </button>
             ) : isLoginPage ? null : (
               <button
                 onClick={handleLogin}
-                className="cursor-pointer hidden lg:block"
+                className="hidden cursor-pointer lg:block"
               >
                 <span className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900">
                   로그인
@@ -122,11 +125,9 @@ export function Gnb() {
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden lg:block"
+              className="hidden cursor-pointer lg:block"
             >
-              <span
-                className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900"
-              >
+              <span className="font-pretendard text-base font-medium whitespace-nowrap text-slate-600 transition-colors hover:text-gray-900">
                 로그아웃
               </span>
             </button>
