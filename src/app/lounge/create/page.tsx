@@ -89,10 +89,24 @@ export default function LoungeCreatePage() {
         message: "제목과 내용을 모두 입력해주세요.",
         size: "sm",
       });
+    // 1. 대표 이미지 선정
     const firstLinkWithImage = linkList.find((link) => link.image);
+    // 2. 추가한 링크들을 본문에 붙일 HTML로 변환
+    // 단순히 주소만 적는 게 아니라 제목과 함께 클릭 가능한 링크로 만듭니다.
+    const linksHtml = linkList
+      .map(
+        (link) =>
+          `<p><a href="${link.url}" target="_blank" rel="noopener noreferrer" style="color: #10b981; text-decoration: underline;">🔗 ${link.title}</a></p>`,
+      )
+      .join(" ");
+
+    // 3. 기존 본문 + 구분선 + 링크들
+    const finalContent =
+      content + (linkList.length > 0 ? `<hr/>${linksHtml}` : "");
+
     const postPayload = {
       title,
-      content,
+      content: finalContent,
       image: firstLinkWithImage ? firstLinkWithImage.image : null,
     };
     try {
