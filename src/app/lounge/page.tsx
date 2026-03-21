@@ -95,7 +95,7 @@ export default function LoungePage() {
             | 이번주 HOT 게시물
           </h2>
 
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
+          <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
             {hotList.map((post) => (
               <HotListCard
                 key={post.id}
