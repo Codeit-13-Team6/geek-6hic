@@ -7,6 +7,7 @@ import Comment from "@/components/features/comment/Comment";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPostsDetail } from "@/api/posts";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const COMMENTS = [
   {
@@ -25,9 +26,18 @@ const COMMENTS = [
     content: "comment2",
     createdAt: 23933848,
   },
+  {
+    id: 3,
+    author: {
+      name: "ghf",
+    },
+    content: "comment2",
+    createdAt: 23933848,
+  },
 ];
 export default function LoungeDetailPage() {
   const { id } = useParams();
+  const userId = useAuthStore((state) => state.user?.id);
 
   const [commentValue, setCommentValue] = useState("");
 
@@ -40,6 +50,8 @@ export default function LoungeDetailPage() {
     queryFn: () => getPostsDetail(Number(id)),
     enabled: !!id, // id가 있을 때만 실행
   });
+
+  const isOwner = userId !== null && userId === post?.author.id;
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -63,11 +75,11 @@ export default function LoungeDetailPage() {
             title={post.title}
             name={post.author.name}
             date={new Date(post.createdAt)}
-            content={mainContent} // 원래 본문만
+            content={mainContent} // 링크를 제외한 원래 본문 내용만
             img={post.image || ""} // 대표 썸네일
             thumbsUp={post.likeCount}
             comment={post.comments.length || 0}
-            authorId={post.author.id}
+            isOwner={isOwner} // 본인인지 상세페이지에서 props로 넘겨주는 것으로 수정
             liked={post.isLiked}
           />
         </section>
@@ -99,13 +111,14 @@ export default function LoungeDetailPage() {
           </div>
 
           {/* 댓글 목록 */}
-          <div className="flex flex-col divide-y divide-gray-100 lg:mt-4">
+          <div className="flex flex-col divide-y divide-slate-200 lg:mt-4">
             {COMMENTS.map((item) => (
               <Comment
                 key={item.id}
                 name={item.author.name}
                 content={item.content}
                 date={new Date(item.createdAt)}
+                isOwner={isOwner}
                 //   .toLocaleDateString("ko-KR", {
                 //   month: "long",
                 //   day: "numeric",
