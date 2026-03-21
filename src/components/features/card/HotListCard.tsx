@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcnOrigin/card";
-import { getRelativeTime } from "@/lib/date";
+import { getRelativeTime } from "@/lib/getRelativeTime";
 
 interface HotListCardCommonProps {
   title?: string;
