@@ -2,22 +2,22 @@
 
 import Image from "next/image";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcnOrigin/card";
+import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { useAuthStore } from "@/store/useAuthStore";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@/components/shadcnOrigin/dropdown-menu";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/DropdownCommon";
+import { getRelativeTime } from "@/lib/getRelativeTime";
 
 interface PostDetailCardProps {
   title?: string;
@@ -29,7 +29,7 @@ interface PostDetailCardProps {
   thumbsUp?: number;
   comment?: number;
   liked?: boolean;
-  authorId?: number;
+  isOwner?: boolean;
 }
 
 export function PostDetailCard({
@@ -42,93 +42,101 @@ export function PostDetailCard({
   thumbsUp = 0,
   comment = 0,
   liked = false,
-  authorId,
+  isOwner = false,
 }: PostDetailCardProps) {
-
-  const userId = useAuthStore((state) => state.user?.id);
-  const isOwner = userId !== null && userId === authorId;
-
   return (
-    <Card className="rounded-[48px] p-[64px] ring-0!">
-      <CardTitle className="flex flex-row justify-between">
-        <h2 className="mb-[20px] text-3xl font-bold text-gray-800">{title}</h2>
-        <div className="h-fit cursor-pointer">
-          {isOwner ? (
-            <Image
-              src={meatballsIcon}
-              alt="상세보기 아이콘"
-              width={40}
-              height={40}
-              unoptimized
-            />
-          ) : (
-            <BtnCommon size="icon-md" variant="teritary">
-              <Image
-                src={liked ? heartsTrue : heartsFalse}
-                alt="heart"
-                width={24}
-                height={24}
-              />
-            </BtnCommon>
-          )}
-        </div>
+    <Card className="relative rounded-[32px] p-8 sm:p-10 lg:p-14">
+      <div className="absolute top-7 right-6 sm:top-10 sm:right-8 lg:top-14 lg:right-12">
+        {isOwner && (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="cursor-pointer">
+                <Image
+                  src={meatballsIcon}
+                  alt="상세보기 아이콘"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent size="sm">
+              <DropdownMenuItem onClick={() => console.log("수정")}>
+                수정하기
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => console.log("삭제")}
+              >
+                삭제하기
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+
+      <CardTitle className="mb-4 pr-6 text-xl font-bold text-gray-800 sm:mb-5 sm:text-2xl lg:mb-6 lg:text-3xl">
+        {title}
       </CardTitle>
+
       <CardContent className="px-0">
-        <div className="mb-[40px] flex flex-row items-center gap-[6px] text-sm text-gray-500">
+        <div className="relative mb-6 flex items-center gap-2 text-xs text-gray-500 sm:mb-8 sm:text-sm lg:text-base">
           <Image
-            className="rounded-[24px]"
+            className="rounded-full"
             src={avatar && profileImg}
             alt="프로필 이미지"
             width={24}
             height={24}
           />
-          <p>{name}</p>
-          <p>
+          <span>{name}</span>
+          <span className="text-gray-300">•</span>
+          <span>
             {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
-          </p>
+          </span>
         </div>
-        <div className="mb-[32px] text-gray-700">{content}</div>
+
+        <div className="mb-6 text-sm leading-relaxed text-gray-700 sm:mb-8 sm:text-base lg:text-lg">
+          {content}
+        </div>
+
         {img && (
-          <div className="h-[200px] w-[200px]">
+          <div className="mb-6 w-full max-w-[320px] sm:mb-8">
             <img
               src={img}
               alt="Event cover"
-              className="h-full w-full rounded-[24px] object-cover brightness-60 grayscale dark:brightness-40"
-              width={200}
-              height={200}
+              className="h-full w-full rounded-[20px] object-cover"
             />
           </div>
         )}
 
-        <div className="pa-0 mt-[40px] flex flex-row items-start gap-[12px] border-0! text-sm font-medium">
-          <p className="whitespace-nowrap text-gray-600">
-            {date.toLocaleTimeString("ko-KR", {
-              hour: "2-digit",
-              hour12: false,
-            })}
-            간 전
-          </p>
-          <div className="flex flex-row">
-            <Image
-              src={thumbsUpIcon}
-              alt="thumbsUpIcon"
-              width={18}
-              height={18}
-              className="mr-[2px]"
-            />
-            <p className="whitespace- text-sm text-gray-500">{thumbsUp}</p>
+        <div className="mt-6 flex items-center justify-between text-xs text-gray-500 sm:mt-8 sm:text-sm lg:text-base">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-sm sm:text-base">
+              {getRelativeTime(date)}
+            </span>
+
+            <div className="flex items-center gap-1">
+              <Image src={thumbsUpIcon} alt="like" width={16} height={16} />
+              <span>{thumbsUp}</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Image src={messageIcon} alt="comment" width={16} height={16} />
+              <span>{comment}</span>
+            </div>
           </div>
 
-          <div className="flex flex-row">
-            <Image
-              src={messageIcon}
-              alt="messageIcon"
-              width={18}
-              height={18}
-              className="mr-[2px]"
-            />
-            <p className="whitespace- text-sm text-gray-500">{comment}</p>
-          </div>
+          {!isOwner && (
+            <BtnCommon size="icon-sm" variant="teritary">
+              <Image
+                src={liked ? heartsTrue : heartsFalse}
+                alt="heart"
+                width={20}
+                height={20}
+              />
+            </BtnCommon>
+          )}
         </div>
       </CardContent>
     </Card>

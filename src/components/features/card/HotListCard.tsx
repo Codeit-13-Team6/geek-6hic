@@ -7,13 +7,11 @@ import defaultImg from "@/assets/img/empty/img-default.png";
 
 import {
   Card,
-  CardAction,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/shadcnOrigin/card";
-import { getRelativeTime } from "@/lib/date";
+import { getRelativeTime } from "@/lib/getRelativeTime";
 
 interface HotListCardCommonProps {
   title?: string;
@@ -34,51 +32,42 @@ export function HotListCard({
 }: HotListCardCommonProps) {
   return (
     <Card
-      className="h-fit w-[162px] shrink-0 cursor-pointer gap-0! rounded-[24px] bg-gray-50 pt-0! pb-0! ring-0! sm:w-[300px]"
       onClick={onDetailClick}
+      className="group w-[160px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-white pt-0 shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg sm:w-[260px] lg:w-[300px]"
     >
-      <section className="relative h-[162px] w-full shrink-0 overflow-hidden rounded-[24px] rounded-b-none">
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
         <img
           src={imageSrc || defaultImg.src}
           alt={title}
-          className="h-full w-full rounded-[24px] rounded-b-none object-cover"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           onError={(e) => {
             (e.target as HTMLImageElement).src = defaultImg.src;
           }}
         />
-      </section>
-      <div className="flex flex-1 flex-col justify-between">
-        <CardHeader className="mt-[10px] gap-0 px-[4px] sm:mt-[14px]">
-          <CardTitle className="line-clamp-2 w-full text-xl font-semibold">
+
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition group-hover:opacity-50" />
+      </div>
+
+      <div className="flex flex-col justify-between px-3 sm:px-4">
+        <CardHeader className="p-0">
+          <CardTitle className="line-clamp-2 min-h-[2.8em] text-sm leading-[1.4] font-semibold tracking-[-0.01em] text-gray-900 sm:text-base lg:text-lg">
             {title}
           </CardTitle>
-          <CardDescription className="text-sm font-bold text-gray-500"></CardDescription>
         </CardHeader>
-        <CardFooter className="flex-row items-start gap-[12px] border-0! px-[4px] pt-0 pt-[6px] pb-[10px] text-sm font-medium sm:pt-[4px]">
-          <p className="whitespace-nowrap text-gray-600">
-            {getRelativeTime(date)}
-          </p>
-          <div className="flex flex-row">
-            <Image
-              src={thumbsUpIcon}
-              alt="like"
-              width={18}
-              height={18}
-              className="mr-[2px]"
-            />
-            <p className="text-sm whitespace-nowrap text-gray-500">
-              {thumbsUp}
-            </p>
-          </div>
-          <div className="flex flex-row">
-            <Image
-              src={messageIcon}
-              alt="comment"
-              width={18}
-              height={18}
-              className="mr-[2px]"
-            />
-            <p className="text-sm whitespace-nowrap text-gray-500">{comment}</p>
+
+        <CardFooter className="mt-3 flex items-center justify-between bg-white px-1 py-2 text-xs sm:py-3 sm:text-sm lg:text-base">
+          <span className="text-gray-400">{getRelativeTime(date)}</span>
+
+          <div className="flex items-center gap-2 text-gray-500">
+            <div className="flex items-center gap-[2px]">
+              <Image src={thumbsUpIcon} alt="like" width={14} height={14} />
+              <span>{thumbsUp}</span>
+            </div>
+
+            <div className="flex items-center gap-[2px]">
+              <Image src={messageIcon} alt="comment" width={14} height={14} />
+              <span>{comment}</span>
+            </div>
           </div>
         </CardFooter>
       </div>
