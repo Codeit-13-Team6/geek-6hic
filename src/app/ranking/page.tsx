@@ -1,19 +1,34 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
 import TopRankCard from "@/app/ranking/component/TopRankCard";
 import RankCard from "@/app/ranking/component/RankCard";
-import { useRanking } from "@/hooks/useRanking";
-import { useEffect } from "react";
+
+type RankedItem = {
+  id: number;
+  commentLeng: number;
+  checkScore: number;
+  totalUserLeng: number;
+  commentingUserList: string[];
+  rankScore: number;
+  meetName: string;
+  meetType: string;
+};
 
 export default function Page() {
-  const { rankedList, top3List, top10List, isRankingReady } = useRanking();
+  const { data: rankedList = [] } = useQuery<RankedItem[]>({
+    queryKey: ["ranking"],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get("/ranking");
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10,
+  });
 
-  useEffect(() => {
-    if (isRankingReady) {
-      rankedList.sort((a, b) => b.rankScore - a.rankScore);
-      console.log("랭킹 데이터 완료", top3List, top10List, rankedList);
-    }
-  }, [isRankingReady]);
+  const top3List = rankedList.slice(0, 3);
+  const top10List = rankedList.slice(3, 10);
 
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
@@ -42,28 +57,18 @@ export default function Page() {
               rank={2}
               meetType={top3List[1]?.meetType}
             />
-
             <TopRankCard
               title={top3List[0]?.meetName}
               point={top3List[0]?.rankScore}
               rank={1}
               meetType={top3List[0]?.meetType}
             />
-
             <TopRankCard
               title={top3List[2]?.meetName}
               point={top3List[2]?.rankScore}
               rank={3}
               meetType={top3List[2]?.meetType}
             />
-            {/*{top3List.map((item, index: number) => (*/}
-            {/*  <TopRankCard*/}
-            {/*    title={item.meetName}*/}
-            {/*    point={item.rankScore}*/}
-            {/*    rank={index + 1}*/}
-            {/*    meetType={item.meetType}*/}
-            {/*  />*/}
-            {/*))}*/}
           </div>
 
           <div className="flex flex-col gap-[16px]">
