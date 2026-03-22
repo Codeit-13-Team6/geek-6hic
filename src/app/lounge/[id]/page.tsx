@@ -61,10 +61,14 @@ export default function LoungeDetailPage() {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
 
-  // content에 <hr/>이 없으면 linksHtml은 빈 문자열이 되도록 처리
-  const [mainContent, linksHtml] = post.content.includes("<hr/>")
-    ? post.content.split("<hr/>")
-    : [post.content, ""];
+  // content에 <p><a href=이 없으면 linksHtml은 빈 문자열이 되도록 처리
+  const part = post.content.split("<p><a href=");
+  const mainContent = part[0];
+  // 구분자를 다시 붙여주는 안전한 방식
+  const linksHtml = part
+    .slice(1)
+    .map((l) => "<p><a href=" + l)
+    .join("");
 
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 pb-20 sm:p-8 lg:pt-12">

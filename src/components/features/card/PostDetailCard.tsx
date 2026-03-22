@@ -44,6 +44,7 @@ export function PostDetailCard({
   liked = false,
   isOwner = false,
 }: PostDetailCardProps) {
+  const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
   return (
     <Card className="relative rounded-[32px] p-8 sm:p-10 lg:p-14">
       <div className="absolute top-7 right-6 sm:top-10 sm:right-8 lg:top-14 lg:right-12">
@@ -96,9 +97,10 @@ export function PostDetailCard({
           </span>
         </div>
 
-        <div className="mb-6 text-sm leading-relaxed text-gray-700 sm:mb-8 sm:text-base lg:text-lg">
-          {content}
-        </div>
+        <div
+          className="prose prose-slate prose-p:my-0 prose-ul:my-0 prose-ol:my-0 max-w-none text-gray-700"
+          dangerouslySetInnerHTML={{ __html: processedContent }}
+        />
 
         {img && (
           <div className="mb-6 w-full max-w-[320px] sm:mb-8">
