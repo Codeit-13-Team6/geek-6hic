@@ -97,8 +97,8 @@ export function PostDetailCard({
           </span>
         </div>
 
-        <div
-          className="prose prose-slate prose-p:my-0 prose-ul:my-0 prose-ol:my-0 max-w-none text-gray-700"
+        <div // 상세 페이지 뷰어 스타일링
+          className="prose prose-slate prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#f1f1ef] prose-code:text-red-400 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-mono prose-code:text-[0.9em] prose-pre:bg-[#f7f6f3] prose-pre:text-[#37352f] prose-pre:border prose-pre:border-[#e9e9e7] prose-pre:rounded-md prose-pre:p-4 max-w-none text-gray-700"
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
 
