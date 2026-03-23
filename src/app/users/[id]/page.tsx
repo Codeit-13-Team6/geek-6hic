@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useQueryClient } from "@tanstack/react-query";
-import { Tab } from "@/components/features/tab/Tab";
+import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import PostList from "@/components/features/list/PostList";
 import ProfileSection from "./components/ProfileSection";
