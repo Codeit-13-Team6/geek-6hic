@@ -9,10 +9,10 @@ import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { updateUserProfile } from "@/api/user";
 import { User, UserProfileUpdateProps } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
-import ModalBase from "@/components/features/modal/ModalBase";
+import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput";
+import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 
 export default function ProfileSection() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
