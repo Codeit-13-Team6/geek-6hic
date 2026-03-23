@@ -8,6 +8,7 @@ const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
   console.log({ pathname });
   if (pathname === "/login") {
     console.log("?");
@@ -37,6 +38,8 @@ export async function proxy(request: NextRequest) {
   // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
   try {
     // 멘토님 조언대로 axios 사용 (단, 절대 경로 필요)
+    console.log("??");
+    console.log({ refreshToken });
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
       { refreshToken },

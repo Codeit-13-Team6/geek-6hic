@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL, // ** 모든 요청은 slug 프록시로 향함
