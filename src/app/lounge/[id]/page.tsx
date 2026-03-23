@@ -8,33 +8,8 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPostsDetail } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
+import { getComments } from "@/api/comment";
 
-const COMMENTS = [
-  {
-    id: 1,
-    author: {
-      name: "ghf",
-    },
-    content: "comment1",
-    createdAt: 20260404,
-  },
-  {
-    id: 2,
-    author: {
-      name: "ghf",
-    },
-    content: "comment2",
-    createdAt: 23933848,
-  },
-  {
-    id: 3,
-    author: {
-      name: "ghf",
-    },
-    content: "comment2",
-    createdAt: 23933848,
-  },
-];
 export default function LoungeDetailPage() {
   const { id } = useParams();
   const userId = useAuthStore((state) => state.user?.id);
@@ -51,7 +26,14 @@ export default function LoungeDetailPage() {
     enabled: !!id, // id가 있을 때만 실행
   });
 
-  const isOwner = userId !== null && userId === post?.author.id;
+  const { data: comments } = useQuery({
+    queryKey: ["comments", id],
+    queryFn: () => getComments(Number(id)),
+    enabled: !!id,
+  });
+
+  const commentsList = comments?.data || [];
+  const isPostOwner = userId !== null && userId === post?.author.id;
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -85,6 +67,7 @@ export default function LoungeDetailPage() {
       };
     })
     .filter((link) => link.url); // url이 제대로 뽑힌 정상적인 데이터만 남김 (안전장치)
+
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 pb-20 sm:p-8 lg:pt-12">
       <div className="mx-auto w-full max-w-[860px]">
@@ -96,10 +79,10 @@ export default function LoungeDetailPage() {
             date={new Date(post.createdAt)}
             content={mainContent} // 링크를 제외한 원래 본문 내용만
             linkObjects={linkObjects}
-            img={post.image || ""} // 대표 썸네일
+            img={post.image || ""} // 대표 썸네일 (일단 쓰지는 않음)
             thumbsUp={post.likeCount}
             comment={post.comments.length || 0}
-            isOwner={isOwner} // 본인인지 상세페이지에서 props로 넘겨주는 것으로 수정
+            isOwner={isPostOwner}
             liked={post.isLiked}
           />
         </section>
@@ -108,7 +91,7 @@ export default function LoungeDetailPage() {
         <section className="flex flex-col gap-4 sm:gap-4">
           <h3 className="text-base font-bold text-gray-800 sm:text-lg lg:text-xl">
             댓글{" "}
-            <span className="text-green-500">{post.comments.length || 0}</span>
+            <span className="text-green-500">{commentsList.length || 0}</span>
           </h3>
 
           {/* 댓글 입력창 */}
@@ -123,7 +106,7 @@ export default function LoungeDetailPage() {
             <div className="flex justify-end">
               <BtnCommon
                 onClick={() => console.log("댓글 등록:", commentValue)}
-                className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[80px] sm:text-base lg:h-[60px] lg:text-lg"
+                className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
               >
                 등록
               </BtnCommon>
@@ -132,13 +115,13 @@ export default function LoungeDetailPage() {
 
           {/* 댓글 목록 */}
           <div className="flex flex-col divide-y divide-slate-200 lg:mt-4">
-            {COMMENTS.map((item) => (
+            {commentsList.map((item) => (
               <Comment
                 key={item.id}
                 name={item.author.name}
                 content={item.content}
                 date={new Date(item.createdAt)}
-                isOwner={isOwner}
+                isOwner={userId !== null && userId === item.author.id}
               />
             ))}
           </div>

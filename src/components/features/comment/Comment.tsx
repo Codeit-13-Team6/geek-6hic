@@ -26,51 +26,58 @@ export default function Comment({
   isOwner = false,
 }: CommentProps) {
   return (
-    <article className="relative flex flex-col py-[24px]">
-      <div className="flex flex-row items-center gap-[6px] text-sm text-gray-500">
-        <Image
-          className="rounded-[24px]"
-          src={img ?? profileImg}
-          alt="프로필 이미지"
-          width={24}
-          height={24}
-        />
-        <p>{name}</p>
-        <p>
-          {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
-        </p>
-      </div>
+    <article className="flex flex-col border-b border-gray-50 py-5 last:border-none sm:py-6">
+      {/* 상단: 프로필 정보 + 메뉴 버튼 */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs text-gray-500 sm:text-sm">
+          <Image
+            className="shrink-0 rounded-full"
+            src={img ?? profileImg}
+            alt="프로필 이미지"
+            width={24}
+            height={24}
+          />
+          <span className="font-medium text-gray-700">{name}</span>
+          <span className="mx-0.5 text-gray-300">•</span>
+          <span>
+            {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
+          </span>
+        </div>
 
-      <div className="absolute top-5 right-0">
+        {/* 메뉴 버튼: absolute 대신 flex로 배치하여 텍스트 겹침 방지 */}
         {isOwner && (
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="cursor-pointer">
-                <Image
-                  src={meatballsIcon}
-                  alt="상세보기 아이콘"
-                  width={24}
-                  height={24}
-                />
-              </div>
-            </DropdownMenuTrigger>
+          <div className="shrink-0">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="focus:outline-none">
+                <div className="cursor-pointer p-1">
+                  <Image
+                    src={meatballsIcon}
+                    alt="상세보기 아이콘"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+              </DropdownMenuTrigger>
 
-            <DropdownMenuContent size="sm">
-              <DropdownMenuItem onClick={() => console.log("수정")}>
-                수정하기
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => console.log("삭제")}
-              >
-                삭제하기
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenuContent size="sm" align="end">
+                <DropdownMenuItem onClick={() => console.log("수정")}>
+                  수정하기
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => console.log("삭제")}
+                >
+                  삭제하기
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
       </div>
-      <div className="px-[2px] pt-[8px] text-lg text-gray-700">{content}</div>
+
+      <div className="pt-1.5 pl-[32px] text-sm leading-relaxed text-gray-700 sm:text-base">
+        {content}
+      </div>
     </article>
   );
 }
