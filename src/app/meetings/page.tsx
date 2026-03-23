@@ -165,7 +165,7 @@ export default function Page() {
                     </div>
                     <Progress className="ml-[5px] w-full" value={(meeting.participantCount / meeting.capacity) * 100} />
                     <p className="ml-[13px]">
-                      <span className="color-green-500 text-sm font-semibold">{meeting.participantCount}</span>
+                      <span className="text-green-500 text-sm font-semibold">{meeting.participantCount}</span>
                       <span className="color-gray-600 text-sm">/{meeting.capacity}</span>
                     </p>
                   </div>
