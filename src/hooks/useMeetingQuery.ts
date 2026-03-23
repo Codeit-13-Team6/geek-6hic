@@ -1,11 +1,10 @@
-//내가 참여한 모임 불러오는 무한스크롤링 로직
+//
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export function useMeetingQuery() {
   return useInfiniteQuery({
-    // 1. 탭이 없으므로 고정된 키를 사용합니다.
     queryKey: ["meetings", "joined"],
 
     // 2. Axios를 사용한 데이터 페칭
@@ -22,11 +21,13 @@ export function useMeetingQuery() {
     },
 
     // 3. 첫 페이지 로드 시 커서 값 (Next.js 15 + v5 필수)
-    initialPageParam: undefined,
+    initialPageParam: 0,
 
     // 4. 다음 페이지를 위한 커서 추출 로직
     getNextPageParam: (lastPage) => {
-      // 서버 응답 구조가 { data: [...], nextCursor: "..." }라고 가정
+      // 1. hasMore가 false라면 더 이상 가져올 데이터가 없으므로 undefined 반환
+      if (!lastPage.hasMore) return undefined;
+      // 2. hasMore가 true라면 nextCursor를 반환 (다음 요청의 pageParam이 됨)
       return lastPage.nextCursor ?? undefined;
     },
   });
