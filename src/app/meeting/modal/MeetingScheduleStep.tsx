@@ -1,8 +1,9 @@
 "use client";
 
-import { Input } from "@/components/shadcnOrigin/input";
 import { MeetingScheduleStepProps } from "@/app/meeting/modal/modal";
-import { cn } from "@/lib/utils";
+import { ScheduleDatePicker } from "@/app/meeting/modal/ScheduleDatePicker";
+import { ScheduleTimePicker } from "@/app/meeting/modal/ScheduleTimePicker";
+import { InputCommon } from "@/components/ui/InputCommon";
 
 const getTodayDateString = () => {
   const now = new Date();
@@ -19,26 +20,10 @@ export function MeetingScheduleStep({
   onChange,
 }: MeetingScheduleStepProps) {
   const todayDate = getTodayDateString();
-
-  const handleChangeStartDate = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    onChange({ startDate: event.target.value });
-  };
-
-  const handleChangeStartTime = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    onChange({ startTime: event.target.value });
-  };
-
-  const handleChangeEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ endDate: event.target.value });
-  };
-
-  const handleChangeEndTime = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ endTime: event.target.value });
-  };
+  // 날짜와 시간 입력이 한 줄에 묶여 있어
+  // 둘 중 하나라도 에러가 있으면 같은 안내 문구 영역에 표시한다.
+  const startRowHintText = errors.startDate || errors.startTime;
+  const endRowHintText = errors.endDate || errors.endTime;
 
   const handleChangeCapacity = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value.replace(/[^0-9]/g, "");
@@ -47,128 +32,91 @@ export function MeetingScheduleStep({
 
   return (
     <div className="space-y-6 pt-6">
-      <div className="space-y-2">
-        <label
-          htmlFor="startDate"
-          className="text-foreground text-sm font-medium"
-        >
-          모임 시작 날짜
-          <span
-            className={cn(
-              "ml-1",
-              errors.startDate || errors.startTime
-                ? "text-error"
-                : "text-green-500",
-            )}
-          >
-            *
-          </span>
-        </label>
+      <div className="space-y-[6px]">
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <ScheduleDatePicker
+              id="startDate"
+              label="모임 시작 날짜"
+              value={values.startDate}
+              min={todayDate}
+              isRequired
+              isDestructive={Boolean(startRowHintText)}
+              onChange={(value) => {
+                onChange({ startDate: value });
+              }}
+            />
+          </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            id="startDate"
-            type="date"
-            min={todayDate}
-            value={values.startDate}
-            onChange={handleChangeStartDate}
-            className={cn(errors.startDate && "border-error")}
-          />
-
-          <Input
-            id="startTime"
-            type="time"
-            value={values.startTime}
-            onChange={handleChangeStartTime}
-            className={cn(errors.startTime && "border-error")}
-          />
+          <div className="min-w-0 flex-1 pt-[27px]">
+            <ScheduleTimePicker
+              id="startTime"
+              value={values.startTime}
+              isDestructive={Boolean(errors.startTime)}
+              onChange={(value) => {
+                onChange({ startTime: value });
+              }}
+            />
+          </div>
         </div>
 
-        {errors.startDate ? (
-          <p className="text-error text-sm">{errors.startDate}</p>
-        ) : null}
-
-        {!errors.startDate && errors.startTime ? (
-          <p className="text-error text-sm">{errors.startTime}</p>
+        {startRowHintText ? (
+          <p className="text-error text-[12px] leading-[16px]">
+            {startRowHintText}
+          </p>
         ) : null}
       </div>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="endDate"
-          className="text-foreground text-sm font-medium"
-        >
-          모집 마감 날짜
-          <span
-            className={cn(
-              "ml-1",
-              errors.endDate || errors.endTime
-                ? "text-error"
-                : "text-green-500",
-            )}
-          >
-            *
-          </span>
-        </label>
+      <div className="space-y-[6px]">
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <ScheduleDatePicker
+              id="endDate"
+              label="모집 마감 날짜"
+              value={values.endDate}
+              min={todayDate}
+              isRequired
+              isDestructive={Boolean(endRowHintText)}
+              onChange={(value) => {
+                onChange({ endDate: value });
+              }}
+            />
+          </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            id="endDate"
-            type="date"
-            min={todayDate}
-            value={values.endDate}
-            onChange={handleChangeEndDate}
-            className={cn(errors.endDate && "border-error")}
-          />
-
-          <Input
-            id="endTime"
-            type="time"
-            value={values.endTime}
-            onChange={handleChangeEndTime}
-            className={cn(errors.endTime && "border-error")}
-          />
+          <div className="min-w-0 flex-1 pt-[27px]">
+            <ScheduleTimePicker
+              id="endTime"
+              value={values.endTime}
+              isDestructive={Boolean(errors.endTime)}
+              onChange={(value) => {
+                onChange({ endTime: value });
+              }}
+            />
+          </div>
         </div>
 
-        {errors.endDate ? (
-          <p className="text-error text-sm">{errors.endDate}</p>
-        ) : null}
-
-        {!errors.endDate && errors.endTime ? (
-          <p className="text-error text-sm">{errors.endTime}</p>
+        {endRowHintText ? (
+          <p className="text-error text-[12px] leading-[16px]">
+            {endRowHintText}
+          </p>
         ) : null}
       </div>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="capacity"
-          className="text-foreground text-sm font-medium"
-        >
-          모임 정원
-          <span
-            className={cn(
-              "ml-1",
-              errors.capacity ? "text-error" : "text-green-500",
-            )}
-          >
-            *
-          </span>
-        </label>
-
-        <Input
-          id="capacity"
-          type="text"
-          inputMode="numeric"
-          placeholder="숫자만 입력해주세요"
-          value={values.capacity}
-          onChange={handleChangeCapacity}
-          className={cn(errors.capacity && "border-error")}
-        />
-
-        {errors.capacity ? (
-          <p className="text-error text-sm">{errors.capacity}</p>
-        ) : null}
-      </div>
+      <InputCommon
+        id="capacity"
+        type="text"
+        inputMode="numeric"
+        label="모임 정원"
+        isRequired
+        placeholder="숫자만 입력해주세요"
+        value={values.capacity}
+        onChange={handleChangeCapacity}
+        onClear={() => {
+          onChange({ capacity: "" });
+        }}
+        isDestructive={Boolean(errors.capacity)}
+        hintText={errors.capacity}
+      />
     </div>
   );
 }

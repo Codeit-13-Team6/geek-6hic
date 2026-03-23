@@ -28,10 +28,6 @@ export interface CreateMeetingFormErrors {
   capacity: string;
 }
 
-export interface CreateMeetingModalContentProps {
-  onClose: () => void;
-}
-
 export interface UploadImageResponse {
   presignedUrl: string;
   publicUrl: string;
