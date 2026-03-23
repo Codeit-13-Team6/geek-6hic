@@ -123,7 +123,7 @@ export function PostDetailCard({
 
                 // 2. 파비콘 URL 생성
                 const faviconUrl = hostname
-                  ? `https://favicon.im/${hostname}?throw-error-on-404=true`
+                  ? `https://favicon.im/${hostname}?larger=true&throw-error-on-404=true`
                   : "";
 
                 return (
