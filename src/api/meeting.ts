@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import { Meeting } from "@/types";
 import axios from "axios";
 

@@ -19,7 +19,7 @@ import {
 } from "@/app/meeting/modal/meetingValidation";
 import { uploadMeetingImage } from "@/app/meeting/modal/services/uploadMeetingImage";
 
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import { toastCommon } from "@/lib/toastCommon";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";

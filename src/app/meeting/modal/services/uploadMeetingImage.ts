@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import axios from "axios";
 import { UploadImageResponse } from "@/app/meeting/modal/modal";
 

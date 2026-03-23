@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { User } from "@/types/user";
 import type { SignUpFormValues } from "@/types";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 

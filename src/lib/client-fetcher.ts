@@ -6,3 +6,5 @@ const axiosInstance = axios.create({
 });
 
 export default axiosInstance;
+
+//bff로 보낼때 필요하니깐
