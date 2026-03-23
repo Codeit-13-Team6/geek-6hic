@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
-import { toastCommon } from "@/lib/toastCommon";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 import axiosInstance from "@/lib/axios";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/components/features/card/LinkCard";
@@ -60,7 +60,7 @@ export default function LoungeCreatePage() {
     const trimmedContentText = plainText.trim();
 
     if (!trimmedTitle || !trimmedContentText) {
-      return toastCommon({
+      return ToastCommon({
         message: "제목과 내용을 모두 입력해주세요.",
         size: "sm",
       });
@@ -92,11 +92,11 @@ export default function LoungeCreatePage() {
 
     try {
       await axiosInstance.post("/posts", postPayload);
-      toastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
+      ToastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
       router.push("/lounge");
     } catch (error) {
       console.error("게시글 등록 실패:", error);
-      toastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
     } finally {
       setIsSubmitting(false);
     }
