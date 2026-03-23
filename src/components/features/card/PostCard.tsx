@@ -30,16 +30,33 @@ export default function PostCard({
   // 태그 제거 로직
   const getPlainText = (html: string) => {
     if (!html) return "";
-    // 1. 먼저 <hr/>를 기준으로 자릅니다. ([0]번이 순수 본문, [1]번이 링크 영역)
-    const splitContent = html.split(/<hr\s*\/?>|<p><a|<a/i);
-    const contentOnly = splitContent[0]; // 무조건 첫 번째 덩어리(순수 본문)만 선택
-    // 2. 잘라낸 본문에서만 태그를 지웁니다.
-    return contentOnly
-      .replace(/<\/p>|<\/li>|<\/div>|<br\s*\/?>|<\/h[1-6]>/gi, " ")
-      .replace(/<[^>]*>?/gm, "")
-      .replace(/&nbsp;/g, " ")
-      .replace(/\s\s+/g, " ")
-      .trim();
+
+    // 1. [0]번이 순수 본문, [1]번이 링크 영역 분리
+    const splitContent = html.split(/<p><a|<a/i);
+    let text = splitContent[0];
+
+    // 2. 블록 태그들을 공백으로 치환 (텍스트가 붙는 것 방지)
+    // p, li, div, h1~6 뿐만 아니라 blockquote, ul, ol 등을 추가
+    text = text.replace(/<(p|br|li|div|h[1-6]|blockquote|ul|ol)[^>]*>/gi, " ");
+    text = text.replace(/<\/(p|li|div|h[1-6]|blockquote|ul|ol)>/gi, " ");
+
+    // 3. 남은 모든 HTML 태그 제거
+    text = text.replace(/<[^>]*>?/gm, "");
+
+    // 4. HTML 엔티티 디코딩 (&gt; -> >, &nbsp; -> 공백 등)
+    const entities: { [key: string]: string } = {
+      "&nbsp;": " ",
+      "&lt;": "<",
+      "&gt;": ">",
+      "&amp;": "&",
+      "&quot;": '"',
+      "&#39;": "'",
+    };
+
+    text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
+
+    // 5. 연속된 공백 하나로 합치고 앞뒤 트림
+    return text.replace(/\s\s+/g, " ").trim();
   };
 
   const pureContent = getPlainText(content);
