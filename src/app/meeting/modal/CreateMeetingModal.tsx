@@ -20,10 +20,10 @@ import {
 import { uploadMeetingImage } from "@/app/meeting/modal/services/uploadMeetingImage";
 
 import axiosInstance from "@/lib/client-fetcher";
-import { toastCommon } from "@/lib/toastCommon";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
   category: "TEAM_MEETING",
