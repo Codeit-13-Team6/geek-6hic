@@ -12,3 +12,7 @@ export async function getPostsDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 }
+
+export async function deletePost(postId: number): Promise<void> {
+  await axiosInstance.delete(`/posts/${postId}`);
+}
