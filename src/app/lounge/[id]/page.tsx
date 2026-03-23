@@ -1,15 +1,17 @@
 "use client";
 
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { getPostsDetail } from "@/api/posts";
+import { useParams, useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deletePost, getPostsDetail } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
 import CommentSection from "./component/comment/CommentSection";
-import { parsePostContent } from "@/lib/parsePostContent";
+import { ToastCommon } from "@/components/ui/ToastCommon";
+import { parsePostData } from "@/lib/postUtils";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const postId = Number(id);
   const userId = useAuthStore((state) => state.user?.id);
 
@@ -24,7 +26,30 @@ export default function LoungeDetailPage() {
   });
 
   const isPostOwner = userId !== null && userId === post?.author.id;
-  const { mainContent, linkObjects } = parsePostContent(post?.content || "");
+  const { content: mainContent, links: linkObjects } = parsePostData(
+    post?.content || "",
+  );
+
+  const { mutate: removePost } = useMutation({
+    mutationFn: () => deletePost(postId),
+    onSuccess: () => {
+      ToastCommon({ message: "게시글이 삭제되었습니다.", size: "sm" });
+      router.push("/lounge");
+    },
+    onError: () => {
+      ToastCommon({ message: "게시글 삭제에 실패했습니다.", size: "sm" });
+    },
+  });
+
+  const handlePostDelete = () => {
+    if (confirm("정말 이 게시글을 삭제하시겠습니까? (복구할 수 없습니다)")) {
+      removePost();
+    }
+  };
+
+  const handlePostEdit = () => {
+    router.push(`/lounge/edit/${postId}`);
+  };
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -49,6 +74,8 @@ export default function LoungeDetailPage() {
             comment={post.comments.length || 0}
             isOwner={isPostOwner}
             liked={post.isLiked}
+            onEdit={handlePostEdit}
+            onDelete={handlePostDelete}
           />
         </section>
 

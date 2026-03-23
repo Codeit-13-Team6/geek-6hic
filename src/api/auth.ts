@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { User } from "@/types/user";
 import type { SignUpFormValues } from "@/types";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 
 // 로그인 응답 타입 정의
 export interface LoginResult {

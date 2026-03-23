@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 /**
  * 예시)
- * toastCommon({ message: "성공적으로 저장되었습니다." });
- * toastCommon({ message: "삭제 완료", size: "sm", duration: 1500 });
- * toastCommon({
+ * ToastCommon({ message: "성공적으로 저장되었습니다." });
+ * ToastCommon({ message: "삭제 완료", size: "sm", duration: 1500 });
+ * ToastCommon({
  *   message: "로그인이 필요합니다.",
  *   className: "border border-red-500",
  * });
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 type ToastSize = "lg" | "sm";
 
-interface toastCommonProps {
+interface ToastCommonProps {
   message: string;
   size?: ToastSize;
   duration?: number;
@@ -30,12 +30,12 @@ const TOAST_SIZE_STYLES = {
 
 // 공용 toast 실행 함수입니다.
 // sonner의 custom API를 사용해 프로젝트 전용 toast UI를 렌더링합니다.
-export const toastCommon = ({
+export const ToastCommon = ({
   message,
   size = "lg",
   duration = 2000,
   className,
-}: toastCommonProps) => {
+}: ToastCommonProps) => {
   toast.custom(
     () => (
       <div

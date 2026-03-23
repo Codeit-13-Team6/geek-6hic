@@ -1,5 +1,21 @@
-import axiosInstance from "@/lib/axios";
-import { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import axiosInstance from "@/lib/client-fetcher";
+import { Post } from "@/types";
+
+interface GetPostsParams {
+  type?: "all" | "best";
+  keyword?: string;
+  sortBy?: "createdAt" | "viewCount" | "likeCount";
+  sortOrder?: "asc" | "desc";
+  cursor?: string;
+  size?: number;
+}
+
+// 페이지네이션을 위해 정의
+interface GetPostsResponse {
+  data: Post[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
 
 export async function getPosts(
   params?: GetPostsParams,
@@ -10,5 +26,17 @@ export async function getPosts(
 
 export async function getPostsDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
+  return data;
+}
+
+export async function deletePost(postId: number): Promise<void> {
+  await axiosInstance.delete(`/posts/${postId}`);
+}
+
+export async function updatePost(
+  postId: number,
+  postData: { title: string; content: string; image?: string | null },
+) {
+  const { data } = await axiosInstance.patch(`/posts/${postId}`, postData);
   return data;
 }

@@ -9,9 +9,9 @@ import {
   updateComment,
 } from "@/api/comments";
 import { useAuthStore } from "@/store/useAuthStore";
-import { toastCommon } from "@/lib/toastCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 interface CommentSectionProps {
   postId: number;
@@ -38,7 +38,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       setCommentValue("");
     },
     onError: () => {
-      toastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
     },
   });
 
@@ -47,10 +47,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      toastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
+      ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
     onError: () => {
-      toastCommon({ message: "댓글 삭제에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "댓글 삭제에 실패했습니다.", size: "sm" });
     },
   });
 
@@ -65,10 +65,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     }) => updateComment(postId, commentId, content),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      toastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
+      ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
     },
     onError: () => {
-      toastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
     },
   });
 
