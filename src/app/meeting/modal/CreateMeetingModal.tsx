@@ -59,6 +59,8 @@ export function CreateMeetingModal() {
   };
 
   const [currentStep, setCurrentStep] = useState(1);
+  // 각 step에서 다음 버튼을 눌렀는지 저장해,
+  // 해당 step에 진입했을 때만 검증 메시지를 보여준다.
   const [touchedStepList, setTouchedStepList] = useState<number[]>([]);
   const [formValues, setFormValues] =
     useState<CreateMeetingFormValues>(INITIAL_FORM_VALUES);
@@ -123,6 +125,8 @@ export function CreateMeetingModal() {
       return;
     }
 
+    // 업로드 완료 전에도 바로 미리보기를 확인할 수 있도록
+    // 로컬 object URL을 먼저 생성해 화면에 반영한다.
     const nextPreviewImageUrl = URL.createObjectURL(nextFile);
 
     revokePreviewImageUrl(previewImageUrlRef.current);
@@ -178,6 +182,7 @@ export function CreateMeetingModal() {
   };
 
   const handleNextStep = () => {
+    // 현재 step 검증을 통과한 경우에만 다음 step으로 이동한다.
     const currentStepErrors =
       currentStep === 1
         ? categoryErrors
@@ -220,6 +225,8 @@ export function CreateMeetingModal() {
   };
 
   const handleSubmitMeeting = async () => {
+    // 최종 제출 시에는 step 순서대로 다시 검증해
+    // 에러가 있는 step으로 바로 되돌아갈 수 있게 한다.
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
     const nextBasicInfoErrors = validateMeetingBasicInfoStep(formValues);
     const nextScheduleErrors = validateMeetingScheduleStep(formValues);

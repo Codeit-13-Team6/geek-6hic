@@ -64,6 +64,7 @@ export function ScheduleTimePicker({
       </div>
 
       <PopoverContent className="w-auto border-none bg-transparent p-0 shadow-none">
+        {/* 직접 입력도 가능하지만, 같은 형식으로 쉽게 고를 수 있도록 시간 선택기를 함께 제공한다. */}
         <TimePickerCommon value={value} onChange={onChange} />
       </PopoverContent>
     </Popover>

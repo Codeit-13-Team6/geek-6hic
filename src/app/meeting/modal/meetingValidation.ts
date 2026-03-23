@@ -89,6 +89,8 @@ export const getMeetingLinkErrorMessage = (link: string) => {
   const normalizedLink = getNormalizedMeetingLink(trimmedLink);
 
   try {
+    // hostname 검사 이후 실제 URL 생성까지 통과해야
+    // 저장 가능한 모임 링크로 판단한다.
     const parsedLink = new URL(normalizedLink);
 
     if (parsedLink.protocol !== "http:" && parsedLink.protocol !== "https:") {
@@ -144,6 +146,8 @@ export const validateMeetingScheduleStep = (
     errors.capacity = "모임 정원은 1명 이상 입력해주세요.";
   }
 
+  // 모집 마감은 모임 시작보다 늦을 수 없어서
+  // 날짜가 다르거나 같은 날짜의 시간이 뒤인 경우를 함께 비교한다.
   if (formValues.startDate && formValues.endDate) {
     const isEndDateAfterStartDate = formValues.endDate > formValues.startDate;
     const isSameDateAndEndTimeAfterStartTime =
