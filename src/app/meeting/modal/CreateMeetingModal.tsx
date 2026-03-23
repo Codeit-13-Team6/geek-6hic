@@ -157,7 +157,7 @@ export function CreateMeetingModal() {
         imageUrl: "",
       }));
       setImageErrorMessage("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
-      toastCommon({ message: "이미지 업로드에 실패했습니다." });
+      ToastCommon({ message: "이미지 업로드에 실패했습니다." });
     } finally {
       setIsImageUploading(false);
     }
@@ -254,11 +254,11 @@ export function CreateMeetingModal() {
 
       const { data } = await axiosInstance.post("/meetings", payload);
 
-      toastCommon({ message: `${data.name} 모임 생성완료` });
+      ToastCommon({ message: `${data.name} 모임 생성완료` });
       handleCloseModal();
     } catch (error) {
       console.error("meeting create error", error);
-      toastCommon({ message: "모임 생성에 실패했습니다." });
+      ToastCommon({ message: "모임 생성에 실패했습니다." });
     }
   };
   const handleOpenChangeModal = (nextIsOpen: boolean) => {

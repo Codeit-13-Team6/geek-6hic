@@ -1,4 +1,4 @@
-export interface Posts {
+export interface Post {
   id: number;
   teamId: string;
   title: string;
@@ -21,18 +21,17 @@ export interface Posts {
   isLiked: boolean;
 }
 
-interface Author {
-  id: number;
-  name: string;
-  image: string;
+export interface GetPostsParams {
+  type?: "all" | "best";
+  keyword?: string;
+  sortBy?: "createdAt" | "viewCount" | "likeCount";
+  sortOrder?: "asc" | "desc";
+  cursor?: string;
+  size?: number;
 }
 
-interface Comment {
-  id: number;
-  content: string;
-  postId: number;
-  authorId: number;
-  author: Author;
-  createdAt: string;
-  updatedAt: string;
+export interface GetPostsResponse {
+  data: Post[];
+  nextCursor: string | null;
+  hasMore: boolean;
 }

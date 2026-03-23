@@ -11,6 +11,8 @@ interface RouteParams {
   params: Promise<{ slug: string[] }>;
 }
 
+
+
 interface RouteRule {
   pattern: RegExp;
   methods: NextRequest["method"][];
