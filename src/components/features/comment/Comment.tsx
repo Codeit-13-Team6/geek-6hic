@@ -11,19 +11,23 @@ import {
 } from "@/components/ui/DropdownCommon";
 
 interface CommentProps {
+  id: number;
   name?: string;
   img?: string;
   date?: Date;
   content?: string;
   isOwner: boolean;
+  onDelete: (id: number) => void;
 }
 
 export default function Comment({
+  id,
   name = "익명",
   img,
   date = new Date(),
   content = "",
   isOwner = false,
+  onDelete,
 }: CommentProps) {
   return (
     <article className="flex flex-col border-b border-gray-50 py-5 last:border-none sm:py-6">
@@ -65,7 +69,7 @@ export default function Comment({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
-                  onClick={() => console.log("삭제")}
+                  onClick={() => onDelete(id)}
                 >
                   삭제하기
                 </DropdownMenuItem>

@@ -3,12 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/posts";
-import { Posts } from "@/types";
+import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
 
 interface Props {
-  filterFn?: (post: Posts) => boolean;
+  filterFn?: (post: Post) => boolean;
   searchValue?: string;
   sortValue?: string;
   refetchType?: boolean;
@@ -65,7 +65,7 @@ export default function PostList({
     <div className="flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8">
       <div className="flex flex-col sm:gap-8">
         {list.length > 0 ? (
-          list.map((post: Posts) => (
+          list.map((post: Post) => (
             <PostCard
               key={post.id}
               {...post}

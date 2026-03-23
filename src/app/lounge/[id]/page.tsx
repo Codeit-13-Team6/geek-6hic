@@ -5,15 +5,16 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import Comment from "@/components/features/comment/Comment";
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPostsDetail } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
-import { getComments } from "@/api/comments";
+import { createComment, deleteComment, getComments } from "@/api/comments";
+import { toastCommon } from "@/lib/toastCommon";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();
   const userId = useAuthStore((state) => state.user?.id);
-
+  const queryClient = useQueryClient();
   const [commentValue, setCommentValue] = useState("");
 
   const {
@@ -34,6 +35,50 @@ export default function LoungeDetailPage() {
 
   const commentsList = comments?.data || [];
   const isPostOwner = userId !== null && userId === post?.author.id;
+
+  const { mutate: postComment, isPending: isPosting } = useMutation({
+    mutationFn: (newContent: string) => createComment(Number(id), newContent),
+    onSuccess: () => {
+      // 1. 성공하면 댓글 목록 쿼리를 무효화해서 새로고침 유도
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
+      setCommentValue("");
+    },
+    onError: (error) => {
+      toastCommon({
+        message: "댓글 등록에 실패했습니다. 다시 시도해주세요.",
+        size: "sm",
+      });
+    },
+  });
+
+  const handlePostComment = () => {
+    if (!commentValue.trim()) return; // 빈 내용 방지
+    postComment(commentValue);
+  };
+
+  const { mutate: removeComment } = useMutation({
+    mutationFn: (commentId: number) => deleteComment(Number(id), commentId),
+    onSuccess: () => {
+      // 삭제 성공 시 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
+      toastCommon({
+        message: "댓글이 삭제되었습니다.",
+        size: "sm",
+      });
+    },
+    onError: () => {
+      toastCommon({
+        message: "댓글 삭제에 실패했습니다. 다시 시도해주세요.",
+        size: "sm",
+      });
+    },
+  });
+
+  const handleDelete = (commentId: number) => {
+    if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
+      removeComment(commentId);
+    }
+  };
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -99,16 +144,20 @@ export default function LoungeDetailPage() {
             <textarea
               value={commentValue}
               rows={1}
+              disabled={isPosting} // 등록 중에는 입력 방지
               onChange={(e) => setCommentValue(e.target.value)}
-              placeholder="여기에 댓글을 남겨보세요"
+              placeholder={
+                isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요"
+              }
               className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
             />
             <div className="flex justify-end">
               <BtnCommon
-                onClick={() => console.log("댓글 등록:", commentValue)}
+                onClick={handlePostComment}
+                disabled={isPosting || !commentValue.trim()} // 등록 중이거나 빈 값일 때 버튼 비활성화
                 className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
               >
-                등록
+                {isPosting ? "..." : "등록"}
               </BtnCommon>
             </div>
           </div>
@@ -118,10 +167,12 @@ export default function LoungeDetailPage() {
             {commentsList.map((item) => (
               <Comment
                 key={item.id}
+                id={item.id}
                 name={item.author.name}
                 content={item.content}
                 date={new Date(item.createdAt)}
                 isOwner={userId !== null && userId === item.author.id}
+                onDelete={handleDelete}
               />
             ))}
           </div>
