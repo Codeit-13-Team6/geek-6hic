@@ -1,28 +1,41 @@
 'use client';
 
-import { useEffect } from "react";
-import { fetchMe } from "@/api/auth";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from 'react';
+import { fetchMe } from '@/api/auth';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface MemberProviderProps {
   children: React.ReactNode;
+  isAuthenticated: boolean;
 }
 
-export function MemberProvider({ children }: MemberProviderProps) {
+export function MemberProvider({
+  children,
+  isAuthenticated,
+}: MemberProviderProps) {
   const setUser = useAuthStore((s) => s.setUser);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  const setAuthLoading = useAuthStore((s) => s.setAuthLoading);
 
   useEffect(() => {
-    console.log('asdf')
     const init = async () => {
-      setAuthLoading(true);
-      const user = await fetchMe();
-      if (user) setUser(user);
-      else clearAuth();
+      // 
+      if (!isAuthenticated) return;
+
+      try {
+        const user = await fetchMe();
+
+        if (user) {
+          setUser(user);
+        } else {
+          clearAuth();
+        }
+      } catch {
+        clearAuth();
+      }
     };
+
     init();
-  }, [setUser, clearAuth, setAuthLoading]);
+  }, [isAuthenticated, setUser, clearAuth]);
 
   return <>{children}</>;
 }
