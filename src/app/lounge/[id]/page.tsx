@@ -6,8 +6,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { deletePost, getPostsDetail } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
 import CommentSection from "./component/comment/CommentSection";
-import { parsePostContent } from "@/lib/parsePostContent";
 import { ToastCommon } from "@/components/ui/ToastCommon";
+import { parsePostData } from "@/lib/postUtils";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();
@@ -26,7 +26,9 @@ export default function LoungeDetailPage() {
   });
 
   const isPostOwner = userId !== null && userId === post?.author.id;
-  const { mainContent, linkObjects } = parsePostContent(post?.content || "");
+  const { content: mainContent, links: linkObjects } = parsePostData(
+    post?.content || "",
+  );
 
   const { mutate: removePost } = useMutation({
     mutationFn: () => deletePost(postId),
