@@ -133,7 +133,7 @@ export default function LoungeCreatePage() {
         </div>
 
         {/* 메인 카드 영역 */}
-        <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 md:p-8">
+        <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 pt-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 sm:pt-4 md:p-8 md:pt-5">
           {/* 에디터 영역 */}
           <div className="flex-1">
             <LoungeEditor
