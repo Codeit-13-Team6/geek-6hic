@@ -233,3 +233,16 @@
     @apply font-pretendard;
   }
 }
+
+/* Quill 에디터 정렬 클래스 지원 (상세 페이지 뷰어용) */
+.prose .ql-align-center {
+  text-align: center;
+}
+
+.prose .ql-align-right {
+  text-align: right;
+}
+
+.prose .ql-align-justify {
+  text-align: justify;
+}
