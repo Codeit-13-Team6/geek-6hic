@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import { Posts } from "@/types";
 
 interface GetPostsParams {
@@ -23,9 +23,6 @@ export async function getPosts(
   const { data } = await axiosInstance.get("/posts", { params });
   return data;
 }
-
-
-
 
 export async function getPostsDetail(postId: number): Promise<Posts[]> {
   const { data } = await axiosInstance.get(`/posts${postId}`);

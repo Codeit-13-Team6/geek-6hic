@@ -1,6 +1,15 @@
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
+// [병수]: 서버 컴포넌트에서 요청하는 놈 -> route handler로 간다. X -> 빌드 에러 발생
+
+// [대안]
+// 모든 토큰 재발급을 proxy에서만 처리한다.
+// proxy는 페이지 접속 전에만 실행된다. -> route handler 전에도 발생
+// 페이지 접속 전 + route handler 요청 전 -> refreshToken으로 accessToken 재발급
+// 인터셉터 필요없다. proxy로 다 된다.
+// 인터셉터는 Next.js 서버측에서 사용하는 것이 안좋다
+//
 const axiosInstance = axios.create({
   baseURL: "/api", // ** 모든 요청은 slug 프록시로 향함
   withCredentials: true, // ** 브라우저가 자동으로 쿠키를 실어 보냄
@@ -8,12 +17,6 @@ const axiosInstance = axios.create({
 
 // 1. 요청 인터셉터: 신분증(토큰)을 헤더에 실어주는 비서 역할
 axiosInstance.interceptors.request.use((config) => {
-  // 로그인, 회원가입 등 토큰이 필요 없는 경로는 패스
-  const skipList = ["/auth/login", "/auth/signup"];
-  if (skipList.some((url) => config.url?.includes(url))) {
-    return config;
-  }
-
   return config;
 });
 
@@ -44,21 +47,6 @@ axiosInstance.interceptors.response.use(
       }
 
       try {
-        // // 서버에 토큰 갱신 요청 (API 검증 단계)
-        // const { data } = await axios.post(
-        //   `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-        //   { refreshToken },
-        // );
-
-        // // 새 토큰 저장
-        // setCookie("accessToken", data.accessToken);
-        // if (data.refreshToken) setCookie("refreshToken", data.refreshToken);
-
-        // // 실패했던 원래 API 요청을 다시 시도
-        // originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-
-        // ** 백엔드가 아닌 우리 BFF의 refresh 주소를 호출합
-        // ** 이 요청을 받은 app/api/auth/refresh/route.ts 가 새 쿠키를 구워줌
         await axios.post("/api/auth/refresh", {}, { withCredentials: true });
 
         return axiosInstance(originalRequest);
@@ -76,5 +64,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+const createAxios = () => {};
 
 export default axiosInstance;

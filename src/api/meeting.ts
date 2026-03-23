@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import { Meeting } from "@/types";
 import axios from "axios";
 
@@ -6,7 +6,6 @@ export async function getMeetings(params: {}): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings", { params });
   return data;
 }
-
 
 // 이름 수정 필요
 export async function getMeeting(): Promise<Meeting[]> {

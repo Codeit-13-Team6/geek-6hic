@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { User } from "@/types/user";
 import type { SignUpFormValues } from "@/types";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -37,7 +37,9 @@ export async function loginUser(data: {
 }
 
 // 클라이언트 회원가입 BFF 호출 함수
-export async function signupUser(data: SignUpFormValues): Promise<SignUpResult> {
+export async function signupUser(
+  data: SignUpFormValues,
+): Promise<SignUpResult> {
   const payload = {
     name: data.name,
     email: data.email,
