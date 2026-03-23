@@ -30,6 +30,7 @@ import { getPosts } from "@/api/posts";
 export default function LoungePage() {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [sortValue, setSortValue] = useState("latest");
 
   const sortOptions = [
@@ -42,9 +43,24 @@ export default function LoungePage() {
     queryKey: ["posts", "best"],
     queryFn: () => getPosts({ type: "best", size: 5 }),
   });
+
   const hotList = hotResponse?.data || [];
+
+  const currentSortLabel = sortOptions.find(
+    (opt) => opt.value === sortValue,
+  )?.label;
+
   const handlePostCreate = () => {
     router.push("/lounge/create");
+  };
+
+  const triggerSearch = () => {
+    setSearchKeyword(searchValue);
+    // 여기에 추가로 '페이지를 1페이지로 리셋'하는 로직을 넣을 수 있음
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") triggerSearch();
   };
 
   return (
@@ -76,10 +92,10 @@ export default function LoungePage() {
 
         <section className="mt-8 sm:mt-12">
           <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
-            이번주 HOT 게시물
+            | 이번주 HOT 게시물
           </h2>
 
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 sm:gap-6">
+          <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
             {hotList.map((post) => (
               <HotListCard
                 key={post.id}
@@ -94,16 +110,20 @@ export default function LoungePage() {
           </div>
         </section>
 
-        <section className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full sm:max-w-[400px]">
-            <Search className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-gray-400" />
+        <section className="mt-8 flex flex-col sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex w-full flex-row items-center gap-3 sm:max-w-[500px]">
             <InputCommon
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onClear={() => setSearchValue("")}
               placeholder="궁금한 내용을 검색해보세요."
-              className="!bg-white !pl-11"
-              inputSize="lg"
+              className="rounded-4xl !bg-white !pl-5 !text-sm sm:!h-[50px] sm:!text-base"
+              inputSize="sm"
+              onKeyDown={handleKeyDown}
+            />
+            <Search
+              className="size-6 cursor-pointer text-gray-400 hover:text-gray-600 sm:size-7"
+              onClick={() => setSearchKeyword(searchValue)}
             />
           </div>
 
@@ -117,9 +137,7 @@ export default function LoungePage() {
               }}
             >
               <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
-                <SelectValue>
-                  {sortOptions.find((item) => item.value === sortValue)?.label}
-                </SelectValue>
+                <SelectValue>{currentSortLabel}</SelectValue>
               </SelectTrigger>
               <SelectContent className="w-[120px] sm:w-[140px]">
                 <SelectGroup>
@@ -135,10 +153,7 @@ export default function LoungePage() {
         </section>
 
         <section className="mt-6 sm:mt-8">
-          <PostList
-            searchValue={searchValue}
-            sortValue={sortValue}
-          />
+          <PostList searchValue={searchKeyword} sortValue={sortValue} />
         </section>
 
         {/* 추후 로직 추가 */}

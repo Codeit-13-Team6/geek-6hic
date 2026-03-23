@@ -1,100 +1,95 @@
 "use client";
 
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { Link2, Loader2, X } from "lucide-react";
+import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { toastCommon } from "@/lib/toastCommon";
 import axiosInstance from "@/lib/axios";
+import { useLoungeLink } from "@/hooks/useLoungeLink";
+import LinkCard from "@/components/features/card/LinkCard";
 
-interface OGData {
-  id: string;
+interface PostPayload {
   title: string;
-  image: string;
-  url: string;
+  content: string;
+  image?: string;
 }
 
 export default function LoungeCreatePage() {
   const router = useRouter();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  const [linkList, setLinkList] = useState<OGData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  // 링크 커스텀 훅 (모든 링크 로직 위임)
+  const {
+    linkList,
+    thumbnailImage,
+    isLoading,
+    draggingIndex,
+    addLink,
+    removeLink,
+    selectThumbnail,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+  } = useLoungeLink();
 
   const TITLE_MAX_LENGTH = 30;
-  // 글자 수 계산 로직
-  const plainText = content.replace(/<[^>]*>?/gm, "");
+
+  // 본문 글자 수 계산 최적화 (useMemo 사용)
+  const plainText = useMemo(() => {
+    return content.replace(/<[^>]*>?/gm, "").trim();
+  }, [content]);
   const contentWithSpaces = plainText.length;
   const contentWithoutSpaces = plainText.replace(/\s/g, "").length;
 
-  const handleFetchPreview = async () => {
-    if (!linkUrl.trim())
-      return toastCommon({ message: "링크를 입력해주세요.", size: "sm" });
-
-    setIsLoading(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const baseUrl = new URL(apiUrl).origin;
-      const response = await axios.get(
-        `${baseUrl}/og?url=${encodeURIComponent(linkUrl)}`,
-      );
-      const result = response.data;
-      setLinkList((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          title: result.title || "제목 없음",
-          image: result.image || "",
-          url: result.url || linkUrl,
-        },
-      ]);
-      setLinkUrl("");
-    } catch (error: any) {
-      console.error("OG Fetch Error:", error);
-
-      const status = error.response?.status;
-      let errorMessage = "링크 정보를 가져올 수 없습니다.";
-
-      if (status === 403 || status === 502) {
-        errorMessage = "보안 정책상 미리보기를 제공하지 않는 사이트입니다.";
-        setLinkList((prev) => [
-          ...prev,
-          {
-            id: crypto.randomUUID(),
-            title: "미리보기를 지원하지 않는 링크",
-            image: "",
-            url: linkUrl,
-          },
-        ]);
-        setLinkUrl("");
-      } else if (status === 404) {
-        errorMessage = "존재하지 않거나 삭제된 페이지입니다.";
-      }
-      toastCommon({ message: `${errorMessage}`, size: "sm" });
-    } finally {
-      setIsLoading(false);
-    }
+  // 링크 추가 버튼 클릭 핸들러
+  const handleAddLinkAction = async () => {
+    // 훅의 addLink 호출 후 성공하면 입력창 초기화
+    const isSuccessed = await addLink(linkUrl);
+    if (isSuccessed) setLinkUrl("");
   };
 
-  const handleRemoveLink = (id: string) => {
-    setLinkList((prev) => prev.filter((link) => link.id !== id));
-  };
-
+  // 게시글 등록 제출 핸들러
   const handleSubmit = async () => {
-    if (!title.trim() || !plainText.trim())
+    const trimmedTitle = title.trim();
+    const trimmedContentText = plainText.trim();
+
+    if (!trimmedTitle || !trimmedContentText) {
       return toastCommon({
         message: "제목과 내용을 모두 입력해주세요.",
         size: "sm",
       });
-    const firstLinkWithImage = linkList.find((link) => link.image);
-    const postPayload = {
-      title,
-      content,
-      image: firstLinkWithImage ? firstLinkWithImage.image : null,
+    }
+
+    setIsSubmitting(true);
+
+    // 추가한 링크들을 본문에 붙일 HTML로 변환 (.join("") 피드백 반영)
+    const linksHtml = linkList
+      .map(
+        (link) =>
+          `<p><a href="${link.url}" target="_blank" rel="noopener noreferrer" style="color: #10b981; text-decoration: underline;">🔗 ${link.title}</a></p>`,
+      )
+      .join("");
+
+    // 기존 본문 + 구분선(<hr/>) + 링크들
+    const finalContent =
+      linkList.length > 0 ? `${content}<hr/>${linksHtml}` : content;
+
+    const postPayload: PostPayload = {
+      title: trimmedTitle,
+      content: finalContent,
     };
+
+    // 썸네일 이미지가 있을 때만 image 필드 추가
+    if (thumbnailImage && thumbnailImage.trim() !== "") {
+      postPayload.image = thumbnailImage;
+    }
+
     try {
       await axiosInstance.post("/posts", postPayload);
       toastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
@@ -102,13 +97,15 @@ export default function LoungeCreatePage() {
     } catch (error) {
       console.error("게시글 등록 실패:", error);
       toastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen w-full pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
       <div className="mx-auto w-full max-w-[860px] px-4 sm:px-6 lg:px-8">
-        {/* 헤더 */}
+        {/* 헤더 영역 */}
         <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
           <div className="relative flex-1 pl-2">
             <input
@@ -128,7 +125,8 @@ export default function LoungeCreatePage() {
           </div>
           <BtnCommon
             onClick={handleSubmit}
-            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold sm:!h-[50px] sm:px-6 sm:text-lg"
+            disabled={isSubmitting}
+            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
           >
             등록
           </BtnCommon>
@@ -136,6 +134,7 @@ export default function LoungeCreatePage() {
 
         {/* 메인 카드 영역 */}
         <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 md:p-8">
+          {/* 에디터 영역 */}
           <div className="flex-1">
             <LoungeEditor
               value={content}
@@ -144,7 +143,7 @@ export default function LoungeCreatePage() {
             />
           </div>
 
-          {/* 링크 영역 */}
+          {/* 링크 입력 영역 */}
           <div className="mt-6 flex flex-col gap-2 sm:gap-3">
             <div className="flex gap-2 sm:gap-3">
               <div className="relative flex-1">
@@ -158,7 +157,7 @@ export default function LoungeCreatePage() {
                 />
               </div>
               <button
-                onClick={handleFetchPreview}
+                onClick={handleAddLinkAction}
                 disabled={isLoading}
                 className="flex shrink-0 items-center justify-center rounded-[12px] bg-gray-800 px-3 text-sm font-medium text-white hover:bg-gray-900 disabled:bg-gray-400 sm:px-5"
               >
@@ -173,45 +172,18 @@ export default function LoungeCreatePage() {
             {/* 링크 카드 리스트 */}
             <div className="mt-2 flex flex-col gap-3">
               {linkList.map((link, index) => (
-                <div
+                <LinkCard
                   key={link.id}
-                  className={`relative flex items-center gap-3 rounded-[12px] border p-3 pr-10 transition-all sm:gap-4 sm:p-4 sm:pr-12 ${index === 0 ? "border-green-500 bg-green-50" : "border-gray-200 bg-gray-50"}`}
-                >
-                  <div className="relative flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-200 sm:size-16">
-                    <Link2 className="absolute text-gray-400" />
-                    {link.image && (
-                      // Image 태그 사용 X -> Next.js의 Image 컴포넌트는 외부 이미지에 최적화되어 있지 않음
-                      <img
-                        src={link.image}
-                        alt="thumb"
-                        className="z-10 size-12 shrink-0 rounded-lg bg-gray-200 object-cover sm:size-16"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.opacity = "0";
-                          // 에러 나면 투명하게해서 기본 아이콘만 보이도록 처리
-                        }}
-                      />
-                    )}
-                  </div>
-                  <div className="overflow-hidden">
-                    <h4 className="truncate text-sm font-bold text-gray-900 sm:text-base">
-                      {link.title}
-                    </h4>
-                    <p className="mt-0.5 truncate text-xs text-gray-500 sm:mt-1">
-                      {link.url}
-                    </p>
-                    {index === 0 && link.image && (
-                      <span className="mt-1 block text-[10px] font-bold text-green-600">
-                        대표 썸네일
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => handleRemoveLink(link.id)}
-                    className="absolute top-1/2 right-2 -translate-y-1/2 p-2 text-gray-400 hover:text-red-500 sm:right-3"
-                  >
-                    <X className="size-4 sm:size-5" />
-                  </button>
-                </div>
+                  link={link}
+                  index={index}
+                  isThumbnail={link.image === thumbnailImage}
+                  isDragging={draggingIndex === index}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragEnd={handleDragEnd}
+                  onSelect={selectThumbnail}
+                  onRemove={removeLink}
+                />
               ))}
             </div>
           </div>

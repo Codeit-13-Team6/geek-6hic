@@ -24,10 +24,7 @@ export async function getPosts(
   return data;
 }
 
-
-
-
-export async function getPostsDetail(postId: number): Promise<Posts[]> {
-  const { data } = await axiosInstance.get(`/posts${postId}`);
-  return data.data;
+export async function getPostsDetail(postId: number): Promise<Posts> {
+  const { data } = await axiosInstance.get(`/posts/${postId}`);
+  return data;
 }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { User } from "@/types/user";
+import type { SignUpFormValues } from "@/types";
 import axiosInstance from "@/lib/axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -19,6 +20,10 @@ export interface LoginResult {
   user?: User; // 유저 데이터 있을 때 타입정의
 }
 
+export interface SignUpResult {
+  ok: boolean;
+}
+
 // 클라이언트 로그인 BFF 호출 함수
 export async function loginUser(data: {
   email: string;
@@ -28,6 +33,22 @@ export async function loginUser(data: {
   const res = await axios.post("/api/login", data, {
     withCredentials: true,
   });
+  return res.data;
+}
+
+// 클라이언트 회원가입 BFF 호출 함수
+export async function signupUser(data: SignUpFormValues): Promise<SignUpResult> {
+  const payload = {
+    name: data.name,
+    email: data.email,
+    password: data.password,
+    companyName: data.introduce,
+  };
+
+  const res = await axios.post("/api/signup", payload, {
+    withCredentials: true,
+  });
+
   return res.data;
 }
 

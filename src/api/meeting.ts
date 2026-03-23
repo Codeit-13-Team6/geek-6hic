@@ -2,11 +2,13 @@ import axiosInstance from "@/lib/axios";
 import { Meeting } from "@/types";
 import axios from "axios";
 
-export async function getMeetings(): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get("/meetings");
-  return data.data;
+export async function getMeetings(params: {}): Promise<Meeting[]> {
+  const { data } = await axiosInstance.get("/meetings", { params });
+  return data;
 }
 
+
+// 이름 수정 필요
 export async function getMeeting(): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings/my");
   return data.data;
