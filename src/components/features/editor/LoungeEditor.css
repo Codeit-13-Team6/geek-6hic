@@ -1,4 +1,4 @@
-/* ===== 1. 툴바 전체 레이아웃 (팀장님 디자인) ===== */
+/* ===== 1. 툴바 전체 레이아웃 ===== */
 .quill-wrap .ql-toolbar.ql-snow {
   border: none !important;
   border-bottom: 1px solid #e5e7eb !important;
@@ -136,6 +136,43 @@
   left: 0 !important;
   font-style: normal;
   color: #d1d5db;
+}
+
+.quill-wrap .ql-editor code {
+  background-color: #f1f1ef;
+  color: #f87171; /* tailwind red-400 */
+  padding: 0.125rem 0.375rem; /* px-1.5, py-0.5 */
+  border-radius: 0.125rem; /* rounded-sm */
+  font-weight: 500; /* font-medium */
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* 2. 코드 블록 (prose-pre) */
+/* Quill은 코드 블록에 pre 태그와 ql-syntax 클래스를 함께 사용 */
+.quill-wrap .ql-editor pre,
+.quill-wrap .ql-editor pre.ql-syntax,
+.quill-wrap .ql-editor .ql-code-block-container {
+  background-color: #f7f6f3 !important;
+  color: #37352f !important;
+  border: 1px solid #e9e9e7 !important;
+  border-radius: 0.375rem !important; /* rounded-md */
+  padding: 1rem !important; /* p-4 */
+}
+
+/* 3. 리스트 (숫자형 ol, 기호형 ul) 스타일 동기화 */
+.quill-wrap .ql-editor ol,
+.quill-wrap .ql-editor ul {
+  padding-left: 1.625rem !important; /* Tailwind prose의 기본 들여쓰기 너비 */
+  margin-top: 0 !important; /* 뷰어의 prose-ul:my-0 속성 동기화 */
+  margin-bottom: 0 !important;
+}
+
+/* 각 리스트 아이템(줄) 간의 간격과 텍스트 색상 */
+.quill-wrap .ql-editor li {
+  padding-left: 0.25rem !important; /* 기호와 텍스트 사이의 여백 */
+  margin-bottom: 0.5rem !important; /* 줄 간격 (뷰어와 비슷하게 살짝 넓힘) */
+  color: #374151 !important; /* text-gray-700 */
 }
 
 @media (max-width: 640px) {
