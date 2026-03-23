@@ -18,7 +18,7 @@ export default function PostList({
   filterFn,
   searchValue = "",
   sortValue = "latest",
-  refetchType = true
+  refetchType = true,
 }: Props) {
   const router = useRouter();
 
@@ -42,7 +42,7 @@ export default function PostList({
         keyword: searchValue,
         sortBy,
         sortOrder,
-        size: filterFn ? 100 : 10,
+        size: filterFn ? 100 : 20,
       }),
     refetchOnWindowFocus: refetchType,
   });
