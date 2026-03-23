@@ -10,7 +10,10 @@ export const getNormalizedMeetingLink = (link: string) => {
     return "";
   }
 
-  if (trimmedLink.startsWith("http://") || trimmedLink.startsWith("https://")) {
+  if (
+    trimmedLink.startsWith("http://") ||
+    trimmedLink.startsWith("https://")
+  ) {
     return trimmedLink;
   }
 
@@ -98,18 +101,6 @@ export const getMeetingLinkErrorMessage = (link: string) => {
   }
 };
 
-const getDateTimeFromFormValue = (date: string, time: string) => {
-  if (!date || !time) {
-    return null;
-  }
-
-  return new Date(`${date}T${time}`);
-};
-
-const isPastDateTime = (dateTime: Date) => {
-  return dateTime.getTime() < Date.now();
-};
-
 export const validateMeetingCategoryStep = (
   formValues: CreateMeetingFormValues,
 ) => {
@@ -131,6 +122,9 @@ export const validateMeetingBasicInfoStep = (
   };
 };
 
+const INVALID_END_DATETIME_MESSAGE =
+  "모집 마감은 모임 시작보다 늦을 수 없습니다.";
+
 export const validateMeetingScheduleStep = (
   formValues: CreateMeetingFormValues,
 ) => {
@@ -150,22 +144,17 @@ export const validateMeetingScheduleStep = (
     errors.capacity = "모임 정원은 1명 이상 입력해주세요.";
   }
 
-  const startDateTime = getDateTimeFromFormValue(
-    formValues.startDate,
-    formValues.startTime,
-  );
-  const endDateTime = getDateTimeFromFormValue(
-    formValues.endDate,
-    formValues.endTime,
-  );
+  if (formValues.startDate && formValues.endDate) {
+    const isEndDateAfterStartDate = formValues.endDate > formValues.startDate;
+    const isSameDateAndEndTimeAfterStartTime =
+      formValues.startDate === formValues.endDate &&
+      formValues.startTime &&
+      formValues.endTime &&
+      formValues.endTime > formValues.startTime;
 
-  if (startDateTime && isPastDateTime(startDateTime)) {
-    errors.startDate = "모임 시작 날짜와 시간은 현재 이후여야 합니다.";
-  }
-
-  if (startDateTime && endDateTime) {
-    if (endDateTime.getTime() >= startDateTime.getTime()) {
-      errors.endDate = "모집 마감 날짜와 시간은 모임 시작 전이어야 합니다.";
+    if (isEndDateAfterStartDate || isSameDateAndEndTimeAfterStartTime) {
+      errors.endDate = INVALID_END_DATETIME_MESSAGE;
+      errors.endTime = INVALID_END_DATETIME_MESSAGE;
     }
   }
 

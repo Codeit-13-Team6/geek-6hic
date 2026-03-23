@@ -22,9 +22,9 @@ const textareaVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-error aria-invalid:border-error focus:ring-[4px] focus:ring-error/20",
+        true: "border-error focus-visible:border-error focus-visible:ring-[4px] focus-visible:ring-error/20",
         false:
-          "border-gray-300 focus:border-main-green-500 focus:ring-[4px] focus:ring-main-green-100",
+          "border-gray-300 focus-visible:border-main-green-500 focus-visible:ring-[4px] focus-visible:ring-main-green-100",
       },
       size: {
         sm: "min-h-[118px] text-[14px]",

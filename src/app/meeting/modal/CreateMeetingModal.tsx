@@ -146,7 +146,7 @@ export function CreateMeetingModal() {
         imageUrl: nextImageUrl,
       }));
       setImageErrorMessage("");
-    } catch (error) {
+    } catch {
       setFormValues((prev) => ({
         ...prev,
         imageFile: nextFile,
@@ -244,7 +244,7 @@ export function CreateMeetingModal() {
 
     try {
       const payload = getCreateMeetingPayload();
-      console.log("제출 잘됨 ?", payload);
+
       const { data } = await axiosInstance.post("/meetings", payload);
 
       toastCommon({ message: `${data.name} 모임 생성완료` });
