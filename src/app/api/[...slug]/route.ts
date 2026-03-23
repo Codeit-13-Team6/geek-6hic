@@ -10,6 +10,71 @@ interface RouteParams {
   params: Promise<{ slug: string[] }>;
 }
 
+
+
+interface RouteRule {
+  pattern: RegExp;
+  methods: NextRequest["method"][];
+  requiresAuth: boolean;
+}
+
+interface RefreshResponse {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+interface ProxyRequestConfig {
+  method: NextRequest["method"];
+  url: string;
+  headers: Record<string, string>;
+  data: unknown;
+}
+
+const PROXY_ROUTE_RULES: RouteRule[] = [
+  {
+    pattern: /^\/meetings$/,
+    methods: ["GET", "POST"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/my$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/favorites$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/favorites$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meeting-types$/,
+    methods: ["POST"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/posts$/,
+    methods: ["GET", "POST"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/reviews$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/users\/me$/,
+    methods: ["GET", "PATCH"],
+    requiresAuth: true,
+  },
+];
+
+
+
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러
 async function handleProxy(request: NextRequest, { params }: RouteParams) {
   // 1. 서버 전용 쿠키 저장소에서 액세스 토큰 읽기 (HttpOnly 쿠키라 서버에서만 가능)

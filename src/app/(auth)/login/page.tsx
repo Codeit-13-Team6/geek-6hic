@@ -4,17 +4,19 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { useLogin } from "@/hooks/useLogin";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types/index";
+import { loginUser } from "@/api/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Login() {
   const router = useRouter();
-  const { handleLogin, isLoading, error } = useLogin();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // 유효성검사
   // 로그인 폼 상태 및 유효성검사 관리 로직
@@ -37,11 +39,19 @@ export default function Login() {
   // RHF 내장된 기능으로 제출 시, 유효성검사 통과하면 로직 탐
   // 로그인 성공 시 메인 페이지 이동 로직
   const onSubmit = async (data: LoginFormValues) => {
-    const res = await handleLogin(data.email, data.password);
+    setIsLoading(true);
+    setError(null);
 
-    if (res?.ok && res.user) {
-      setUser(res.user);
-      router.push("/");
+    try {
+      const res = await loginUser({ email: data.email, password: data.password });
+      if (res?.ok && res.user) {
+        setUser(res.user);
+        router.push("/");
+      }
+    } catch {
+      setError("로그인 실패. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 

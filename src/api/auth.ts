@@ -3,21 +3,10 @@ import type { User } from "@/types/user";
 import type { SignUpFormValues } from "@/types";
 import axiosInstance from "@/lib/axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export async function getRefresh(
-  refreshToken: string,
-): Promise<{ accessToken: string; refreshToken: string }> {
-  const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {
-    refreshToken,
-  });
-  return data;
-}
-
 // 로그인 응답 타입 정의
 export interface LoginResult {
   ok: boolean;
-  user?: User; // 유저 데이터 있을 때 타입정의
+  user?: User;
 }
 
 export interface SignUpResult {
@@ -29,15 +18,16 @@ export async function loginUser(data: {
   email: string;
   password: string;
 }): Promise<LoginResult> {
-  //중간서버 로그인 API 호출
-  const res = await axios.post("/api/login", data, {
+  const res = await axios.post("/api/auth/login", data, {
     withCredentials: true,
   });
   return res.data;
 }
 
 // 클라이언트 회원가입 BFF 호출 함수
-export async function signupUser(data: SignUpFormValues): Promise<SignUpResult> {
+export async function signupUser(
+  data: SignUpFormValues,
+): Promise<SignUpResult> {
   const payload = {
     name: data.name,
     email: data.email,
@@ -45,7 +35,7 @@ export async function signupUser(data: SignUpFormValues): Promise<SignUpResult> 
     companyName: data.introduce,
   };
 
-  const res = await axios.post("/api/signup", payload, {
+  const res = await axios.post("/api/auth/signup", payload, {
     withCredentials: true,
   });
 

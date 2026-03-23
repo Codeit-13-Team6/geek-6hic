@@ -41,7 +41,7 @@ export function Gnb() {
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
-    await axios.post('/api/logout', {}, { withCredentials: true });
+    await axios.post('/api/auth/logout', {}, { withCredentials: true });
     clearAuth();
     router.push('/login');
   };

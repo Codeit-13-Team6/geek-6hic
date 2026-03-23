@@ -6,14 +6,10 @@ import axios from "axios";
 const ACCESS_TOKEN_MAX_AGE = 60 * 15;
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/login") {
-    return NextResponse.next();
-  }
-
-  // ** API 요청(/api/...)은 프록시(미들웨어)가 간섭하지 않음
+  // ** API 요청(/api/...)은 미들웨어가 간섭하지 않음
   // ** API 응답(401)은 axios 인터셉터가 처리하도록함
   if (pathname.startsWith("/api")) {
     return NextResponse.next();
@@ -23,19 +19,18 @@ export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  // 1. 액세스 토큰이 있으면 일단 통과 (유효성 검증은 API 레이어의 Axios가 담당)
+  // 토큰이 하나도 없으면 로그인 페이지로 (완전 비로그인 상태)
+  if (!accessToken && !refreshToken) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // 액세스 토큰이 있으면 통과 (유효성 검증은 API 레이어의 Axios가 담당)
   if (accessToken) {
     return NextResponse.next();
   }
 
-  // 2. 액세스 토큰이 없는데 리프레시 토큰도 없다면? 바로 로그인행
-  if (!refreshToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
+  // 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도
   try {
-    // 멘토님 조언대로 axios 사용 (단, 절대 경로 필요)
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
       { refreshToken },
@@ -65,10 +60,11 @@ export async function proxy(request: NextRequest) {
     }
 
     return response;
-  } catch (error) {
-    // 갱신 실패 시 (리프레시 토큰 만료 등) 로그인 페이지로
-    console.error("Middleware refresh error:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+  } catch {
+    // 레이스 컨디션으로 refresh 실패한 경우 → 리다이렉트하지 않고 통과
+    // 이미 다른 요청이 refresh에 성공했다면 브라우저에 새 토큰이 있으므로
+    // 이후 API 호출은 axios 인터셉터가 처리
+    return NextResponse.next();
   }
 }
 
