@@ -102,10 +102,10 @@ export async function proxy(request: NextRequest) {
 
     return response;
   } catch {
-    if (!isApiRequest) {
-      // 페이지 요청이면 로그인으로 혹시몰라서 추가한 로직 쓰일일 거의 없음
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+    // if (!isApiRequest) {
+    //   // 페이지 요청이면 로그인으로 혹시몰라서 추가한 로직 쓰일일 거의 없음
+    //   return NextResponse.redirect(new URL("/login", request.url));
+    // }
     // 레이스 컨디션으로 refresh 실패한 경우 → 통과 (slug에서 401 처리)
     return NextResponse.next();
   }
