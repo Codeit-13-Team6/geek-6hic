@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
+
 import { getPostsDetail } from "@/api/posts";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { LinkItem, parsePostData } from "@/lib/postUtils";
