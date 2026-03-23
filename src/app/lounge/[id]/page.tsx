@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPostsDetail } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
-import { getComments } from "@/api/comment";
+import { getComments } from "@/api/comments";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();

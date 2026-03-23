@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteFavorites, getFavorites } from "@/api/meeting";
+import { deleteFavorites, getFavorites } from "@/api/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 
 export default function FavoriteList() {
