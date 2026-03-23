@@ -2,7 +2,7 @@
 
 import { InputCommon } from "@/components/ui/InputCommon"; // 변경 (경로 수정)
 import { TextareaCommon } from "@/components/ui/TextareaCommon"; // 변경 (경로 수정)
-import { ImageUploadInput } from "@/components/features/upload/ImageUploadInput"; // 변경 (경로 수정)
+import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { MeetingBasicInfoStepProps } from "@/app/meeting/modal/modal";
 
 export function MeetingBasicInfoStep({

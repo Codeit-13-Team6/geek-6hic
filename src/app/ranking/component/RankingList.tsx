@@ -30,7 +30,7 @@ export default function RankingList() {
   const top10List = rankedList.slice(3, 10);
 
   return (
-    <>
+    <div className="animate-in fade-in duration-700">
       <div className="flex gap-[16px] pb-[40px]">
         <TopRankCard
           title={top3List[1]?.meetName}
@@ -63,6 +63,6 @@ export default function RankingList() {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }

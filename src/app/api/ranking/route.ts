@@ -33,7 +33,7 @@ export async function GET() {
     let cursor: number | undefined = undefined;
 
     while (true) {
-      const params = cursor ? { cursor } : {};
+      const params: { cursor?: number } = { cursor };
       const { data: meetRes } = await axios.get(`${API_BASE_URL}/meetings`, {
         headers,
         params,
@@ -60,7 +60,7 @@ export async function GET() {
     cursor = undefined;
 
     while (true) {
-      const params = cursor ? { cursor } : {};
+      const params: { cursor?: number } = { cursor };
       const { data: reviewRes } = await axios.get(`${API_BASE_URL}/reviews`, {
         headers,
         params,

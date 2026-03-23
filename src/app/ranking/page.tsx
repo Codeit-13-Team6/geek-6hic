@@ -1,7 +1,12 @@
 "use client";
 
 import { Suspense } from "react";
-import RankingList from "./component/RankingList";
+import dynamic from "next/dynamic";
+
+const RankingList = dynamic(() => import("./component/RankingList"), {
+  ssr: false,
+  loading: () => <RankingListSkeleton />,
+});
 
 function RankingListSkeleton() {
   return (
