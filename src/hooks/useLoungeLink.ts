@@ -1,6 +1,6 @@
 import { useState, DragEvent } from "react";
 import { getOgData } from "@/api/og";
-import { toastCommon } from "@/lib/toastCommon";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 interface OGData {
   id: string;
@@ -18,7 +18,7 @@ export const useLoungeLink = () => {
   // 1. 링크 추가 (OG 데이터 페치)
   const addLink = async (linkUrl: string) => {
     if (!linkUrl.trim()) {
-      return toastCommon({ message: "링크를 입력해주세요.", size: "sm" });
+      return ToastCommon({ message: "링크를 입력해주세요.", size: "sm" });
     }
 
     setIsLoading(true);
@@ -60,7 +60,7 @@ export const useLoungeLink = () => {
       } else if (status === 404) {
         errorMessage = "존재하지 않거나 삭제된 페이지입니다.";
       }
-      toastCommon({ message: errorMessage, size: "sm" });
+      ToastCommon({ message: errorMessage, size: "sm" });
       return false;
     } finally {
       setIsLoading(false);
@@ -82,7 +82,7 @@ export const useLoungeLink = () => {
   const selectThumbnail = (imageUrl: string) => {
     if (!imageUrl) return;
     setThumbnailImage(imageUrl);
-    toastCommon({ message: "대표 썸네일로 설정되었습니다.", size: "sm" });
+    ToastCommon({ message: "대표 썸네일로 설정되었습니다.", size: "sm" });
   };
 
   // 4. 드래그 앤 드롭 핸들러

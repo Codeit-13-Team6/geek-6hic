@@ -8,7 +8,7 @@ import Image from "next/image";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import { signupUser } from "@/api/auth";
-import { toastCommon } from "@/lib/toastCommon";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 // 유효성검사
 import { useForm } from "react-hook-form";
@@ -41,20 +41,20 @@ export default function SignUp() {
 
       // 회원가입 성공 후 로그인 페이지 이동용 로직.
       if (result.ok) {
-        toastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
+        ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
         router.push("/login");
       }
     } catch (error) {
       // 회원가입 실패 분기용 로직.
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        toastCommon({
+        ToastCommon({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
           size: "sm",
         });
         return;
       }
 
-      toastCommon({
+      ToastCommon({
         message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
         size: "sm",
       });

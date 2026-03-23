@@ -157,29 +157,7 @@ export default function LoungePage() {
         </section>
 
         {/* 추후 로직 추가 */}
-        <section className="mt-8 flex justify-center sm:mt-12">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" disabled={true} />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </section>
+        <section className="mt-8 flex justify-center sm:mt-12"></section>
       </div>
 
       <BtnCommon
