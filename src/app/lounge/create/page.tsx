@@ -6,7 +6,7 @@ import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { toastCommon } from "@/lib/toastCommon";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/lib/client-fetcher";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/components/features/card/LinkCard";
 
