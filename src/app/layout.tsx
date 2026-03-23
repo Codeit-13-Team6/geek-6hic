@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { Suspense } from 'react';
 import { Gnb } from '@/components/layout/Gnb';
 import { ToasterProvider } from '@/providers/ToasterProvider';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { MemberProvider } from '@/providers/MemberProvider';
-import { getIsAuthenticated } from '@/app/api/auth/authenticated/route';
+import { getIsAuthenticated } from '@/lib/auth.server';
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
