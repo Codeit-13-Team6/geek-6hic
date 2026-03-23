@@ -18,6 +18,19 @@ export default function Page() {
   const tabBtn = ["전체", "팀미팅", "스터디", "취준생", "위워크", "기타"]
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // 마감됐을 때 dimd 조건 1 마감시간 지났을 때, 조건 2 인원 다 찼을 때
+  function isMeetingClosed(meeting: {
+    dateTime: string;
+    participantCount: number;
+    capacity: number;
+  }) {
+    const now = new Date();
+    const isExpired = new Date(meeting.dateTime) < now;
+    const isFull = meeting.participantCount >= meeting.capacity;
+  
+    return isExpired || isFull;
+  }
+
   const mockMeetingList = [
     {
       id: 1,
