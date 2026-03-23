@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/axios";
 import { Meeting, User, UserProfileUpdateProps } from "@/types";
 
 export async function getUser(): Promise<User> {

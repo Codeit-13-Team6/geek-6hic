@@ -6,10 +6,16 @@ import axios from "axios";
 const ACCESS_TOKEN_MAX_AGE = 60 * 15;
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
+// [병수]:
+// 1. accessToken 이 있으면 혹은 login 페이지면 -> 그냥 통과
+// 2. accessToken이 없고, refreshToken이 있으면 -> 재발급
+// 3. 둘 다 없으면 로그인 페이지 이동
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
+  console.log({ pathname });
   if (pathname === "/login") {
+    console.log("?");
     return NextResponse.next();
   }
 
@@ -36,15 +42,25 @@ export async function proxy(request: NextRequest) {
   // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
   try {
     // 멘토님 조언대로 axios 사용 (단, 절대 경로 필요)
+    console.log({ refreshToken });
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
       { refreshToken },
     );
+    // [병수]: route handler 요청 중에 accessToken이 없다면?
+    // 클라이언트 -> route handler 전에 proxy 동작 -> 지금 쿠키가 있나? -> 쿠키를 재발급
+    // route handler -> 코드잇 백엔드 -> route handler -> 클라이언트
+
+    // 클라이언트 -> 쿠키 재발급 완료 후 route handler에도 쿠키가 담아졌으면 좋겠다. -> route handler -> 코드잇 백엔드 -> route handler -> 클라이언트
+    // 4. 요청 중인 Route Handler 에서 읽을 수 있도록 request 에도 쿠키를 세팅
 
     const response = NextResponse.next();
 
     // 새 토큰 쿠키 세팅
     if (data.accessToken) {
+      // 기존 요청에 쿠키를 넣어 보낸다.
+      // request.cookies.set("accessToken", data.accessToken); // 유저 정보 조회 -> 401 에러
+      // 응답 시에 쿠키를 세팅한다.
       response.cookies.set("accessToken", data.accessToken, {
         httpOnly: true,
         path: "/",
@@ -55,6 +71,9 @@ export async function proxy(request: NextRequest) {
     }
 
     if (data.refreshToken) {
+      // 기존 요청에 쿠키를 넣어 보낸다.
+      // request.cookies.set("refreshToken", data.refreshToken);
+      // 응답 시에 쿠키를 세팅한다.
       response.cookies.set("refreshToken", data.refreshToken, {
         httpOnly: true,
         path: "/",
@@ -75,6 +94,7 @@ export async function proxy(request: NextRequest) {
 // 보호할 경로 설정 (matcher 활용으로 코드 내 protectedPaths 배열 생략 가능)
 export const config = {
   matcher: [
+    // "/api/:path*", // API 요청은 인터셉터에서 처리하므로 프록시 미들웨어는 통과
     "/lounge/:path*",
     "/meetings/:path*",
     "/users/:path*",

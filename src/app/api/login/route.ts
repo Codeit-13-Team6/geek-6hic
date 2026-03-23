@@ -34,6 +34,8 @@ export async function POST(request: Request) {
       },
     );
 
+    console.log({ loginData });
+
     //로그인 성공 시, 응답 토큰을 쿠키에 저장하여 클라이언트로 전달
     //쿠키 설정: httpOnly, secure, sameSite 등 보안 옵션 적용
     //NextResponse를 사용하여 쿠키 설정과 함께 JSON 응답 반환
