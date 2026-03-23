@@ -1,0 +1,210 @@
+/* ===== 1. 툴바 전체 레이아웃 ===== */
+.quill-wrap .ql-toolbar.ql-snow {
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 0 0 16px 0 !important;
+  margin-bottom: 24px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start; /* 기본은 왼쪽 정렬 */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 12px;
+  -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
+}
+
+/* ===== 2. 버튼 그룹(ql-formats) 및 구분선 처리 ===== */
+.quill-wrap .ql-formats {
+  display: flex !important;
+  items-center: center;
+  margin-right: 0 !important;
+  padding-right: 12px;
+  border-right: 1px solid #f3f4f6; /* 세로 구분선 */
+  gap: 8px;
+}
+
+/* 마지막 그룹(정렬)은 구분선 없애고 우측으로 밀기 */
+.quill-wrap .ql-formats:last-child {
+  border-right: none;
+  margin-left: auto; /* 정렬 버튼들을 오른쪽으로 밀기 */
+  padding-right: 0;
+}
+
+/* ===== 3. 버튼 디자인 커스텀 ===== */
+.quill-wrap .ql-toolbar button {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s;
+}
+
+.quill-wrap .ql-toolbar button:hover {
+  background-color: #f3f4f6 !important;
+}
+
+.quill-wrap .ql-toolbar button.ql-active {
+  background-color: #f3f4f6 !important;
+}
+
+/* 기본 아이콘 숨기기 */
+.quill-wrap .ql-toolbar button svg {
+  display: none !important;
+}
+
+/* ===== 4. Lucide 아이콘 마스킹 (색상 제어 가능) ===== */
+.quill-wrap .ql-toolbar button::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background-color: #6b7280; /* 기본 아이콘 색상 */
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+/* 활성화/호버 시 아이콘 색상 변경 */
+.quill-wrap .ql-toolbar button:hover::before,
+.quill-wrap .ql-toolbar button.ql-active::before {
+  background-color: #111827;
+}
+
+/* 개별 아이콘 매핑 (URL) */
+.ql-header[value="1"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/heading-1.svg");
+}
+.ql-header[value="2"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/heading-2.svg");
+}
+.ql-header[value="3"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/heading-3.svg");
+}
+.ql-bold::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/bold.svg");
+}
+.ql-italic::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/italic.svg");
+}
+.ql-underline::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/underline.svg");
+}
+.ql-strike::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/strikethrough.svg");
+}
+.ql-blockquote::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/quote.svg");
+}
+.ql-code::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/code.svg");
+}
+.ql-code-block::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/square-code.svg");
+}
+.ql-list[value="ordered"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/list-ordered.svg");
+}
+.ql-list[value="bullet"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/list.svg");
+}
+.ql-align[value=""]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/align-left.svg");
+}
+.ql-align[value="center"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/align-center.svg");
+}
+.ql-align[value="right"]::before {
+  -webkit-mask-image: url("https://unpkg.com/lucide-static/icons/align-right.svg");
+}
+
+/* ===== 5. 에디터 본문 스타일 (기존 유지) ===== */
+.quill-wrap .ql-container.ql-snow {
+  border: none !important;
+}
+.quill-wrap .ql-editor {
+  padding: 0 !important;
+  min-height: 300px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #374151;
+}
+.quill-wrap .ql-editor.ql-blank::before {
+  left: 0 !important;
+  font-style: normal;
+  color: #d1d5db;
+}
+
+.quill-wrap .ql-editor code {
+  background-color: #f1f1ef;
+  color: #f87171; /* tailwind red-400 */
+  padding: 0.125rem 0.375rem; /* px-1.5, py-0.5 */
+  border-radius: 0.125rem; /* rounded-sm */
+  font-weight: 500; /* font-medium */
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* 2. 코드 블록 (prose-pre) */
+/* Quill은 코드 블록에 pre 태그와 ql-syntax 클래스를 함께 사용 */
+.quill-wrap .ql-editor pre,
+.quill-wrap .ql-editor pre.ql-syntax,
+.quill-wrap .ql-editor .ql-code-block-container {
+  background-color: #f7f6f3 !important;
+  color: #37352f !important;
+  border: 1px solid #e9e9e7 !important;
+  border-radius: 0.375rem !important; /* rounded-md */
+  padding: 1rem !important; /* p-4 */
+}
+
+/* 3. 리스트 (숫자형 ol, 기호형 ul) 스타일 동기화 */
+.quill-wrap .ql-editor ol,
+.quill-wrap .ql-editor ul {
+  padding-left: 1.625rem !important; /* Tailwind prose의 기본 들여쓰기 너비 */
+  margin-top: 0 !important; /* 뷰어의 prose-ul:my-0 속성 동기화 */
+  margin-bottom: 0 !important;
+}
+
+/* 각 리스트 아이템(줄) 간의 간격과 텍스트 색상 */
+.quill-wrap .ql-editor li {
+  padding-left: 0.25rem !important; /* 기호와 텍스트 사이의 여백 */
+  margin-bottom: 0.5rem !important; /* 줄 간격 (뷰어와 비슷하게 살짝 넓힘) */
+  color: #374151 !important; /* text-gray-700 */
+}
+
+@media (max-width: 640px) {
+  /* 1. 툴바 전체 높이 및 간격 축소 */
+  .quill-wrap .ql-toolbar.ql-snow {
+    padding: 0 0 12px 0 !important;
+    margin-bottom: 16px !important;
+    gap: 6px !important; /* 그룹 간 간격 좁힘 */
+  }
+
+  /* 2. 버튼 그룹(ql-formats) 사이 간격 축소 */
+  .quill-wrap .ql-formats {
+    padding-right: 8px !important;
+    gap: 2px !important; /* 버튼끼리 더 촘촘하게 */
+  }
+
+  /* 3. 버튼 크기 축소 (32px -> 28px) */
+  .quill-wrap .ql-toolbar button {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 4px !important;
+  }
+
+  /* 4. 아이콘 크기 축소 (18px -> 14px) */
+  .quill-wrap .ql-toolbar button::before {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* 5. 에디터 본문 텍스트 크기 조절 (필요시) */
+  .quill-wrap .ql-editor {
+    font-size: 0.95rem !important;
+    min-height: 250px;
+  }
+}

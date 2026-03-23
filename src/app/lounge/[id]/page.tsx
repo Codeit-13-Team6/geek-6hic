@@ -61,11 +61,30 @@ export default function LoungeDetailPage() {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
 
-  // content에 <hr/>이 없으면 linksHtml은 빈 문자열이 되도록 처리
-  const [mainContent, linksHtml] = post.content.includes("<hr/>")
-    ? post.content.split("<hr/>")
-    : [post.content, ""];
+  // 1. 본문과 링크 영역 분리
+  const parts = post.content.split("<p><a href=");
+  const mainContent = parts[0];
 
+  // 2. 쪼개진 문자열들에서 URL과 Title만 추출하여 배열로 만듦
+  const linkObjects = parts
+    .slice(1)
+    .map((str, index) => {
+      // 잘려나간 앞부분을 임시로 복원
+      const restoredString = "<a href=" + str;
+
+      // 큰따옴표 안에 있는 URL 추출
+      const urlMatch = restoredString.match(/href="([^"]+)"/);
+      // 이모지부터 </a> 닫는 태그 사이의 진짜 제목 추출
+      const titleMatch = restoredString.match(/>🔗\s*(.*?)</);
+
+      return {
+        id: `link-${index}`,
+        url: urlMatch ? urlMatch[1] : "",
+        title: titleMatch ? titleMatch[1].trim() : "참고 링크", // 제목 파싱 실패 시 기본값
+        image: "", // 이제 이미지는 안 쓰므로 빈 값 처리
+      };
+    })
+    .filter((link) => link.url); // url이 제대로 뽑힌 정상적인 데이터만 남김 (안전장치)
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 pb-20 sm:p-8 lg:pt-12">
       <div className="mx-auto w-full max-w-[860px]">
@@ -76,6 +95,7 @@ export default function LoungeDetailPage() {
             name={post.author.name}
             date={new Date(post.createdAt)}
             content={mainContent} // 링크를 제외한 원래 본문 내용만
+            linkObjects={linkObjects}
             img={post.image || ""} // 대표 썸네일
             thumbsUp={post.likeCount}
             comment={post.comments.length || 0}
@@ -119,10 +139,6 @@ export default function LoungeDetailPage() {
                 content={item.content}
                 date={new Date(item.createdAt)}
                 isOwner={isOwner}
-                //   .toLocaleDateString("ko-KR", {
-                //   month: "long",
-                //   day: "numeric",
-                // })}
               />
             ))}
           </div>

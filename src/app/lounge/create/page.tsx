@@ -104,7 +104,7 @@ export default function LoungeCreatePage() {
 
   return (
     <div className="min-h-screen w-full pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
-      <div className="mx-auto w-full max-w-[860px] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-8">
         {/* 헤더 영역 */}
         <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
           <div className="relative flex-1 pl-2">
@@ -133,7 +133,7 @@ export default function LoungeCreatePage() {
         </div>
 
         {/* 메인 카드 영역 */}
-        <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 md:p-8">
+        <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 pt-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 sm:pt-4 md:p-8 md:pt-5">
           {/* 에디터 영역 */}
           <div className="flex-1">
             <LoungeEditor

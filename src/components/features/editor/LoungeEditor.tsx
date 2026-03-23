@@ -2,24 +2,20 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import {
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  List,
-  ListOrdered,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify,
-} from "lucide-react";
-// 툴바에서 theme 사용 안 하지만 컨텐츠 부분에 사용
 import "react-quill-new/dist/quill.snow.css";
+import "./LoungeEditor.css";
 
-// SSR 방지를 위한 다이내믹 임포트
+interface EditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
 const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false,
+  ssr: false, // SSR(서버 사이드 렌더링)을 비활성화
+  // "use client"를 써도 넥스트는 서버가 미리 그려보게되기 때문에 아래 ssr:false 필요
+  // Quill은 브라우저의 window 객체가 필요하기 때문에 서버에서 미리 그릴 경우 발생하는
+  // "window is not defined" 에러를 방지하기 위한 필수 설정
   loading: () => (
     <div className="flex h-[300px] items-center justify-center text-gray-400">
       에디터 로딩 중...
@@ -27,100 +23,54 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
   ),
 });
 
-interface LoungeEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-}
-
 export default function LoungeEditor({
   value,
   onChange,
   placeholder,
-}: LoungeEditorProps) {
-  // 툴바 설정 (ID 매칭)
+}: EditorProps) {
+  // 1. 모듈 설정: 그룹별로 배열을 나누면 Quill이 자동으로 .ql-formats라는 div로 감싸게 됨
   const modules = useMemo(
     () => ({
-      toolbar: { container: "#custom-toolbar" },
+      toolbar: [
+        // 1. 구조 (가장 왼쪽: 글의 뼈대를 잡는 헤딩)
+        [{ header: 1 }, { header: 2 }, { header: 3 }],
+        // 2. 텍스트 스타일 (가장 자주 쓰는 기본 도구)
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        // 3. 나열 (가독성을 높여주는 리스트)
+        [{ list: "ordered" }, { list: "bullet" }],
+        // 4. 특수 기능 (개발 관련이나 강조용 코드)
+        ["code", "code-block"],
+        // 5. 레이아웃 (우측 끝: 전체적인 정렬 설정)
+        [{ align: "" }, { align: "center" }, { align: "right" }],
+      ],
     }),
     [],
   );
 
-  const toolbarIconClass =
-    "size-4 sm:size-5 text-gray-500 hover:text-gray-800 transition-colors";
+  // 2. 사용될 포맷 옵션들
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "code",
+    "code-block",
+    "list",
+    "align",
+  ];
 
   return (
-    <div className="flex h-full flex-col">
-      {/* 커스텀 툴바 */}
-      <div
-        id="custom-toolbar"
-        className="scrollbar-hide mb-4 flex items-center justify-between overflow-x-auto border-b border-gray-200 pb-4 sm:mb-6 sm:pb-5"
-      >
-        <div className="flex min-w-max items-center gap-3 pr-4 sm:gap-4.5">
-          <button className="ql-bold">
-            <Bold className={toolbarIconClass} />
-          </button>
-          <button className="ql-italic">
-            <Italic className={toolbarIconClass} />
-          </button>
-          <button className="ql-underline">
-            <Underline className={toolbarIconClass} />
-          </button>
-          <button className="ql-strike">
-            <Strikethrough className={toolbarIconClass} />
-          </button>
-          <div className="mx-1 h-4 w-px bg-gray-200 sm:mx-0" />
-          <button className="ql-list" value="ordered">
-            <ListOrdered className={toolbarIconClass} />
-          </button>
-          <button className="ql-list" value="bullet">
-            <List className={toolbarIconClass} />
-          </button>
-        </div>
-        <div className="flex min-w-max items-center gap-3 border-l border-gray-100 pl-4 sm:gap-4.5 sm:border-none">
-          <button className="ql-align" value="">
-            <AlignLeft className={toolbarIconClass} />
-          </button>
-          <button className="ql-align" value="center">
-            <AlignCenter className={toolbarIconClass} />
-          </button>
-          <button className="ql-align" value="right">
-            <AlignRight className={toolbarIconClass} />
-          </button>
-          <button className="ql-align" value="justify">
-            <AlignJustify className={toolbarIconClass} />
-          </button>
-        </div>
-      </div>
-
-      {/* 에디터 본문 */}
-      <div className="quill-custom-style relative w-full flex-1 overflow-hidden">
-        <ReactQuill
-          theme={null as unknown as string}
-          value={value}
-          onChange={onChange}
-          modules={modules}
-          placeholder={placeholder}
-        />
-        {/* 테일윈드로 제어 불가능한 스타일 */}
-        <style jsx global>{`
-          .quill-custom-style .ql-container.ql-snow {
-            border: none !important;
-            font-family: inherit;
-          }
-          .quill-custom-style .ql-editor {
-            padding: 0 !important;
-            font-size: 1rem;
-            line-height: 1.7;
-            min-height: 300px;
-          }
-          .quill-custom-style .ql-editor.ql-blank::before {
-            left: 0 !important;
-            color: #d1d5db !important;
-            font-style: normal !important;
-          }
-        `}</style>
-      </div>
+    <div className="quill-wrap">
+      <ReactQuill
+        theme="snow"
+        value={value}
+        onChange={onChange}
+        modules={modules}
+        formats={formats}
+        placeholder={placeholder}
+      />
     </div>
   );
 }
