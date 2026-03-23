@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
@@ -9,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/DropdownCommon";
+import { BtnCommon } from "@/components/ui/BtnCommon";
 
 interface CommentProps {
   id: number;
@@ -18,6 +20,7 @@ interface CommentProps {
   content?: string;
   isOwner: boolean;
   onDelete: (id: number) => void;
+  onEdit: (id: number, newContent: string) => void;
 }
 
 export default function Comment({
@@ -28,9 +31,26 @@ export default function Comment({
   content = "",
   isOwner = false,
   onDelete,
+  onEdit,
 }: CommentProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(content);
+
+  // 저장 버튼 클릭 시
+  const handleSave = () => {
+    if (!editValue.trim()) return;
+    onEdit(id, editValue); // 부모 컴포넌트의 api 호출 함수 실행
+    setIsEditing(false); // 수정 모드 종료
+  };
+
+  // 취소 버튼 클릭 시
+  const handleCancel = () => {
+    setEditValue(content); // 입력하던 내용 원상복구
+    setIsEditing(false); // 수정 모드 종료
+  };
+
   return (
-    <article className="flex flex-col border-b border-gray-50 py-5 last:border-none sm:py-6">
+    <article className="flex flex-col border-b border-gray-100 py-5 last:border-none sm:py-6">
       {/* 상단: 프로필 정보 + 메뉴 버튼 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-gray-500 sm:text-sm">
@@ -48,8 +68,8 @@ export default function Comment({
           </span>
         </div>
 
-        {/* 메뉴 버튼: absolute 대신 flex로 배치하여 텍스트 겹침 방지 */}
-        {isOwner && (
+        {/* 메뉴 버튼 (수정 중이 아닐 때만 노출) */}
+        {isOwner && !isEditing && (
           <div className="shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger className="focus:outline-none">
@@ -64,7 +84,7 @@ export default function Comment({
               </DropdownMenuTrigger>
 
               <DropdownMenuContent size="sm" align="end">
-                <DropdownMenuItem onClick={() => console.log("수정")}>
+                <DropdownMenuItem onClick={() => setIsEditing(true)}>
                   수정하기
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -79,9 +99,40 @@ export default function Comment({
         )}
       </div>
 
-      <div className="pt-1.5 pl-[32px] text-sm leading-relaxed text-gray-700 sm:text-base">
-        {content}
-      </div>
+      {/* 내용 영역 (일반 모드 vs 수정 모드) */}
+      {isEditing ? (
+        <div className="mt-3 pl-[32px]">
+          <textarea
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm text-gray-700 focus:outline-none sm:text-base"
+            rows={3}
+            autoFocus
+          />
+          <div className="mt-2 flex justify-end gap-2 text-sm font-medium">
+            <BtnCommon
+              onClick={handleCancel}
+              size="sm"
+              variant="teritary"
+              className="w-[50px] sm:w-[60px]"
+            >
+              취소
+            </BtnCommon>
+            <BtnCommon
+              onClick={handleSave}
+              size="sm"
+              className="w-[50px] sm:w-[60px]"
+              disabled={!editValue.trim() || editValue === content} // 내용이 비었거나 안 바뀌었면 비활성화
+            >
+              저장
+            </BtnCommon>
+          </div>
+        </div>
+      ) : (
+        <div className="pt-1.5 pl-[32px] text-sm leading-relaxed whitespace-pre-wrap text-gray-700 sm:text-base">
+          {content}
+        </div>
+      )}
     </article>
   );
 }

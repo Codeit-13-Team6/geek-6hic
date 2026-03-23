@@ -2,7 +2,12 @@
 
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createComment, deleteComment, getComments } from "@/api/comments";
+import {
+  createComment,
+  deleteComment,
+  getComments,
+  updateComment,
+} from "@/api/comments";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toastCommon } from "@/lib/toastCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
@@ -37,11 +42,6 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     },
   });
 
-  const handlePostComment = () => {
-    if (!commentValue.trim()) return;
-    postComment(commentValue);
-  };
-
   // 3. 댓글 삭제
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
@@ -54,10 +54,37 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     },
   });
 
+  // 4. 댓글 수정
+  const { mutate: editComment } = useMutation({
+    mutationFn: ({
+      commentId,
+      content,
+    }: {
+      commentId: number;
+      content: string;
+    }) => updateComment(postId, commentId, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
+    },
+    onError: () => {
+      toastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
+    },
+  });
+
+  const handlePostComment = () => {
+    if (!commentValue.trim()) return;
+    postComment(commentValue);
+  };
+
   const handleDelete = (commentId: number) => {
     if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
       removeComment(commentId);
     }
+  };
+
+  const handleEdit = (commentId: number, newContent: string) => {
+    editComment({ commentId, content: newContent });
   };
 
   return (
@@ -73,7 +100,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
           rows={1}
           disabled={isPosting}
           onChange={(e) => setCommentValue(e.target.value)}
-          placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요"}
+          placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요."}
           className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
         />
         <div className="flex justify-end">
@@ -82,7 +109,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             disabled={isPosting || !commentValue.trim()}
             className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
           >
-            {isPosting ? "..." : "등록"}
+            등록
           </BtnCommon>
         </div>
       </div>
@@ -98,6 +125,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             date={new Date(item.createdAt)}
             isOwner={userId !== null && userId === item.author.id}
             onDelete={handleDelete}
+            onEdit={handleEdit}
           />
         ))}
       </div>
