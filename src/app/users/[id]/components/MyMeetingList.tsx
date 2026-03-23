@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getMeeting } from "@/api/meeting";
+import { getMeeting } from "@/api/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 
 export default function MyMeetingList() {

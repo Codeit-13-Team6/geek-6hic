@@ -36,6 +36,8 @@ interface PostDetailCardProps {
   comment?: number;
   liked?: boolean;
   isOwner?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export function PostDetailCard({
@@ -49,6 +51,8 @@ export function PostDetailCard({
   comment = 0,
   liked = false,
   isOwner = false,
+  onEdit,
+  onDelete,
 }: PostDetailCardProps) {
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
   return (
@@ -68,14 +72,9 @@ export function PostDetailCard({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent size="sm">
-              <DropdownMenuItem onClick={() => console.log("수정")}>
-                수정하기
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onEdit}>수정하기</DropdownMenuItem>
 
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => console.log("삭제")}
-              >
+              <DropdownMenuItem variant="destructive" onClick={onDelete}>
                 삭제하기
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -123,7 +122,7 @@ export function PostDetailCard({
 
                 // 2. 파비콘 URL 생성
                 const faviconUrl = hostname
-                  ? `https://favicon.im/${hostname}?throw-error-on-404=true`
+                  ? `https://favicon.im/${hostname}?larger=true&throw-error-on-404=true`
                   : "";
 
                 return (
