@@ -1,5 +1,21 @@
-import axiosInstance from "@/lib/axios";
-import { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import axiosInstance from "@/lib/client-fetcher";
+import { Posts } from "@/types";
+
+interface GetPostsParams {
+  type?: "all" | "best";
+  keyword?: string;
+  sortBy?: "createdAt" | "viewCount" | "likeCount";
+  sortOrder?: "asc" | "desc";
+  cursor?: string;
+  size?: number;
+}
+
+// 페이지네이션을 위해 정의
+interface GetPostsResponse {
+  data: Posts[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
 
 export async function getPosts(
   params?: GetPostsParams,
