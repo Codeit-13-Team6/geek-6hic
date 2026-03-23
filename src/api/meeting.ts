@@ -7,7 +7,6 @@ export async function getMeetings(params: {}): Promise<Meeting[]> {
   return data;
 }
 
-
 // 이름 수정 필요
 export async function getMeeting(): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings/my");

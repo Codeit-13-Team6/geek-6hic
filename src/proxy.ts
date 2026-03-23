@@ -8,8 +8,9 @@ const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
+  console.log({ pathname });
   if (pathname === "/login") {
+    console.log("?");
     return NextResponse.next();
   }
 
