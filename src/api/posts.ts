@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { Posts } from "@/types";
+import { Post } from "@/types";
 
 interface GetPostsParams {
   type?: "all" | "best";
@@ -12,7 +12,7 @@ interface GetPostsParams {
 
 // 페이지네이션을 위해 정의
 interface GetPostsResponse {
-  data: Posts[];
+  data: Post[];
   nextCursor: string | null;
   hasMore: boolean;
 }
