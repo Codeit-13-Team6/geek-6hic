@@ -1,21 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { Posts } from "@/types";
-
-interface GetPostsParams {
-  type?: "all" | "best";
-  keyword?: string;
-  sortBy?: "createdAt" | "viewCount" | "likeCount";
-  sortOrder?: "asc" | "desc";
-  cursor?: string;
-  size?: number;
-}
-
-// 페이지네이션을 위해 정의
-interface GetPostsResponse {
-  data: Posts[];
-  nextCursor: string | null;
-  hasMore: boolean;
-}
+import { GetPostsParams, GetPostsResponse, Post } from "@/types";
 
 export async function getPosts(
   params?: GetPostsParams,
@@ -24,7 +8,7 @@ export async function getPosts(
   return data;
 }
 
-export async function getPostsDetail(postId: number): Promise<Posts> {
+export async function getPostsDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 }

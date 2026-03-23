@@ -10,7 +10,7 @@ import ProfileSection from "./components/ProfileSection";
 import FavoriteList from "./components/FavoriteList";
 import MyMeetingList from "./components/MyMeetingList";
 import { getPosts } from "@/api/posts";
-import { getMeeting } from "@/api/meeting";
+import { getMeeting } from "@/api/meetings";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
