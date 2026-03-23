@@ -1,7 +1,7 @@
 import React from "react";
 import { GripVertical, ImageIcon, Link2, X } from "lucide-react";
 
-interface LoungeLinkItemProps {
+interface LinkCardProps {
   link: {
     id: string;
     title: string;
@@ -18,7 +18,7 @@ interface LoungeLinkItemProps {
   onRemove: (id: string) => void;
 }
 
-export default function LoungeLinkItem({
+export default function LinkCard({
   link,
   index,
   isThumbnail,
@@ -28,7 +28,7 @@ export default function LoungeLinkItem({
   onDragEnd,
   onSelect,
   onRemove,
-}: LoungeLinkItemProps) {
+}: LinkCardProps) {
   return (
     <div
       draggable

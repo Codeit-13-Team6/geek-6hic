@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GripVertical, ImageIcon, Link2, Loader2, X } from "lucide-react";
+import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { toastCommon } from "@/lib/toastCommon";
 import axiosInstance from "@/lib/client-fetcher";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
-import LoungeLinkItem from "@/components/features/card/LinkCard";
+import LinkCard from "@/components/features/card/LinkCard";
 
 interface PostPayload {
   title: string;
@@ -172,7 +172,7 @@ export default function LoungeCreatePage() {
             {/* 링크 카드 리스트 */}
             <div className="mt-2 flex flex-col gap-3">
               {linkList.map((link, index) => (
-                <LoungeLinkItem
+                <LinkCard
                   key={link.id}
                   link={link}
                   index={index}

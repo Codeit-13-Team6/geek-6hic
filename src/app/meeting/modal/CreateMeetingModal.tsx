@@ -23,7 +23,7 @@ import axiosInstance from "@/lib/client-fetcher";
 import { toastCommon } from "@/lib/toastCommon";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import ModalBase from "@/components/features/modal/ModalBase";
+import ModalBase from "@/components/ui/ModalBase";
 
 const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
   category: "TEAM_MEETING",
