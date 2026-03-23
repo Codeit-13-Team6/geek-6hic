@@ -6,15 +6,10 @@ import axios from "axios";
 const ACCESS_TOKEN_MAX_AGE = 60 * 15;
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log({ pathname });
-  if (pathname === "/login") {
-    console.log("?");
-    return NextResponse.next();
-  }
 
-  // ** API 요청(/api/...)은 프록시(미들웨어)가 간섭하지 않음
+  // ** API 요청(/api/...)은 미들웨어가 간섭하지 않음
   // ** API 응답(401)은 axios 인터셉터가 처리하도록함
   if (pathname.startsWith("/api")) {
     return NextResponse.next();
@@ -36,7 +31,6 @@ export async function proxy(request: NextRequest) {
 
   // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
   try {
-    // 멘토님 조언대로 axios 사용 (단, 절대 경로 필요)
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
       { refreshToken },

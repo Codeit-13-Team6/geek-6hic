@@ -1,10 +1,36 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "/api", // ** 모든 요청은 slug 프록시로 향함
-  withCredentials: true, // ** 브라우저가 자동으로 쿠키를 실어 보냄
+  baseURL: "/api",
+  withCredentials: true,
 });
 
-export default axiosInstance;
+// 응답 인터셉터: 401 시 BFF refresh 시도 후 재요청, 실패 시 로그인으로 이동
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
 
-//bff로 보낼때 필요하니깐
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        await axios.post("/api/auth/refresh", {}, { withCredentials: true });
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        const excludedPaths = ["/login", "/signup", "/oauth/callback"];
+        if (
+          typeof window !== "undefined" &&
+          !excludedPaths.includes(window.location.pathname)
+        ) {
+          window.location.href = "/login";
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export default axiosInstance;
