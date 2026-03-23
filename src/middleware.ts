@@ -19,17 +19,17 @@ export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  // 1. 액세스 토큰이 있으면 일단 통과 (유효성 검증은 API 레이어의 Axios가 담당)
+  // 토큰이 하나도 없으면 로그인 페이지로 (완전 비로그인 상태)
+  if (!accessToken && !refreshToken) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // 액세스 토큰이 있으면 통과 (유효성 검증은 API 레이어의 Axios가 담당)
   if (accessToken) {
     return NextResponse.next();
   }
 
-  // 2. 액세스 토큰이 없는데 리프레시 토큰도 없다면? 바로 로그인행
-  if (!refreshToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // 3. 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도 (라우팅 가드)
+  // 액세스 토큰이 없지만 리프레시 토큰은 있는 경우 -> 토큰 갱신 시도
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
@@ -60,10 +60,11 @@ export async function middleware(request: NextRequest) {
     }
 
     return response;
-  } catch (error) {
-    // 갱신 실패 시 (리프레시 토큰 만료 등) 로그인 페이지로
-    console.error("Middleware refresh error:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+  } catch {
+    // 레이스 컨디션으로 refresh 실패한 경우 → 리다이렉트하지 않고 통과
+    // 이미 다른 요청이 refresh에 성공했다면 브라우저에 새 토큰이 있으므로
+    // 이후 API 호출은 axios 인터셉터가 처리
+    return NextResponse.next();
   }
 }
 
