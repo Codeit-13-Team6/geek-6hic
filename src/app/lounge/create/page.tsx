@@ -2,9 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/lib/axios";
-import { ToastCommon } from "@/components/ui/ToastCommon";
-import LoungePostForm, { PostPayload } from "../component/LoungePostForm";
+import { Link2, Loader2 } from "lucide-react";
+import { BtnCommon } from "@/components/ui/BtnCommon";
+import LoungeEditor from "@/components/features/editor/LoungeEditor";
+import { toastCommon } from "@/lib/toastCommon";
+import axiosInstance from "@/lib/client-fetcher";
+import { useLoungeLink } from "@/hooks/useLoungeLink";
+import LinkCard from "@/components/features/card/LinkCard";
+
+interface PostPayload {
+  title: string;
+  content: string;
+  image?: string;
+}
 
 export default function LoungeCreatePage() {
   const router = useRouter();
