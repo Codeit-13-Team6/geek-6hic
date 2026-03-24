@@ -31,6 +31,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getPosts, getPostsDetail } from "@/api/posts";
 import { getOgData } from "@/api/og";
 import { parsePostData } from "@/lib/postUtils";
+import { likePost, unlikePost } from "@/api/posts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPost, updatePost, deletePost } from "@/api/posts";
+import { useRouter } from "next/navigation";
+import { ToastCommon } from "@/components/ui/ToastCommon";
+import { PostPayload } from "@/app/lounge/component/LoungePostForm";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
@@ -109,4 +115,102 @@ export const useGetPostForEdit = (postId: number) => {
     post,
     isLoading: isPostLoading || isOgLoading,
   };
+};
+
+/**
+ * 게시글 생성 훅 (생성 페이지 전용)
+ */
+export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (payload: PostPayload) => createPost(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      ToastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
+      router.push("/lounge");
+    },
+    onError: () => {
+      ToastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+    },
+  });
+};
+
+/**
+ * 게시글 수정 훅 (수정 페이지 전용)
+ */
+export const useUpdatePost = (postId: number) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (payload: PostPayload) => updatePost(postId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+      ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
+      router.push(`/lounge/${postId}`);
+    },
+    onError: () => {
+      ToastCommon({ message: "수정에 실패했습니다.", size: "sm" });
+    },
+  });
+};
+
+/**
+ * 게시글 삭제 훅 (상세 페이지 전용)
+ */
+export const useDeletePost = (postId: number) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: () => deletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      ToastCommon({ message: "게시글이 삭제되었습니다.", size: "sm" });
+      router.push("/lounge");
+    },
+    onError: () => {
+      ToastCommon({ message: "게시글 삭제에 실패했습니다.", size: "sm" });
+    },
+  });
+};
+
+/**
+ * 게시글 좋아요 토글 훅 (상세 페이지 전용)
+ */
+export const useToggleLike = (postId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (isLiked: boolean) =>
+      isLiked ? unlikePost(postId) : likePost(postId),
+    onMutate: async () => {
+      // 낙관적 업데이트
+      await queryClient.cancelQueries({ queryKey: ["post", postId] });
+      const previousPost = queryClient.getQueryData(["post", postId]);
+
+      queryClient.setQueryData(["post", postId], (oldData: any) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          isLiked: !oldData.isLiked,
+          likeCount: oldData.isLiked
+            ? oldData.likeCount - 1
+            : oldData.likeCount + 1,
+        };
+      });
+      return { previousPost };
+    },
+    onError: (_err, _isLiked, context) => {
+      queryClient.setQueryData(["post", postId], context?.previousPost);
+      ToastCommon({ message: "좋아요 처리에 실패했습니다.", size: "sm" });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+    },
+  });
 };

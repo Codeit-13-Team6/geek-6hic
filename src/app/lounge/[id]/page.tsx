@@ -2,63 +2,29 @@
 
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePost, likePost, unlikePost } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
 import CommentSection from "./component/comment/CommentSection";
-import { ToastCommon } from "@/components/ui/ToastCommon";
 import { parsePostData } from "@/lib/postUtils";
-import { useGetPostDetail } from "@/hooks/usePosts";
+import {
+  useDeletePost,
+  useGetPostDetail,
+  useToggleLike,
+} from "@/hooks/queries/usePosts";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const postId = Number(id);
   const userId = useAuthStore((state) => state.user?.id);
 
   const { data: post, isLoading, isError } = useGetPostDetail(postId);
+  const { mutate: removePost } = useDeletePost(postId);
+  const { mutate: toggleLike } = useToggleLike(postId);
 
   const isPostOwner = userId !== null && userId === post?.author.id;
   const { content: mainContent, links: linkObjects } = parsePostData(
     post?.content || "",
   );
-
-  const { mutate: removePost } = useMutation({
-    mutationFn: () => deletePost(postId),
-    onSuccess: () => {
-      ToastCommon({ message: "게시글이 삭제되었습니다.", size: "sm" });
-      router.push("/lounge");
-    },
-    onError: () => {
-      ToastCommon({ message: "게시글 삭제에 실패했습니다.", size: "sm" });
-    },
-  });
-
-  const { mutate: toggleLike } = useMutation({
-    mutationFn: () => (post?.isLiked ? unlikePost(postId) : likePost(postId)),
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["post", id] });
-      const previousPost = queryClient.getQueryData(["post", id]);
-      queryClient.setQueryData(["post", id], (oldData: any) => {
-        return {
-          ...oldData,
-          isLiked: !oldData.isLiked,
-          likeCount: oldData.isLiked
-            ? oldData.likeCount - 1
-            : oldData.likeCount + 1,
-        };
-      });
-      return { previousPost };
-    },
-    onError: (_err, _newTodo, context) => {
-      queryClient.setQueryData(["post", id], context?.previousPost);
-      ToastCommon({ message: "좋아요 실패", size: "sm" });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["post", id] });
-    },
-  });
 
   const handlePostDelete = () => {
     if (confirm("정말 이 게시글을 삭제하시겠습니까? (복구할 수 없습니다)")) {
@@ -68,6 +34,12 @@ export default function LoungeDetailPage() {
 
   const handlePostEdit = () => {
     router.push(`/lounge/edit/${postId}`);
+  };
+
+  const handleLikeClick = () => {
+    if (post) {
+      toggleLike(post.isLiked);
+    }
   };
 
   if (isLoading) {
@@ -94,7 +66,7 @@ export default function LoungeDetailPage() {
             liked={post.isLiked}
             onEdit={handlePostEdit}
             onDelete={handlePostDelete}
-            onLike={() => toggleLike()}
+            onLike={handleLikeClick}
             // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
           />
         </section>

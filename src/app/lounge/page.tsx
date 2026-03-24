@@ -24,7 +24,7 @@ import {
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { HotListCard } from "@/components/features/card/HotListCard";
 import { useRouter } from "next/navigation";
-import { useGetHotPosts } from "@/hooks/usePosts";
+import { useGetHotPosts } from "@/hooks/queries/usePosts";
 
 export default function LoungePage() {
   const router = useRouter();
