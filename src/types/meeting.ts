@@ -1,4 +1,5 @@
 export interface Meeting {
+  id: number;
   name: string;
   type: string;
   region: string;
@@ -8,6 +9,7 @@ export interface Meeting {
   dateTime: string;
   registrationEnd: string;
   capacity: number;
+  participantCount: number;
   image: string;
   description: string;
 }

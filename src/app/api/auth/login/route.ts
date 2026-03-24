@@ -1,11 +1,9 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import type { User } from "@/types/index";
+import { setAuthCookies } from "@/lib/auth-cookies";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-const ACCESS_TOKEN_MAX_AGE = 60 * 15; // 15분
-const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7일
 
 interface LoginRequestBody {
   email: string;
@@ -30,20 +28,9 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({ ok: true, user: loginData.user });
 
-    response.cookies.set("accessToken", loginData.accessToken, {
-      httpOnly: true,
-      path: "/",
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: ACCESS_TOKEN_MAX_AGE,
-    });
-
-    response.cookies.set("refreshToken", loginData.refreshToken, {
-      httpOnly: true,
-      path: "/",
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: REFRESH_TOKEN_MAX_AGE,
+    setAuthCookies(response, {
+      accessToken: loginData.accessToken,
+      refreshToken: loginData.refreshToken,
     });
 
     return response;

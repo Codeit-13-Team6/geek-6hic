@@ -4,6 +4,7 @@ import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
+
 function OAuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,12 +21,13 @@ function OAuthCallbackContent() {
     const handleCallback = async () => {
       try {
         const { data } = await axios.post(
-          "/api/auth/social",
+          "/api/auth/token",
           { accessToken, refreshToken },
           { withCredentials: true },
         );
 
         if (data.ok) {
+          router.refresh(); // 서버 컴포넌트 캐시 갱신 안되는거때문에 fetchMe 가 실행안됨
           window.location.replace("/");
         } else {
           router.replace("/login");

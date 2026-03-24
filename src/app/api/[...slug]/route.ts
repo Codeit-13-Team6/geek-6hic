@@ -11,8 +11,6 @@ interface RouteParams {
   params: Promise<{ slug: string[] }>;
 }
 
-
-
 interface RouteRule {
   pattern: RegExp;
   methods: NextRequest["method"][];
@@ -77,6 +75,11 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["GET"],
     requiresAuth: true,
   },
+  {
+    pattern: /^\/posts\/\d+\/like$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
 ];
 
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러
@@ -94,6 +97,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   // if (!slug) {
   //   return NextResponse.json({ message: "Invalid Path" }, { status: 400 });
   // }
+
 
   //  실제 백엔드로 보낼 최종 주소 조립 (쿼리 스트링 포함)
   // 예: /api/users/me -> https://백엔드주소/users/me

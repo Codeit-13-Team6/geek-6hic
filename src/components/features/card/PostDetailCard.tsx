@@ -38,6 +38,7 @@ interface PostDetailCardProps {
   isOwner?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
+  onLike?: () => void;
 }
 
 export function PostDetailCard({
@@ -53,6 +54,7 @@ export function PostDetailCard({
   isOwner = false,
   onEdit,
   onDelete,
+  onLike,
 }: PostDetailCardProps) {
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
   return (
@@ -190,7 +192,7 @@ export function PostDetailCard({
           </div>
 
           {!isOwner && (
-            <BtnCommon size="icon-sm" variant="teritary">
+            <BtnCommon onClick={onLike} size="icon-sm" variant="teritary">
               <Image
                 src={liked ? heartsTrue : heartsFalse}
                 alt="heart"
