@@ -64,7 +64,13 @@ export default function Comment({
           <span className="font-medium text-gray-700">{name}</span>
           <span className="mx-0.5 text-gray-300">•</span>
           <span>
-            {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
+            {date
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .slice(0, -1)}
           </span>
         </div>
 
