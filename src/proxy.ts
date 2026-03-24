@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import axios from "axios";
 
-// 쿠키 만료 시간 (초 단위)
-const ACCESS_TOKEN_MAX_AGE = 60 * 15;
-const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
+import { setAuthCookies } from "@/lib/auth-cookies";
 
 // JWT payload의 exp 클레임을 읽어 토큰 만료 시간만 확인
 function isTokenExpired(token: string): boolean {
@@ -19,6 +17,9 @@ function isTokenExpired(token: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+
+
+
   // auth 관련 API는 인증 불필요 (refresh 무한루프 방지 포함)
   if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
@@ -30,12 +31,10 @@ export async function proxy(request: NextRequest) {
 
   const isApiRequest = pathname.startsWith("/api");
 
+
   // 토큰이 하나도 없는 경우
   if (!accessToken && !refreshToken) {
-    if (isApiRequest) {
-      // API 요청: 통과시켜서 PROXY_ROUTE_RULES가 인증 필요 여부 판단
-      return NextResponse.next();
-    }
+
     // 페이지 요청: 로그인 페이지로 리다이렉트
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -80,25 +79,7 @@ export async function proxy(request: NextRequest) {
 
 
     // 브라우저에 토큰 저장시켜서 다음 요청부턴 이거 사용하게함
-    if (data.accessToken) {
-      response.cookies.set("accessToken", data.accessToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: ACCESS_TOKEN_MAX_AGE,
-      });
-    }
-
-    if (data.refreshToken) {
-      response.cookies.set("refreshToken", data.refreshToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: REFRESH_TOKEN_MAX_AGE,
-      });
-    }
+    setAuthCookies(response, data);
 
     return response;
   } catch {
