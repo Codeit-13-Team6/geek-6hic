@@ -1,15 +1,19 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { EmptyData } from "@/components/features/empty/EmptyData";
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
 import { useMeetingQuery } from "@/hooks/useMeetingQuery";
 import MeetingList from "../meetings/components/MeetingList";
-import { useRouter } from "next/navigation";
+import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 
 export default function Page() {
   const router = useRouter();
+
+  const { toggleFavorite, isPending } = useMeetingFavoriteMutation();
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingQuery();
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -95,6 +99,7 @@ export default function Page() {
                 meetingList={allMeetings}
                 isLoading={isFetchingNextPage}
                 onItemClick={(item) => router.push(`/meetings/${item.id}`)}
+                onHeartClick={(item) => toggleFavorite(item)}
               />
             </div>
             <section>
