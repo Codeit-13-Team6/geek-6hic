@@ -40,3 +40,11 @@ export async function updatePost(
   const { data } = await axiosInstance.patch(`/posts/${postId}`, postData);
   return data;
 }
+
+export async function likePost(postId: number): Promise<void> {
+  await axiosInstance.post(`/posts/${postId}/like`);
+}
+
+export async function unlikePost(postId: number): Promise<void> {
+  await axiosInstance.delete(`/posts/${postId}/like`);
+}

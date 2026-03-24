@@ -2,8 +2,8 @@
 
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deletePost, getPostsDetail } from "@/api/posts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deletePost, getPostsDetail, likePost, unlikePost } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
 import CommentSection from "./component/comment/CommentSection";
 import { ToastCommon } from "@/components/ui/ToastCommon";
@@ -12,6 +12,7 @@ import { parsePostData } from "@/lib/postUtils";
 export default function LoungeDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const postId = Number(id);
   const userId = useAuthStore((state) => state.user?.id);
 
@@ -38,6 +39,31 @@ export default function LoungeDetailPage() {
     },
     onError: () => {
       ToastCommon({ message: "게시글 삭제에 실패했습니다.", size: "sm" });
+    },
+  });
+
+  const { mutate: toggleLike } = useMutation({
+    mutationFn: () => (post?.isLiked ? unlikePost(postId) : likePost(postId)),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["post", id] });
+      const previousPost = queryClient.getQueryData(["post", id]);
+      queryClient.setQueryData(["post", id], (oldData: any) => {
+        return {
+          ...oldData,
+          isLiked: !oldData.isLiked,
+          likeCount: oldData.isLiked
+            ? oldData.likeCount - 1
+            : oldData.likeCount + 1,
+        };
+      });
+      return { previousPost };
+    },
+    onError: (_err, _newTodo, context) => {
+      queryClient.setQueryData(["post", id], context?.previousPost);
+      ToastCommon({ message: "좋아요 실패", size: "sm" });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["post", id] });
     },
   });
 
@@ -69,13 +95,14 @@ export default function LoungeDetailPage() {
             date={new Date(post.createdAt)}
             content={mainContent} // 링크를 제외한 원래 본문 내용만
             linkObjects={linkObjects}
-            img={post.image || ""} // 대표 썸네일 (일단 쓰지는 않음)
             thumbsUp={post.likeCount}
             comment={post.comments.length || 0}
             isOwner={isPostOwner}
             liked={post.isLiked}
             onEdit={handlePostEdit}
             onDelete={handlePostDelete}
+            onLike={() => toggleLike()}
+            // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
           />
         </section>
 
