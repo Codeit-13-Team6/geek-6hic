@@ -6,6 +6,7 @@ import { getPosts } from "@/api/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
+import { useGetPostsList } from "@/hooks/queries/usePosts";
 
 interface Props {
   filterFn?: (post: Post) => boolean;
@@ -35,17 +36,15 @@ export default function PostList({
 
   const { sortBy, sortOrder } = getSortParams();
 
-  const { data: response, isLoading } = useQuery({
-    queryKey: ["posts", searchValue, sortValue],
-    queryFn: () =>
-      getPosts({
-        keyword: searchValue,
-        sortBy,
-        sortOrder,
-        size: filterFn ? 100 : 20,
-      }),
-    refetchOnWindowFocus: refetchType,
-  });
+  const { data: response, isLoading } = useGetPostsList(
+    {
+      keyword: searchValue,
+      sortBy,
+      sortOrder,
+      size: filterFn ? 100 : 20,
+    },
+    refetchType,
+  );
 
   let list = response?.data || [];
 
@@ -86,10 +85,16 @@ export default function PostList({
               <SearchX className="size-8 text-gray-300" />
             </div>
             <p className="text-lg font-semibold text-gray-900">
-              검색 결과가 없습니다.
+              {filterFn
+                ? "작성한 게시물이 없습니다."
+                : "검색 결과가 없습니다."}{" "}
             </p>
             <p className="mt-2 text-gray-500">
-              다른 검색어로 다시 시도해보세요.
+              {!filterFn && (
+                <p className="mt-2 text-gray-500">
+                  다른 검색어로 다시 시도해보세요.
+                </p>
+              )}{" "}
             </p>
           </div>
         )}

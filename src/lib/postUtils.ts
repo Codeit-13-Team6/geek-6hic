@@ -6,7 +6,7 @@ export interface LinkItem {
 }
 
 /**
- * [GET 전용] 서버에서 받은 혼합된 html을 콘텐츠와 링크로 분리하는 함수
+ * 서버에서 받은 혼합된 html을 콘텐츠와 링크로 분리하는 함수
  */
 export const parsePostData = (rawContent: string) => {
   if (!rawContent) return { content: "", links: [] };
@@ -40,7 +40,7 @@ export const parsePostData = (rawContent: string) => {
 };
 
 /**
- * [POST/PATCH 전용] 폼에서 작성한 콘텐츠와 링크 데이터를 하나로 합치는 함수
+ * 폼에서 작성한 콘텐츠와 링크 데이터를 하나로 합치는 함수
  */
 export const stitchPostData = (content: string, linkList: LinkItem[]) => {
   if (linkList.length === 0) return content;
@@ -54,4 +54,37 @@ export const stitchPostData = (content: string, linkList: LinkItem[]) => {
     .join("");
 
   return `${content}${linksHtml}`;
+};
+
+/**
+ * 태그 제거 로직 - 순수한 콘텐츠만 남김
+ */
+export const getPlainText = (html: string) => {
+  if (!html) return "";
+
+  const splitContent = html.split(/<p><a|<a/i);
+  let text = splitContent[0];
+
+  // 2. 블록 태그들을 공백으로 치환 (텍스트가 붙는 것 방지)
+  // p, li, div, h1~6 뿐만 아니라 blockquote, ul, ol 등을 추가
+  text = text.replace(/<(p|br|li|div|h[1-6]|blockquote|ul|ol)[^>]*>/gi, " ");
+  text = text.replace(/<\/(p|li|div|h[1-6]|blockquote|ul|ol)>/gi, " ");
+
+  // 3. 남은 모든 HTML 태그 제거
+  text = text.replace(/<[^>]*>?/gm, "");
+
+  // 4. HTML 엔티티 디코딩 (&gt; -> >, &nbsp; -> 공백 등)
+  const entities: { [key: string]: string } = {
+    "&nbsp;": " ",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&amp;": "&",
+    "&quot;": '"',
+    "&#39;": "'",
+  };
+
+  text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
+
+  // 5. 연속된 공백 하나로 합치고 앞뒤 트림
+  return text.replace(/\s\s+/g, " ").trim();
 };
