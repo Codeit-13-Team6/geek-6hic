@@ -41,23 +41,32 @@ export function useMeetingQuery() {
     queryKey: ["meetings", "joined", "mock"], // 테스트용임을 표시하기 위해 mock 추가
 
     queryFn: async ({ pageParam = 0 }) => {
-      // 1. 가짜 데이터 10개 생성
-      // pageParam을 활용해 ID가 겹치지 않게 만듭니다 (0~9, 10~19...)
-      const mockData = Array.from({ length: 10 }).map((_, i) => ({
-        id: pageParam + i + 1,
-        teamId: "dallaem",
-        name: `테스트 모임 ${pageParam + i + 1}`,
-        type: "달램핏",
-        region: "건대입구",
-        dateTime: "2026-03-23T14:00:00.000Z",
-        participantCount: 5,
-        capacity: 10,
-        image: "https://picsum.photos/200/300", // 테스트용 랜덤 이미지
-        hasMore: true,
-      }));
+      // const mockData = Array.from({ length: 10 }).map((_, i) => ({
+      //   id: pageParam + i + 1,
+      //   teamId: "dallaem",
+      //   name: `테스트 모임 ${pageParam + i + 1}`,
+      //   type: "달램핏",
+      //   region: "건대입구",
+      //   dateTime: "2026-03-23T14:00:00.000Z",
+      //   participantCount: 5,
+      //   capacity: 10,
+      //   image: "https://picsum.photos/200/300", // 테스트용 랜덤 이미지
+      // }));
+      const mockData: {
+        id: number;
+        teamId: string;
+        name: string;
+        type: string;
+        region: string;
+        dateTime: string;
+        participantCount: number;
+        capacity: number;
+        image: string;
+      }[] = [];
 
       // 2. 전체 데이터가 30개라고 가정하고 종료 조건 설정
-      const isLastPage = pageParam >= 20; // 0, 10, 20까지 총 3페이지
+      // const isLastPage = pageParam >= 20; // 0, 10, 20까지 총 3페이지
+      const isLastPage = true; // 빈 데이터 확인용
 
       // 3. 사용자가 준 JSON 구조와 똑같이 반환
       return {

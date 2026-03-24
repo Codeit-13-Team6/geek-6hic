@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { EmptyData } from "@/components/features/empty/EmptyData";
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
 import { useMeetingQuery } from "@/hooks/useMeetingQuery";
@@ -59,41 +60,54 @@ export default function Page() {
           </div>
         </section>
       </div>
-      <section className="mt-10">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {allMeetings.map((meeting) => (
-            <div
-              key={meeting.id}
-              className="flex flex-col gap-2 rounded-xl border bg-white p-6 shadow-sm"
-            >
-              <div className="relative h-40 w-full overflow-hidden rounded-lg">
-                <img
-                  src={meeting.image}
-                  alt={meeting.name}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <h2 className="mt-2 text-lg font-bold">{meeting.name}</h2>
-              <p className="text-sm text-gray-500">
-                {meeting.region} | {meeting.type}
-              </p>
-              <p className="text-xs text-gray-400">
-                {new Date(meeting.dateTime).toLocaleDateString()}
-              </p>
+
+      <section className="mt-10 min-h-[calc(100vh-220px)]">
+        {status === "pending" ? (
+          <div className="flex min-h-[calc(100vh-220px)] items-center justify-center text-center">
+            <p>데이터를 불러오고 있어요...</p>
+          </div>
+        ) : allMeetings.length === 0 ? (
+          <div className="flex min-h-[calc(100vh-220px)] items-center justify-center">
+            <EmptyData variant="myMeeting" />
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {allMeetings.map((meeting) => (
+                <div
+                  key={meeting.id}
+                  className="flex flex-col gap-2 rounded-xl border bg-white p-6 shadow-sm"
+                >
+                  <div className="relative h-40 w-full overflow-hidden rounded-lg">
+                    <img
+                      src={meeting.image}
+                      alt={meeting.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <h2 className="mt-2 text-lg font-bold">{meeting.name}</h2>
+                  <p className="text-sm text-gray-500">
+                    {meeting.region} | {meeting.type}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(meeting.dateTime).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
-      <section>
-        <div
-          ref={bottomRef}
-          className="flex h-20 w-full items-center justify-center"
-        >
-          {isFetchingNextPage && <p>데이터를 더 불러오고 있어요... 🏃‍♂️</p>}
-          {!hasNextPage && allMeetings.length > 0 && (
-            <p>모든 모임을 다 확인하셨습니다! ✔️</p>
-          )}
-        </div>
+            <section>
+              <div
+                ref={bottomRef}
+                className="flex h-20 w-full items-center justify-center"
+              >
+                {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
+                {!hasNextPage && allMeetings.length > 0 && (
+                  <p>모든 모임을 다 확인하셨습니다! ✔️</p>
+                )}
+              </div>
+            </section>
+          </>
+        )}
       </section>
     </div>
   );
