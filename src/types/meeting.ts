@@ -16,8 +16,10 @@ export interface Meeting {
 
 export interface GetMeetingListParams {
   type?: string;
-  region?: string;
-  date?: string;
-  sortBy?: 'dateTime' | 'registrationEnd' | 'participantCount';
+  // region?: string;
+  // date?: string;
+  sortBy?: 'createdAt' | 'dateTime' | 'registrationEnd' | 'participantCount';
   sortOrder?: 'asc' | 'desc'; // 오름차순 내림차순
+  cursor?: string;
+  size?: number;
 }

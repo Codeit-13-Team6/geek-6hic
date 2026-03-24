@@ -12,7 +12,7 @@ interface MeetingListProps {
   meetingList: Meeting[];
   isLoading: boolean;
   onItemClick: (item: Meeting) => void;
-  sortValue: 'deadline' | 'participants';
+  sortValue: 'deadline' | 'participants' | null;
 }
 
 export default function MeetingList({
@@ -62,18 +62,16 @@ export default function MeetingList({
   // 마감된 리스트
   function isMeetingClosed(item: Meeting) {
     const now = new Date();
-    const isExpired = new Date(item.dateTime) < now;
+    const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
   
-    return isExpired || isFull;
+    return isRegistrationClosed || isFull;
   }
-
-  // 마감기한 순으로 필터링 할 때, 필터링 없는 페이지 영향 안받게
-  const isDeadlineMode = sortValue === 'deadline';
-
-  const visibleMeetingList = isDeadlineMode
-  ? meetingList.filter((item) => !isMeetingClosed(item))
-  : meetingList;
+  
+  const visibleMeetingList =
+    sortValue === 'deadline'
+      ? meetingList.filter((item) => !isMeetingClosed(item))
+      : meetingList;
 
   return (
     <>
