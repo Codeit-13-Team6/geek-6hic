@@ -13,24 +13,53 @@ import bannerSm from '@/assets/img/banner/banner-sm.png';
 import arrowDrop from '@/assets/icon/arrow/arrow-drop.svg';
 import filter from '@/assets/icon/filter/filter.svg';
 import MeetingList from './components/MeetingList';
-
-const TAB_LIST = [
-  { value: 'all', label: '전체' },
-  { value: 'team', label: '팀미팅' },
-  { value: 'study', label: '스터디' },
-  { value: 'job', label: '취준생' },
-  { value: 'wework', label: '위워크' },
-  { value: 'etc', label: '기타' },
-];
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+} from "@/components/ui/SelectCommon";
 
 export default function Page() {
   const router = useRouter();
   const [activeValue, setActiveValue] = useState('all');
 
+  // 필터링 로직
+  const [sortValue, setSortValue] = useState<'deadline' | 'participants'>('deadline');
+  const sortOptions = [
+    { value: 'deadline', label: '마감임박 순' },
+    { value: 'participants', label: '참여인원 순' },
+  ] as const;
+  
+  const sortByMap = {
+    deadline: 'registrationEnd',
+    participants: 'participantCount',
+  } as const;
+  
+  const currentSortLabel = sortOptions.find(
+    (opt) => opt.value === sortValue,
+  )?.label;
+  
   const { data: meetingList = [], isLoading } = useQuery<Meeting[]>({
-    queryKey: ['meetings'],
-    queryFn: getMeetingList,
+    queryKey: ['meetings', sortValue],
+    queryFn: () =>
+      getMeetingList({
+        sortBy: sortByMap[sortValue],
+      }),
   });
+
+  // 탭 value
+  const TAB_LIST = [
+    { value: 'all', label: '전체' },
+    { value: 'team', label: '팀미팅' },
+    { value: 'study', label: '스터디' },
+    { value: 'job', label: '취준생' },
+    { value: 'wework', label: '위워크' },
+    { value: 'etc', label: '기타' },
+  ];
+
 
   return (
     <div className="w-full bg-gray-50 sm:pt-6 lg:pt-[48px]">
@@ -71,6 +100,27 @@ export default function Page() {
           </ul>
 
           <div className="mt-2 flex">
+          <Select
+              value={sortValue}
+              onValueChange={(value) => {
+                if (value === 'deadline' || value === 'participants') {
+                  setSortValue(value);
+                }
+              }}
+            >
+              <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
+                <SelectValue>{currentSortLabel}</SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-[120px] sm:w-[140px]">
+                <SelectGroup>
+                  {sortOptions.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <button
               type="button"
               className="flex items-center gap-0.5 px-2 py-1 text-base font-bold text-gray-600"

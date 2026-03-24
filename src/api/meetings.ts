@@ -1,20 +1,14 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { Meeting } from "@/types";
+import { Meeting, GetMeetingListParams } from "@/types";
 import axios from "axios";
 
-// 모임리스트 타입정의
-// export interface GetMeetingListParams {
-//   type?: string;
-//   region?: string;
-//   date?: string;
-//   sortBy?: 'dateTime' | 'registrationEnd' | 'participantCount';
-//   sortOrder?: 'asc' | 'desc';
-//   cursor?: string;
-//   size?: number;
-// }
+export async function getMeetingList(
+  params?: GetMeetingListParams,
+): Promise<Meeting[]> {
+  const { data } = await axiosInstance.get('/meetings', {
+    params,
+  });
 
-export async function getMeetingList(): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get('/meetings');
   return data.data;
 }
 
