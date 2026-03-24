@@ -39,7 +39,7 @@ export default function LoungePage() {
   ];
 
   const { data: hotResponse } = useGetHotPosts();
-  const hotList = hotResponse?.data || [];
+  const hotList = hotResponse || [];
 
   const currentSortLabel = sortOptions.find(
     (opt) => opt.value === sortValue,
