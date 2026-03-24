@@ -95,7 +95,7 @@ export default function MeetingList() {
       {mockMeetingList.map((meeting) => {
         const isClosed = isMeetingClosed(meeting);
         return (
-          <div key={meeting.id} className="relative overflow-hidden rounded-3xl sm:flex sm:items-center sm:gap-5 sm:p-6 sm:bg-white sm:rounded-[32px] ">
+          <div key={meeting.id} className="relative overflow-hidden rounded-3xl sm:flex sm:items-center sm:gap-5 sm:p-6 sm:bg-white sm:rounded-[32px] cursor-pointer">
             <button className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white">
               <div className="relative h-6 w-6">
                 <Image src={heartOff} fill alt="찜" />

@@ -13,8 +13,15 @@ import MeetingList from "./components/MeetingList";
 export default function Page() {
 
   // 탭 로직
-  const tabBtn = ["전체", "팀미팅", "스터디", "취준생", "위워크", "기타"]
-  const [activeIndex, setActiveIndex] = useState(0);
+  const TAB_LIST = [
+    { key: 'all', label: '전체' },
+    { key: 'team', label: '팀미팅' },
+    { key: 'study', label: '스터디' },
+    { key: 'job', label: '취준생' },
+    { key: 'wework', label: '위워크' },
+    { key: 'etc', label: '기타' },
+  ];
+  const [activeKey, setActiveKey] = useState('all');
 
   return (
     <>
@@ -24,33 +31,29 @@ export default function Page() {
             <h4 className="text-sm text-green-700">함께할 사람을 찾고 계신가요?</h4>
             <h3 className="mt-[10px] text-lg font-semibold">지금 모임에 참여해보세요</h3>
             <div className="absolute left-[323px] top-7 w-117 h-[273px] hidden sm:block">
-              <Image src={bannerLg} fill alt=""/>
+              <Image src={bannerLg} fill alt="" />
             </div>
             <div className="absolute w-134 h-[313px] hidden">
-              <Image src={bannerSm} fill alt=""/>
+              <Image src={bannerSm} fill alt="" />
             </div>
           </div>
         </div>
 
         <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col mt-6 mb-4">
-            <ul className="flex gap-[10px] overflow-x-auto">
-              {tabBtn.map((tab, index) => (
+            <ul className="flex gap-2">
+              {TAB_LIST.map(({ key, label }) => (
                 <li
-                  key={tab}
+                  key={key}
+                  onClick={() => setActiveKey(key)}
                   className={cn(
-                    'shrink-0 rounded-[14px] transition-colors',
-                    activeIndex === index
+                    'shrink-0 rounded-[14px] transition-colors px-4 py-2 cursor-pointer',
+                    activeKey === key
                       ? 'bg-gray-700 text-white font-bold'
                       : 'bg-gray-100 text-gray-800'
                   )}
                 >
-                  <button
-                    className="px-4 py-2 cursor-pointer"
-                    onClick={() => setActiveIndex(index)}
-                  >
-                    {tab}
-                  </button>
+                  {label}
                 </li>
               ))}
             </ul>
