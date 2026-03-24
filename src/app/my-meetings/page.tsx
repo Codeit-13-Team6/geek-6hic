@@ -5,8 +5,11 @@ import { EmptyData } from "@/components/features/empty/EmptyData";
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
 import { useMeetingQuery } from "@/hooks/useMeetingQuery";
+import MeetingList from "../meetings/components/MeetingList";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingQuery();
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -30,7 +33,22 @@ export default function Page() {
 
     return () => observer.disconnect(); // 정리
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // 페이지별로 쪼개진 데이터를 전부 합친 결과
   const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
+
+  useEffect(() => {
+    console.log("my-meetings query data:", data);
+    console.log("my-meetings pages:", data?.pages);
+    console.log("my-meetings allMeetings:", allMeetings);
+    console.log(
+      "my-meetings image urls:",
+      allMeetings.map((meeting) => ({
+        id: meeting.id,
+        name: meeting.name,
+        image: meeting.image,
+      })),
+    );
+  }, [data, allMeetings]);
 
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
@@ -40,12 +58,12 @@ export default function Page() {
             <div className="flex size-[56px] shrink-0 items-center justify-center sm:mr-2 sm:size-[102px]">
               <Image
                 src={savedSm}
-                alt="저장된 모임 아이콘"
+                alt="나의 모임"
                 className="block size-[56px] object-contain mix-blend-multiply sm:hidden"
               />
               <Image
                 src={savedLg}
-                alt="저장된 모임 아이콘"
+                alt="나의 모임"
                 className="hidden size-[102px] object-contain mix-blend-multiply sm:block"
               />
             </div>
@@ -61,7 +79,7 @@ export default function Page() {
         </section>
       </div>
 
-      <section className="mt-10 min-h-[calc(100vh-220px)]">
+      <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px]">
         {status === "pending" ? (
           <div className="flex min-h-[calc(100vh-220px)] items-center justify-center text-center">
             <p>데이터를 불러오고 있어요...</p>
@@ -72,28 +90,12 @@ export default function Page() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {allMeetings.map((meeting) => (
-                <div
-                  key={meeting.id}
-                  className="flex flex-col gap-2 rounded-xl border bg-white p-6 shadow-sm"
-                >
-                  <div className="relative h-40 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={meeting.image}
-                      alt={meeting.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <h2 className="mt-2 text-lg font-bold">{meeting.name}</h2>
-                  <p className="text-sm text-gray-500">
-                    {meeting.region} | {meeting.type}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    {new Date(meeting.dateTime).toLocaleDateString()}
-                  </p>
-                </div>
-              ))}
+            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
+              <MeetingList
+                meetingList={allMeetings}
+                isLoading={isFetchingNextPage}
+                onItemClick={(item) => router.push(`/meetings/${item.id}`)}
+              />
             </div>
             <section>
               <div

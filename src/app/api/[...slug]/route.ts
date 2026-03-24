@@ -31,6 +31,12 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     requiresAuth: true,
   },
   {
+    pattern: /^\/meetings\/joined$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+
+  {
     pattern: /^\/meetings\/\d+\/favorites$/,
     methods: ["POST", "DELETE"],
     requiresAuth: true,
@@ -97,7 +103,6 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   // if (!slug) {
   //   return NextResponse.json({ message: "Invalid Path" }, { status: 400 });
   // }
-
 
   //  실제 백엔드로 보낼 최종 주소 조립 (쿼리 스트링 포함)
   // 예: /api/users/me -> https://백엔드주소/users/me

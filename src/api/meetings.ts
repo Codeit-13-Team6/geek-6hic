@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { Meeting } from "@/types";
+import { JoinedMeeting, JoinedMeetingsResponse, Meeting } from "@/types";
 import axios from "axios";
 
 // 모임리스트 타입정의
@@ -14,7 +14,7 @@ import axios from "axios";
 // }
 
 export async function getMeetingList(): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get('/meetings');
+  const { data } = await axiosInstance.get("/meetings");
   return data.data;
 }
 
@@ -27,6 +27,16 @@ export async function getMeetings(params: {}): Promise<Meeting[]> {
 export async function getMeeting(): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings/my");
   return data.data;
+}
+
+export async function getJoinedMeetings(params: {
+  cursor?: string;
+  size?: number;
+}): Promise<JoinedMeetingsResponse> {
+  const { data } = await axiosInstance.get("/meetings/joined", {
+    params,
+  });
+  return data;
 }
 
 export async function createMeeting(meeting: Meeting): Promise<Meeting> {
