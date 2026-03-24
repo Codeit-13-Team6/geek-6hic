@@ -33,6 +33,9 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     mutationFn: (newContent: string) => createComment(postId, newContent),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
       if (commentRef.current) {
         commentRef.current.value = "";
       }
@@ -46,6 +49,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
     onError: () => {

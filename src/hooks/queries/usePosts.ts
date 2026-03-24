@@ -183,6 +183,7 @@ export const useToggleLike = (postId: number) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post"] });
     },
   });
 };
