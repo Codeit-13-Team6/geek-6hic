@@ -6,18 +6,18 @@ import Image from "next/image";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { MeetingCategoryStep } from "@/app/meeting/modal/MeetingCategoryStep";
-import { MeetingBasicInfoStep } from "@/app/meeting/modal/MeetingBasicInfoStep";
-import { MeetingScheduleStep } from "@/app/meeting/modal/MeetingScheduleStep";
-import { CreateMeetingFormValues } from "@/app/meeting/modal/modal";
+import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
+import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep";
+import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
+import { CreateMeetingFormValues } from "@/app/meetings/modal/modal";
 import {
   getNormalizedMeetingLink,
   hasMeetingValidationError,
   validateMeetingBasicInfoStep,
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
-} from "@/app/meeting/modal/meetingValidation";
-import { uploadMeetingImage } from "@/app/meeting/modal/services/uploadMeetingImage";
+} from "@/app/meetings/modal/meetingValidation";
+import { uploadMeetingImage } from "@/app/meetings/modal/services/uploadMeetingImage";
 
 import axiosInstance from "@/lib/client-fetcher";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { MeetingScheduleStepProps } from "@/app/meeting/modal/modal";
-import { ScheduleDatePicker } from "@/app/meeting/modal/ScheduleDatePicker";
-import { ScheduleTimePicker } from "@/app/meeting/modal/ScheduleTimePicker";
+import { MeetingScheduleStepProps } from "@/app/meetings/modal/modal";
+import { ScheduleDatePicker } from "@/app/meetings/modal/ScheduleDatePicker";
+import { ScheduleTimePicker } from "@/app/meetings/modal/ScheduleTimePicker";
 import { InputCommon } from "@/components/ui/InputCommon";
 
 const getTodayDateString = () => {

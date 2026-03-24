@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import {
   MeetingCategoryItem,
   MeetingCategoryStepProps,
-} from "@/app/meeting/modal/modal";
+} from "@/app/meetings/modal/modal";
 
 const meetingCategoryList: MeetingCategoryItem[] = [
   {
