@@ -21,6 +21,7 @@ interface ScheduleDatePickerProps {
   isRequired?: boolean;
   isDestructive?: boolean;
   min?: string;
+  max?: string;
   onChange: (value: string) => void;
 }
 
@@ -46,29 +47,30 @@ export function ScheduleDatePicker({
   isRequired = false,
   isDestructive = false,
   min,
+  max,
   onChange,
 }: ScheduleDatePickerProps) {
   const selectedDate = getParsedDate(value);
   const minDate = getParsedDate(min ?? "");
+  const maxDate = getParsedDate(max ?? "");
   const selectedDateKey = selectedDate?.getTime() ?? 0;
   const minDateKey = minDate?.getTime() ?? 0;
   const [isOpen, setIsOpen] = useState(false);
-  // 캘린더에서 고른 날짜는 적용 버튼을 눌렀을 때만 실제 값으로 반영한다.
   const [draftDate, setDraftDate] = useState<Date | undefined>(selectedDate);
   const [visibleMonth, setVisibleMonth] = useState<Date>(
     selectedDate ?? minDate ?? new Date(),
   );
   let disabledDateMatcher: React.ComponentProps<typeof Calendar>["disabled"];
 
-  // 선택 가능한 시작 날짜 이전은 캘린더에서 비활성화한다.
-  if (minDate) {
+  if (minDate && maxDate) {
+    disabledDateMatcher = [{ before: minDate }, { after: maxDate }];
+  } else if (minDate) {
     disabledDateMatcher = { before: minDate };
+  } else if (maxDate) {
+    disabledDateMatcher = { after: maxDate };
   }
 
   useEffect(() => {
-    // 팝오버를 닫으면 임시 선택값은 버리고,
-    // 실제 input에 반영된 날짜를 기준으로 다시 선택 상태와 표시 월을 맞춘다.
-
     if (!isOpen) {
       setDraftDate(selectedDate);
       setVisibleMonth(selectedDate ?? minDate ?? new Date());

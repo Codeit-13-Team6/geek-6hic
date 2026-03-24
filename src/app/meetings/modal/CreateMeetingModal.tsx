@@ -9,7 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
 import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep";
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
-import { CreateMeetingFormValues } from "@/app/meetings/modal/modal";
+import { MeetingFormValues } from "@/app/meetings/modal/modal";
 import {
   getNormalizedMeetingLink,
   hasMeetingValidationError,
@@ -17,15 +17,19 @@ import {
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
 } from "@/app/meetings/modal/meetingValidation";
-import { uploadMeetingImage } from "@/app/meetings/modal/services/uploadMeetingImage";
+import {
+  changeMeetingImage,
+  removeMeetingImage,
+  revokeMeetingPreviewImageUrl,
+} from "@/app/meetings/modal/services/meetingImageField";
 
 import axiosInstance from "@/lib/client-fetcher";
+import { toastCommon } from "@/lib/toastCommon";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { ToastCommon } from "@/components/ui/ToastCommon";
 
-const INITIAL_FORM_VALUES: CreateMeetingFormValues = {
+const INITIAL_FORM_VALUES: MeetingFormValues = {
   category: "TEAM_MEETING",
   name: "",
   description: "",
@@ -48,6 +52,7 @@ const getIsoDateTime = (date: string, time: string) => {
 
 export function CreateMeetingModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
   const handleOpenModal = () => {
     resetCreateMeetingForm();
@@ -59,27 +64,17 @@ export function CreateMeetingModal() {
   };
 
   const [currentStep, setCurrentStep] = useState(1);
-  // 각 step에서 다음 버튼을 눌렀는지 저장해,
-  // 해당 step에 진입했을 때만 검증 메시지를 보여준다.
   const [touchedStepList, setTouchedStepList] = useState<number[]>([]);
   const [formValues, setFormValues] =
-    useState<CreateMeetingFormValues>(INITIAL_FORM_VALUES);
+    useState<MeetingFormValues>(INITIAL_FORM_VALUES);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState("");
 
   const previewImageUrlRef = useRef("");
 
-  const revokePreviewImageUrl = (previewImageUrl: string) => {
-    if (!previewImageUrl) {
-      return;
-    }
-
-    URL.revokeObjectURL(previewImageUrl);
-  };
-
   useEffect(() => {
     return () => {
-      revokePreviewImageUrl(previewImageUrlRef.current);
+      revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
     };
   }, []);
 
@@ -121,60 +116,32 @@ export function CreateMeetingModal() {
   };
 
   const handleChangeMeetingImage = async (nextFile: File | null) => {
-    if (!nextFile) {
-      return;
-    }
-
-    // 업로드 완료 전에도 바로 미리보기를 확인할 수 있도록
-    // 로컬 object URL을 먼저 생성해 화면에 반영한다.
-    const nextPreviewImageUrl = URL.createObjectURL(nextFile);
-
-    revokePreviewImageUrl(previewImageUrlRef.current);
-    previewImageUrlRef.current = nextPreviewImageUrl;
-
-    setFormValues((prev) => ({
-      ...prev,
-      imageFile: nextFile,
-      previewImageUrl: nextPreviewImageUrl,
-      imageUrl: "",
-    }));
-    setImageErrorMessage("");
-    setIsImageUploading(true);
-
-    try {
-      const nextImageUrl = await uploadMeetingImage(nextFile);
-
-      setFormValues((prev) => ({
-        ...prev,
-        imageFile: nextFile,
-        imageUrl: nextImageUrl,
-      }));
-      setImageErrorMessage("");
-    } catch {
-      setFormValues((prev) => ({
-        ...prev,
-        imageFile: nextFile,
-        imageUrl: "",
-      }));
-      setImageErrorMessage("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
-      ToastCommon({ message: "이미지 업로드에 실패했습니다." });
-    } finally {
-      setIsImageUploading(false);
-    }
+    await changeMeetingImage({
+      nextFile,
+      previewImageUrlRef,
+      setFormValues,
+      setIsImageUploading,
+      clearImageError: () => {
+        setImageErrorMessage("");
+      },
+      setImageError: (message) => {
+        setImageErrorMessage(message);
+      },
+      onUploadError: () => {
+        toastCommon({ message: "이미지 업로드에 실패했습니다." });
+      },
+    });
   };
 
   const handleRemoveMeetingImage = () => {
-    revokePreviewImageUrl(previewImageUrlRef.current);
-    previewImageUrlRef.current = "";
-
-    setFormValues((prev) => ({
-      ...prev,
-      imageFile: null,
-      previewImageUrl: "",
-      imageUrl: "",
-    }));
-    setImageErrorMessage("");
-    setIsImageUploading(false);
+    removeMeetingImage({
+      previewImageUrlRef,
+      setFormValues,
+      setIsImageUploading,
+      clearImageError: () => {
+        setImageErrorMessage("");
+      },
+    });
   };
 
   const handlePrevStep = () => {
@@ -182,7 +149,6 @@ export function CreateMeetingModal() {
   };
 
   const handleNextStep = () => {
-    // 현재 step 검증을 통과한 경우에만 다음 step으로 이동한다.
     const currentStepErrors =
       currentStep === 1
         ? categoryErrors
@@ -214,7 +180,7 @@ export function CreateMeetingModal() {
     };
   };
   const resetCreateMeetingForm = () => {
-    revokePreviewImageUrl(previewImageUrlRef.current);
+    revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
     previewImageUrlRef.current = "";
 
     setCurrentStep(1);
@@ -224,9 +190,11 @@ export function CreateMeetingModal() {
     setImageErrorMessage("");
   };
 
+  const requestCloseModal = () => {
+    setIsCloseConfirmOpen(true);
+  };
+
   const handleSubmitMeeting = async () => {
-    // 최종 제출 시에는 step 순서대로 다시 검증해
-    // 에러가 있는 step으로 바로 되돌아갈 수 있게 한다.
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
     const nextBasicInfoErrors = validateMeetingBasicInfoStep(formValues);
     const nextScheduleErrors = validateMeetingScheduleStep(formValues);
@@ -251,19 +219,19 @@ export function CreateMeetingModal() {
 
     try {
       const payload = getCreateMeetingPayload();
-
+      console.log("제출 잘됨 ?", payload);
       const { data } = await axiosInstance.post("/meetings", payload);
 
-      ToastCommon({ message: `${data.name} 모임 생성완료` });
+      toastCommon({ message: `${data.name} 모임 생성완료` });
       handleCloseModal();
     } catch (error) {
       console.error("meeting create error", error);
-      ToastCommon({ message: "모임 생성에 실패했습니다." });
+      toastCommon({ message: "모임 생성에 실패했습니다." });
     }
   };
   const handleOpenChangeModal = (nextIsOpen: boolean) => {
     if (!nextIsOpen) {
-      handleCloseModal();
+      requestCloseModal();
       return;
     }
 
@@ -351,7 +319,7 @@ export function CreateMeetingModal() {
               variant="outline"
               size="md"
               className="flex-1"
-              onClick={handleCloseModal}
+              onClick={requestCloseModal}
             >
               취소
             </BtnCommon>
@@ -386,6 +354,43 @@ export function CreateMeetingModal() {
               모임 만들기
             </BtnCommon>
           )}
+        </div>
+      </ModalBase>
+      <ModalBase
+        disablePointerDismissal
+        isOpen={isCloseConfirmOpen}
+        onOpenChange={setIsCloseConfirmOpen}
+        contentClassName="w-[400px] max-w-[calc(100vw-24px)] rounded-[32px] border-none px-8 py-8 shadow-2xl"
+        title=""
+      >
+        <div className="pt-4 text-center">
+          <p className="text-[24px] font-semibold text-gray-900">
+            취소하시겠습니까?
+          </p>
+          <p className="mt-3 text-[16px] text-gray-500">
+            저장하지 않은 내용은 사라집니다.
+          </p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-2 gap-3">
+          <BtnCommon
+            type="button"
+            variant="teritary"
+            size="md"
+            onClick={() => setIsCloseConfirmOpen(false)}
+          >
+            계속 작성하기
+          </BtnCommon>
+          <BtnCommon
+            type="button"
+            size="md"
+            onClick={() => {
+              setIsCloseConfirmOpen(false);
+              handleCloseModal();
+            }}
+          >
+            나가기
+          </BtnCommon>
         </div>
       </ModalBase>
     </>

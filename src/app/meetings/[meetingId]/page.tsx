@@ -1,23 +1,35 @@
-import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
-import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
-import { MeetingLinkSection } from "@/app/meetings/[meetingId]/components/MeetingLinkSection";
-import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
-import { RecommendedMeetingsSection } from "@/app/meetings/[meetingId]/components/RecommendedMeetingsSection";
-import { meetingDetailMock } from "@/app/meetings/[meetingId]/mock";
+import {
+  meetingDetailMock,
+  meetingDetailMocks,
+} from "@/app/meetings/[meetingId]/mock";
+import { MeetingDetailContent } from "@/app/meetings/[meetingId]/components/MeetingDetailContent";
 
 const MOCK_CURRENT_TIMESTAMP = new Date("2026-03-20T12:00:00.000Z").getTime();
 
-export default function MeetingDetailPage() {
+interface MeetingDetailPageProps {
+  params: Promise<{
+    meetingId: string;
+  }>;
+}
+
+export default async function MeetingDetailPage({
+  params,
+}: MeetingDetailPageProps) {
+  const { meetingId } = await params;
+  const resolvedMeetingId = Number(meetingId);
+  // meetingId별 mock 시나리오를 선택해 상세 페이지 상태를 빠르게 확인한다.
+
+  const data = {
+    ...(meetingDetailMocks[resolvedMeetingId] ?? meetingDetailMock),
+    id: resolvedMeetingId || meetingDetailMock.id,
+  };
+
   return (
-    <main className="mx-auto flex w-full max-w-[1240px] flex-col gap-16 px-6 py-12 xl:px-0">
-      <MeetingHeaderSection
-        data={meetingDetailMock}
+    <main className="mx-auto flex w-full max-w-[375px] flex-col px-4 py-6 md:max-w-[744px] md:px-6 md:py-8 xl:max-w-[1280px] xl:px-0 xl:py-12">
+      <MeetingDetailContent
+        initialData={data}
         currentTimestamp={MOCK_CURRENT_TIMESTAMP}
       />
-      <MeetingDescriptionSection data={meetingDetailMock} />
-      <MeetingLinkSection data={meetingDetailMock} />
-      <MeetingThreadSection data={meetingDetailMock} />
-      <RecommendedMeetingsSection data={meetingDetailMock} />
     </main>
   );
 }

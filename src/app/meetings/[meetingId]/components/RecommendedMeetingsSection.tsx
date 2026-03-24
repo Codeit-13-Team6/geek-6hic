@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { TagCommon } from "@/components/ui/TagCommon";
 import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
+import { TagCommon } from "@/components/ui/TagCommon";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -28,15 +28,17 @@ export function RecommendedMeetingsSection({
   data,
 }: RecommendedMeetingsSectionProps) {
   return (
-    <section className="space-y-6">
-      <h2 className="text-[24px] font-semibold text-gray-900">이런 모임은 어때요?</h2>
+    <section className="w-full space-y-5 md:space-y-6">
+      <h2 className="text-[24px] font-semibold text-gray-900">
+        이런 모임은 어때요?
+      </h2>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4">
         {data.recommendedMeetings.map((meeting) => (
           <Link
             key={meeting.id}
             href={`/meeting/${meeting.id}`}
-            className="group overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:rounded-[24px]"
           >
             <Image
               src={meeting.image}

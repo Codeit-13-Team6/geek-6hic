@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
+import { MeetingThreadItem } from "@/app/meetings/[meetingId]/types";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
   Pagination,
@@ -25,44 +25,56 @@ const formatDate = (value: string) => {
 };
 
 interface MeetingThreadSectionProps {
-  data: MeetingDetailData;
+  threads: MeetingThreadItem[];
+  canWriteThread: boolean;
+  guideText: string;
 }
 
-export function MeetingThreadSection({ data }: MeetingThreadSectionProps) {
+export function MeetingThreadSection({
+  threads,
+  canWriteThread,
+  guideText,
+}: MeetingThreadSectionProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [comment, setComment] = useState("");
-  const totalPages = Math.max(1, Math.ceil(data.threads.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(threads.length / PAGE_SIZE));
 
   const pagedThreads = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
 
-    return data.threads.slice(startIndex, startIndex + PAGE_SIZE);
-  }, [currentPage, data.threads]);
+    return threads.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [currentPage, threads]);
 
   return (
-    <section className="space-y-4">
+    <section className="w-full space-y-3 md:space-y-4">
       <h2 className="text-[24px] font-semibold text-gray-900">모임 스레드</h2>
 
-      <div className="rounded-[24px] border border-gray-100 bg-white p-8 shadow-sm">
-        <div className="mb-6 flex gap-3">
-          <div className="flex-1">
-            <TextareaCommon
-              value={comment}
-              placeholder="내용을 입력해주세요"
-              onChange={(event) => setComment(event.target.value)}
-              className="min-h-[54px] resize-none"
-            />
+      <div className="rounded-[20px] border border-gray-100 bg-white p-6 shadow-sm md:rounded-[24px] md:p-8 xl:rounded-[32px]">
+        {canWriteThread ? (
+          <div className="mb-6 flex gap-3">
+            <div className="flex-1">
+              <TextareaCommon
+                value={comment}
+                placeholder="내용을 입력해주세요"
+                onChange={(event) => setComment(event.target.value)}
+                className="min-h-[54px] resize-none"
+              />
+            </div>
+            <BtnCommon type="button" size="sm" className="mt-auto w-[120px]">
+              스레드 작성
+            </BtnCommon>
           </div>
-          <BtnCommon type="button" size="sm" className="mt-auto w-[120px]">
-            스레드 작성
-          </BtnCommon>
-        </div>
+        ) : (
+          <div className="mb-6 rounded-[18px] bg-gray-50 px-5 py-4 text-sm text-gray-600">
+            {guideText}
+          </div>
+        )}
 
         <div className="space-y-0">
           {pagedThreads.map((thread) => (
             <article
               key={thread.id}
-              className="border-b border-gray-100 py-6 last:border-b-0 last:pb-0 first:pt-0"
+              className="border-b border-gray-100 py-6 first:pt-0 last:border-b-0 last:pb-0"
             >
               <div className="mb-2 text-sm text-gray-500">
                 {thread.author} · {formatDate(thread.createdAt)}
@@ -86,6 +98,7 @@ export function MeetingThreadSection({ data }: MeetingThreadSectionProps) {
                 }}
               />
             </PaginationItem>
+
             {Array.from({ length: totalPages }, (_, index) => {
               const page = index + 1;
 
@@ -104,6 +117,7 @@ export function MeetingThreadSection({ data }: MeetingThreadSectionProps) {
                 </PaginationItem>
               );
             })}
+
             <PaginationItem>
               <PaginationNext
                 href="#"
