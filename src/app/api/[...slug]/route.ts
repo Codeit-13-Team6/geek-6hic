@@ -1,10 +1,17 @@
-import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import serverAxios from "@/lib/server-fetcher";
+import { setAuthCookies } from "@/lib/auth-cookies";
 
-// 실제 백엔드 서버 주소
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// 디버깅용: 모듈 레벨 변수 (요청 간 스코프 공유 여부 테스트)
+let requestCount = 0;
+
+// 모듈 레벨 refresh queue: 동시 요청 시 refresh를 1번만 호출
+// slug 로 내려온 요청들이 개별로 진행된다고 해도 모듈 레벨에서 요청들 다 감싸서 queue 형태로 만듬
+let refreshPromise: Promise<{ accessToken: string; refreshToken: string } | null> | null = null;
+// 디버깅용: 대기열에 참여한 요청 URL 목록
+let refreshQueue: string[] = [];
 
 // slug: /api/users/me 요청 시 ['users', 'me'] 배열로 들어옴
 interface RouteParams {
@@ -16,6 +23,70 @@ interface RouteRule {
   methods: NextRequest["method"][];
   requiresAuth: boolean;
 }
+
+// 백엔드 요청을 실행하는 함수 (토큰을 인자로 받아 재사용)
+// bff 단으로 내려온 데이터 합쳐서 백엔드쪽으로 api 호출하는 애
+// 추후 멀티파트폼데이터 같은거 들어가야하면 헤더는 수정좀 해야할것같음
+const callBackend = async (
+  method: string,
+  url: string,
+  body: any,
+  token: string | undefined,
+) => {
+  const requestConfig: any = {
+    method,
+    url,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+  };
+
+  if (token) {
+    requestConfig.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return serverAxios(requestConfig);
+};
+
+// 리프레시 토큰으로 새 액세스 토큰을 발급받는 함수 (queue 패턴)
+// 동시에 여러 요청이 refresh를 호출해도 실제 API 호출은 1번만 실행
+const refreshAccessToken = async (requestUrl: string) => {
+  // 전역에 미리 선언해둔 배열에 요청 url 을 기준으로 집어넣기
+  refreshQueue.push(requestUrl);
+
+  // 이미 refresh 진행 중이면 같은 Promise를 반환 (중복 호출 방지)
+  if (refreshPromise) {
+    console.log(`[slug] refresh 대기열 참여 (queue 재사용): ${requestUrl}`);
+    console.log(`[slug] 현재 대기열:`, refreshQueue);
+    return refreshPromise;
+  }
+
+  console.log(`[slug] refresh 최초 호출 (queue 생성): ${requestUrl}`);
+  console.log(`[slug] 현재 대기열:`, refreshQueue);
+  refreshPromise = (async () => {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refreshToken")?.value;
+
+    if (!refreshToken) return null;
+
+    try {
+      const { data } = await serverAxios.post("/auth/refresh", {
+        refreshToken,
+      });
+      console.log(`[slug] refresh 성공, 대기열 처리 완료:`, refreshQueue);
+      return data; // { accessToken, refreshToken }
+    } catch {
+      console.log(`[slug] refresh 실패, 대기열 폐기:`, refreshQueue);
+      return null;
+    } finally {
+      refreshPromise = null;
+      refreshQueue = []; // 대기열 초기화
+    }
+  })();
+
+  return refreshPromise;
+};
 
 // 백엔드로 프록시할 라우트 화이트리스트
 // 여기 없는 경로는 404로 차단 (등록된 경로만 백엔드로 통과)
@@ -94,6 +165,9 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
 
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러
 async function handleProxy(request: NextRequest, { params }: RouteParams) {
+  requestCount++;
+  // console.log(`[slug] requestCount: ${requestCount}, url: ${request.url}`);
+
   //  서버 전용 쿠키 저장소에서 액세스 토큰 읽기 (HttpOnly 쿠키라 서버에서만 가능)
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
@@ -112,7 +186,8 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   //  실제 백엔드로 보낼 최종 주소 조립 (쿼리 스트링 포함)
   // 예: /api/users/me -> https://백엔드주소/users/me
   const targetPath = `/${slug.join("/")}`;
-  const targetUrl = `${API_BASE_URL}${targetPath}${request.nextUrl.search}`;
+  // server-fetcher에 baseURL이 설정되어 있으므로 path + query만 조합
+  const targetUrl = `${targetPath}${request.nextUrl.search}`;
 
   //  PROXY_ROUTE_RULES 화이트리스트 검사: 등록되지 않은 경로는 404 차단
   const matchedRule = PROXY_ROUTE_RULES.find((rule) =>
@@ -131,12 +206,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
     );
   }
 
-  // 인증이 필요한 라우트인데 액세스 토큰이 없으면 401 반환
-  if (matchedRule.requiresAuth && !accessToken) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  // 요청 본문(Body) 데이터 읽기 (POST, PUT 등일 때만)
+  // 요청 본문 body 가 있는경우 데이터 읽기 (POST, PUT 등일 때만)
   let body = null;
   if (["POST", "PUT", "PATCH"].includes(request.method)) {
     try {
@@ -146,35 +216,85 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
     }
   }
 
-  // 백엔드에 보낼 요청 설정 조립
-  // 클라이언트 요청의 method, url, body를 그대로 백엔드로 전달
-  const requestConfig: any = {
-    method: request.method,
-    url: targetUrl,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: body,
-  };
+  // 엑세스토큰 x  , 리프레쉬 o
+  // 엑세스토큰 x , 리프레쉬 x
+  // 엑세스토큰 o , 리프레쉬 x
 
-  // 토큰 바인딩
-  if (accessToken) {
-    requestConfig.headers.Authorization = `Bearer ${accessToken}`;
-  }
+
+
 
   try {
-    //  BFF 서버가 백엔드에 대신 요청을 보냄 (Proxying)
-    const { data, status } = await axios(requestConfig);
+    // 액세스 토큰이 아예 없는경우 바로 refresh 시도
+    if (matchedRule.requiresAuth && !accessToken) {
+      const refreshed = await refreshAccessToken(request.url);
 
-    //  백엔드에서 받은 데이터와 상태 코드를 브라우저에 그대로 전달
+      // 리프레쉬 토큰이 없으면 401  떨어뜨리기
+      // 401 후에 리프레쉬 토큰 만료된건 앞단에서 처리 후 login page 로 보내기
+      // 혹은 메시지 내용 변경하거나 code 추가 해서 리프레쉬 토큰 없어서 떨어진거라고 명시해서 쏴주기
+      if (!refreshed) {
+        return NextResponse.json(
+          { message: "Unauthorized", code: "REFRESH_FAILED" },
+          { status: 401 },
+        );
+      }
+
+      const { data, status } = await callBackend(request.method, targetUrl, body, refreshed.accessToken);
+      const response = NextResponse.json(data, { status });
+      setAuthCookies(response, refreshed);
+      return response;
+    }
+
+    // 액세스 토큰이 있으면 그대로 요청
+    const { data, status } = await callBackend(request.method, targetUrl, body, accessToken);
     return NextResponse.json(data, { status });
+
+
   } catch (error: any) {
-    // 백엔드 통신 실패 시 로그를 남기고 에러 정보를 클라이언트에 토스
-    console.error("BFF Proxy Error:", error.response?.data || error.message);
-    return NextResponse.json(
-      error.response?.data ?? { message: "Internal Server Error" },
-      { status: error.response?.status ?? 500 },
-    );
+    // callBackend 에서 에러떨어졌을 때 처리
+    // 401이 아니면 바로 전달
+    if (error.response?.status !== 401 || !matchedRule.requiresAuth) {
+      console.error("BFF Proxy Error:", error.response?.data || error.message);
+      return NextResponse.json(
+        error.response?.data ?? { message: "Internal Server Error" },
+        { status: error.response?.status ?? 500 },
+      );
+    }
+
+    // 엑세스토큰 있지만 만료  , 리프레쉬 o 케이스가 이쪽으로 떨어짐
+    // 사실상 콜백엔드에서 401 + 등등의 에러가 나왔을때지만 로직 대부분은 위 케이스 처리용
+    // 백엔드가 401을 반환한 경우 엑세스 토큰 만료 → refresh 후 재시도
+    const refreshed = await refreshAccessToken(request.url);
+
+    if (!refreshed) {
+      return NextResponse.json(
+        { message: "Unauthorized", code: "REFRESH_FAILED" },
+        { status: 401 },
+      );
+    }
+
+    // 윗단에서 토큰 재발급 완료했으니 다시 try
+    try {
+      const { data, status } = await callBackend(
+        request.method,
+        targetUrl,
+        body,
+        refreshed.accessToken,
+      );
+      const response = NextResponse.json(data, { status });
+      setAuthCookies(response, refreshed);
+      return response;
+    } catch (retryError: any) {
+      // 401 제외 에러
+      console.error(
+        "BFF Proxy Retry Error:",
+        retryError.response?.data || retryError.message,
+      );
+      return NextResponse.json(
+        retryError.response?.data ?? { message: "Internal Server Error" },
+        { status: retryError.response?.status ?? 500 },
+      );
+    }
+
   }
 }
 
