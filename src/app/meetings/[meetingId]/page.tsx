@@ -17,8 +17,8 @@ export default async function MeetingDetailPage({
 }: MeetingDetailPageProps) {
   const { meetingId } = await params;
   const resolvedMeetingId = Number(meetingId);
-  // meetingId별 mock 시나리오를 선택해 상세 페이지 상태를 빠르게 확인한다.
 
+  // meetingId가 있으면 해당 mock을, 없으면 기본 mock을 사용한다.
   const data = {
     ...(meetingDetailMocks[resolvedMeetingId] ?? meetingDetailMock),
     id: resolvedMeetingId || meetingDetailMock.id,

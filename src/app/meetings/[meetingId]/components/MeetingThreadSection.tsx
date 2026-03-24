@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { MeetingThreadItem } from "@/app/meetings/[meetingId]/types";
 import { BtnCommon } from "@/components/ui/BtnCommon";
@@ -39,11 +39,8 @@ export function MeetingThreadSection({
   const [comment, setComment] = useState("");
   const totalPages = Math.max(1, Math.ceil(threads.length / PAGE_SIZE));
 
-  const pagedThreads = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-
-    return threads.slice(startIndex, startIndex + PAGE_SIZE);
-  }, [currentPage, threads]);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const pagedThreads = threads.slice(startIndex, startIndex + PAGE_SIZE);
 
   return (
     <section className="w-full space-y-3 md:space-y-4">

@@ -70,6 +70,7 @@ export function ScheduleDatePicker({
     disabledDateMatcher = { after: maxDate };
   }
 
+  // 팝오버를 닫으면 입력값 기준으로 임시 선택 날짜를 다시 맞춘다.
   useEffect(() => {
     if (!isOpen) {
       setDraftDate(selectedDate);

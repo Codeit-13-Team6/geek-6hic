@@ -82,10 +82,8 @@ export function EditMeetingModal({
   const [isImageUploading, setIsImageUploading] = useState(false);
 
   const previewImageUrlRef = useRef("");
-  // 모달을 다시 열면 최신 상세 데이터를 기준으로 폼과 에러 상태를 모두 되돌린다.
 
-  // 수정 모달은 기존 상세 데이터를 폼 상태로 다시 주입해야 해서
-  // 모달이 열릴 때마다 탭, 에러, 이미지 업로드 상태까지 함께 초기화합니다.
+  // 모달을 다시 열 때는 최신 상세 데이터를 기준으로 폼 상태를 다시 만든다.
   const resetEditMeetingForm = (nextData: MeetingDetailData) => {
     const nextValues = toFormValues(nextData);
 
@@ -158,9 +156,7 @@ export function EditMeetingModal({
     });
   };
 
-  // 기본 정보 탭은 category + basic info를 함께 보여주기 때문에
-  // 값 갱신과 관련 에러 해제를 한 번에 처리합니다.
-  // 기본 탭은 카테고리와 상세 정보를 함께 다뤄 관련 에러도 같이 초기화한다.
+  // 기본 정보 탭에서 바뀐 값만 반영하고, 해당 필드 에러도 함께 지운다.
   const handleChangeBasicTab = (nextValues: {
     category?: string;
     name?: string;
@@ -184,8 +180,7 @@ export function EditMeetingModal({
     }));
   };
 
-  // 일정 탭도 같은 방식으로 값 변경과 해당 필드 에러 초기화를 같이 처리합니다.
-  // 일정 탭도 동일한 방식으로 값 변경과 에러 해제를 묶어서 처리한다.
+  // 일정 탭도 같은 방식으로 값과 에러를 같이 갱신한다.
   const handleChangeScheduleTab = (nextValues: {
     startDate?: string;
     startTime?: string;
@@ -207,11 +202,8 @@ export function EditMeetingModal({
     }));
   };
 
-  // 탭이 나뉘어 있어도 제출 시점에는 전체 폼을 검증하고,
-  // 에러가 있는 탭으로 다시 보내 바로 수정할 수 있게 한다.
+  // 제출할 때는 전체 탭을 한 번에 검증하고, 에러가 있는 탭으로 이동시킨다.
   const handleSubmit = () => {
-    // 수정 모달은 탭 구조라서 전체 검증 후,
-    // 에러가 있는 탭으로 다시 이동시켜 사용자가 바로 수정할 수 있게 합니다.
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
     const nextBasicErrors = validateMeetingBasicInfoStep(formValues);
     const nextScheduleErrors = validateMeetingScheduleStep(formValues);

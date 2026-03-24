@@ -3,6 +3,7 @@ import {
   MeetingFormValues,
 } from "@/app/meetings/modal/modal";
 
+// 사용자가 프로토콜 없이 입력해도 URL 검증이 가능하도록 https를 기본값으로 붙인다.
 export const getNormalizedMeetingLink = (link: string) => {
   const trimmedLink = link.trim();
 
@@ -72,6 +73,7 @@ const isValidRawHostname = (link: string) => {
   return isLikelyValidDomain(rawHostname);
 };
 
+// 링크는 빈 값 여부, 호스트 형태, 프로토콜까지 순서대로 확인한다.
 export const getMeetingLinkErrorMessage = (link: string) => {
   const trimmedLink = link.trim();
 
@@ -129,6 +131,7 @@ export const validateMeetingScheduleStep = (formValues: MeetingFormValues) => {
 
   const capacityNumber = Number(formValues.capacity);
 
+  // 정원은 숫자만 허용하고 최소 1명 이상이어야 한다.
   if (!formValues.capacity.trim()) {
     errors.capacity = "모임 정원을 입력해주세요.";
   } else if (!Number.isInteger(capacityNumber) || capacityNumber < 1) {
@@ -143,6 +146,7 @@ export const validateMeetingScheduleStep = (formValues: MeetingFormValues) => {
       formValues.endTime &&
       formValues.endTime >= formValues.startTime;
 
+    // 모집 마감은 모임 시작보다 늦을 수 없도록 막는다.
     if (isEndDateAfterStartDate || isSameDateAndEndTimeAfterStartTime) {
       errors.endDate = INVALID_END_DATETIME_MESSAGE;
       errors.endTime = INVALID_END_DATETIME_MESSAGE;

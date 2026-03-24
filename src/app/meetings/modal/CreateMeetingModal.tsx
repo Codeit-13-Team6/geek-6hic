@@ -4,7 +4,7 @@ import plusIcon from "@/assets/icon/plus/plus.svg";
 
 import Image from "next/image";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
 import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep";
@@ -24,8 +24,7 @@ import {
 } from "@/app/meetings/modal/services/meetingImageField";
 
 import axiosInstance from "@/lib/client-fetcher";
-import { toastCommon } from "@/lib/toastCommon";
-
+import { ToastCommon } from "@/components/ui/ToastCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 
@@ -78,17 +77,9 @@ export function CreateMeetingModal() {
     };
   }, []);
 
-  const categoryErrors = useMemo(() => {
-    return validateMeetingCategoryStep(formValues);
-  }, [formValues]);
-
-  const basicInfoErrors = useMemo(() => {
-    return validateMeetingBasicInfoStep(formValues);
-  }, [formValues]);
-
-  const scheduleErrors = useMemo(() => {
-    return validateMeetingScheduleStep(formValues);
-  }, [formValues]);
+  const categoryErrors = validateMeetingCategoryStep(formValues);
+  const basicInfoErrors = validateMeetingBasicInfoStep(formValues);
+  const scheduleErrors = validateMeetingScheduleStep(formValues);
 
   const isTouchedStep = (step: number) => {
     return touchedStepList.includes(step);
@@ -104,6 +95,7 @@ export function CreateMeetingModal() {
     });
   };
 
+  // 기본 정보 단계는 텍스트 입력만 다루므로 해당 필드만 부분 갱신한다.
   const handleChangeBasicInfo = (nextValues: {
     name?: string;
     description?: string;
@@ -128,7 +120,7 @@ export function CreateMeetingModal() {
         setImageErrorMessage(message);
       },
       onUploadError: () => {
-        toastCommon({ message: "이미지 업로드에 실패했습니다." });
+        ToastCommon({ message: "이미지 업로드에 실패했습니다." });
       },
     });
   };
@@ -161,9 +153,11 @@ export function CreateMeetingModal() {
       return;
     }
 
+    // 현재 단계에서만 검증해 다음 단계 이동 여부를 결정한다.
     setCurrentStep((prev) => Math.min(TOTAL_STEPS, prev + 1));
   };
 
+  // API 요청 전 서버 스펙에 맞는 payload 형태로 변환한다.
   const getCreateMeetingPayload = () => {
     return {
       name: formValues.name,
@@ -179,6 +173,8 @@ export function CreateMeetingModal() {
       description: formValues.description,
     };
   };
+
+  // 모달을 다시 열 때 이전 입력값과 임시 이미지 상태를 함께 초기화한다.
   const resetCreateMeetingForm = () => {
     revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
     previewImageUrlRef.current = "";
@@ -218,17 +214,19 @@ export function CreateMeetingModal() {
     }
 
     try {
+      // 모든 단계를 통과한 뒤에만 생성 요청을 보낸다.
       const payload = getCreateMeetingPayload();
       console.log("제출 잘됨 ?", payload);
       const { data } = await axiosInstance.post("/meetings", payload);
 
-      toastCommon({ message: `${data.name} 모임 생성완료` });
+      ToastCommon({ message: `${data.name} 모임 생성완료` });
       handleCloseModal();
     } catch (error) {
       console.error("meeting create error", error);
-      toastCommon({ message: "모임 생성에 실패했습니다." });
+      ToastCommon({ message: "모임 생성에 실패했습니다." });
     }
   };
+
   const handleOpenChangeModal = (nextIsOpen: boolean) => {
     if (!nextIsOpen) {
       requestCloseModal();

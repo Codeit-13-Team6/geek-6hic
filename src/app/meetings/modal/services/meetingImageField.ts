@@ -22,6 +22,7 @@ interface RemoveMeetingImageParams {
   clearImageError: () => void;
 }
 
+// 미리보기로 만든 blob URL만 직접 해제한다.
 export const revokeMeetingPreviewImageUrl = (previewImageUrl: string) => {
   if (!previewImageUrl || !previewImageUrl.startsWith("blob:")) {
     return;
@@ -43,6 +44,7 @@ export const changeMeetingImage = async ({
     return;
   }
 
+  // 업로드가 끝나기 전까지는 로컬 미리보기 이미지를 먼저 보여 준다.
   const nextPreviewImageUrl = URL.createObjectURL(nextFile);
 
   revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
@@ -85,6 +87,7 @@ export const removeMeetingImage = ({
   setIsImageUploading,
   clearImageError,
 }: RemoveMeetingImageParams) => {
+  // 이미지 제거 시 업로드 상태와 폼 값도 함께 초기화한다.
   revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
   previewImageUrlRef.current = "";
 

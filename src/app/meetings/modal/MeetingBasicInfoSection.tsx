@@ -1,7 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
-
 import {
   DEFAULT_MEETING_TYPE_OPTIONS,
   MeetingBasicInfoSectionProps,
@@ -27,7 +25,7 @@ export function MeetingBasicInfoSection({
   showCategoryField = false,
   showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
-  const meetingTypeOptions = useMemo(() => {
+  const meetingTypeOptions = (() => {
     if (!values.category) {
       return DEFAULT_MEETING_TYPE_OPTIONS;
     }
@@ -47,7 +45,7 @@ export function MeetingBasicInfoSection({
       },
       ...DEFAULT_MEETING_TYPE_OPTIONS,
     ];
-  }, [values.category]);
+  })();
 
   return (
     <div className="space-y-5">

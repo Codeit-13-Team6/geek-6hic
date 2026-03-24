@@ -21,7 +21,6 @@ export function MeetingDetailContent({
   const [data, setData] = useState(initialData);
   const [isFavoritePending] = useState(false);
   const [hasAttended, setHasAttended] = useState(false);
-  // 권한/노출 분기를 부모에서 한 번 계산해 각 섹션은 표시 역할에만 집중시킨다.
 
   const isLoggedIn = data.isLoggedIn;
   const isHost = data.isHost;
@@ -31,8 +30,7 @@ export function MeetingDetailContent({
     new Date(data.registrationEnd).getTime() < currentTimestamp ||
     data.participantCount >= data.capacity;
 
-  // 상세 페이지의 공통 정책은 부모에서 한 번만 계산하고,
-  // 각 섹션은 받은 값으로만 그리도록 역할을 나눕니다.
+  // 상세 화면에서 공통으로 쓰는 권한과 상태값을 여기서 한 번만 계산한다.
   const canViewLink = isHost || (isLoggedIn && isJoined);
   const canWriteThread = isHost || (isLoggedIn && isJoined);
   const shouldShowHostMenu = isHost;
@@ -47,6 +45,7 @@ export function MeetingDetailContent({
   } else if (isJoined) {
     actionLabel = "참여 취소하기";
   }
+
   const isActionDisabled = isStarted
     ? hasAttended
     : !isHost && isClosed && !isJoined;
@@ -73,11 +72,8 @@ export function MeetingDetailContent({
     }));
   };
 
-  // 수정/삭제/찜은 아직 mock 상태를 바꾸는 수준으로만 연결되어 있다.
+  // 수정은 서버 호출 대신 현재 mock 상태만 갱신한다.
   const handleEditMeeting = (nextValues: Partial<MeetingDetailData>) => {
-    // Swagger 기준 실제 호출 복구용 코드:
-    // PATCH /meetings/{meetingId}
-    // await axiosInstance.patch(`/meetings/${data.id}`, payload);
     setData((prev) => ({
       ...prev,
       ...nextValues,
@@ -85,26 +81,13 @@ export function MeetingDetailContent({
   };
 
   const handleDeleteMeeting = () => {
-    // Swagger 기준 실제 호출 복구용 코드:
-    // DELETE /meetings/{meetingId}
-    // await axiosInstance.delete(`/meetings/${data.id}`);
-    // router.push("/");
-    // router.refresh();
+    // 삭제 기능은 아직 mock 단계라 비워 둔다.
   };
 
   const handleToggleFavorite = () => {
     const isNextFavorited = !data.isFavorited;
 
-    // Swagger 기준 실제 호출 복구용 코드:
-    // POST/DELETE /meetings/{meetingId}/favorites
-    // setIsFavoritePending(true);
-    // if (isNextFavorited) {
-    //   await axiosInstance.post(`/meetings/${data.id}/favorites`);
-    // } else {
-    //   await axiosInstance.delete(`/meetings/${data.id}/favorites`);
-    // }
-    // setIsFavoritePending(false);
-
+    // 찜도 서버 대신 로컬 상태만 반영한다.
     setData((prev) => ({
       ...prev,
       isFavorited: isNextFavorited,
