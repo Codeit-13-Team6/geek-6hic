@@ -3,10 +3,13 @@ import type { NextRequest } from "next/server";
 import axios from "axios";
 
 // 쿠키 만료 시간 (초 단위)
+// 프론트엔드 만료 X -> 0.01 초 후에 만료 -> 백엔드로 갔더니 만료됐어 -> 시간 줄이기
 const ACCESS_TOKEN_MAX_AGE = 60 * 15;
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7;
 
 // JWT payload의 exp 클레임을 읽어 토큰 만료 시간만 확인
+// 백엔드 API 호출 -> 만료되면 401 에러 발생
+// 우리는 백엔드 API 호출하기 전에 미리 체크한다.
 function isTokenExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -16,6 +19,14 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+// 원래 목적
+// proxy는 access token 과 refresh token이 아예 없는 경우만 체크한다. -> 로그인 페이지로 이동
+// route handler에서 refresh token으로 갱신한다. -> X
+// 똑같은 API를 Promise all로 보낸다. -> 뻑 -> queue에 안넣엇을 때
+// queue -> 됨
+// Page 컴포넌트 -> axiosInstance 마다 새로운 queue
+// 자식 컴포넌트 -> 새로운 instance -> 새로운 queue
+// 클라이언트 컴포넌트에서도 유저 정보 쓰고 싶으면 MemberProvider 만들어서 전역 setUser로 저장해서 쓰세요
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -77,7 +88,6 @@ export async function proxy(request: NextRequest) {
     const response = NextResponse.next({
       request: { headers: requestHeaders },
     });
-
 
     // 브라우저에 토큰 저장시켜서 다음 요청부턴 이거 사용하게함
     if (data.accessToken) {
