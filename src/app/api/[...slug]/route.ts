@@ -11,8 +11,6 @@ interface RouteParams {
   params: Promise<{ slug: string[] }>;
 }
 
-
-
 interface RouteRule {
   pattern: RegExp;
   methods: NextRequest["method"][];
@@ -75,6 +73,11 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
   {
     pattern: /^\/ranking$/,
     methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/posts\/\d+\/like$/,
+    methods: ["POST", "DELETE"],
     requiresAuth: true,
   },
 ];
