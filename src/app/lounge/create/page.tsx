@@ -2,14 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Link2, Loader2 } from "lucide-react";
-import { BtnCommon } from "@/components/ui/BtnCommon";
-import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import axiosInstance from "@/lib/client-fetcher";
-import { useLoungeLink } from "@/hooks/useLoungeLink";
-import LinkCard from "@/components/features/card/LinkCard";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import LoungePostForm from "@/app/lounge/component/LoungePostForm";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPost } from "@/api/posts";
 
 interface PostPayload {
   title: string;
@@ -19,27 +16,26 @@ interface PostPayload {
 
 export default function LoungeCreatePage() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  // POST API 통신 로직
-  const handleCreate = async (payload: PostPayload) => {
-    setIsSubmitting(true);
-    try {
-      await axiosInstance.post("/posts", payload);
+  const { mutate: handleCreate, isPending } = useMutation({
+    mutationFn: (payload: PostPayload) => createPost(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
       ToastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
-      router.push("/lounge"); // 성공 시 목록으로 이동
-    } catch (error) {
+      router.push("/lounge");
+    },
+    onError: (error) => {
       console.error("게시글 등록 실패:", error);
       ToastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   return (
     <LoungePostForm
       onSubmit={handleCreate}
-      isSubmitting={isSubmitting}
+      isSubmitting={isPending}
       submitButtonText="등록"
     />
   );

@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axiosInstance from "@/lib/client-fetcher";
-
-import { getPostsDetail } from "@/api/posts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getPostsDetail, updatePost } from "@/api/posts";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { LinkItem, parsePostData } from "@/lib/postUtils";
 import LoungePostForm, { PostPayload } from "../../component/LoungePostForm";
 import { getOgData } from "@/api/og";
 
-// Form에 넘겨줄 초기 데이터 타입 정의
 interface InitialDataType {
   title: string;
   content: string;
@@ -24,7 +21,6 @@ export default function LoungeEditPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const postId = Number(id);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialData, setInitialData] = useState<InitialDataType | null>(null);
 
   // 1. 기존 게시글 데이터 불러오기
@@ -84,25 +80,21 @@ export default function LoungeEditPage() {
     restoreOgData();
   }, [post]);
 
-  // 3. 게시글 수정 로직
-  const handleUpdate = async (payload: PostPayload) => {
-    setIsSubmitting(true);
-    try {
-      await axiosInstance.patch(`/posts/${postId}`, payload);
-
-      // 수정 완료 후 상세 페이지 데이터 새로고침
+  // 3. 게시글 수정
+  const { mutate: handleUpdate, isPending } = useMutation({
+    mutationFn: (payload: PostPayload) => updatePost(postId, payload),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post", id] });
-      ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
 
-      // 성공 시 해당 상세 페이지로 이동
-      router.push(`/lounge/${postId}`);
-    } catch (error) {
+      ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
+      router.push(`/lounge/${postId}`); // 성공 시 해당 상세 페이지로 이동
+    },
+    onError: (error) => {
       console.error("게시글 수정 실패:", error);
       ToastCommon({ message: "수정에 실패했습니다.", size: "sm" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   if (isLoading || !initialData) {
     return (
@@ -124,7 +116,7 @@ export default function LoungeEditPage() {
     <LoungePostForm
       initialData={initialData}
       onSubmit={handleUpdate}
-      isSubmitting={isSubmitting}
+      isSubmitting={isPending}
       submitButtonText="수정"
     />
   );

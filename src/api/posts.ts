@@ -10,7 +10,6 @@ interface GetPostsParams {
   size?: number;
 }
 
-// 페이지네이션을 위해 정의
 interface GetPostsResponse {
   data: Post[];
   nextCursor: string | null;
@@ -21,6 +20,15 @@ export async function getPosts(
   params?: GetPostsParams,
 ): Promise<GetPostsResponse> {
   const { data } = await axiosInstance.get("/posts", { params });
+  return data;
+}
+
+export async function createPost(postData: {
+  title: string;
+  content: string;
+  image?: string | null;
+}): Promise<Post> {
+  const { data } = await axiosInstance.post("/posts", postData);
   return data;
 }
 
