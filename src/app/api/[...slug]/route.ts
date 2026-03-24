@@ -67,7 +67,7 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
   },
   {
     pattern: /^\/posts\/\d+$/,
-    methods: ["GET"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
     requiresAuth: true,
   },
   {
@@ -78,6 +78,16 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
   {
     pattern: /^\/posts\/\d+\/like$/,
     methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/posts\/\d+\/comments$/,
+    methods: ["GET", "POST"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/posts\/\d+\/comments\/\d+$/,
+    methods: ["PATCH", "DELETE"],
     requiresAuth: true,
   },
 ];
