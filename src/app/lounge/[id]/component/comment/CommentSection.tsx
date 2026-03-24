@@ -12,6 +12,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
 import { ToastCommon } from "@/components/ui/ToastCommon";
+import ModalBase from "@/components/ui/ModalBase";
 
 interface CommentSectionProps {
   postId: number;
@@ -21,6 +22,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
   const commentRef = useRef<HTMLTextAreaElement>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   const { data: comments } = useQuery({
     queryKey: ["comments", postId],
@@ -82,14 +84,19 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     postComment(value);
   };
 
-  const handleDelete = (commentId: number) => {
-    if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
-      removeComment(commentId);
-    }
-  };
-
   const handleEdit = (commentId: number, newContent: string) => {
     editComment({ commentId, content: newContent });
+  };
+
+  const handleDelete = (commentId: number) => {
+    setDeleteTargetId(commentId);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteTargetId !== null) {
+      removeComment(deleteTargetId);
+      setDeleteTargetId(null);
+    }
   };
 
   return (
@@ -136,6 +143,36 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
       {/* 페이지네이션 섹션 */}
       <div className="mt-10 flex items-center justify-center gap-4 text-sm font-medium text-gray-400"></div>
+
+      <ModalBase
+        isOpen={deleteTargetId !== null}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setDeleteTargetId(null);
+        }}
+        title="댓글 삭제"
+      >
+        <div className="flex flex-col gap-6 pt-4">
+          <p className="text-gray-700">댓글을 삭제하시겠습니까?</p>
+
+          <div className="flex justify-end gap-2">
+            <BtnCommon
+              variant="teritary"
+              onClick={() => setDeleteTargetId(null)}
+              size="sm"
+              className="w-[60px]"
+            >
+              취소
+            </BtnCommon>
+            <BtnCommon
+              onClick={handleConfirmDelete}
+              size="sm"
+              className="w-[60px]"
+            >
+              확인
+            </BtnCommon>
+          </div>
+        </div>
+      </ModalBase>
     </section>
   );
 }
