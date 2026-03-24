@@ -9,19 +9,18 @@ import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/components/features/card/LinkCard";
 import { stitchPostData, LinkItem } from "@/lib/postUtils";
 
-// 부모(페이지)와 주고받을 최종 데이터 타입
 export interface PostPayload {
   title: string;
-  content: string; // 통짜로 합쳐진 HTML
+  content: string; // (본문 + 링크) HTML 콘텐츠
   image?: string;
 }
 
 interface LoungePostFormProps {
   initialData?: {
     title: string;
-    content: string; // 순수 본문
-    links: LinkItem[]; // 파싱된 링크 배열
-    image?: string; // 기존 대표 썸네일
+    content: string; // 링크 없는 본문 콘텐츠
+    links: LinkItem[];
+    image?: string; // 기존 썸네일
   };
   onSubmit: (payload: PostPayload) => void;
   isSubmitting: boolean;
@@ -36,7 +35,6 @@ export default function LoungePostForm({
 }: LoungePostFormProps) {
   const TITLE_MAX_LENGTH = 30;
 
-  // 1. 상태 관리 (초기값이 있으면 세팅)
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [linkUrl, setLinkUrl] = useState("");
@@ -57,7 +55,6 @@ export default function LoungePostForm({
     setThumbnailImage,
   } = useLoungeLink();
 
-  // 2. 수정 모드일 때: 전달받은 기존 링크 배열을 훅 상태에 강제 주입
   useEffect(() => {
     if (initialData?.links && initialData.links.length > 0) {
       setLinkList(initialData.links);
@@ -67,10 +64,22 @@ export default function LoungePostForm({
     }
   }, [initialData, setLinkList, setThumbnailImage]);
 
-  // 글자 수 계산 (순수 텍스트만)
+  // 글자 수 계산
   const plainText = useMemo(() => {
-    return content.replace(/<[^>]*>?/gm, "").trim();
+    if (!content) return "";
+
+    const text = content.replace(/<[^>]*>?/gm, "");
+    const entities: { [key: string]: string } = {
+      "&nbsp;": " ",
+      "&lt;": "<",
+      "&gt;": ">",
+      "&amp;": "&",
+      "&quot;": '"',
+      "&#39;": "'",
+    };
+    return text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || " ");
   }, [content]);
+
   const contentWithSpaces = plainText.length;
   const contentWithoutSpaces = plainText.replace(/\s/g, "").length;
 
@@ -79,7 +88,7 @@ export default function LoungePostForm({
     if (isSuccessed) setLinkUrl("");
   };
 
-  // 3. 게시물 제출 핸들러 (유틸 함수로 합친 뒤 부모에게 전달)
+  // 게시물 제출 핸들러 (유틸 함수로 합친 뒤 부모에게 전달)
   const handleLocalSubmit = () => {
     const trimmedTitle = title.trim();
     const trimmedContentText = plainText.trim();
@@ -91,7 +100,6 @@ export default function LoungePostForm({
       });
     }
 
-    // 유틸 함수 적용 - 본문과 링크 배열을 하나의 html로 합쳐줌
     const finalHtml = stitchPostData(content, linkList);
 
     const payload: PostPayload = {
@@ -103,7 +111,6 @@ export default function LoungePostForm({
       payload.image = thumbnailImage;
     }
 
-    // 통신은 부모 페이지가 하도록 던져줌
     onSubmit(payload);
   };
 
