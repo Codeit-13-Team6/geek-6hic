@@ -6,7 +6,6 @@ import LoungePostForm from "../../component/LoungePostForm";
 
 export default function LoungeEditPage() {
   const { id } = useParams();
-
   const postId = Number(id);
 
   const { initialData, post, isLoading } = useGetPostForEdit(postId);
