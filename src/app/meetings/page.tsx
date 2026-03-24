@@ -21,6 +21,7 @@ import {
   SelectValue,
   SelectGroup,
 } from "@/components/ui/SelectCommon";
+import { Calendar } from '@/components/ui/Calendar';
 
 export default function Page() {
   const router = useRouter();
@@ -32,21 +33,27 @@ export default function Page() {
     { value: 'deadline', label: '마감임박 순' },
     { value: 'participants', label: '참여인원 순' },
   ] as const;
-  
+
   const sortByMap = {
     deadline: 'registrationEnd',
     participants: 'participantCount',
   } as const;
   
+  const sortOrderMap = {
+    deadline: 'asc',        // 마감임박 = 빠른 순
+    participants: 'desc',   // 참여인원 = 많은 순
+  } as const;
+
   const currentSortLabel = sortOptions.find(
     (opt) => opt.value === sortValue,
   )?.label;
-  
+
   const { data: meetingList = [], isLoading } = useQuery<Meeting[]>({
     queryKey: ['meetings', sortValue],
     queryFn: () =>
       getMeetingList({
         sortBy: sortByMap[sortValue],
+        sortOrder: sortOrderMap[sortValue],
       }),
   });
 
@@ -99,8 +106,20 @@ export default function Page() {
             ))}
           </ul>
 
-          <div className="mt-2 flex">
-          <Select
+          <div className="mt-2 flex justify-end">
+            <div>
+              {/* <button
+                type="button"
+                className="flex items-center gap-0.5 px-2 py-1 text-base font-bold text-gray-600"
+              >
+                <span>날짜 전체</span>
+                <div className="relative h-[17px] w-[17px]">
+                  <Image src={arrowDrop} fill alt="날짜 전체" />
+                </div>
+              </button> */}
+              {/* <Calendar mode='single' /> */}
+            </div>
+            <Select
               value={sortValue}
               onValueChange={(value) => {
                 if (value === 'deadline' || value === 'participants') {
@@ -108,7 +127,7 @@ export default function Page() {
                 }
               }}
             >
-              <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
+              <SelectTrigger className="h-[50px]! w-[120px] rounded-[12px]! px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
                 <SelectValue>{currentSortLabel}</SelectValue>
               </SelectTrigger>
               <SelectContent className="w-[120px] sm:w-[140px]">
@@ -121,17 +140,8 @@ export default function Page() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <button
-              type="button"
-              className="flex items-center gap-0.5 px-2 py-1 text-base font-bold text-gray-600"
-            >
-              <span>날짜 전체</span>
-              <div className="relative h-[17px] w-[17px]">
-                <Image src={arrowDrop} fill alt="날짜 전체" />
-              </div>
-            </button>
 
-            <button
+            {/* <button
               type="button"
               className="flex items-center gap-0.5 px-2 py-1 text-base font-bold text-gray-600"
             >
@@ -139,7 +149,7 @@ export default function Page() {
                 <Image src={filter} fill alt="마감 임박" />
               </div>
               <span>마감 임박</span>
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -148,6 +158,7 @@ export default function Page() {
             meetingList={meetingList}
             isLoading={isLoading}
             onItemClick={(item) => router.push(`/meetings/${item.id}`)}
+            sortValue={sortValue} //필터링 중 마감임박 순에서 마감된 리스트 안보이게
           />
         </div>
       </div>

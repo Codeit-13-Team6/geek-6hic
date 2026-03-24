@@ -12,12 +12,14 @@ interface MeetingListProps {
   meetingList: Meeting[];
   isLoading: boolean;
   onItemClick: (item: Meeting) => void;
+  sortValue: 'deadline' | 'participants';
 }
 
 export default function MeetingList({
   meetingList,
   isLoading,
   onItemClick,
+  sortValue,
 }: MeetingListProps) {
 
   if (isLoading) return <div>로딩중...</div>;
@@ -57,17 +59,25 @@ export default function MeetingList({
     return `${hours}:${minutes}`;
   }
 
+  // 마감된 리스트
   function isMeetingClosed(item: Meeting) {
     const now = new Date();
     const isExpired = new Date(item.dateTime) < now;
     const isFull = item.participantCount >= item.capacity;
-
+  
     return isExpired || isFull;
   }
 
+  // 마감기한 순으로 필터링 할 때, 필터링 없는 페이지 영향 안받게
+  const isDeadlineMode = sortValue === 'deadline';
+
+  const visibleMeetingList = isDeadlineMode
+  ? meetingList.filter((item) => !isMeetingClosed(item))
+  : meetingList;
+
   return (
     <>
-      {meetingList.map((item) => {
+      {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const deadLine = getDeadlineLabel(item.registrationEnd);
 
@@ -81,7 +91,7 @@ export default function MeetingList({
           >
             <button
               type='button'
-              className='absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white cursor-pointer'
+              className='absolute top-4 right-4 z-1 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white cursor-pointer'
             >
               <div className='relative h-6 w-6'>
                 <Image src={heartOff} fill alt='찜' />

@@ -36,8 +36,8 @@ function Calendar({
   const defaultClassNames = getDefaultClassNames();
 
   return (
-    <div className="relative w-[300px]">
-      <div className="absolute box-border w-full rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)]">
+    <div className="relative">
+      <div className="z-2 absolute box-border w-[300px] rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)]">
         <DayPicker
           showOutsideDays={showOutsideDays}
           className={cn(

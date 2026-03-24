@@ -12,7 +12,6 @@ export interface Meeting {
   participantCount: number;
   image: string;
   description: string;
-  sortBy?: 'dateTime' | 'registrationEnd' | 'participantCount';
 }
 
 export interface GetMeetingListParams {
@@ -20,4 +19,5 @@ export interface GetMeetingListParams {
   region?: string;
   date?: string;
   sortBy?: 'dateTime' | 'registrationEnd' | 'participantCount';
+  sortOrder?: 'asc' | 'desc'; // 오름차순 내림차순
 }
