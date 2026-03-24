@@ -1,7 +1,7 @@
 import axiosInstance from "@/lib/client-fetcher";
 import { Post } from "@/types";
 
-interface GetPostsParams {
+export interface GetPostsParams {
   type?: "all" | "best";
   keyword?: string;
   sortBy?: "createdAt" | "viewCount" | "likeCount";

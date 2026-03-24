@@ -26,3 +26,25 @@
 //
 //   return { list, isLoading, handleDetailClick };
 // }
+
+import { useQuery } from "@tanstack/react-query";
+import { getPosts, getPostsDetail } from "@/api/posts";
+
+// HOT 게시물 조회 훅 (LoungePage용)
+export const useGetHotPosts = () => {
+  return useQuery({
+    queryKey: ["posts", "best"],
+    queryFn: () => getPosts({ type: "best", size: 5 }),
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+// 게시글 상세 조회 훅 (상세 페이지, 수정 페이지용)
+export const useGetPostDetail = (postId: number) => {
+  return useQuery({
+    queryKey: ["post", postId],
+    queryFn: () => getPostsDetail(postId),
+    enabled: !!postId,
+    staleTime: 1000 * 60 * 1,
+  });
+};

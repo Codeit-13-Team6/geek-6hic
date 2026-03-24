@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getPostsDetail, updatePost } from "@/api/posts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updatePost } from "@/api/posts";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { LinkItem, parsePostData } from "@/lib/postUtils";
 import LoungePostForm, { PostPayload } from "../../component/LoungePostForm";
 import { getOgData } from "@/api/og";
+import { useGetPostDetail } from "@/hooks/usePosts";
 
 interface InitialDataType {
   title: string;
@@ -24,11 +25,7 @@ export default function LoungeEditPage() {
   const [initialData, setInitialData] = useState<InitialDataType | null>(null);
 
   // 1. 기존 게시글 데이터 불러오기
-  const { data: post, isLoading } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPostsDetail(postId),
-    enabled: !!id,
-  });
+  const { data: post, isLoading } = useGetPostDetail(postId);
 
   // 2. 게시글 데이터가 오면 파싱 -> OG api 호출 썸네일 복원 -> initialData 세팅
   useEffect(() => {

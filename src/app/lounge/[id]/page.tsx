@@ -2,12 +2,13 @@
 
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deletePost, getPostsDetail, likePost, unlikePost } from "@/api/posts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deletePost, likePost, unlikePost } from "@/api/posts";
 import { useAuthStore } from "@/store/useAuthStore";
 import CommentSection from "./component/comment/CommentSection";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { parsePostData } from "@/lib/postUtils";
+import { useGetPostDetail } from "@/hooks/usePosts";
 
 export default function LoungeDetailPage() {
   const { id } = useParams();
@@ -16,15 +17,7 @@ export default function LoungeDetailPage() {
   const postId = Number(id);
   const userId = useAuthStore((state) => state.user?.id);
 
-  const {
-    data: post,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPostsDetail(postId),
-    enabled: !!id, // id가 있을 때만 실행
-  });
+  const { data: post, isLoading, isError } = useGetPostDetail(postId);
 
   const isPostOwner = userId !== null && userId === post?.author.id;
   const { content: mainContent, links: linkObjects } = parsePostData(
