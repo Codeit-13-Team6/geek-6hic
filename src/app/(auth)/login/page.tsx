@@ -55,9 +55,15 @@ export default function Login() {
     }
   };
 
+
   // kakao 로그인
+  // 페이지 이동시키면 백엔드에서 리다이렉트 처리해줌 여기서 계정 선택 및 로그인까지 완료 후 콜백페이지로 떨궈줌
   const handleKakaoLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao`;
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
@@ -136,6 +142,7 @@ export default function Login() {
               <BtnCommon
                 className="border border-gray-200 bg-white text-base text-gray-800 hover:bg-white sm:w-1/2"
                 size={"fixedSize"}
+                onClick={handleGoogleLogin}
               >
                 <Image
                   src={googleIcon}
