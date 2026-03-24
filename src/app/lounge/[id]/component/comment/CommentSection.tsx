@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createComment,
@@ -12,6 +12,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
 import { ToastCommon } from "@/components/ui/ToastCommon";
+import ModalBase from "@/components/ui/ModalBase";
 
 interface CommentSectionProps {
   postId: number;
@@ -20,9 +21,9 @@ interface CommentSectionProps {
 export default function CommentSection({ postId }: CommentSectionProps) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
-  const [commentValue, setCommentValue] = useState("");
+  const commentRef = useRef<HTMLTextAreaElement>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
-  // 1. 댓글 조회
   const { data: comments } = useQuery({
     queryKey: ["comments", postId],
     queryFn: () => getComments(postId),
@@ -30,23 +31,28 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   });
   const commentsList = comments?.data || [];
 
-  // 2. 댓글 등록
   const { mutate: postComment, isPending: isPosting } = useMutation({
     mutationFn: (newContent: string) => createComment(postId, newContent),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      setCommentValue("");
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+      if (commentRef.current) {
+        commentRef.current.value = "";
+      }
     },
     onError: () => {
       ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
     },
   });
 
-  // 3. 댓글 삭제
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
     onError: () => {
@@ -54,7 +60,6 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     },
   });
 
-  // 4. 댓글 수정
   const { mutate: editComment } = useMutation({
     mutationFn: ({
       commentId,
@@ -73,18 +78,25 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   });
 
   const handlePostComment = () => {
-    if (!commentValue.trim()) return;
-    postComment(commentValue);
-  };
+    const value = commentRef.current?.value || "";
+    if (!value.trim()) return;
 
-  const handleDelete = (commentId: number) => {
-    if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
-      removeComment(commentId);
-    }
+    postComment(value);
   };
 
   const handleEdit = (commentId: number, newContent: string) => {
     editComment({ commentId, content: newContent });
+  };
+
+  const handleDelete = (commentId: number) => {
+    setDeleteTargetId(commentId);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteTargetId !== null) {
+      removeComment(deleteTargetId);
+      setDeleteTargetId(null);
+    }
   };
 
   return (
@@ -96,17 +108,16 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       {/* 댓글 입력창 */}
       <div className="relative flex items-center gap-3 rounded-[16px] bg-slate-50 p-2 shadow-sm">
         <textarea
-          value={commentValue}
+          ref={commentRef}
           rows={1}
           disabled={isPosting}
-          onChange={(e) => setCommentValue(e.target.value)}
           placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요."}
           className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
         />
         <div className="flex justify-end">
           <BtnCommon
             onClick={handlePostComment}
-            disabled={isPosting || !commentValue.trim()}
+            disabled={isPosting}
             className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
           >
             등록
@@ -132,6 +143,36 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
       {/* 페이지네이션 섹션 */}
       <div className="mt-10 flex items-center justify-center gap-4 text-sm font-medium text-gray-400"></div>
+
+      <ModalBase
+        isOpen={deleteTargetId !== null}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setDeleteTargetId(null);
+        }}
+        title="댓글 삭제"
+      >
+        <div className="flex flex-col gap-6 pt-4">
+          <p className="text-gray-700">댓글을 삭제하시겠습니까?</p>
+
+          <div className="flex justify-end gap-2">
+            <BtnCommon
+              variant="teritary"
+              onClick={() => setDeleteTargetId(null)}
+              size="sm"
+              className="w-[60px]"
+            >
+              취소
+            </BtnCommon>
+            <BtnCommon
+              onClick={handleConfirmDelete}
+              size="sm"
+              className="w-[60px]"
+            >
+              확인
+            </BtnCommon>
+          </div>
+        </div>
+      </ModalBase>
     </section>
   );
 }

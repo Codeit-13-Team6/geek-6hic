@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
@@ -33,8 +33,17 @@ export default function Comment({
   onDelete,
   onEdit,
 }: CommentProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(content);
+
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      const length = textareaRef.current.value.length;
+      textareaRef.current.focus();
+      textareaRef.current.setSelectionRange(length, length);
+    }
+  }, [isEditing]);
 
   // 저장 버튼 클릭 시
   const handleSave = () => {
@@ -64,7 +73,13 @@ export default function Comment({
           <span className="font-medium text-gray-700">{name}</span>
           <span className="mx-0.5 text-gray-300">•</span>
           <span>
-            {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
+            {date
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .slice(0, -1)}
           </span>
         </div>
 
@@ -103,11 +118,11 @@ export default function Comment({
       {isEditing ? (
         <div className="mt-3 pl-[32px]">
           <textarea
+            ref={textareaRef}
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm text-gray-700 focus:outline-none sm:text-base"
             rows={3}
-            autoFocus
           />
           <div className="mt-2 flex justify-end gap-2 text-sm font-medium">
             <BtnCommon
