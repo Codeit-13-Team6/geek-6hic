@@ -3,7 +3,7 @@
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
-import { MeetingBasicInfoStepProps } from "@/app/meeting/modal/modal";
+import { MeetingBasicInfoStepProps } from "@/app/meetings/modal/modal";
 
 export function MeetingBasicInfoStep({
   values,

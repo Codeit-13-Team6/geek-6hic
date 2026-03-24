@@ -1,7 +1,7 @@
 import {
   CreateMeetingFormErrors,
   CreateMeetingFormValues,
-} from "@/app/meeting/modal/modal";
+} from "@/app/meetings/modal/modal";
 
 export const getNormalizedMeetingLink = (link: string) => {
   const trimmedLink = link.trim();
