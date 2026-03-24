@@ -14,14 +14,14 @@ export default function Page() {
 
   // 탭 로직
   const TAB_LIST = [
-    { key: 'all', label: '전체' },
-    { key: 'team', label: '팀미팅' },
-    { key: 'study', label: '스터디' },
-    { key: 'job', label: '취준생' },
-    { key: 'wework', label: '위워크' },
-    { key: 'etc', label: '기타' },
+    { value: 'all', label: '전체' },
+    { value: 'team', label: '팀미팅' },
+    { value: 'study', label: '스터디' },
+    { value: 'job', label: '취준생' },
+    { value: 'wework', label: '위워크' },
+    { value: 'etc', label: '기타' },
   ];
-  const [activeKey, setActiveKey] = useState('all');
+  const [activeValue, setActiveValue] = useState('all');
 
   return (
     <>
@@ -41,14 +41,14 @@ export default function Page() {
 
         <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col mt-6 mb-4">
-            <ul className="flex gap-2">
-              {TAB_LIST.map(({ key, label }) => (
+            <ul className="flex gap-2 overflow-auto">
+              {TAB_LIST.map(({ value, label }) => (
                 <li
-                  key={key}
-                  onClick={() => setActiveKey(key)}
+                  key={value}
+                  onClick={() => setActiveValue(value)}
                   className={cn(
                     'shrink-0 rounded-[14px] transition-colors px-4 py-2 cursor-pointer',
-                    activeKey === key
+                    activeValue === value
                       ? 'bg-gray-700 text-white font-bold'
                       : 'bg-gray-100 text-gray-800'
                   )}
