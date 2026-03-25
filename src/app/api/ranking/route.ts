@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type MeetingRankData = {
+interface MeetingRankData {
   commentLeng: number;
   checkScore: number;
   totalUserLeng: number;
@@ -12,7 +12,7 @@ type MeetingRankData = {
   rankScore: number;
   meetName: string;
   meetType: string;
-};
+}
 
 type MeetingRankMap = Record<number, MeetingRankData>;
 
@@ -30,10 +30,10 @@ export async function GET() {
     // meeting 수집이 현재 api 스펙 상의 제한으로 인해 체인형식으로 진행
     // 미리 준비한 미팅맵에 값들을 바인딩하는 형태
     const meetingMap: MeetingRankMap = {};
-    let cursor: number | undefined = undefined;
+    let cursor: string | undefined = undefined;
 
     while (true) {
-      const params: { cursor?: number } = { cursor };
+      const params: { cursor?: string } = { cursor };
       const { data: meetRes } = await axios.get(`${API_BASE_URL}/meetings`, {
         headers,
         params,
@@ -60,7 +60,7 @@ export async function GET() {
     cursor = undefined;
 
     while (true) {
-      const params: { cursor?: number } = { cursor };
+      const params: { cursor?: string } = { cursor };
       const { data: reviewRes } = await axios.get(`${API_BASE_URL}/reviews`, {
         headers,
         params,
@@ -69,7 +69,10 @@ export async function GET() {
       reviewRes.data.forEach((item: any) => {
         if (Object.prototype.hasOwnProperty.call(meetingMap, item.meeting.id)) {
           const meeting = meetingMap[item.meeting.id];
-          meeting.commentingUserList = [...meeting.commentingUserList, item.userId];
+          meeting.commentingUserList = [
+            ...meeting.commentingUserList,
+            item.userId,
+          ];
           meeting.commentLeng += 1;
           meeting.checkScore += item.score;
         }
