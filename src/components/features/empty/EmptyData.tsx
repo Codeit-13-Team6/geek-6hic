@@ -1,9 +1,14 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import emptyImage from "@/assets/img/empty/img-empty.jpg"
+import Image from "next/image";
+import emptyImage from "@/assets/img/empty/img-empty.jpg";
 
-type EmptyStateVariant = 'meeting' | 'lank' | 'lounge' | 'myMeeting' | 'myCreatMeeting';
+type EmptyStateVariant =
+  | "meeting"
+  | "lank"
+  | "lounge"
+  | "myMeeting"
+  | "myCreatMeeting";
 
 type EmptyStateProps = {
   variant?: EmptyStateVariant;
@@ -17,7 +22,7 @@ const emptyText = {
   myCreatMeeting: "아직 내가만든 모임이 없어요",
 } as const;
 
-function EmptyData({ variant = 'meeting' } : EmptyStateProps) {
+function EmptyData({ variant = "meeting" }: EmptyStateProps) {
   const text = emptyText[variant];
 
   return (
@@ -28,14 +33,15 @@ function EmptyData({ variant = 'meeting' } : EmptyStateProps) {
           height={72}
           src={emptyImage}
           alt="데이터가 없습니다."
+          className="mix-blend-multiply"
         />
       </div>
 
-      <p className="mt-6 text-center text-sm md:text-base text-gray-500 font-regular whitespace-pre-line">
+      <p className="font-regular mt-6 text-center text-sm whitespace-pre-line text-gray-500 md:text-base">
         {text}
       </p>
     </div>
-  )
+  );
 }
 
-export { EmptyData }
+export { EmptyData };

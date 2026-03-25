@@ -28,6 +28,11 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     requiresAuth: true,
   },
   {
+    pattern: /^\/meetings\/joined$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
     pattern: /^\/meetings\/\d+\/favorites$/,
     methods: ["POST", "DELETE"],
     requiresAuth: true,
@@ -136,7 +141,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
       data: body,
     });
 
-    console.log(' slug 페이지 트라이문 ')
+    console.log(" slug 페이지 트라이문 ");
 
     const response = NextResponse.json(data, { status });
 

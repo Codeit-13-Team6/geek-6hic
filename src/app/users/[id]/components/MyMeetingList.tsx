@@ -27,7 +27,7 @@ export default function MyMeetingList() {
           capacity={item.capacity}
           participantCount={item.participantCount}
           showLikeBtn={false}
-          onDetailClick={() => router.push(`/meeting/${item.id}`)}
+          onDetailClick={() => router.push(`/meetings/${item.id}`)}
         />
       ))}
     </>
