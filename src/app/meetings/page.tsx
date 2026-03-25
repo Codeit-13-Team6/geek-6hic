@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getMeetingList } from '@/api/meetings';
 import type { Meeting } from '@/types';
+import type { DateRange } from 'react-day-picker';
+import { format } from "date-fns";
 
 import bannerLg from '@/assets/img/banner/banner-lg.png';
 import bannerSm from '@/assets/img/banner/banner-sm.png';
@@ -19,6 +21,7 @@ import {
   SelectValue,
   SelectGroup,
 } from '@/components/ui/SelectCommon';
+import { Calendar } from '@/components/ui/Calendar';
 
 const TAB_LIST = [
   { value: 'all', label: '전체', type: undefined },
@@ -52,6 +55,9 @@ export default function Page() {
 
   const [activeValue, setActiveValue] = useState<TabValue>('all');
   const [sortValue, setSortValue] = useState<SortValue>(null);
+  const [draftDate, setDraftDate] = useState<DateRange | undefined>(undefined);
+  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined);
+  const [isOpen, setIsOpen] = useState(false);
 
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
@@ -63,14 +69,14 @@ export default function Page() {
         size: 100,
         ...(sortValue
           ? {
-              sortBy: sortByMap[sortValue],
-              sortOrder: sortOrderMap[sortValue],
-            }
+            sortBy: sortByMap[sortValue],
+            sortOrder: sortOrderMap[sortValue],
+          }
           : {}),
       };
 
       const response = await getMeetingList(params);
-  
+
       return response;
     },
   });
@@ -78,6 +84,21 @@ export default function Page() {
   // 필터 선택 후 인풋 SORT_OPTIONS의 label로 변경
   const currentSortLabel =
     SORT_OPTIONS.find((opt) => opt.value === sortValue)?.label;
+
+  // 달력선택시
+  const calendarValue = (range: DateRange | undefined) => {
+    setDraftDate(range);
+  };
+
+  const filteredMeetingList = meetingList.filter((meeting) => {
+    if (!appliedDate?.from || !appliedDate?.to) return true;
+
+    const meetingTime = new Date(meeting.dateTime).getTime();
+    const fromTime = new Date(appliedDate.from).setHours(0, 0, 0, 0);
+    const toTime = new Date(appliedDate.to).setHours(23, 59, 59, 999);
+
+    return meetingTime >= fromTime && meetingTime <= toTime;
+  });
 
   return (
     <div className='w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]'>
@@ -100,16 +121,18 @@ export default function Page() {
         </div>
       </div>
 
-      <div className='mx-auto w-full max-w-[1280px] sm:px-6'>
+      <div className='mx-auto w-full max-w-[1280px] px-4 sm:px-6'>
         <div className='mb-4 mt-6 flex flex-col'>
           <ul className='flex gap-2 overflow-auto'>
             {TAB_LIST.map(({ value, label }) => (
-              <li key={value}>
+              <li key={value} className='shrink-0'>
                 <button
                   type='button'
                   onClick={() => {
                     setActiveValue(value);
                     setSortValue(null);
+                    setDraftDate(undefined);
+                    setAppliedDate(undefined);
                   }}
                   className={cn(
                     'shrink-0 cursor-pointer rounded-[14px] px-4 py-2 transition-colors',
@@ -124,7 +147,31 @@ export default function Page() {
             ))}
           </ul>
 
-          <div className='mt-2 flex justify-end'>
+          <div className='mt-2 flex justify-end items-center'>
+            <div className='relative'>
+              <button
+                type='button'
+                className='cursor-pointer'
+                onClick={() => setIsOpen(true)}
+              >날짜 선택</button>
+              {isOpen
+                ?
+                <Calendar
+                  mode='range'
+                  selected={draftDate}
+                  onSelect={calendarValue}
+                  onReset={() => {
+                    setDraftDate(undefined);
+                    setAppliedDate(undefined);
+                  }}
+                  onApply={() => {
+                    setAppliedDate(draftDate);
+                    setIsOpen(false);
+                  }}
+                />
+                : null
+              }
+            </div>
             <Select
               value={sortValue ?? ''}
               onValueChange={(value) => {
@@ -156,7 +203,7 @@ export default function Page() {
 
         <div className='flex flex-col gap-4 lg:grid lg:grid-cols-2'>
           <MeetingList
-            meetingList={meetingList}
+            meetingList={filteredMeetingList}
             isLoading={isLoading}
             onItemClick={(item) => router.push(`/meetings/${item.id}`)}
             sortValue={sortValue}
