@@ -1,8 +1,9 @@
 import {
-  CreateMeetingFormErrors,
-  CreateMeetingFormValues,
+  MeetingFormErrors,
+  MeetingFormValues,
 } from "@/app/meetings/modal/modal";
 
+// 사용자가 프로토콜 없이 입력해도 URL 검증이 가능하도록 https를 기본값으로 붙인다.
 export const getNormalizedMeetingLink = (link: string) => {
   const trimmedLink = link.trim();
 
@@ -10,10 +11,7 @@ export const getNormalizedMeetingLink = (link: string) => {
     return "";
   }
 
-  if (
-    trimmedLink.startsWith("http://") ||
-    trimmedLink.startsWith("https://")
-  ) {
+  if (trimmedLink.startsWith("http://") || trimmedLink.startsWith("https://")) {
     return trimmedLink;
   }
 
@@ -75,6 +73,7 @@ const isValidRawHostname = (link: string) => {
   return isLikelyValidDomain(rawHostname);
 };
 
+// 링크는 빈 값 여부, 호스트 형태, 프로토콜까지 순서대로 확인한다.
 export const getMeetingLinkErrorMessage = (link: string) => {
   const trimmedLink = link.trim();
 
@@ -89,8 +88,6 @@ export const getMeetingLinkErrorMessage = (link: string) => {
   const normalizedLink = getNormalizedMeetingLink(trimmedLink);
 
   try {
-    // hostname 검사 이후 실제 URL 생성까지 통과해야
-    // 저장 가능한 모임 링크로 판단한다.
     const parsedLink = new URL(normalizedLink);
 
     if (parsedLink.protocol !== "http:" && parsedLink.protocol !== "https:") {
@@ -103,17 +100,13 @@ export const getMeetingLinkErrorMessage = (link: string) => {
   }
 };
 
-export const validateMeetingCategoryStep = (
-  formValues: CreateMeetingFormValues,
-) => {
+export const validateMeetingCategoryStep = (formValues: MeetingFormValues) => {
   return {
     category: formValues.category ? "" : "모임 종류를 선택해주세요.",
   };
 };
 
-export const validateMeetingBasicInfoStep = (
-  formValues: CreateMeetingFormValues,
-) => {
+export const validateMeetingBasicInfoStep = (formValues: MeetingFormValues) => {
   return {
     name: formValues.name.trim() ? "" : "모임 이름을 입력해주세요.",
     description: formValues.description.trim()
@@ -127,9 +120,7 @@ export const validateMeetingBasicInfoStep = (
 const INVALID_END_DATETIME_MESSAGE =
   "모집 마감은 모임 시작보다 늦을 수 없습니다.";
 
-export const validateMeetingScheduleStep = (
-  formValues: CreateMeetingFormValues,
-) => {
+export const validateMeetingScheduleStep = (formValues: MeetingFormValues) => {
   const errors = {
     startDate: formValues.startDate ? "" : "모임 시작 날짜를 입력해주세요.",
     startTime: formValues.startTime ? "" : "모임 시작 시간을 입력해주세요.",
@@ -140,22 +131,22 @@ export const validateMeetingScheduleStep = (
 
   const capacityNumber = Number(formValues.capacity);
 
+  // 정원은 숫자만 허용하고 최소 1명 이상이어야 한다.
   if (!formValues.capacity.trim()) {
     errors.capacity = "모임 정원을 입력해주세요.";
   } else if (!Number.isInteger(capacityNumber) || capacityNumber < 1) {
     errors.capacity = "모임 정원은 1명 이상 입력해주세요.";
   }
 
-  // 모집 마감은 모임 시작보다 늦을 수 없어서
-  // 날짜가 다르거나 같은 날짜의 시간이 뒤인 경우를 함께 비교한다.
   if (formValues.startDate && formValues.endDate) {
     const isEndDateAfterStartDate = formValues.endDate > formValues.startDate;
     const isSameDateAndEndTimeAfterStartTime =
       formValues.startDate === formValues.endDate &&
       formValues.startTime &&
       formValues.endTime &&
-      formValues.endTime > formValues.startTime;
+      formValues.endTime >= formValues.startTime;
 
+    // 모집 마감은 모임 시작보다 늦을 수 없도록 막는다.
     if (isEndDateAfterStartDate || isSameDateAndEndTimeAfterStartTime) {
       errors.endDate = INVALID_END_DATETIME_MESSAGE;
       errors.endTime = INVALID_END_DATETIME_MESSAGE;
@@ -166,7 +157,7 @@ export const validateMeetingScheduleStep = (
 };
 
 export const hasMeetingValidationError = (
-  errors: Partial<CreateMeetingFormErrors>,
+  errors: Partial<MeetingFormErrors>,
 ) => {
   return Object.values(errors).some(Boolean);
 };
