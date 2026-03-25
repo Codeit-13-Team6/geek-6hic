@@ -1,9 +1,7 @@
 import Image from "next/image";
-
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
-
-import MyMeetingsClient from "./MyMeetingsClient";
+import MyMeetingsClient from "./components/MyMeetingsClient";
 
 export default function Page() {
   return (

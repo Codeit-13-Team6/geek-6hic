@@ -2,12 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
 import { EmptyData } from "@/components/features/empty/EmptyData";
 import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import { useMeetingQuery } from "@/hooks/useMeetingQuery";
-
-import MeetingList from "../meetings/components/MeetingList";
+import MeetingList from "../../meetings/components/MeetingList";
 
 export default function MyMeetingsClient() {
   const router = useRouter();
