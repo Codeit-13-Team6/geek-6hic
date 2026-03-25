@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import PostCard from "../card/PostCard";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import PostCard from "../../../components/features/card/PostCard";
 import { getPosts } from "@/api/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
@@ -38,7 +38,11 @@ export default function PostList({
 
   const { sortBy, sortOrder } = getSortParams();
 
-  const { data: response, isLoading } = useGetPostsList(
+  // useQuery의 Key가 서버에서 prefetch한 ["posts", "list", sortValue, searchValue]와
+  // 일치하면, 첫 로딩 시 API 호출 없이 서버 데이터를 바로 녹여서(Hydrate) 사용
+  const { data, isFetching } = useGetPostsList(
+    sortValue,
+    searchValue,
     {
       keyword: searchValue,
       sortBy,
@@ -47,26 +51,19 @@ export default function PostList({
     },
     refetchType,
   );
-
-  let list = response?.data || [];
+  let postList = data?.data || [];
 
   if (filterFn) {
-    list = list.filter(filterFn);
+    postList = postList.filter(filterFn);
   }
 
-  if (isLoading)
-    // 로딩 스피너 적용 예정
-    return (
-      <div className="p-20 text-center text-gray-400">
-        데이터를 불러오고 있습니다...
-      </div>
-    );
-
   return (
-    <div className="flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8">
+    <div
+      className={`${isFetching ? "opacity-50" : ""} flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8`}
+    >
       <div className="flex flex-col sm:gap-8">
-        {list.length > 0 ? (
-          list.map((post: Post) => (
+        {postList.length > 0 ? (
+          postList.map((post: Post) => (
             <PostCard
               key={post.id}
               {...post}
@@ -87,16 +84,10 @@ export default function PostList({
               <SearchX className="size-8 text-gray-300" />
             </div>
             <p className="text-lg font-semibold text-gray-900">
-              {filterFn
-                ? "작성한 게시물이 없습니다."
-                : "검색 결과가 없습니다."}{" "}
+              {filterFn ? "작성한 게시물이 없습니다." : "검색 결과가 없습니다."}
             </p>
             <p className="mt-2 text-gray-500">
-              {!filterFn && (
-                <p className="mt-2 text-gray-500">
-                  다른 검색어로 다시 시도해보세요.
-                </p>
-              )}{" "}
+              {!filterFn && "다른 검색어로 다시 시도해보세요."}
             </p>
           </div>
         )}

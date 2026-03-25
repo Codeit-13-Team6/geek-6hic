@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
-import PostList from "@/components/features/list/PostList";
+import PostList from "@/app/lounge/component/PostList";
 import ProfileSection from "./components/ProfileSection";
 import FavoriteList from "./components/FavoriteList";
 import MyMeetingList from "./components/MyMeetingList";

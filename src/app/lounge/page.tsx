@@ -1,169 +1,91 @@
-"use client";
-
-import { useState } from "react";
-import { Search } from "lucide-react";
-
-import PostList from "@/components/features/list/PostList";
-import { InputCommon } from "@/components/ui/InputCommon";
+import { cookies } from "next/headers";
+import Link from "next/link";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-} from "@/components/ui/SelectCommon";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/PaginationCommon";
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { HotListCard } from "@/components/features/card/HotListCard";
-import { useRouter } from "next/navigation";
-import { useGetHotPosts } from "@/hooks/queries/usePosts";
-import { Post } from "@/types";
+import { getHotPosts, getPosts } from "@/api/posts";
+import HotPostList from "./component/HotPostList";
+import LoungeContent from "./component/LoungeSection";
 
-export default function LoungePage() {
-  const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [sortValue, setSortValue] = useState("latest");
+export default async function LoungePage() {
+  const queryClient = new QueryClient();
+  // 1. 서버에서 쿠키 꺼내기
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
 
-  const sortOptions = [
-    { value: "latest", label: "최신순" },
-    { value: "popular", label: "인기순" },
-    { value: "comment", label: "댓글순" },
-    { value: "oldest", label: "오래된순" },
-  ];
+  // 2. 쿠키를 헤더에 담아서 보냄
+  await queryClient.prefetchQuery({
+    queryKey: ["posts", "hot"],
+    queryFn: () => getHotPosts({ Cookie: cookieString }),
+  });
 
-  const { data: hotResponse } = useGetHotPosts();
-  const hotList = hotResponse || [];
+  // 2. 전체 게시물 첫 페이지(최신순, 검색어 없음) 미리 가져오기
+  // QueryKey를 클라이언트에서 쓸 훅과 똑같이 맞춰주는 게 핵심
+  await queryClient.prefetchQuery({
+    queryKey: ["posts", "list", "latest", ""],
+    queryFn: () =>
+      getPosts(
+        { sortBy: "createdAt", sortOrder: "desc", size: 10 },
+        { Cookie: cookieString },
+      ),
+  });
 
-  const currentSortLabel = sortOptions.find(
-    (opt) => opt.value === sortValue,
-  )?.label;
-
-  const handlePostCreate = () => {
-    router.push("/lounge/create");
-  };
-
-  const triggerSearch = () => {
-    setSearchKeyword(searchValue);
-    // 여기에 추가로 '페이지를 1페이지로 리셋'하는 로직을 넣을 수 있음
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") triggerSearch();
-  };
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
-      <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex size-[36px] shrink-0 items-center justify-center rounded-full sm:mr-2 sm:size-[54px]">
-              <span className="text-3xl sm:text-5xl">💬</span>
+    <HydrationBoundary state={dehydratedState}>
+      <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
+        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          {/* 헤더 구역 */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex size-[36px] shrink-0 items-center justify-center rounded-full sm:mr-2 sm:size-[54px]">
+                <span className="text-3xl sm:text-5xl">💬</span>
+              </div>
+              <div>
+                <h1 className="text-[20px] font-bold text-gray-900 sm:text-[24px] lg:text-[32px]">
+                  스프린트 라운지
+                </h1>
+                <p className="mt-1 text-base font-medium text-gray-500 sm:text-lg lg:text-xl">
+                  코드잇 스프린터의 정보 공유 라운지
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-[20px] font-bold text-gray-900 sm:text-[24px] lg:text-[32px]">
-                스프린트 라운지
-              </h1>
-              <p className="mt-1 text-base font-medium text-gray-500 sm:text-lg lg:text-xl">
-                코드잇 스프린터의 정보 공유 라운지
-              </p>
-            </div>
+
+            <Link href="/lounge/create" className="hidden sm:block">
+              <BtnCommon size="fixedSize" className="w-auto px-6">
+                + 게시물 등록하기
+              </BtnCommon>
+            </Link>
           </div>
 
-          <BtnCommon
-            onClick={handlePostCreate}
-            size="fixedSize"
-            className="hidden w-auto px-6 sm:flex"
-          >
-            + 게시물 등록하기
-          </BtnCommon>
+          {/* 핫 게시물 (SSR 버프 받아 즉시 렌더링) */}
+          <section className="mt-8 sm:mt-12">
+            <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
+              | 이번주 HOT 게시물
+            </h2>
+            <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
+              <HotPostList />
+            </div>
+          </section>
+
+          {/* 검색, 필터, 일반 게시물 리스트 (클라이언트 컴포넌트) */}
+          <LoungeContent />
         </div>
 
-        <section className="mt-8 sm:mt-12">
-          <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
-            | 이번주 HOT 게시물
-          </h2>
-
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
-            {hotList.map((post: Post) => (
-              <HotListCard
-                key={post.id}
-                title={post.title}
-                date={post.createdAt}
-                imageSrc={post.image}
-                thumbsUp={post.likeCount}
-                comment={post._count.comments}
-                onDetailClick={() => router.push(`/lounge/${post.id}`)}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-8 flex flex-col sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex w-full flex-row items-center gap-3 sm:max-w-[500px]">
-            <InputCommon
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onClear={() => setSearchValue("")}
-              placeholder="궁금한 내용을 검색해보세요."
-              className="rounded-4xl !bg-white !pl-5 !text-sm sm:!h-[50px] sm:!text-base"
-              inputSize="sm"
-              onKeyDown={handleKeyDown}
-            />
-            <Search
-              className="size-6 cursor-pointer text-gray-400 hover:text-gray-600 sm:size-7"
-              onClick={() => setSearchKeyword(searchValue)}
-            />
-          </div>
-
-          <div className="flex w-full justify-end sm:w-auto">
-            <Select
-              value={sortValue}
-              onValueChange={(value) => {
-                if (value) {
-                  setSortValue(value);
-                }
-              }}
-            >
-              <SelectTrigger className="!h-[50px] w-[120px] !rounded-[12px] px-4 text-sm font-medium text-gray-800 sm:w-[140px]">
-                <SelectValue>{currentSortLabel}</SelectValue>
-              </SelectTrigger>
-              <SelectContent className="w-[120px] sm:w-[140px]">
-                <SelectGroup>
-                  {sortOptions.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </section>
-
-        <section className="mt-6 sm:mt-8">
-          <PostList searchValue={searchKeyword} sortValue={sortValue} />
-        </section>
-
-        {/* 추후 로직 추가 */}
-        <section className="mt-8 flex justify-center sm:mt-12"></section>
+        <Link href="/lounge/create">
+          <BtnCommon
+            size="icon-md"
+            className="fixed right-4 bottom-6 z-50 size-14 pb-1 text-3xl leading-none shadow-lg transition-transform hover:scale-105 sm:hidden"
+          >
+            +
+          </BtnCommon>
+        </Link>
       </div>
-
-      <BtnCommon
-        onClick={handlePostCreate}
-        size="icon-md"
-        className="fixed right-4 bottom-6 z-50 size-14 pb-1 text-3xl leading-none shadow-lg transition-transform hover:scale-105 sm:hidden"
-      >
-        +
-      </BtnCommon>
-    </div>
+    </HydrationBoundary>
   );
 }
