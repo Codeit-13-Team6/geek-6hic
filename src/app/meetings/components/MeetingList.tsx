@@ -12,6 +12,7 @@ import type { JoinedMeeting } from "@/types";
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
   isLoading: boolean;
+  sortValue?: 'deadline' | 'participants' | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
 }
@@ -20,9 +21,10 @@ export default function MeetingList({
   meetingList,
   isLoading,
   onItemClick,
+  sortValue,
   onHeartClick,
 }: MeetingListProps) {
-  if (isLoading) return <div>로딩중...</div>;
+  // if (isLoading) return <div>로딩중...</div>;
 
   // 마감날짜 계산기
   function getDeadlineLabel(registrationEnd: string) {
@@ -61,15 +63,20 @@ export default function MeetingList({
 
   function isMeetingClosed(item: JoinedMeeting) {
     const now = new Date();
-    const isExpired = new Date(item.dateTime) < now;
+    const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
-
-    return isExpired || isFull;
+  
+    return isRegistrationClosed || isFull;
   }
+  
+  const visibleMeetingList =
+    sortValue === 'deadline'
+      ? meetingList.filter((item) => !isMeetingClosed(item))
+      : meetingList;
 
   return (
     <>
-      {meetingList.map((item) => {
+      {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const deadLine = getDeadlineLabel(item.registrationEnd);
         const overlayLabel = item.isCompleted

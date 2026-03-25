@@ -36,8 +36,7 @@ function Calendar({
   const defaultClassNames = getDefaultClassNames();
 
   return (
-    <div className="relative w-[300px]">
-      <div className="absolute box-border w-full rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)]">
+      <div className="z-2 absolute lg:top-full left-0 -translate-x-1/2 lg:translate-x-0 box-border w-[300px] rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)]">
         <DayPicker
           showOutsideDays={showOutsideDays}
           className={cn(
@@ -129,7 +128,7 @@ function Calendar({
               defaultClassNames.range_end,
             ),
             today: cn(
-              "pointer-events-none rounded-(--cell-radius) bg-green-100 font-semibold text-green-600 data-[selected=true]:rounded-none",
+              "rounded-(--cell-radius) font-semibold text-green-600 data-[selected=true]:rounded-none",
               defaultClassNames.today,
             ),
             outside: cn(
@@ -225,7 +224,8 @@ function Calendar({
           </BtnCommon>
         </div>
       </div>
-    </div>
+    // <div className="relative">
+    // </div>
   );
 }
 
@@ -258,7 +258,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:bg-muted data[-range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground relative isolate z-10 flex size-auto w-9 min-w-(--cell-size) cursor-pointer flex-col gap-1 border-0 py-[9px] leading-none hover:bg-green-100 data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-green-600 [&>span]:text-xs [&>span]:opacity-70",
+        "data-[range-end=true]:bg-green-100 data-[range-end=true]:text-green-600 data-[range-middle=true]:bg-muted rounded-l-(--cell-radius) data[-range-middle=true]:text-foreground data-[range-start=true]:bg-green-100 data-[range-start=true]:text-green-600 relative isolate z-10 flex size-auto w-9 min-w-(--cell-size) cursor-pointer flex-col gap-1 border-0 py-[9px] leading-none hover:bg-green-100 data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-green-600 [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className,
       )}
