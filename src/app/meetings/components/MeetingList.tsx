@@ -6,8 +6,8 @@ import alram from "@/assets/icon/alarm/alarm-blue.svg";
 import heartOff from "@/assets/icon/hearts/hearts-false.svg";
 import heartOn from "@/assets/icon/hearts/hearts-true.svg";
 import person from "@/assets/icon/person/person.svg";
-import { Progress } from "@/components/ui/ProgressCommon";
 import type { JoinedMeeting } from "@/types";
+import { Progress } from "@/components/ui/ProgressCommon";
 
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
