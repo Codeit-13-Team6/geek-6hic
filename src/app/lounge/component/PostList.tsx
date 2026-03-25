@@ -7,21 +7,24 @@ import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
 import { useGetPostsList } from "@/hooks/queries/usePosts";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface Props {
-  filterFn?: (post: Post) => boolean;
   searchValue?: string;
   sortValue?: string;
   refetchType?: boolean;
+  filterType?: "my" | "all";
 }
 
 export default function PostList({
-  filterFn,
+  filterType = "all",
   searchValue = "",
   sortValue = "latest",
   refetchType = true,
 }: Props) {
   const router = useRouter();
+
+  const user = useAuthStore((state) => state.user);
 
   const getSortParams = () => {
     switch (sortValue) {
@@ -47,14 +50,14 @@ export default function PostList({
       keyword: searchValue,
       sortBy,
       sortOrder,
-      size: filterFn ? 100 : 20,
+      size: filterType === "all" ? 100 : 20,
     },
     refetchType,
   );
   let postList = data?.data || [];
 
-  if (filterFn) {
-    postList = postList.filter(filterFn);
+  if (filterType === "my") {
+    postList = postList.filter((post: Post) => post.author.id === user?.id);
   }
 
   return (
@@ -84,10 +87,16 @@ export default function PostList({
               <SearchX className="size-8 text-gray-300" />
             </div>
             <p className="text-lg font-semibold text-gray-900">
-              {filterFn ? "작성한 게시물이 없습니다." : "검색 결과가 없습니다."}
+              {filterType === "my"
+                ? "작성한 게시물이 없습니다."
+                : "검색 결과가 없습니다."}
             </p>
             <p className="mt-2 text-gray-500">
-              {!filterFn && "다른 검색어로 다시 시도해보세요."}
+              {filterType === "all" && (
+                <p className="mt-2 text-gray-500">
+                  다른 검색어로 다시 시도해보세요.
+                </p>
+              )}
             </p>
           </div>
         )}

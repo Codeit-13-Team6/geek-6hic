@@ -1,27 +1,19 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { JoinedMeeting, JoinedMeetingsResponse, Meeting } from "@/types";
+import { JoinedMeeting, JoinedMeetingsResponse, Meeting, GetMeetingListParams, } from "@/types";
 import axios from "axios";
 
-// 모임리스트 타입정의
-// export interface GetMeetingListParams {
-//   type?: string;
-//   region?: string;
-//   date?: string;
-//   sortBy?: 'dateTime' | 'registrationEnd' | 'participantCount';
-//   sortOrder?: 'asc' | 'desc';
-//   cursor?: string;
-//   size?: number;
+export async function getMeetingList(
+  params: GetMeetingListParams
+): Promise<JoinedMeeting[]> {
+  const response = await axiosInstance.get('/meetings', { params });
+
+  return response.data.data;
+}
+
+// export async function getMeetings(params: {}): Promise<Meeting[]> {
+//   const { data } = await axiosInstance.get("/meetings", { params });
+//   return data;
 // }
-
-export async function getMeetingList(): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get("/meetings");
-  return data.data;
-}
-
-export async function getMeetings(params: {}): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get("/meetings", { params });
-  return data;
-}
 
 // 이름 수정 필요
 export async function getMeeting(): Promise<Meeting[]> {
