@@ -105,7 +105,7 @@ export default function Page() {
             <section>
               <div
                 ref={bottomRef}
-                className="flex h-20 w-full items-center justify-center"
+                className="flex h-40 w-full items-center justify-center"
               >
                 {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
                 {!hasNextPage && allMeetings.length > 0 && (

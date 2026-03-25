@@ -72,6 +72,11 @@ export default function MeetingList({
       {meetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const deadLine = getDeadlineLabel(item.registrationEnd);
+        const overlayLabel = item.isCompleted
+          ? "참여 완료"
+          : isClosed
+            ? "모집 마감"
+            : null;
 
         return (
           <div
@@ -100,10 +105,10 @@ export default function MeetingList({
                 unoptimized
               />
 
-              {isClosed && (
+              {overlayLabel && (
                 <div className="absolute flex h-full w-full items-center justify-center bg-black/70">
                   <span className="rounded-full font-[Tenada] text-2xl font-semibold text-white">
-                    모집 마감
+                    {overlayLabel}
                   </span>
                 </div>
               )}
