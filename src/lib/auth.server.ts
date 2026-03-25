@@ -8,5 +8,5 @@ export async function getIsAuthenticated() {
   const hasAccessToken = Boolean(cookieStore.get("accessToken")?.value);
   const hasRefreshToken = Boolean(cookieStore.get("refreshToken")?.value);
 
-  return hasAccessToken || hasRefreshToken;
+  return hasAccessToken && hasRefreshToken;
 }
