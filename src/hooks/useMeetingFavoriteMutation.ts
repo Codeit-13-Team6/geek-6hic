@@ -26,7 +26,9 @@ export function useMeetingFavoriteMutation() {
       await queryClient.cancelQueries({ queryKey });
 
       const previousMeetings =
-        queryClient.getQueryData<InfiniteData<JoinedMeetingsResponse>>(queryKey);
+        queryClient.getQueryData<InfiniteData<JoinedMeetingsResponse>>(
+          queryKey,
+        );
 
       queryClient.setQueryData<InfiniteData<JoinedMeetingsResponse>>(
         queryKey,
@@ -55,6 +57,7 @@ export function useMeetingFavoriteMutation() {
       queryClient.setQueryData(context.queryKey, context.previousMeetings);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["meetings", "joined"] });
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
