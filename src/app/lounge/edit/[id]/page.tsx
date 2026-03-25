@@ -1,15 +1,26 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetPostForEdit, useUpdatePost } from "@/hooks/queries/usePosts";
 import LoungePostForm from "../../component/LoungePostForm";
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function LoungeEditPage() {
   const { id } = useParams();
   const postId = Number(id);
+  const router = useRouter();
+  const userId = useAuthStore((state) => state.user?.id);
 
   const { initialData, post, isLoading } = useGetPostForEdit(postId);
   const { mutate: handleUpdate, isPending } = useUpdatePost(postId);
+
+  useEffect(() => {
+    if (post && userId && post.author.id !== userId) {
+      alert("수정 권한이 없습니다.");
+      router.replace(`/lounge/${postId}`);
+    }
+  }, [post, userId, router, postId]);
 
   if (isLoading || !initialData) {
     return (

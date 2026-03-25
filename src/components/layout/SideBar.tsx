@@ -1,7 +1,14 @@
+"use client";
+
 import Link from "next/link";
-import { SheetContent, SheetClose, SheetTitle } from "@/components/shadcnOrigin/sheet";
+import {
+  SheetContent,
+  SheetClose,
+  SheetTitle,
+} from "@/components/shadcnOrigin/sheet";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -18,10 +25,16 @@ interface SideBarProps {
 }
 
 // TO DO: 시간 관계상 추후 기능을 붙힐 수 있는 뼈대 ui 구현 -> 필요에 의해 디자인 수정 + 기능 추가
-export default function SideBar({ isLoggedIn, handleLogout, handleLogin, onClose }: SideBarProps) {
-
+export default function SideBar({
+  isLoggedIn,
+  handleLogout,
+  handleLogin,
+  onClose,
+}: SideBarProps) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = pathname === "/login";
+
+  const { user } = useAuthStore();
 
   return (
     <SheetContent
@@ -50,7 +63,8 @@ export default function SideBar({ isLoggedIn, handleLogout, handleLogin, onClose
 
         {isLoggedIn && (
           <Link
-            href="/mypage"
+            href={`/users/${user?.id}`}
+            onClick={onClose}
             className="font-pretendard hover:text-main-green-500 text-base font-medium text-slate-600 transition-colors"
           >
             마이페이지
@@ -62,22 +76,23 @@ export default function SideBar({ isLoggedIn, handleLogout, handleLogin, onClose
         {isLoggedIn ? (
           <SheetClose
             onClick={handleLogout}
-            className={"font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"}
+            className={
+              "font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
+            }
           >
             로그아웃
           </SheetClose>
-        ) : (
-          isLoginPage ?
-            null
-            :
-            <SheetClose
-              onClick={handleLogin}
-              className={"font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"}
-            >
-              로그인
-            </SheetClose>
+        ) : isLoginPage ? null : (
+          <SheetClose
+            onClick={handleLogin}
+            className={
+              "font-pretendard hover:text-main-green-500 text-base font-medium text-slate-400 transition-colors"
+            }
+          >
+            로그인
+          </SheetClose>
         )}
       </div>
-    </SheetContent >
+    </SheetContent>
   );
 }
