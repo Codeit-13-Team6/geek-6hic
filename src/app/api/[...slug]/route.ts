@@ -92,6 +92,21 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["PATCH", "DELETE"],
     requiresAuth: true,
   },
+  {
+    pattern: /^\/meetings\/\d+$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/participants$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/join$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
 ];
 
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러

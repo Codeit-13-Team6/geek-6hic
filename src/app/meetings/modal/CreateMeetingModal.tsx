@@ -35,7 +35,7 @@ const INITIAL_FORM_VALUES: MeetingFormValues = {
   link: "",
   imageFile: null,
   previewImageUrl: "",
-  imageUrl: "",
+  imageUrl: null,
   startDate: "",
   startTime: "",
   endDate: "",
