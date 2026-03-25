@@ -60,7 +60,6 @@ export default function Page() {
     queryFn: async () => {
       const params = {
         type: currentTab?.type,
-        cursor: undefined,
         size: 100,
         ...(sortValue
           ? {
@@ -69,14 +68,8 @@ export default function Page() {
             }
           : {}),
       };
-  
-      console.log('queryKey:', ['meetings', activeValue, sortValue]);
-      console.log('request params:', params);
-  
+
       const response = await getMeetingList(params);
-  
-      console.log('API response:', response);
-      console.log('API response length:', response.length);
   
       return response;
     },
