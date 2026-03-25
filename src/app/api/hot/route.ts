@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 import { GetPostsParams, Post } from "@/types";
+import { serverAxios } from "@/lib/server-fetcher";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const revalidate = 600; // 10분마다 갱신 (캐싱)
@@ -31,9 +31,12 @@ export async function GET() {
       };
       if (cursor) params.cursor = cursor;
 
-      const { data: response } = await axios.get(`${API_BASE_URL}/posts`, {
-        params,
-      });
+      const { data: response } = await serverAxios.get(
+        `${API_BASE_URL}/posts`,
+        {
+          params,
+        },
+      );
       const posts = response.data || [];
 
       // 3. 가져온 데이터가 일주일보다 오래된지 하나씩 검사
