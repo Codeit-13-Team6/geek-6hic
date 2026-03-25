@@ -3,6 +3,7 @@ import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import defaultImg from "@/assets/img/empty/img-default.png";
+import { getPlainText } from "@/lib/postUtils";
 
 interface PostDetailCardProps {
   id: number;
@@ -27,53 +28,21 @@ export default function PostCard({
   thumbnailUrl,
   onDetailClick,
 }: PostDetailCardProps) {
-  // 태그 제거 로직
-  const getPlainText = (html: string) => {
-    if (!html) return "";
-
-    // 1. [0]번이 순수 본문, [1]번이 링크 영역 분리
-    const splitContent = html.split(/<p><a|<a/i);
-    let text = splitContent[0];
-
-    // 2. 블록 태그들을 공백으로 치환 (텍스트가 붙는 것 방지)
-    // p, li, div, h1~6 뿐만 아니라 blockquote, ul, ol 등을 추가
-    text = text.replace(/<(p|br|li|div|h[1-6]|blockquote|ul|ol)[^>]*>/gi, " ");
-    text = text.replace(/<\/(p|li|div|h[1-6]|blockquote|ul|ol)>/gi, " ");
-
-    // 3. 남은 모든 HTML 태그 제거
-    text = text.replace(/<[^>]*>?/gm, "");
-
-    // 4. HTML 엔티티 디코딩 (&gt; -> >, &nbsp; -> 공백 등)
-    const entities: { [key: string]: string } = {
-      "&nbsp;": " ",
-      "&lt;": "<",
-      "&gt;": ">",
-      "&amp;": "&",
-      "&quot;": '"',
-      "&#39;": "'",
-    };
-
-    text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
-
-    // 5. 연속된 공백 하나로 합치고 앞뒤 트림
-    return text.replace(/\s\s+/g, " ").trim();
-  };
-
   const pureContent = getPlainText(content);
 
   return (
     <article
-      onClick={() => onDetailClick?.()}
+      onClick={onDetailClick}
       className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50 sm:flex-row sm:gap-8 sm:rounded-l-[12px]"
     >
       {/* 데스크탑 썸네일 */}
       <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] sm:block lg:size-50">
         <img
-          src={thumbnailUrl || defaultImg.src} // 1. null이면 바로 기본 이미지
+          src={thumbnailUrl || defaultImg.src}
           alt="게시물 썸네일"
           className="h-full w-full object-cover"
           onError={(e) => {
-            // 2. 주소는 있는데 깨진 링크면 여기서 기본 이미지로 교체
+            // 주소는 있는데 깨진 링크면 기본 이미지로 교체
             (e.target as HTMLImageElement).src = defaultImg.src;
           }}
         />

@@ -24,8 +24,7 @@ import {
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { HotListCard } from "@/components/features/card/HotListCard";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { getPosts } from "@/api/posts";
+import { useGetHotPosts } from "@/hooks/queries/usePosts";
 
 export default function LoungePage() {
   const router = useRouter();
@@ -39,11 +38,7 @@ export default function LoungePage() {
     { value: "oldest", label: "오래된순" },
   ];
 
-  const { data: hotResponse } = useQuery({
-    queryKey: ["posts", "best"],
-    queryFn: () => getPosts({ type: "best", size: 5 }),
-  });
-
+  const { data: hotResponse } = useGetHotPosts();
   const hotList = hotResponse?.data || [];
 
   const currentSortLabel = sortOptions.find(
