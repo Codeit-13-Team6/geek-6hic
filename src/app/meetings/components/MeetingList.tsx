@@ -12,14 +12,13 @@ import type { JoinedMeeting } from "@/types";
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
   isLoading: boolean;
-  sortValue?: 'deadline' | 'participants' | null;
+  sortValue?: "deadline" | "participants" | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
 }
 
 export default function MeetingList({
   meetingList,
-  isLoading,
   onItemClick,
   sortValue,
   onHeartClick,
@@ -65,12 +64,12 @@ export default function MeetingList({
     const now = new Date();
     const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
-  
+
     return isRegistrationClosed || isFull;
   }
-  
+
   const visibleMeetingList =
-    sortValue === 'deadline'
+    sortValue === "deadline"
       ? meetingList.filter((item) => !isMeetingClosed(item))
       : meetingList;
 
@@ -100,7 +99,11 @@ export default function MeetingList({
               className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white"
             >
               <div className="relative h-6 w-6">
-                <Image src={item.isFavorited ? heartOn : heartOff} fill alt="찜" />
+                <Image
+                  src={item.isFavorited ? heartOn : heartOff}
+                  fill
+                  alt="찜"
+                />
               </div>
             </button>
 
