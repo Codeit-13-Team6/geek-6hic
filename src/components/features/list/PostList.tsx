@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import PostCard from "../../../components/features/card/PostCard";
+import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
