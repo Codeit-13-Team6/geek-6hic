@@ -20,7 +20,6 @@ const meetingCategoryList: MeetingCategoryItem[] = [
     imageSrc: teamBulb,
   },
   {
-    // STUDY
     value: "스터디",
     label: "스터디",
     imageSrc: studyImage,
@@ -36,7 +35,6 @@ const meetingCategoryList: MeetingCategoryItem[] = [
     imageSrc: JobIShoes,
   },
   {
-    // ETC
     value: "기타",
     label: "기타",
     imageSrc: etcImage,

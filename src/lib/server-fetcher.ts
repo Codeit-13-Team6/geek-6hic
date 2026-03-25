@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { cookies } from "next/headers";
 import {
   ACCESS_TOKEN_MAX_AGE,
@@ -6,6 +6,26 @@ import {
 } from "@/lib/auth-cookies";
 import { redirect } from "next/navigation";
 
+interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface RefreshFailedResponse {
+  message: string;
+  code: string;
+}
+
+interface RefreshFailedError extends Error {
+  response: {
+    status: number;
+    data: RefreshFailedResponse;
+  };
+}
+
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const serverAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -14,10 +34,7 @@ const serverAxios = axios.create({
 
 // 유저별 refresh queue: refreshToken을 키로 사용하여 유저별로 분리
 // 동일 유저의 동시 요청은 같은 Promise를 공유, 다른 유저끼리는 독립
-const refreshMap = new Map<
-  string,
-  Promise<{ accessToken: string; refreshToken: string } | null>
->();
+const refreshMap = new Map<string, Promise<TokenPair | null>>();
 
 
 const COOKIE_OPTIONS = {
@@ -29,7 +46,7 @@ const COOKIE_OPTIONS = {
 
 
 // refresh 성공 시 새 토큰을 저장 (slug에서 응답에 Set-Cookie 붙이기 위함)
-let lastRefreshedTokens: { accessToken: string; refreshToken: string } | null = null;
+let lastRefreshedTokens: TokenPair | null = null;
 
 // refresh 후 저장된 토큰을 꺼내고 초기화 (slug에서 호출)
 // function consumeRefreshedTokens() {
@@ -40,7 +57,16 @@ let lastRefreshedTokens: { accessToken: string; refreshToken: string } | null = 
 
 // 리프레시 토큰으로 새 액세스 토큰을 발급받는 함수 (유저별 queue 패턴)
 // refreshToken을 키로 사용하여 같은 유저의 동시 요청만 Promise를 공유
-const refreshAccessToken = async (requestUrl: string) => {
+function createRefreshFailedError(): RefreshFailedError {
+  const error = new Error("REFRESH_FAILED") as RefreshFailedError;
+  error.response = {
+    status: 401,
+    data: { message: "Unauthorized", code: "REFRESH_FAILED" },
+  };
+  return error;
+}
+
+const refreshAccessToken = async (requestUrl: string): Promise<TokenPair | null> => {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
 
@@ -106,12 +132,7 @@ serverAxios.interceptors.request.use(async (config) => {
 
   // refreshToken도 없으면 요청 보내지 않고 즉시 차단
   if (!refreshToken) {
-    const error = new Error("REFRESH_FAILED");
-    (error as any).response = {
-      status: 401,
-      data: { message: "Unauthorized", code: "REFRESH_FAILED" },
-    };
-    return Promise.reject(error);
+    return Promise.reject(createRefreshFailedError());
   }
 
   if (!accessToken) {
@@ -120,12 +141,7 @@ serverAxios.interceptors.request.use(async (config) => {
 
     if (!refreshed) {
       // refresh 시도했는데도 accessToken 못 받으면 차단
-      const error = new Error("REFRESH_FAILED");
-      (error as any).response = {
-        status: 401,
-        data: { message: "Unauthorized", code: "REFRESH_FAILED" },
-      };
-      return Promise.reject(error);
+      return Promise.reject(createRefreshFailedError());
     }
     accessToken = refreshed.accessToken;
   }
@@ -141,8 +157,8 @@ serverAxios.interceptors.request.use(async (config) => {
 // response 의 에러만  핸들링함
 serverAxios.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
 
     console.log("인터셉터 레스폰스 처음 ");
     // 백엔드에서 떨어지는 401 을 제외한 다른 에러들은 config 가 없는 상태라 그냥 바로 떨어뜨려줌
@@ -152,21 +168,14 @@ serverAxios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-
     // 401이고 아직 재시도하지 않은 요청만 처리
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const refreshed = await refreshAccessToken(originalRequest.url);
+      const refreshed = await refreshAccessToken(originalRequest.url ?? "");
 
       if (!refreshed) {
-        // refresh 실패 시 REFRESH_FAILED code 추가
-        const refreshError = new Error("REFRESH_FAILED");
-        (refreshError as any).response = {
-          status: 401,
-          data: { message: "Unauthorized", code: "REFRESH_FAILED" },
-        };
-        return Promise.reject(refreshError);
+        return Promise.reject(createRefreshFailedError());
       }
 
       // 새 토큰으로 원래 요청 재시도
@@ -183,16 +192,20 @@ serverAxios.interceptors.response.use(
 
 
 // 서버 컴포넌트 전용 리프레쉬 토큰 없거나 만료되었을때 저절로 redirect 처리하기 위해 래퍼로 감싸둠
-async function serverFetch<T = any>(config: AxiosRequestConfig) {
+async function serverFetch<T = unknown>(config: AxiosRequestConfig<T>) {
   try {
     return await serverAxios(config);
-  } catch (error: any) {
+  } catch (err) {
+    const error = err as RefreshFailedError;
     if (error.response?.data?.code === "REFRESH_FAILED") {
       redirect("/login");
     }
-    throw error;
+    throw err;
   }
 }
 
+
+// serverAxios 는 서버단에서 사용
+// serverFetch 는 서버컴포넌트용
 
 export { serverAxios, serverFetch };
