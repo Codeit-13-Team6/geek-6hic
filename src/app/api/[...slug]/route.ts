@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverAxios } from "@/lib/server-fetcher";
+import { setAuthCookies } from "@/lib/auth-cookies";
 
 // slug: /api/users/me 요청 시 ['users', 'me'] 배열로 들어옴
 interface RouteParams {
@@ -31,7 +32,6 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["GET"],
     requiresAuth: true,
   },
-
   {
     pattern: /^\/meetings\/\d+\/favorites$/,
     methods: ["POST", "DELETE"],
@@ -141,7 +141,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
       data: body,
     });
 
-    console.log(' slug 페이지 트라이문 ')
+    console.log(" slug 페이지 트라이문 ");
 
     const response = NextResponse.json(data, { status });
 
