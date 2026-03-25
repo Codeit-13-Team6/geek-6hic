@@ -23,8 +23,6 @@ export default function MeetingList({
   sortValue,
   onHeartClick,
 }: MeetingListProps) {
-  // if (isLoading) return <div>로딩중...</div>;
-
   // 마감날짜 계산기
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
