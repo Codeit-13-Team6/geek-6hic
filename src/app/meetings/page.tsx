@@ -12,7 +12,7 @@ import bannerLg from '@/assets/img/banner/banner-lg.png';
 import bannerSm from '@/assets/img/banner/banner-sm.png';
 import arrowDrop from '@/assets/icon/arrow/arrow-drop.svg';
 import filter from '@/assets/icon/filter/filter.svg';
-import MeetingList from './components/MeetingList';
+import MeetingList from '@/app/meetings/components/MeetingList';
 
 const TAB_LIST = [
   { value: 'all', label: '전체' },
