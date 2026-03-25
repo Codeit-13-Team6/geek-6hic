@@ -1,8 +1,5 @@
-import axios from "axios";
-import { cookies } from "next/headers";
+import { serverAxios } from "@/lib/server-fetcher";
 import { NextResponse } from "next/server";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface MeetingRankData {
   commentLeng: number;
@@ -16,15 +13,31 @@ interface MeetingRankData {
 
 type MeetingRankMap = Record<number, MeetingRankData>;
 
+interface MeetingItem {
+  id: number;
+  participantCount: number;
+  type: string;
+  name: string;
+}
+
+interface ReviewItem {
+  meeting: { id: number };
+  userId: string;
+  score: number;
+}
+
+interface CursorResponse<T> {
+  data: T[];
+  hasMore: boolean;
+  nextCursor: string;
+}
+
+interface AxiosErrorLike {
+  response?: { data?: unknown; status?: number };
+  message: string;
+}
+
 export async function GET() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-  };
-
   try {
     // 1. 전체 meetings cursor pagination 수집
     // meeting 수집이 현재 api 스펙 상의 제한으로 인해 체인형식으로 진행
@@ -33,13 +46,10 @@ export async function GET() {
     let cursor: string | undefined = undefined;
 
     while (true) {
-      const params: { cursor?: string } = { cursor };
-      const { data: meetRes } = await axios.get(`${API_BASE_URL}/meetings`, {
-        headers,
-        params,
-      });
+      const { data: meetRes }: { data: CursorResponse<MeetingItem> } =
+        await serverAxios.get("/meetings", { params: { cursor } });
 
-      meetRes.data.forEach((item: any) => {
+      meetRes.data.forEach((item) => {
         meetingMap[item.id] = {
           totalUserLeng: item.participantCount,
           commentLeng: 0,
@@ -60,13 +70,10 @@ export async function GET() {
     cursor = undefined;
 
     while (true) {
-      const params: { cursor?: string } = { cursor };
-      const { data: reviewRes } = await axios.get(`${API_BASE_URL}/reviews`, {
-        headers,
-        params,
-      });
+      const { data: reviewRes }: { data: CursorResponse<ReviewItem> } =
+        await serverAxios.get("/reviews", { params: { cursor } });
 
-      reviewRes.data.forEach((item: any) => {
+      reviewRes.data.forEach((item) => {
         if (Object.prototype.hasOwnProperty.call(meetingMap, item.meeting.id)) {
           const meeting = meetingMap[item.meeting.id];
           meeting.commentingUserList = [
@@ -95,7 +102,8 @@ export async function GET() {
       .sort((a, b) => b.rankScore - a.rankScore);
 
     return NextResponse.json(rankedList);
-  } catch (error: any) {
+  } catch (err) {
+    const error = err as AxiosErrorLike;
     console.error("Ranking BFF Error:", error.response?.data || error.message);
     return NextResponse.json(
       error.response?.data ?? { message: "랭킹 데이터를 불러오지 못했습니다." },
