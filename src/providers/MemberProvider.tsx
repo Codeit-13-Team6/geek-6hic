@@ -18,8 +18,10 @@ export function MemberProvider({
 
   useEffect(() => {
     const init = async () => {
-      // 
-      if (!isAuthenticated) return;
+      if (!isAuthenticated) {
+        clearAuth();
+        return;
+      }
 
       try {
         const user = await fetchMe();
