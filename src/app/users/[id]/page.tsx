@@ -27,8 +27,10 @@ export default function Page() {
       queryKey: ["meetings", "my"],
       queryFn: getMeeting,
     });
+
+    // 게시글 리스트 키 구조: ["posts", "list", 정렬, 검색어]
     queryClient.prefetchQuery({
-      queryKey: ["posts", "", "latest"],
+      queryKey: ["posts", "list", "latest", ""],
       queryFn: () =>
         getPosts({
           keyword: "",
@@ -37,7 +39,7 @@ export default function Page() {
           size: 10,
         }),
     });
-  }, []);
+  }, [queryClient]);
 
   return (
     <div className="flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">

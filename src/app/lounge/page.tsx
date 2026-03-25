@@ -5,26 +5,16 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-
+import { getPosts } from "@/api/posts";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { getHotPosts, getPosts } from "@/api/posts";
 import HotPostList from "./component/HotPostList";
 import LoungeContent from "./component/LoungeSection";
 
 export default async function LoungePage() {
   const queryClient = new QueryClient();
-  // 1. 서버에서 쿠키 꺼내기
   const cookieStore = await cookies();
   const cookieString = cookieStore.toString();
 
-  // 2. 쿠키를 헤더에 담아서 보냄
-  await queryClient.prefetchQuery({
-    queryKey: ["posts", "hot"],
-    queryFn: () => getHotPosts({ Cookie: cookieString }),
-  });
-
-  // 2. 전체 게시물 첫 페이지(최신순, 검색어 없음) 미리 가져오기
-  // QueryKey를 클라이언트에서 쓸 훅과 똑같이 맞춰주는 게 핵심
   await queryClient.prefetchQuery({
     queryKey: ["posts", "list", "latest", ""],
     queryFn: () =>
@@ -63,7 +53,6 @@ export default async function LoungePage() {
             </Link>
           </div>
 
-          {/* 핫 게시물 (SSR 버프 받아 즉시 렌더링) */}
           <section className="mt-8 sm:mt-12">
             <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
               | 이번주 HOT 게시물

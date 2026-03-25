@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getHotPosts, getPosts, getPostsDetail } from "@/api/posts";
+import { getHotPosts, getPostDetail, getPosts } from "@/api/posts";
 import { getOgData } from "@/api/og";
 import { parsePostData } from "@/lib/postUtils";
 import { likePost, unlikePost } from "@/api/posts";
@@ -27,7 +27,7 @@ export const useGetHotPosts = () => {
 export const useGetPostsList = (
   sortValue: string,
   searchValue: string,
-  params: GetPostsParams, // 실제 API에 던질 파라미터
+  params: GetPostsParams,
   enabled: boolean = true,
 ) => {
   return useQuery({
@@ -45,9 +45,9 @@ export const useGetPostsList = (
 export const useGetPostDetail = (postId: number) => {
   return useQuery({
     queryKey: ["post", postId],
-    queryFn: () => getPostsDetail(postId),
+    queryFn: () => getPostDetail(postId),
     enabled: !!postId,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

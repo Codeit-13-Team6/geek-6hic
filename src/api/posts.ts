@@ -2,32 +2,10 @@ import axiosInstance from "@/lib/client-fetcher";
 import { GetPostsParams, Post } from "@/types";
 import axios from "axios";
 
-// export async function getHotPosts() {
-//   const { data } = await axiosInstance.get("/hot");
-//   return data;
-// }
-
-export const getHotPosts = async (extraHeaders?: any) => {
-  const isServer = typeof window === "undefined";
-  const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    : "";
-
-  // 밖에서 넘겨받은 헤더(쿠키)가 있으면 쓰고, 없으면 빈 객체
-  const { data } = await axios.get(`${baseUrl}/api/hot`, {
-    headers: {
-      ...extraHeaders,
-    },
-  });
+export async function getHotPosts() {
+  const { data } = await axiosInstance.get("/hot");
   return data;
-};
-
-// export async function getPosts(
-//   params?: GetPostsParams,
-// ): Promise<GetPostsResponse> {
-//   const { data } = await axiosInstance.get("/posts", { params });
-//   return data;
-// }
+}
 
 export const getPosts = async (params: GetPostsParams, extraHeaders?: any) => {
   const isServer = typeof window === "undefined";
@@ -37,7 +15,19 @@ export const getPosts = async (params: GetPostsParams, extraHeaders?: any) => {
 
   const { data } = await axios.get(`${baseUrl}/api/posts`, {
     params,
-    headers: { ...extraHeaders }, // 서버에서 넘겨준 쿠키 배달
+    headers: { ...extraHeaders },
+  });
+  return data;
+};
+
+export const getPostDetail = async (postId: number, extraHeaders?: any) => {
+  const isServer = typeof window === "undefined";
+  const baseUrl = isServer
+    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    : "";
+
+  const { data } = await axios.get(`${baseUrl}/api/posts/${postId}`, {
+    headers: { ...extraHeaders },
   });
   return data;
 };
@@ -48,11 +38,6 @@ export async function createPost(postData: {
   image?: string | null;
 }): Promise<Post> {
   const { data } = await axiosInstance.post("/posts", postData);
-  return data;
-}
-
-export async function getPostsDetail(postId: number): Promise<Post> {
-  const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 }
 

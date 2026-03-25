@@ -8,9 +8,15 @@ import { useGetHotPosts } from "@/hooks/queries/usePosts";
 export default function HotPostList() {
   const router = useRouter();
 
-  // hydration
-  // api 호출 X -> 즉시 데이터를 꺼내서 hotList에 넣어줌 (로딩 시간 0초)
-  const { data: hotList = [] } = useGetHotPosts();
+  const { data: hotList = [], isLoading } = useGetHotPosts();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-gray-400">
+        🔥 핫 게시물을 불러오는 중...
+      </div>
+    );
+  }
 
   if (hotList.length === 0) {
     return (
