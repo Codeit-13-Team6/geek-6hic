@@ -25,6 +25,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { HotListCard } from "@/components/features/card/HotListCard";
 import { useRouter } from "next/navigation";
 import { useGetHotPosts } from "@/hooks/queries/usePosts";
+import { Post } from "@/types";
 
 export default function LoungePage() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function LoungePage() {
   const sortOptions = [
     { value: "latest", label: "최신순" },
     { value: "popular", label: "인기순" },
+    { value: "comment", label: "댓글순" },
     { value: "oldest", label: "오래된순" },
   ];
 
@@ -91,7 +93,7 @@ export default function LoungePage() {
           </h2>
 
           <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
-            {hotList.map((post) => (
+            {hotList.map((post: Post) => (
               <HotListCard
                 key={post.id}
                 title={post.title}

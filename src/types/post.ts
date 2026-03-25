@@ -24,7 +24,7 @@ export interface Post {
 export interface GetPostsParams {
   type?: "all" | "best";
   keyword?: string;
-  sortBy?: "createdAt" | "viewCount" | "likeCount";
+  sortBy?: "createdAt" | "viewCount" | "likeCount" | "commentCount";
   sortOrder?: "asc" | "desc";
   cursor?: string;
   size?: number;

@@ -8,7 +8,7 @@ import { createPost, updatePost, deletePost } from "@/api/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { PostPayload } from "@/app/lounge/component/LoungePostForm";
-import { GetPostsParams } from "@/types";
+import { GetPostsParams, Post } from "@/types";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
@@ -187,7 +187,7 @@ export const useToggleLike = (postId: number) => {
       await queryClient.cancelQueries({ queryKey: ["post", postId] });
       const previousPost = queryClient.getQueryData(["post", postId]);
 
-      queryClient.setQueryData(["post", postId], (oldData: any) => {
+      queryClient.setQueryData(["post", postId], (oldData: Post) => {
         if (!oldData) return oldData;
         return {
           ...oldData,
