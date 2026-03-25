@@ -3,8 +3,10 @@
 import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 import { getJoinedMeetings } from "@/api/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
-
-export const meetingJoinedQueryKey = ["meetings", "joined"] as const;
+import {
+  getMeetingJoinedNextPageParam,
+  meetingJoinedQueryKey,
+} from "@/hooks/meetingQuery.shared";
 
 export const meetingJoinedInfiniteQueryOptions =
   infiniteQueryOptions<JoinedMeetingsResponse>({
@@ -14,8 +16,7 @@ export const meetingJoinedInfiniteQueryOptions =
         pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
       ),
     initialPageParam: undefined,
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+    getNextPageParam: getMeetingJoinedNextPageParam,
   });
 
 export function useMeetingQuery() {

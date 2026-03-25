@@ -1,9 +1,41 @@
 import Image from "next/image";
+import {
+  HydrationBoundary,
+  InfiniteData,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
+
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
+import { getJoinedMeetingsServer } from "@/api/meetings.server";
+import type { JoinedMeetingsResponse } from "@/types";
+import {
+  getMeetingJoinedNextPageParam,
+  meetingJoinedQueryKey,
+} from "@/hooks/meetingQuery.shared";
+
 import MyMeetingsClient from "./components/MyMeetingsClient";
 
-export default function Page() {
+export default async function Page() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchInfiniteQuery<
+    JoinedMeetingsResponse,
+    Error,
+    InfiniteData<JoinedMeetingsResponse>,
+    typeof meetingJoinedQueryKey,
+    string | undefined
+  >({
+    queryKey: meetingJoinedQueryKey,
+    queryFn: ({ pageParam }) =>
+      getJoinedMeetingsServer(
+        pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
+      ),
+    initialPageParam: undefined,
+    getNextPageParam: getMeetingJoinedNextPageParam,
+  });
+
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
       <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
@@ -34,7 +66,9 @@ export default function Page() {
       </div>
 
       <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px]">
-        <MyMeetingsClient />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <MyMeetingsClient />
+        </HydrationBoundary>
       </section>
     </div>
   );
