@@ -30,28 +30,32 @@ export default function MeetingList({
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
-
-    const isSameYear = endDate.getFullYear() === now.getFullYear();
-    const isSameMonth = endDate.getMonth() === now.getMonth();
-    const isSameDate = endDate.getDate() === now.getDate();
-
-    const isToday = isSameYear && isSameMonth && isSameDate;
-
-    if (!isToday) return null;
-
+  
+    const diffMs = endDate.getTime() - now.getTime();
+  
+    if (diffMs <= 0) return null;
+  
+    const diffHours = diffMs / (1000 * 60 * 60);
+  
+    const month = endDate.getMonth() + 1;
+    const date = endDate.getDate();
     const hours = String(endDate.getHours()).padStart(2, "0");
-
-    return `오늘 ${hours}시 마감`;
+  
+    if (diffHours < 24) {
+      return `곧 마감 ${hours}시간 뒤`;
+    }
+  
+    return `${month}월 ${date}일 ${hours}시 마감`;
   }
 
-  // 날짜
+  // 태그(날짜계산)
   function formatDate(dateTime: string) {
     const date = new Date(dateTime);
 
     return `${date.getMonth() + 1}월 ${date.getDate()}일`;
   }
 
-  // 시간
+  // 태그(시간계산)
   function formatTime(dateTime: string) {
     const date = new Date(dateTime);
 
@@ -61,11 +65,19 @@ export default function MeetingList({
     return `${hours}:${minutes}`;
   }
 
+  // 모집마감 로직 dimd
   function isMeetingClosed(item: JoinedMeeting) {
     const now = new Date();
     const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
-  
+
+    const registrationEnd = new Date(item.registrationEnd);
+    console.log('now:', now.toString());
+    console.log('registrationEnd raw:', item.registrationEnd);
+    console.log('registrationEnd parsed:', registrationEnd.toString());
+    console.log('isRegistrationClosed:', registrationEnd < now);
+    console.log('participantCount/capacity:', item.participantCount, item.capacity);
+
     return isRegistrationClosed || isFull;
   }
   

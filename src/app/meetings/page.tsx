@@ -59,7 +59,7 @@ export default function Page() {
   const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { toggleFavorite, isPending } = useMeetingFavoriteMutation();
+  const { toggleFavorite } = useMeetingFavoriteMutation();
 
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
@@ -68,7 +68,7 @@ export default function Page() {
     queryFn: async () => {
       const params = {
         type: currentTab?.type,
-        size: 100,
+        size: 20,
         ...(sortValue
           ? {
             sortBy: sortByMap[sortValue],
