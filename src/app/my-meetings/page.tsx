@@ -1,58 +1,40 @@
-"use client";
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { EmptyData } from "@/components/features/empty/EmptyData";
+import {
+  HydrationBoundary,
+  InfiniteData,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
+
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
-import { useMeetingQuery } from "@/hooks/useMeetingQuery";
-import MeetingList from "../meetings/components/MeetingList";
-import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
+import { getJoinedMeetingsServer } from "@/api/meetings.server";
+import type { JoinedMeetingsResponse } from "@/types";
+import {
+  getMeetingJoinedNextPageParam,
+  meetingJoinedQueryKey,
+} from "@/hooks/meetingQuery.shared";
 
-export default function Page() {
-  const router = useRouter();
+import MyMeetingsClient from "./components/MyMeetingsClient";
 
-  const { toggleFavorite, isPending } = useMeetingFavoriteMutation();
+export default async function Page() {
+  const queryClient = new QueryClient();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useMeetingQuery();
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // 2. 바닥 센서가 화면에 들어왔을 때 실행할 로직
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // 화면에 보이고(isIntersecting) + 다음 데이터가 있고 + 지금 로딩 중이 아닐 때만!
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage(); // <--- 여기서 훅의 기능을 실행시킵니다.
-        }
-      },
-      { threshold: 1.0 }, // 센서가 완전히 보여야 실행
-    );
-
-    // 3. 센서 관찰 시작
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
-    }
-
-    return () => observer.disconnect(); // 정리
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-  // 페이지별로 쪼개진 데이터를 전부 합친 결과
-  const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
-
-  useEffect(() => {
-    console.log("my-meetings query data:", data);
-    console.log("my-meetings pages:", data?.pages);
-    console.log("my-meetings allMeetings:", allMeetings);
-    console.log(
-      "my-meetings image urls:",
-      allMeetings.map((meeting) => ({
-        id: meeting.id,
-        name: meeting.name,
-        image: meeting.image,
-      })),
-    );
-  }, [data, allMeetings]);
+  await queryClient.prefetchInfiniteQuery<
+    JoinedMeetingsResponse,
+    Error,
+    InfiniteData<JoinedMeetingsResponse>,
+    typeof meetingJoinedQueryKey,
+    string | undefined
+  >({
+    queryKey: meetingJoinedQueryKey,
+    queryFn: ({ pageParam }) =>
+      getJoinedMeetingsServer(
+        pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
+      ),
+    initialPageParam: undefined,
+    getNextPageParam: getMeetingJoinedNextPageParam,
+  });
 
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
@@ -84,37 +66,9 @@ export default function Page() {
       </div>
 
       <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px]">
-        {status === "pending" ? (
-          <div className="flex min-h-[calc(100vh-220px)] items-center justify-center text-center">
-            <p>데이터를 불러오고 있어요...</p>
-          </div>
-        ) : allMeetings.length === 0 ? (
-          <div className="flex min-h-[calc(100vh-220px)] items-center justify-center">
-            <EmptyData variant="myMeeting" />
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
-              <MeetingList
-                meetingList={allMeetings}
-                isLoading={isFetchingNextPage}
-                onItemClick={(item) => router.push(`/meetings/${item.id}`)}
-                onHeartClick={(item) => toggleFavorite(item)}
-              />
-            </div>
-            <section>
-              <div
-                ref={bottomRef}
-                className="flex h-40 w-full items-center justify-center"
-              >
-                {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
-                {!hasNextPage && allMeetings.length > 0 && (
-                  <p>모든 모임을 다 확인하셨습니다! ✔️</p>
-                )}
-              </div>
-            </section>
-          </>
-        )}
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <MyMeetingsClient />
+        </HydrationBoundary>
       </section>
     </div>
   );

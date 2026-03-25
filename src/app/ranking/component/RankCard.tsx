@@ -13,6 +13,7 @@ interface RankCardProps {
   point?: number;
   rank?: number;
   meetType?: string;
+  onDetailClick?: () => void;
 }
 
 export default function RankCard({
@@ -20,6 +21,7 @@ export default function RankCard({
   point = 123123,
   rank = 0,
   meetType = "스터디",
+  onDetailClick = () => {},
 }: RankCardProps) {
   return (
     <Card className="flex flex-row justify-between gap-0 bg-white px-[32px] py-[10px] ring-0! sm:h-[100px]">
@@ -28,7 +30,7 @@ export default function RankCard({
           <div className="text-main-green-500 pr-[32px] text-xl font-semibold">
             {rank}
           </div>
-          <div className="w-[71px]!shrink-0 h-[71px]! rounded-[24px] bg-gray-600 flex justify-center items-center">
+          <div className="w-[71px]!shrink-0 flex h-[71px]! items-center justify-center rounded-[24px] bg-gray-600">
             <Image
               src={profileImg}
               alt="프로필"
@@ -57,7 +59,12 @@ export default function RankCard({
         <p className="text-main-green-600 flex items-end text-2xl font-bold whitespace-nowrap">
           {point}점
         </p>
-        <BtnCommon variant="outline" size="sm" className="w-[125px]">
+        <BtnCommon
+          onClick={onDetailClick}
+          variant="outline"
+          size="sm"
+          className="w-[125px]"
+        >
           상세보기
         </BtnCommon>
       </CardAction>

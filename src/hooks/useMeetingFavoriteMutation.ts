@@ -57,7 +57,7 @@ export function useMeetingFavoriteMutation() {
       queryClient.setQueryData(context.queryKey, context.previousMeetings);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["meetings", "joined"] });
+      queryClient.invalidateQueries({ queryKey: ["meetings"] });
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });

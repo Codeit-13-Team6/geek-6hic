@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getHotPosts, getPosts, getPostsDetail } from "@/api/posts";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getHotPosts, getPostDetail, getPosts } from "@/api/posts";
 import { getOgData } from "@/api/og";
 import { parsePostData } from "@/lib/postUtils";
 import { likePost, unlikePost } from "@/api/posts";
@@ -13,18 +13,11 @@ import { GetPostsParams, Post } from "@/types";
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
  */
-// export const useGetHotPosts = () => {
-//   return useQuery({
-//     queryKey: ["posts", "best"],
-//     queryFn: () => getPosts({ type: "best", size: 5 }),
-//     staleTime: 1000 * 60 * 5,
-//   });
-// };
-
 export const useGetHotPosts = () => {
   return useQuery({
     queryKey: ["posts", "hot"],
-    queryFn: getHotPosts,
+    queryFn: () => getHotPosts(),
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -32,14 +25,17 @@ export const useGetHotPosts = () => {
  * 게시글 목록 조회 훅
  */
 export const useGetPostsList = (
+  sortValue: string,
+  searchValue: string,
   params: GetPostsParams,
-  refetchOnWindowFocus: boolean = true,
+  enabled: boolean = true,
 ) => {
   return useQuery({
-    queryKey: ["posts", "list", params],
+    queryKey: ["posts", "list", sortValue, searchValue],
     queryFn: () => getPosts(params),
-    refetchOnWindowFocus,
-    staleTime: 1000 * 60 * 1,
+    placeholderData: keepPreviousData, // 필터 변경 시 깜빡임 방지
+    staleTime: 1000 * 60 * 5,
+    enabled, // refetchType 용도로 사용
   });
 };
 
@@ -49,9 +45,9 @@ export const useGetPostsList = (
 export const useGetPostDetail = (postId: number) => {
   return useQuery({
     queryKey: ["post", postId],
-    queryFn: () => getPostsDetail(postId),
+    queryFn: () => getPostDetail(postId),
     enabled: !!postId,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

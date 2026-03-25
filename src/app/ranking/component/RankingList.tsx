@@ -4,6 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/client-fetcher";
 import TopRankCard from "./TopRankCard";
 import RankCard from "./RankCard";
+import { useRouter } from "next/navigation";
 
 interface RankedItem {
   id: number;
@@ -26,6 +27,7 @@ export default function RankingList() {
     staleTime: 1000 * 60 * 10,
   });
 
+  const router = useRouter();
   const top3List = rankedList.slice(0, 3);
   const top10List = rankedList.slice(3, 10);
 
@@ -60,6 +62,7 @@ export default function RankingList() {
             point={item.rankScore}
             rank={index + 4}
             meetType={item.meetType}
+            onDetailClick={() => router.push(`/meetings/${item.id}`)}
           />
         ))}
       </div>

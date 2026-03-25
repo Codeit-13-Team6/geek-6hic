@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverAxios } from "@/lib/server-fetcher";
-import { setAuthCookies } from "@/lib/auth-cookies";
+
+interface AxiosErrorLike {
+  response?: { data?: { code?: string; [key: string]: unknown }; status?: number };
+  message: string;
+}
 
 // slug: /api/users/me 요청 시 ['users', 'me'] 배열로 들어옴
 interface RouteParams {
@@ -160,17 +164,11 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
 
     const response = NextResponse.json(data, { status });
 
-    // refresh가 발생했으면 브라우저에 Set-Cookie로 새 토큰 전달
-    // const refreshedTokens = consumeRefreshedTokens();
-    // console.log("[slug] refreshedTokens:", refreshedTokens ? "있음" : "없음");
-    // if (refreshedTokens) {
-    //   setAuthCookies(response, refreshedTokens);
-    //   console.log("[slug] Set-Cookie 붙임");
-    // }
-
     return response;
-  } catch (error: any) {
+  } catch (err) {
+    const error = err as AxiosErrorLike;
     // REFRESH_FAILED: 리프레시 토큰 만료 → 클라이언트에서 로그인 페이지로 처리
+    console.log('slug catch ')
     if (error.response?.data?.code === "REFRESH_FAILED") {
       return NextResponse.json(
         { message: "Unauthorized", code: "REFRESH_FAILED" },
