@@ -12,20 +12,17 @@ import { Progress } from "@/components/ui/ProgressCommon";
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
   isLoading: boolean;
-  sortValue?: 'deadline' | 'participants' | null;
+  sortValue?: "deadline" | "participants" | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
 }
 
 export default function MeetingList({
   meetingList,
-  isLoading,
   onItemClick,
   sortValue,
   onHeartClick,
 }: MeetingListProps) {
-  // if (isLoading) return <div>로딩중...</div>;
-
   // 마감날짜 계산기
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
@@ -71,6 +68,7 @@ export default function MeetingList({
     const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
 
+<<<<<<< HEAD
     const registrationEnd = new Date(item.registrationEnd);
     console.log('now:', now.toString());
     console.log('registrationEnd raw:', item.registrationEnd);
@@ -78,11 +76,13 @@ export default function MeetingList({
     console.log('isRegistrationClosed:', registrationEnd < now);
     console.log('participantCount/capacity:', item.participantCount, item.capacity);
 
+=======
+>>>>>>> f2c727e902d62ef911fc2904b8cba867a7e9a9ac
     return isRegistrationClosed || isFull;
   }
-  
+
   const visibleMeetingList =
-    sortValue === 'deadline'
+    sortValue === "deadline"
       ? meetingList.filter((item) => !isMeetingClosed(item))
       : meetingList;
 
@@ -112,7 +112,11 @@ export default function MeetingList({
               className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white"
             >
               <div className="relative h-6 w-6">
-                <Image src={item.isFavorited ? heartOn : heartOff} fill alt="찜" />
+                <Image
+                  src={item.isFavorited ? heartOn : heartOff}
+                  fill
+                  alt="찜"
+                />
               </div>
             </button>
 
