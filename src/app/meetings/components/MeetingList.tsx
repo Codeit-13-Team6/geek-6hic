@@ -12,7 +12,7 @@ import type { JoinedMeeting } from "@/types";
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
   isLoading: boolean;
-  sortValue: string;
+  sortValue?: 'deadline' | 'participants' | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
 }

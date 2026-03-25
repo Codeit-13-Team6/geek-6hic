@@ -3,19 +3,17 @@ import { JoinedMeeting, JoinedMeetingsResponse, Meeting, GetMeetingListParams, }
 import axios from "axios";
 
 export async function getMeetingList(
-  params?: GetMeetingListParams,
-): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get('/meetings', {
-    params,
-  });
+  params: GetMeetingListParams
+): Promise<JoinedMeeting[]> {
+  const response = await axiosInstance.get('/meetings', { params });
 
-  return data.data;
+  return response.data.data;
 }
 
-export async function getMeetings(params: {}): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get("/meetings", { params });
-  return data;
-}
+// export async function getMeetings(params: {}): Promise<Meeting[]> {
+//   const { data } = await axiosInstance.get("/meetings", { params });
+//   return data;
+// }
 
 // 이름 수정 필요
 export async function getMeeting(): Promise<Meeting[]> {

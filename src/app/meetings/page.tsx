@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getMeetingList } from '@/api/meetings';
 import type { JoinedMeeting } from '@/types';
 import type { DateRange } from 'react-day-picker';
-import { format } from "date-fns";
+import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 
 import bannerLg from '@/assets/img/banner/banner-lg.png';
 import bannerSm from '@/assets/img/banner/banner-sm.png';
@@ -58,6 +58,8 @@ export default function Page() {
   const [draftDate, setDraftDate] = useState<DateRange | undefined>(undefined);
   const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { toggleFavorite, isPending } = useMeetingFavoriteMutation();
 
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
@@ -207,6 +209,7 @@ export default function Page() {
             isLoading={isLoading}
             onItemClick={(item) => router.push(`/meetings/${item.id}`)}
             sortValue={sortValue}
+            onHeartClick={(item) => toggleFavorite(item)}
           />
         </div>
       </div>
