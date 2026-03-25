@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { Meeting, GetMeetingListParams } from "@/types";
+import { JoinedMeeting, JoinedMeetingsResponse, Meeting, GetMeetingListParams, } from "@/types";
 import axios from "axios";
 
 export async function getMeetingList(
@@ -21,6 +21,16 @@ export async function getMeetings(params: {}): Promise<Meeting[]> {
 export async function getMeeting(): Promise<Meeting[]> {
   const { data } = await axiosInstance.get("/meetings/my");
   return data.data;
+}
+
+export async function getJoinedMeetings(params: {
+  cursor?: string;
+  size?: number;
+}): Promise<JoinedMeetingsResponse> {
+  const { data } = await axiosInstance.get("/meetings/joined", {
+    params,
+  });
+  return data;
 }
 
 export async function createMeeting(meeting: Meeting): Promise<Meeting> {

@@ -5,7 +5,7 @@ import axiosInstance from "@/lib/client-fetcher";
 import TopRankCard from "./TopRankCard";
 import RankCard from "./RankCard";
 
-type RankedItem = {
+interface RankedItem {
   id: number;
   commentLeng: number;
   checkScore: number;
@@ -14,7 +14,7 @@ type RankedItem = {
   rankScore: number;
   meetName: string;
   meetType: string;
-};
+}
 
 export default function RankingList() {
   const { data: rankedList } = useSuspenseQuery<RankedItem[]>({

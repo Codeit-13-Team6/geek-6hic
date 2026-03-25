@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getMeetingList } from '@/api/meetings';
-import type { Meeting } from '@/types';
+import type { JoinedMeeting } from '@/types';
 import type { DateRange } from 'react-day-picker';
 import { format } from "date-fns";
 
@@ -61,7 +61,7 @@ export default function Page() {
 
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
-  const { data: meetingList = [], isLoading } = useQuery<Meeting[]>({
+  const { data: meetingList = [], isLoading } = useQuery<JoinedMeeting[]>({
     queryKey: ['meetings', activeValue, sortValue],
     queryFn: async () => {
       const params = {
