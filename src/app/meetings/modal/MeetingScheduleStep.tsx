@@ -20,8 +20,6 @@ export function MeetingScheduleStep({
   onChange,
 }: MeetingScheduleStepProps) {
   const todayDate = getTodayDateString();
-  // 날짜와 시간 입력이 한 줄에 묶여 있어
-  // 둘 중 하나라도 에러가 있으면 같은 안내 문구 영역에 표시한다.
   const startRowHintText = errors.startDate || errors.startTime;
   const endRowHintText = errors.endDate || errors.endTime;
 
