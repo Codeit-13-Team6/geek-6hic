@@ -1,7 +1,7 @@
 import { serverAxios } from "@/lib/server-fetcher";
 import { NextResponse } from "next/server";
 
-interface MeetingRankData  {
+interface MeetingRankData {
   commentLeng: number;
   checkScore: number;
   totalUserLeng: number;
@@ -29,7 +29,7 @@ interface ReviewItem {
 interface CursorResponse<T> {
   data: T[];
   hasMore: boolean;
-  nextCursor: number;
+  nextCursor: string;
 }
 
 interface AxiosErrorLike {
@@ -43,7 +43,7 @@ export async function GET() {
     // meeting 수집이 현재 api 스펙 상의 제한으로 인해 체인형식으로 진행
     // 미리 준비한 미팅맵에 값들을 바인딩하는 형태
     const meetingMap: MeetingRankMap = {};
-    let cursor: number | undefined = undefined;
+    let cursor: string | undefined = undefined;
 
     while (true) {
       const { data: meetRes }: { data: CursorResponse<MeetingItem> } =

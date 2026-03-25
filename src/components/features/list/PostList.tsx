@@ -27,6 +27,8 @@ export default function PostList({
     switch (sortValue) {
       case "popular":
         return { sortBy: "likeCount" as const, sortOrder: "desc" as const };
+      case "comment":
+        return { sortBy: "commentCount" as const, sortOrder: "desc" as const };
       case "oldest":
         return { sortBy: "createdAt" as const, sortOrder: "asc" as const };
       default: // latest

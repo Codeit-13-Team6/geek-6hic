@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPosts, getPostsDetail } from "@/api/posts";
+import { getHotPosts, getPosts, getPostsDetail } from "@/api/posts";
 import { getOgData } from "@/api/og";
 import { parsePostData } from "@/lib/postUtils";
 import { likePost, unlikePost } from "@/api/posts";
@@ -8,16 +8,38 @@ import { createPost, updatePost, deletePost } from "@/api/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { PostPayload } from "@/app/lounge/component/LoungePostForm";
-import { GetPostsParams } from "@/types";
+import { GetPostsParams, Post } from "@/types";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
  */
+// export const useGetHotPosts = () => {
+//   return useQuery({
+//     queryKey: ["posts", "best"],
+//     queryFn: () => getPosts({ type: "best", size: 5 }),
+//     staleTime: 1000 * 60 * 5,
+//   });
+// };
+
 export const useGetHotPosts = () => {
   return useQuery({
-    queryKey: ["posts", "best"],
-    queryFn: () => getPosts({ type: "best", size: 5 }),
-    staleTime: 1000 * 60 * 5,
+    queryKey: ["posts", "hot"],
+    queryFn: getHotPosts,
+  });
+};
+
+/**
+ * 게시글 목록 조회 훅
+ */
+export const useGetPostsList = (
+  params: GetPostsParams,
+  refetchOnWindowFocus: boolean = true,
+) => {
+  return useQuery({
+    queryKey: ["posts", "list", params],
+    queryFn: () => getPosts(params),
+    refetchOnWindowFocus,
+    staleTime: 1000 * 60 * 1,
   });
 };
 
@@ -165,7 +187,7 @@ export const useToggleLike = (postId: number) => {
       await queryClient.cancelQueries({ queryKey: ["post", postId] });
       const previousPost = queryClient.getQueryData(["post", postId]);
 
-      queryClient.setQueryData(["post", postId], (oldData: any) => {
+      queryClient.setQueryData(["post", postId], (oldData: Post) => {
         if (!oldData) return oldData;
         return {
           ...oldData,
@@ -185,20 +207,5 @@ export const useToggleLike = (postId: number) => {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["post"] });
     },
-  });
-};
-
-/**
- * 포스트 목록 조회 훅
- */
-export const useGetPostsList = (
-  params: GetPostsParams,
-  refetchOnWindowFocus: boolean = true,
-) => {
-  return useQuery({
-    queryKey: ["posts", "list", params],
-    queryFn: () => getPosts(params),
-    refetchOnWindowFocus,
-    staleTime: 1000 * 60 * 1,
   });
 };

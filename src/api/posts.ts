@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/client-fetcher";
 import { GetPostsParams, Post } from "@/types";
+import axios from "axios";
 
 interface GetPostsResponse {
   data: Post[];
@@ -46,4 +47,9 @@ export async function likePost(postId: number): Promise<void> {
 
 export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
+}
+
+export async function getHotPosts() {
+  const { data } = await axios.get("/api/hot");
+  return data;
 }
