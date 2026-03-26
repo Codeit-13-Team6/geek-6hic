@@ -65,7 +65,7 @@ export async function GET() {
     }
 
     // 5. 수집된 '일주일치 전체' 데이터로 시간 가중치 알고리즘 실행
-    const GRAVITY = 1.8; // 중력 계수 (높을수록 빠르게 최신화)
+    const GRAVITY = 0.8; // 중력 계수 (높을수록 빠르게 최신화)
     const nowTime = Date.now();
 
     const hotPosts = allValidPosts
@@ -82,7 +82,7 @@ export async function GET() {
 
         // 시간 가중치 공식 적용
         // 분모에 +2를 하는 이유는 방금 막 올라온 글이 무한대 점수를 받는 걸 방지하기 위해서
-        const hotScore = baseScore / Math.pow(hoursSincePosted + 2, GRAVITY);
+        const hotScore = baseScore / Math.pow(hoursSincePosted + 24, GRAVITY);
 
         return { ...post, hotScore };
       })
