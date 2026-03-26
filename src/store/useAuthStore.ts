@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthLoading: true,
   setUser: (user) => set({ user, isAuthLoading: false }),
   clearAuth: () => set({ user: null, isAuthLoading: false }),
-  setAuthLoading: (isAuthLoading) => set({ isAuthLoading }),
+  setAuthLoading: (isAuthLoading) => set({ isAuthLoading }), // 로그인중인지 확인
 }));
 
 // 페이지에서 사용 예시
