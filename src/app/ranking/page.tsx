@@ -14,7 +14,7 @@ function RankingListSkeleton() {
       <div className="absolute inset-0 z-10 rounded-[24px] bg-white/60" />
       <div className="absolute inset-0 z-20 flex items-start justify-center pt-[30%]">
         <div className="flex flex-col items-center gap-3">
-          <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-main-green-500" />
+          <div className="border-t-main-green-500 size-8 animate-spin rounded-full border-4 border-gray-200" />
           <p className="text-base font-medium text-gray-600">
             랭킹을 산정하는 중입니다. 잠시만 기다려주세요.
           </p>
@@ -85,7 +85,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="mt-6 sm:mt-8">
+        <section className="mt-6 sm:mt-9">
           <Suspense fallback={<RankingListSkeleton />}>
             <RankingList />
           </Suspense>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Card,
   CardAction,
@@ -5,6 +6,7 @@ import {
   CardHeader,
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import profileImg from "@/assets/img/banner/banner-lg.jpg";
 
 interface TopRankCardProps {
   title?: string;
@@ -19,8 +21,6 @@ export default function TopRankCard({
   rank = 0,
   meetType = "스터디",
 }: TopRankCardProps) {
-
-
   const rankNumber = {
     1: {
       pointColor: "text-[#ffb900] ",
@@ -41,37 +41,58 @@ export default function TopRankCard({
   };
   const rankData = rankNumber[rank as keyof typeof rankNumber] ?? rankNumber[0];
 
-
   return (
-    <Card className="flex w-full flex-col justify-between bg-gray-200 px-[22px] py-[20px] sm:h-[540px]">
-      <CardHeader className="flex justify-end px-0 pb-[16px]">
+    <Card className="relative flex h-[141px] w-full flex-col justify-between overflow-hidden bg-gray-200 p-2 sm:h-[540px] sm:px-[22px] sm:py-[20px]">
+      <Image
+        src={profileImg}
+        alt="프로필"
+        fill
+        className="object-cover"
+        unoptimized
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
+      <CardHeader className="relative z-10 flex justify-end px-0 pt-2 pb-[16px] sm:pt-5">
         <div
-          className={`${rankData.badgeColor} flex h-[24px] w-[108px] items-center justify-center rounded-[24px] text-sm font-semibold text-black`}
+          className={`${rankData.badgeColor} flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
         >
-          {rank}ND PLACE
+          {rank}ND
+          <span className="hidden sm:inline">&nbsp;PLACE</span>
         </div>
       </CardHeader>
-      ¬
-      <div className="flex flex-col">
-        <CardContent className="pb-[25px]">
-          <p className="pb-[8px] text-lg font-bold text-white">{meetType}</p>
-          <h3 className="text-am pb-[4px] text-3xl font-bold text-white">
+      <div className="relative z-10 flex flex-col">
+        <CardContent className="px-0 pb-1 sm:pb-[25px]">
+          <p className="hidden pb-[8px] text-lg font-bold text-white sm:block">
+            {meetType}
+          </p>
+          <h3 className="truncate text-3xl text-sm font-bold text-white sm:pb-[4px] sm:text-2xl">
             {title}
           </h3>
           <div className={`${rankData.pointColor}flex items-end`}>
-            <p className="text-3xl font-bold">{point}</p>
-            <p className="pb-[1px] pl-[4px] text-lg font-bold">점</p>
+            <p className="text-xs font-bold sm:text-3xl">{point}</p>
+            <p className="pb-[1px] pl-[4px] text-xs font-bold sm:text-3xl">
+              점
+            </p>
           </div>
         </CardContent>
 
-        <CardAction className="w-full">
+        <CardAction className="relative z-10 w-full">
           {rank === 1 ? (
-            <BtnCommon variant="orange">
-              <p className="text-xl font-semibold text-gray-900">상세보기</p>
+            <BtnCommon
+              variant="orange"
+              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
+            >
+              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
+                상세보기
+              </p>
             </BtnCommon>
           ) : (
-            <BtnCommon variant="teritary">
-              <p className="text-xl font-semibold text-gray-900">상세보기</p>
+            <BtnCommon
+              variant="teritary"
+              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
+            >
+              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
+                상세보기
+              </p>
             </BtnCommon>
           )}
         </CardAction>

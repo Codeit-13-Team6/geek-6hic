@@ -451,7 +451,7 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
     isHost,
     isJoined,
     isLoggedIn,
-    threads: [],
+    threads: [], // (참고: 타입 에러 방지용으로 남겨둠. 실제로는 MeetingThreadSection 안에서 알아서 패치함!)
     recommendedMeetings,
   };
 
@@ -568,11 +568,13 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
         canViewLink={canViewLink}
         guideText={linkGuideText}
       />
+
       <MeetingThreadSection
         meetingId={meetingId}
         canWriteThread={canWriteThread}
         guideText={threadGuideText}
       />
+
       <RecommendedMeetingsSection data={data} />
     </div>
   );
