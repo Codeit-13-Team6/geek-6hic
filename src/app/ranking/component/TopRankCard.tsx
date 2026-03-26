@@ -19,8 +19,6 @@ export default function TopRankCard({
   rank = 0,
   meetType = "스터디",
 }: TopRankCardProps) {
-
-
   const rankNumber = {
     1: {
       pointColor: "text-[#ffb900] ",
@@ -41,14 +39,14 @@ export default function TopRankCard({
   };
   const rankData = rankNumber[rank as keyof typeof rankNumber] ?? rankNumber[0];
 
-
   return (
-    <Card className="flex w-full flex-col justify-between bg-gray-200 px-[22px] py-[20px] sm:h-[540px]">
+    <Card className="flex h-[141px] w-full flex-col justify-between bg-gray-200 px-[22px] py-[20px] sm:h-[540px]">
       <CardHeader className="flex justify-end px-0 pb-[16px]">
         <div
-          className={`${rankData.badgeColor} flex h-[24px] w-[108px] items-center justify-center rounded-[24px] text-sm font-semibold text-black`}
+          className={`${rankData.badgeColor} s flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
         >
-          {rank}ND PLACE
+          {rank}ND
+          <span className="hidden sm:inline">&nbsp;PLACE</span>
         </div>
       </CardHeader>
       ¬
