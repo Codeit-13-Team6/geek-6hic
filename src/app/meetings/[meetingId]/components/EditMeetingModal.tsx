@@ -20,8 +20,8 @@ import {
   revokeMeetingPreviewImageUrl,
 } from "@/app/meetings/modal/services/meetingImageField";
 import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
-import ModalBase from "@/components/ui/ModalBase";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import ModalBase from "@/components/ui/ModalBase";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
 type EditMeetingTab = "basic" | "schedule";
@@ -30,29 +30,43 @@ interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   data: MeetingDetailData;
-  onSubmit: (nextValues: Partial<MeetingDetailData>) => void;
+  onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
-const getIsoDateTime = (date: string, time: string) => {
-  return new Date(`${date}T${time}`).toISOString();
+const getIsoDateTime = (date: string, time: string) =>
+  new Date(`${date}T${time}`).toISOString();
+
+const formatLocalDate = (value: string) => {
+  const date = new Date(value);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 };
 
-const toFormValues = (data: MeetingDetailData): MeetingFormValues => {
-  return {
-    category: data.type,
-    name: data.name,
-    description: data.description,
-    link: data.link,
-    imageFile: null,
-    previewImageUrl: data.image,
-    imageUrl: data.image,
-    startDate: data.dateTime.slice(0, 10),
-    startTime: data.dateTime.slice(11, 16),
-    endDate: data.registrationEnd.slice(0, 10),
-    endTime: data.registrationEnd.slice(11, 16),
-    capacity: String(data.capacity),
-  };
+const formatLocalTime = (value: string) => {
+  const date = new Date(value);
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${hours}:${minutes}`;
 };
+
+const toFormValues = (data: MeetingDetailData): MeetingFormValues => ({
+  category: data.type,
+  name: data.name,
+  description: data.description,
+  link: data.link,
+  imageFile: null,
+  previewImageUrl: data.image ?? "",
+  imageUrl: data.image ?? "",
+  startDate: formatLocalDate(data.dateTime),
+  startTime: formatLocalTime(data.dateTime),
+  endDate: formatLocalDate(data.registrationEnd),
+  endTime: formatLocalTime(data.registrationEnd),
+  capacity: String(data.capacity),
+});
 
 const createEmptyErrors = (): MeetingFormErrors => ({
   category: "",
@@ -80,10 +94,11 @@ export function EditMeetingModal({
   );
   const [errors, setErrors] = useState<MeetingFormErrors>(createEmptyErrors);
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const previewImageUrlRef = useRef("");
+  const previousIsOpenRef = useRef(false);
 
-  // 모달을 다시 열 때는 최신 상세 데이터를 기준으로 폼 상태를 다시 만든다.
   const resetEditMeetingForm = (nextData: MeetingDetailData) => {
     const nextValues = toFormValues(nextData);
 
@@ -92,16 +107,17 @@ export function EditMeetingModal({
     setFormValues(nextValues);
     setErrors(createEmptyErrors());
     setIsImageUploading(false);
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
+    if (!previousIsOpenRef.current && isOpen) {
+      queueMicrotask(() => {
+        resetEditMeetingForm(data);
+      });
     }
 
-    queueMicrotask(() => {
-      resetEditMeetingForm(data);
-    });
+    previousIsOpenRef.current = isOpen;
   }, [data, isOpen]);
 
   useEffect(() => {
@@ -156,7 +172,6 @@ export function EditMeetingModal({
     });
   };
 
-  // 기본 정보 탭에서 바뀐 값만 반영하고, 해당 필드 에러도 함께 지운다.
   const handleChangeBasicTab = (nextValues: {
     category?: string;
     name?: string;
@@ -180,7 +195,6 @@ export function EditMeetingModal({
     }));
   };
 
-  // 일정 탭도 같은 방식으로 값과 에러를 같이 갱신한다.
   const handleChangeScheduleTab = (nextValues: {
     startDate?: string;
     startTime?: string;
@@ -202,8 +216,7 @@ export function EditMeetingModal({
     }));
   };
 
-  // 제출할 때는 전체 탭을 한 번에 검증하고, 에러가 있는 탭으로 이동시킨다.
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
     const nextBasicErrors = validateMeetingBasicInfoStep(formValues);
     const nextScheduleErrors = validateMeetingScheduleStep(formValues);
@@ -229,19 +242,26 @@ export function EditMeetingModal({
       return;
     }
 
-    onSubmit({
-      type: formValues.category,
-      name: formValues.name,
-      description: formValues.description,
-      link: formValues.link,
-      image: formValues.imageUrl || formValues.previewImageUrl,
-      dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
-      registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
-      capacity: Number(formValues.capacity),
-    });
+    setIsSubmitting(true);
 
-    ToastCommon({ message: "모임 수정이 반영되었습니다." });
-    handleClose();
+    try {
+      await onSubmit({
+        type: formValues.category,
+        name: formValues.name,
+        description: formValues.description,
+        link: formValues.link,
+        image: formValues.imageUrl || formValues.previewImageUrl || null,
+        dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
+        registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
+        capacity: Number(formValues.capacity),
+      });
+
+      handleClose();
+    } catch {
+      // Error toast is handled by the parent mutation.
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -344,6 +364,7 @@ export function EditMeetingModal({
               variant="outline"
               size="md"
               className="flex-1"
+              disabled={isSubmitting}
               onClick={requestClose}
             >
               취소
@@ -352,13 +373,15 @@ export function EditMeetingModal({
               type="button"
               size="md"
               className="flex-1"
+              disabled={isImageUploading || isSubmitting}
               onClick={handleSubmit}
             >
-              수정하기
+              {isSubmitting ? "처리 중..." : "수정하기"}
             </BtnCommon>
           </div>
         </div>
       </ModalBase>
+
       <ModalBase
         disablePointerDismissal
         isOpen={isCloseConfirmOpen}

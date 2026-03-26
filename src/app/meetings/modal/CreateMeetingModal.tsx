@@ -1,9 +1,7 @@
 "use client";
 
 import plusIcon from "@/assets/icon/plus/plus.svg";
-
 import Image from "next/image";
-
 import { useEffect, useRef, useState } from "react";
 
 import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
@@ -27,6 +25,9 @@ import axiosInstance from "@/lib/client-fetcher";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
+import { useRouter } from "next/navigation";
+import { createMeeting, updateMeeting } from "@/api/meetings";
+import { createPost } from "@/api/posts";
 
 const INITIAL_FORM_VALUES: MeetingFormValues = {
   category: "TEAM_MEETING",
@@ -35,7 +36,7 @@ const INITIAL_FORM_VALUES: MeetingFormValues = {
   link: "",
   imageFile: null,
   previewImageUrl: "",
-  imageUrl: "",
+  imageUrl: null,
   startDate: "",
   startTime: "",
   endDate: "",
@@ -50,6 +51,7 @@ const getIsoDateTime = (date: string, time: string) => {
 };
 
 export function CreateMeetingModal() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
@@ -216,11 +218,24 @@ export function CreateMeetingModal() {
     try {
       // 모든 단계를 통과한 뒤에만 생성 요청을 보낸다.
       const payload = getCreateMeetingPayload();
-      console.log("제출 잘됨 ?", payload);
-      const { data } = await axiosInstance.post("/meetings", payload);
+      const newMeeting = await createMeeting(payload);
+      const newMeetingId = newMeeting.id;
 
-      ToastCommon({ message: `${data.name} 모임 생성완료` });
+      const newPost = await createPost({
+        title: `isThread_${newMeetingId}`,
+        content:
+          "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
+      });
+
+      const createdPostId = newPost.id;
+
+      await updateMeeting(newMeetingId, {
+        region: String(createdPostId),
+      });
+
+      ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
       handleCloseModal();
+      router.push(`/meetings/${newMeetingId}`);
     } catch (error) {
       console.error("meeting create error", error);
       ToastCommon({ message: "모임 생성에 실패했습니다." });

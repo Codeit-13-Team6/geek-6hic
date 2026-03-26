@@ -4,9 +4,11 @@ import {
   JoinedMeetingsResponse,
   Meeting,
   GetMeetingListParams,
-  FavoritesResponse,
-  MyMeetingsResponse,
+  CreateMeeting,
+  UpdateMeeting,
 } from "@/types";
+import axios from "axios";
+
 
 export async function getMeetingList(
   params: GetMeetingListParams,
@@ -39,9 +41,17 @@ export async function getJoinedMeetings(params: {
   return data;
 }
 
-export async function createMeeting(meeting: Meeting): Promise<Meeting> {
+export async function createMeeting(meeting: CreateMeeting): Promise<Meeting> {
   const { data } = await axiosInstance.post("/meetings", meeting);
-  return data.data;
+  return data;
+}
+
+export async function updateMeeting(
+  meetingId: number,
+  params: UpdateMeeting,
+): Promise<Meeting> {
+  const { data } = await axiosInstance.patch(`/meetings/${meetingId}`, params);
+  return data;
 }
 
 export async function updateFavorites(meetingId: number): Promise<void> {

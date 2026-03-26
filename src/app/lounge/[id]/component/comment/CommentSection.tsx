@@ -13,16 +13,26 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import ModalBase from "@/components/ui/ModalBase";
+import { CompactLinkList } from "@/components/features/list/CompactLinkList";
+import { extractUrlsFromText } from "@/lib/linkUtils";
+import { TextareaCommon } from "@/components/ui/TextareaCommon";
 
 interface CommentSectionProps {
   postId: number;
+  isThread?: boolean;
 }
 
-export default function CommentSection({ postId }: CommentSectionProps) {
+export default function CommentSection({
+  postId,
+  isThread = false,
+}: CommentSectionProps) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
+
   const commentRef = useRef<HTMLTextAreaElement>(null);
+  const [threadContent, setThreadContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const linkObjects = extractUrlsFromText(threadContent);
 
   const { data: comments } = useQuery({
     queryKey: ["comments", postId],
@@ -38,8 +48,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
 
-      if (commentRef.current) {
-        commentRef.current.value = "";
+      if (isThread) {
+        setThreadContent(""); // 스레드 입력창(state) 초기화
+      } else if (commentRef.current) {
+        commentRef.current.value = ""; // 일반 댓글창(ref) 초기화
       }
     },
     onError: () => {
@@ -76,9 +88,9 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       ToastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
     },
   });
-
   const handlePostComment = () => {
-    const value = commentRef.current?.value || "";
+    // 실시간 카드 리스트로 발생하는 렌더링 최적화
+    const value = isThread ? threadContent : commentRef.current?.value || "";
     if (!value.trim()) return;
 
     postComment(value);
@@ -102,31 +114,58 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   return (
     <section className="flex flex-col gap-4 sm:gap-4">
       <h3 className="text-base font-bold text-gray-800 sm:text-lg lg:text-xl">
-        댓글 <span className="text-green-500">{commentsList.length || 0}</span>
+        {isThread ? "Our Thread" : "댓글"}{" "}
+        <span className="text-green-500">{commentsList.length || 0}</span>
       </h3>
 
-      {/* 댓글 입력창 */}
-      <div className="relative flex items-center gap-3 rounded-[16px] bg-slate-50 p-2 shadow-sm">
-        <textarea
-          ref={commentRef}
-          rows={1}
-          disabled={isPosting}
-          placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요."}
-          className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
-        />
-        <div className="flex justify-end">
-          <BtnCommon
-            onClick={handlePostComment}
-            disabled={isPosting}
-            className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
-          >
-            등록
-          </BtnCommon>
+      {/* 입력창 분기 처리 */}
+      {isThread ? (
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 md:flex-row">
+            <div className="flex-1">
+              <TextareaCommon
+                value={threadContent}
+                placeholder="스레드에 남길 메시지나 공유할 링크를 자유롭게 입력해주세요! (URL 입력 시 자동으로 카드가 생성됩니다)"
+                onChange={(event) => setThreadContent(event.target.value)}
+                className="min-h-[100px] resize-none"
+                disabled={isPosting}
+              />
+            </div>
+            <BtnCommon
+              className="mt-auto h-[40px] w-full !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[65px] sm:w-[70px] sm:text-base"
+              onClick={handlePostComment}
+              disabled={!threadContent.trim() || isPosting}
+            >
+              {isPosting ? "작성 중..." : "작성"}
+            </BtnCommon>
+          </div>
+          {linkObjects.length > 0 && (
+            <CompactLinkList links={linkObjects} isPreview={true} />
+          )}
         </div>
-      </div>
+      ) : (
+        <div className="relative flex items-center gap-3 rounded-[16px] bg-slate-50 p-2 shadow-sm">
+          <textarea
+            ref={commentRef}
+            rows={1}
+            disabled={isPosting}
+            placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요."}
+            className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
+          />
+          <div className="flex justify-end">
+            <BtnCommon
+              onClick={handlePostComment}
+              disabled={isPosting}
+              className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
+            >
+              등록
+            </BtnCommon>
+          </div>
+        </div>
+      )}
 
       {/* 댓글 목록 */}
-      <div className="flex flex-col divide-y divide-slate-200 lg:mt-4">
+      <div className="flex flex-col divide-y divide-slate-200">
         {commentsList.map((item) => (
           <Comment
             key={item.id}
