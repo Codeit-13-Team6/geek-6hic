@@ -3,11 +3,7 @@
 import { useState } from "react";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
 import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
@@ -236,9 +232,7 @@ interface MeetingDetailContentProps {
   meetingId: number;
 }
 
-export function MeetingDetailContent({
-  meetingId,
-}: MeetingDetailContentProps) {
+export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
@@ -396,7 +390,8 @@ export function MeetingDetailContent({
 
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
-  const recommendationCandidates = recommendationCandidatesQuery.data?.data ?? [];
+  const recommendationCandidates =
+    recommendationCandidatesQuery.data?.data ?? [];
 
   if (detailQuery.isLoading || !detail) {
     return (
@@ -574,7 +569,7 @@ export function MeetingDetailContent({
         guideText={linkGuideText}
       />
       <MeetingThreadSection
-        threads={data.threads}
+        meetingId={meetingId}
         canWriteThread={canWriteThread}
         guideText={threadGuideText}
       />

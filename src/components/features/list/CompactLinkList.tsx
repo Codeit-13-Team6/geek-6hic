@@ -6,11 +6,17 @@ interface LinkItem {
   title: string;
 }
 
-export function CompactLinkList({ links }: { links: LinkItem[] }) {
+export function CompactLinkList({
+  links,
+  isPreview = false,
+}: {
+  links: LinkItem[];
+  isPreview?: boolean;
+}) {
   if (!links || links.length === 0) return null;
 
   return (
-    <div className="mt-4 pt-4">
+    <div className="mt-4">
       <ul className="flex flex-col gap-2.5">
         {links.map((link) => {
           // 1. 도메인 추출
@@ -29,7 +35,7 @@ export function CompactLinkList({ links }: { links: LinkItem[] }) {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3 transition-all hover:border-emerald-200 hover:bg-emerald-50/50"
+                className={`group flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-3 transition-all hover:border-emerald-200 ${isPreview ? "bg-green-50/80 hover:bg-green-100/50" : "bg-gray-50/50 hover:bg-emerald-50/50"}`}
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-colors group-hover:border-emerald-200">

@@ -1,140 +1,46 @@
 "use client";
 
-import { useState } from "react";
-
-import { MeetingThreadItem } from "@/app/meetings/[meetingId]/types";
-import { BtnCommon } from "@/components/ui/BtnCommon";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/PaginationCommon";
-import { TextareaCommon } from "@/components/ui/TextareaCommon";
-
-const PAGE_SIZE = 3;
-
-const formatDate = (value: string) => {
-  const date = new Date(value);
-
-  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(
-    date.getDate(),
-  ).padStart(2, "0")}`;
-};
+import { useQuery } from "@tanstack/react-query";
+import CommentSection from "@/app/lounge/[id]/component/comment/CommentSection";
+import { getThreadPost } from "@/api/posts";
 
 interface MeetingThreadSectionProps {
-  threads: MeetingThreadItem[];
+  meetingId: number;
   canWriteThread: boolean;
   guideText: string;
 }
 
 export function MeetingThreadSection({
-  threads,
+  meetingId,
   canWriteThread,
   guideText,
 }: MeetingThreadSectionProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [comment, setComment] = useState("");
-  const totalPages = Math.max(1, Math.ceil(threads.length / PAGE_SIZE));
+  const { data: threadPost, isLoading: isPostLoading } = useQuery({
+    queryKey: ["meeting-thread-post", meetingId],
+    queryFn: () => getThreadPost(meetingId),
+  });
 
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const pagedThreads = threads.slice(startIndex, startIndex + PAGE_SIZE);
+  if (isPostLoading) {
+    return (
+      <div className="p-6 text-center text-gray-400">
+        스레드를 불러오는 중입니다...
+      </div>
+    );
+  }
 
   return (
     <section className="w-full space-y-3 md:space-y-4">
-      <h2 className="text-[24px] font-semibold text-gray-900">모임 포스트</h2>
-
+      <h2 className="text-[24px] font-semibold text-gray-900">모임 스레드</h2>
       <div className="rounded-[20px] border border-gray-100 bg-white p-6 shadow-sm md:rounded-[24px] md:p-8 xl:rounded-[32px]">
-        {canWriteThread ? (
-          <div className="mb-6 flex gap-3">
-            <div className="flex-1">
-              <TextareaCommon
-                value={comment}
-                placeholder="내용을 입력해 주세요."
-                onChange={(event) => setComment(event.target.value)}
-                className="min-h-[54px] resize-none"
-              />
-            </div>
-            <BtnCommon type="button" size="sm" className="mt-auto w-[120px]">
-              포스트 작성
-            </BtnCommon>
-          </div>
+        {canWriteThread && threadPost?.id ? (
+          <CommentSection postId={threadPost.id} isThread={true} />
         ) : (
-          <div className="mb-6 rounded-[18px] bg-gray-50 px-5 py-4 text-sm text-gray-600">
-            {guideText}
+          <div className="rounded-[18px] bg-gray-50 px-5 py-4 text-sm text-gray-600">
+            {!threadPost?.id
+              ? "아직 스레드 공간이 마련되지 않았습니다."
+              : guideText}
           </div>
         )}
-
-        <div className="space-y-0">
-          {pagedThreads.length > 0 ? (
-            pagedThreads.map((thread) => (
-              <article
-                key={thread.id}
-                className="border-b border-gray-100 py-6 first:pt-0 last:border-b-0 last:pb-0"
-              >
-                <div className="mb-2 text-sm text-gray-500">
-                  {thread.author} · {formatDate(thread.createdAt)}
-                </div>
-                <p className="text-[15px] leading-[26px] text-gray-700">
-                  {thread.content}
-                </p>
-              </article>
-            ))
-          ) : (
-            <div className="rounded-[18px] bg-gray-50 px-5 py-8 text-center text-sm text-gray-500">
-              아직 등록된 포스트가 없습니다.
-            </div>
-          )}
-        </div>
-
-        {threads.length > 0 ? (
-          <Pagination className="mt-8">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  disabled={currentPage === 1}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setCurrentPage((prev) => Math.max(1, prev - 1));
-                  }}
-                />
-              </PaginationItem>
-
-              {Array.from({ length: totalPages }, (_, index) => {
-                const page = index + 1;
-
-                return (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      isActive={page === currentPage}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setCurrentPage(page);
-                      }}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
-
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  disabled={currentPage === totalPages}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        ) : null}
       </div>
     </section>
   );

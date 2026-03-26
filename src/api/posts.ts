@@ -60,3 +60,10 @@ export async function likePost(postId: number): Promise<void> {
 export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
+
+export async function getThreadPost(meetingId: number) {
+  const { data } = await axiosInstance.get("/posts", {
+    params: { keyword: `isThread_${meetingId}` },
+  });
+  return data?.data?.[0] || null;
+}
