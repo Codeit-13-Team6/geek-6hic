@@ -133,7 +133,7 @@ export default async function Page() {
                         readonly string[],
                         string | undefined
                       >({
-                        queryKey: ["posts", "list", "latest", ""],
+                        queryKey: ["posts", "list", "my", "latest", ""],
                         queryFn: ({ pageParam }) => fetchLoungePosts(pageParam),
                         initialPageParam: undefined,
                         getNextPageParam,
