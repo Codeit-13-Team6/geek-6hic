@@ -1,5 +1,4 @@
-export interface Meeting {
-  id: number;
+export interface CreateMeeting {
   name: string;
   type: string;
   region: string;
@@ -9,17 +8,22 @@ export interface Meeting {
   dateTime: string;
   registrationEnd: string;
   capacity: number;
-  participantCount: number;
-  image: string;
+  image: string | null;
   description: string;
 }
 
+export type UpdateMeeting = Partial<CreateMeeting>;
+
+export type Meeting = CreateMeeting & {
+  id: number;
+  participantCount: number;
+};
 export interface GetMeetingListParams {
   type?: string;
   // region?: string;
   // date?: string;
-  sortBy?: 'createdAt' | 'dateTime' | 'registrationEnd' | 'participantCount';
-  sortOrder?: 'asc' | 'desc'; // 오름차순 내림차순
+  sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
+  sortOrder?: "asc" | "desc"; // 오름차순 내림차순
   cursor?: string;
   size?: number;
 }
@@ -32,6 +36,18 @@ export interface JoinedMeeting extends Meeting {
 
 export interface JoinedMeetingsResponse {
   data: JoinedMeeting[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface FavoritesResponse {
+  data: any[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface MyMeetingsResponse {
+  data: Meeting[];
   nextCursor: string | null;
   hasMore: boolean;
 }

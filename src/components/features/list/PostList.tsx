@@ -41,8 +41,7 @@ export default function PostList({
 
   const { sortBy, sortOrder } = getSortParams();
 
-  // useQuery의 Key가 서버에서 prefetch한 ["posts", "list", sortValue, searchValue]와
-  // 일치하면, 첫 로딩 시 API 호출 없이 서버 데이터를 바로 녹여서(Hydrate) 사용
+  // 게시글 리스트 key ["posts", "list", sortValue, searchValue]
   const { data, isFetching } = useGetPostsList(
     sortValue,
     searchValue,

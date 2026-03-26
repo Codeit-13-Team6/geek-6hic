@@ -11,6 +11,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/DropdownCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import { extractUrlsFromText } from "@/lib/linkUtils";
+import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 
 interface CommentProps {
   id: number;
@@ -45,22 +47,27 @@ export default function Comment({
     }
   }, [isEditing]);
 
-  // 저장 버튼 클릭 시
+  // 원본 content에서 url 제거 (스레드 게시물 전용)
+  const displayContent = content
+    .replace(/(?:https?:\/\/|www\.)[^\s]+/g, "")
+    .replace(/\n\s*\n/g, "\n")
+    .trim();
+  const linkObjects = extractUrlsFromText(content);
+
   const handleSave = () => {
     if (!editValue.trim()) return;
-    onEdit(id, editValue); // 부모 컴포넌트의 api 호출 함수 실행
-    setIsEditing(false); // 수정 모드 종료
+    onEdit(id, editValue);
+    setIsEditing(false);
   };
 
-  // 취소 버튼 클릭 시
   const handleCancel = () => {
-    setEditValue(content); // 입력하던 내용 원상복구
-    setIsEditing(false); // 수정 모드 종료
+    setEditValue(content);
+    setIsEditing(false);
   };
 
   return (
     <article className="flex flex-col border-b border-gray-100 py-5 last:border-none sm:py-6">
-      {/* 상단: 프로필 정보 + 메뉴 버튼 */}
+      {/* 프로필 정보 + 메뉴 버튼 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-gray-500 sm:text-sm">
           <Image
@@ -137,15 +144,20 @@ export default function Comment({
               onClick={handleSave}
               size="sm"
               className="w-[50px] sm:w-[60px]"
-              disabled={!editValue.trim() || editValue === content} // 내용이 비었거나 안 바뀌었면 비활성화
+              disabled={!editValue.trim() || editValue === content}
             >
               저장
             </BtnCommon>
           </div>
         </div>
       ) : (
-        <div className="pt-1.5 pl-[32px] text-sm leading-relaxed whitespace-pre-wrap text-gray-700 sm:text-base">
-          {content}
+        <div className="pl-[32px]">
+          {displayContent && (
+            <div className="pt-1.5 text-sm leading-relaxed whitespace-pre-wrap text-gray-700 sm:text-base">
+              {displayContent}
+            </div>
+          )}
+          {linkObjects.length > 0 && <CompactLinkList links={linkObjects} />}
         </div>
       )}
     </article>
