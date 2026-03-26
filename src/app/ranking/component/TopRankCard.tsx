@@ -40,36 +40,49 @@ export default function TopRankCard({
   const rankData = rankNumber[rank as keyof typeof rankNumber] ?? rankNumber[0];
 
   return (
-    <Card className="flex h-[141px] w-full flex-col justify-between bg-gray-200 px-[22px] py-[20px] sm:h-[540px]">
+    <Card className="flex h-[141px] w-full flex-col justify-between bg-gray-200 p-2 sm:h-[540px] sm:px-[22px] sm:py-[20px]">
       <CardHeader className="flex justify-end px-0 pb-[16px]">
         <div
-          className={`${rankData.badgeColor} s flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
+          className={`${rankData.badgeColor} flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
         >
           {rank}ND
           <span className="hidden sm:inline">&nbsp;PLACE</span>
         </div>
       </CardHeader>
-      ¬
       <div className="flex flex-col">
-        <CardContent className="pb-[25px]">
-          <p className="pb-[8px] text-lg font-bold text-white">{meetType}</p>
-          <h3 className="text-am pb-[4px] text-3xl font-bold text-white">
+        <CardContent className="px-0 pb-1 sm:pb-[25px]">
+          <p className="hidden pb-[8px] text-lg font-bold text-white sm:block">
+            {meetType}
+          </p>
+          <h3 className="truncate text-3xl text-sm font-bold text-white sm:pb-[4px] sm:text-2xl">
             {title}
           </h3>
           <div className={`${rankData.pointColor}flex items-end`}>
-            <p className="text-3xl font-bold">{point}</p>
-            <p className="pb-[1px] pl-[4px] text-lg font-bold">점</p>
+            <p className="text-xs font-bold sm:text-3xl">{point}</p>
+            <p className="pb-[1px] pl-[4px] text-xs font-bold sm:text-3xl">
+              점
+            </p>
           </div>
         </CardContent>
 
         <CardAction className="w-full">
           {rank === 1 ? (
-            <BtnCommon variant="orange">
-              <p className="text-xl font-semibold text-gray-900">상세보기</p>
+            <BtnCommon
+              variant="orange"
+              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
+            >
+              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
+                상세보기
+              </p>
             </BtnCommon>
           ) : (
-            <BtnCommon variant="teritary">
-              <p className="text-xl font-semibold text-gray-900">상세보기</p>
+            <BtnCommon
+              variant="teritary"
+              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
+            >
+              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
+                상세보기
+              </p>
             </BtnCommon>
           )}
         </CardAction>
