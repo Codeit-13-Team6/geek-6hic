@@ -68,16 +68,6 @@ export default function MeetingList({
     const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
 
-<<<<<<< HEAD
-    const registrationEnd = new Date(item.registrationEnd);
-    console.log('now:', now.toString());
-    console.log('registrationEnd raw:', item.registrationEnd);
-    console.log('registrationEnd parsed:', registrationEnd.toString());
-    console.log('isRegistrationClosed:', registrationEnd < now);
-    console.log('participantCount/capacity:', item.participantCount, item.capacity);
-
-=======
->>>>>>> f2c727e902d62ef911fc2904b8cba867a7e9a9ac
     return isRegistrationClosed || isFull;
   }
 

@@ -12,15 +12,8 @@ import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import MeetingList from './components/MeetingList';
 import { CreateMeetingModal } from "@/app/meetings/modal/CreateMeetingModal";
 
-<<<<<<< HEAD
-import bannerLg from '@/assets/img/banner/banner-lg.png';
-import bannerSm from '@/assets/img/banner/banner-sm.png';
-
-=======
 import bannerLg from "@/assets/img/banner/banner-lg.png";
 import bannerSm from "@/assets/img/banner/banner-sm.png";
-import MeetingList from "./components/MeetingList";
->>>>>>> f2c727e902d62ef911fc2904b8cba867a7e9a9ac
 import {
   Select,
   SelectContent,
@@ -64,11 +57,9 @@ export default function Page() {
   const [activeValue, setActiveValue] = useState<TabValue>("all");
   const [sortValue, setSortValue] = useState<SortValue>(null);
   const [draftDate, setDraftDate] = useState<DateRange | undefined>(undefined);
-  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(
-    undefined,
-  );
-  const [isOpen, setIsOpen] = useState(false);
+  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined,);
 
+  const [isOpen, setIsOpen] = useState(false);
   const { toggleFavorite } = useMeetingFavoriteMutation();
 
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
@@ -114,11 +105,10 @@ export default function Page() {
   });
 
   return (
-<<<<<<< HEAD
     <>
       <CreateMeetingModal />
       <div className='w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]'>
-        <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:w-full lg:max-w-[1280px] lg:pl-14">
+        <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:max-w-[1280px] lg:pl-14">
           <div>
             <h4 className='text-sm text-green-700 sm:text-xl'>
               함께할 사람을 찾고 계신가요?
@@ -134,29 +124,10 @@ export default function Page() {
             <div className='absolute right-21 top-2 hidden h-[313px] w-134 lg:block'>
               <Image src={bannerSm} fill alt='' />
             </div>
-=======
-    <div className="w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]">
-      <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:w-full lg:max-w-[1280px] lg:pl-14">
-        <div>
-          <h4 className="text-sm text-green-700 sm:text-xl">
-            함께할 사람을 찾고 계신가요?
-          </h4>
-          <h3 className="mt-[10px] text-lg font-semibold sm:text-3xl">
-            지금 모임에 참여해보세요
-          </h3>
-
-          <div className="absolute top-7 left-[323px] hidden h-[273px] w-117 sm:block lg:hidden">
-            <Image src={bannerLg} fill alt="" />
-          </div>
-
-          <div className="absolute top-2 right-21 hidden h-[313px] w-134 lg:block">
-            <Image src={bannerSm} fill alt="" />
->>>>>>> f2c727e902d62ef911fc2904b8cba867a7e9a9ac
           </div>
         </div>
 
-<<<<<<< HEAD
-        <div className='mx-auto w-full max-w-[1280px] px-4 sm:px-6'>
+        <div className='mx-auto w-full max-w-[1280px] sm:px-6'>
           <div className='mb-4 mt-6 flex flex-col'>
             <ul className='flex gap-2 overflow-auto'>
               {TAB_LIST.map(({ value, label }) => (
@@ -246,97 +217,6 @@ export default function Page() {
             />
           </div>
         </div>
-=======
-      <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6">
-        <div className="mt-6 mb-4 flex flex-col">
-          <ul className="flex gap-2 overflow-auto">
-            {TAB_LIST.map(({ value, label }) => (
-              <li key={value} className="shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveValue(value);
-                    setSortValue(null);
-                    setDraftDate(undefined);
-                    setAppliedDate(undefined);
-                  }}
-                  className={cn(
-                    "shrink-0 cursor-pointer rounded-[14px] px-4 py-2 transition-colors",
-                    activeValue === value
-                      ? "bg-gray-700 font-bold text-white"
-                      : "bg-gray-100 text-gray-800",
-                  )}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-2 flex items-center justify-end">
-            <div className="relative">
-              <button
-                type="button"
-                className="cursor-pointer"
-                onClick={() => setIsOpen(true)}
-              >
-                날짜 선택
-              </button>
-              {isOpen ? (
-                <Calendar
-                  mode="range"
-                  selected={draftDate}
-                  onSelect={calendarValue}
-                  onReset={() => {
-                    setDraftDate(undefined);
-                    setAppliedDate(undefined);
-                  }}
-                  onApply={() => {
-                    setAppliedDate(draftDate);
-                    setIsOpen(false);
-                  }}
-                />
-              ) : null}
-            </div>
-            <Select
-              value={sortValue ?? ""}
-              onValueChange={(value) => {
-                if (value === "deadline" || value === "participants") {
-                  setSortValue(value);
-                }
-              }}
-            >
-              <SelectTrigger className="h-[50px]! w-[140px] rounded-[12px]! px-4 text-sm font-medium text-gray-800">
-                {currentSortLabel ? (
-                  <span>{currentSortLabel}</span>
-                ) : (
-                  <SelectValue placeholder="정렬 선택" />
-                )}
-              </SelectTrigger>
-
-              <SelectContent className="w-[140px]">
-                <SelectGroup>
-                  {SORT_OPTIONS.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
-          <MeetingList
-            meetingList={filteredMeetingList}
-            isLoading={isLoading}
-            onItemClick={(item) => router.push(`/meetings/${item.id}`)}
-            sortValue={sortValue}
-            onHeartClick={(item) => toggleFavorite(item)}
-          />
-        </div>
->>>>>>> f2c727e902d62ef911fc2904b8cba867a7e9a9ac
       </div>
     </>
   );
