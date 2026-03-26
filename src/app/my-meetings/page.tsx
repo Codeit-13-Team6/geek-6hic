@@ -16,25 +16,11 @@ import {
 } from "@/hooks/meetingQuery.shared";
 
 import MyMeetingsClient from "./components/MyMeetingsClient";
+import { Suspense } from "react";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import { EmptyData } from "@/components/features/empty/EmptyData";
 
 export default async function Page() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchInfiniteQuery<
-    JoinedMeetingsResponse,
-    Error,
-    InfiniteData<JoinedMeetingsResponse>,
-    typeof meetingJoinedQueryKey,
-    string | undefined
-  >({
-    queryKey: meetingJoinedQueryKey,
-    queryFn: ({ pageParam }) =>
-      getJoinedMeetingsServer(
-        pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
-      ),
-    initialPageParam: undefined,
-    getNextPageParam: getMeetingJoinedNextPageParam,
-  });
 
   return (
     <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
@@ -66,9 +52,31 @@ export default async function Page() {
       </div>
 
       <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px]">
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <MyMeetingsClient />
-        </HydrationBoundary>
+        <Suspense fallback={<EmptyData />}>
+          <PrefetchBoundary
+            prefetchFn={(qc) =>
+              qc.prefetchInfiniteQuery<
+                JoinedMeetingsResponse,
+                Error,
+                InfiniteData<JoinedMeetingsResponse>,
+                typeof meetingJoinedQueryKey,
+                string | undefined
+              >({
+                queryKey: meetingJoinedQueryKey,
+                queryFn: ({ pageParam }) =>
+                  getJoinedMeetingsServer(
+                    pageParam
+                      ? { cursor: pageParam as string, size: 10 }
+                      : { size: 10 },
+                  ),
+                initialPageParam: undefined,
+                getNextPageParam: getMeetingJoinedNextPageParam,
+              })
+            }
+          >
+            <MyMeetingsClient />
+          </PrefetchBoundary>
+        </Suspense>
       </section>
     </div>
   );
