@@ -1,36 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { EmptyData } from "@/components/features/empty/EmptyData";
 import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import { useMeetingQuery } from "@/hooks/useMeetingQuery";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingList from "../../meetings/components/MeetingList";
 
 export default function MyMeetingsClient() {
   const router = useRouter();
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   const { toggleFavorite } = useMeetingFavoriteMutation();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingQuery();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 1.0 },
-    );
-
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
 
