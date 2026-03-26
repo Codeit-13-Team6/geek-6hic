@@ -13,11 +13,32 @@ export const getPosts = async (params: GetPostsParams, extraHeaders?: any) => {
     ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     : "";
 
-  const { data } = await axios.get(`${baseUrl}/api/posts`, {
+  const { data: res } = await axios.get(`${baseUrl}/api/posts`, {
     params,
     headers: { ...extraHeaders },
   });
-  return data;
+
+  const isNotThread = (title?: string) => {
+    if (!title) return true;
+    return title.split("_")[0] !== "isThread";
+  };
+
+  if (res?.data && Array.isArray(res.data)) {
+    const postsArray = res.data;
+
+    const filteredPosts = postsArray.filter((post: Post) =>
+      isNotThread(post.title),
+    );
+
+    return { ...res, data: filteredPosts };
+  }
+
+  // 응답 자체가 그냥 순수 배열일 때
+  else if (Array.isArray(res)) {
+    return res.filter((post: Post) => isNotThread(post.title));
+  }
+
+  return res;
 };
 
 export const getPostDetail = async (postId: number, extraHeaders?: any) => {

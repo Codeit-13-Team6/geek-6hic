@@ -12,22 +12,21 @@ export async function GET() {
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
     let cursor: string | undefined = undefined;
-    const allValidPosts: Post[] = []; // 일주일 이내의 게시물만 담을 배열
-    let isOlderThanAWeek = false; // 일주일보다 오래된 게시물인지 (루프 탈출용)
+    const allValidPosts: Post[] = [];
+    let isOlderThanAWeek = false;
 
     let loopCount = 0; // 무한 루프 방지용 카운터
-    const MAX_LOOP = 20; // 최대 요청 제한 (서버 보호)
+    const MAX_LOOP = 20; // 최대 요청 제한 (백엔드 에러 대비)
 
     // 2. 체인 방식(Cursor)으로 데이터 뽑아오기
     while (loopCount < MAX_LOOP) {
-      // 안전한 루프 조건 (백엔드 에러 대비)
       loopCount++;
 
       // 커서가 있으면 넣고 없으면 첫 페이지
       const params: GetPostsParams = {
         sortBy: "createdAt",
         sortOrder: "desc", // 최신순
-        size: 20, // 한 번에 가져올 개수
+        size: 20,
       };
       if (cursor) params.cursor = cursor;
 
@@ -44,23 +43,24 @@ export async function GET() {
         const postDate = new Date(post.createdAt);
 
         if (postDate < oneWeekAgo) {
-          // 일주일보다 오래된 글일 경우
           // 최신순 정렬이므로 이 뒤로는 안봐도 됨
           isOlderThanAWeek = true;
-          break; // for문 탈출
+          break;
+        }
+
+        // 스레드 게시물은 점수 계산 후보에서 아예 제외
+        const title = post?.title;
+        if (title.split("_")[0] === "isThread") {
+          continue;
         }
 
         allValidPosts.push(post);
       }
 
-      // 4. while 루프를 끝낼지 다음 커서로 넘어갈지 결정
-      //  1) 일주일 넘은 글을 발견했거나
-      //  2) 백엔드에서 더 이상 줄 데이터가 없다고 할 때 (hasMore가 false거나 nextCursor가 null일 때)
       if (isOlderThanAWeek || !response.hasMore || !response.nextCursor) {
-        break; // 루프 종료
+        break;
       }
 
-      // 다음 페이지를 위해 커서 업데이트
       cursor = response.nextCursor;
     }
 
@@ -74,7 +74,6 @@ export async function GET() {
         const likes = post.likeCount || 0;
         const comments = post._count?.comments || post.comments?.length || 0;
 
-        // 기본 점수 (가중치 합산)
         const baseScore = views * 1 + likes * 3 + comments * 5;
 
         // 경과 시간 계산 (단위: 시간)
