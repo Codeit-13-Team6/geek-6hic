@@ -7,7 +7,6 @@ export const revalidate = 600; // 10분마다 갱신 (캐싱)
 
 export async function GET() {
   try {
-    // 1. 커트라인 날짜(일주일 전) 세팅
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -15,14 +14,13 @@ export async function GET() {
     const allValidPosts: Post[] = [];
     let isOlderThanAWeek = false;
 
-    let loopCount = 0; // 무한 루프 방지용 카운터
+    let loopCount = 0;
     const MAX_LOOP = 20; // 최대 요청 제한 (백엔드 에러 대비)
 
-    // 2. 체인 방식(Cursor)으로 데이터 뽑아오기
+    // 체인 방식(Cursor)으로 데이터 뽑아오기
     while (loopCount < MAX_LOOP) {
       loopCount++;
 
-      // 커서가 있으면 넣고 없으면 첫 페이지
       const params: GetPostsParams = {
         sortBy: "createdAt",
         sortOrder: "desc", // 최신순
@@ -38,7 +36,7 @@ export async function GET() {
       );
       const posts = response.data || [];
 
-      // 3. 가져온 데이터가 일주일보다 오래된지 하나씩 검사
+      // 가져온 데이터가 일주일보다 오래된지 하나씩 검사
       for (const post of posts) {
         const postDate = new Date(post.createdAt);
 
@@ -64,7 +62,7 @@ export async function GET() {
       cursor = response.nextCursor;
     }
 
-    // 5. 수집된 '일주일치 전체' 데이터로 시간 가중치 알고리즘 실행
+    // 수집된 '일주일치 전체' 데이터로 시간 가중치 알고리즘 실행
     const GRAVITY = 0.8; // 중력 계수 (높을수록 빠르게 최신화)
     const nowTime = Date.now();
 
@@ -76,12 +74,10 @@ export async function GET() {
 
         const baseScore = views * 1 + likes * 3 + comments * 5;
 
-        // 경과 시간 계산 (단위: 시간)
         const postTime = new Date(post.createdAt).getTime();
         const hoursSincePosted = (nowTime - postTime) / (1000 * 60 * 60);
 
         // 시간 가중치 공식 적용
-        // 분모에 +2를 하는 이유는 방금 막 올라온 글이 무한대 점수를 받는 걸 방지하기 위해서
         const hotScore = baseScore / Math.pow(hoursSincePosted + 24, GRAVITY);
 
         return { ...post, hotScore };
