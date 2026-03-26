@@ -1,23 +1,12 @@
 import Image from "next/image";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
 
 import bannerLg from "@/assets/img/banner/banner-lg.png";
 import bannerSm from "@/assets/img/banner/banner-sm.png";
 import MeetingsClient from "./components/MeetingsClient";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/meetings";
 
 export default async function Page() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["meetings", "all", null],
-    queryFn: () => getMeetingList({ size: 100 }),
-  });
-
   return (
     <div className="w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]">
       <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:max-w-[1280px] lg:pl-14">
@@ -39,9 +28,16 @@ export default async function Page() {
         </div>
       </div>
 
-      <HydrationBoundary state={dehydrate(queryClient)}>
+      <PrefetchBoundary
+        prefetchFn={(qc) =>
+          qc.prefetchQuery({
+            queryKey: ["meetings", "all", null],
+            queryFn: () => getMeetingList({ size: 100 }),
+          })
+        }
+      >
         <MeetingsClient />
-      </HydrationBoundary>
+      </PrefetchBoundary>
     </div>
   );
 }
