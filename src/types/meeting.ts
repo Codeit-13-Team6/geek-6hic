@@ -39,3 +39,15 @@ export interface JoinedMeetingsResponse {
   nextCursor: string | null;
   hasMore: boolean;
 }
+
+export interface FavoritesResponse {
+  data: any[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface MyMeetingsResponse {
+  data: Meeting[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
