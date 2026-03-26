@@ -27,10 +27,6 @@ interface RecommendedMeetingsSectionProps {
 export function RecommendedMeetingsSection({
   data,
 }: RecommendedMeetingsSectionProps) {
-  if (data.recommendedMeetings.length === 0) {
-    return null;
-  }
-
   return (
     <section className="w-full space-y-5 md:space-y-6">
       <h2 className="text-[24px] font-semibold text-gray-900">
@@ -41,21 +37,16 @@ export function RecommendedMeetingsSection({
         {data.recommendedMeetings.map((meeting) => (
           <Link
             key={meeting.id}
-            href={`/meetings/${meeting.id}`}
+            href={`/meeting/${meeting.id}`}
             className="group overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:rounded-[24px]"
           >
-            {meeting.image ? (
-              <Image
-                src={meeting.image}
-                alt={meeting.name}
-                width={320}
-                height={168}
-                className="h-[168px] w-full object-cover"
-              />
-            ) : (
-              <div className="h-[168px] w-full bg-gray-100" />
-            )}
-
+            <Image
+              src={meeting.image}
+              alt={meeting.name}
+              width={320}
+              height={168}
+              className="h-[168px] w-full object-cover"
+            />
             <div className="space-y-3 p-5">
               <div className="flex flex-wrap gap-2">
                 <TagCommon variant="blue">
@@ -69,7 +60,6 @@ export function RecommendedMeetingsSection({
               <h3 className="line-clamp-2 text-[18px] font-semibold text-gray-900">
                 {meeting.name}
               </h3>
-
               <p className="text-sm text-gray-500">
                 {meeting.participantCount}/{meeting.capacity}
               </p>
