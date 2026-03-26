@@ -28,6 +28,10 @@ import {
   ProgressValue,
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
+import { useQuery } from "@tanstack/react-query";
+import { getMeeting } from "@/api/meetings";
+import { createComment } from "@/api/comments";
+import { useParams } from "next/navigation";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -94,6 +98,7 @@ export function MeetingHeaderSection({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoginConfirmOpen, setIsLoginConfirmOpen] = useState(false);
 
+
   const progressValue = (data.participantCount / data.capacity) * 100;
   const visibleParticipants =
     participantAvatars.length > 0
@@ -119,6 +124,14 @@ export function MeetingHeaderSection({
     }
 
     if (actionLabel === "출석하기") {
+
+      if (typeof Number(data.region)) {
+        createComment(
+          Number(data.region),
+          `onlyScore_${data.region}_${Math.floor(Math.random() * 5) + 1}`,
+        );
+      }
+
       onAttend();
       return;
     }
