@@ -5,14 +5,20 @@ import type { NextRequest } from "next/server";
 
 // 토큰 존재 여부만 확인하는 쪽으로 변경
 export async function proxy(request: NextRequest) {
-  const refreshToken = request.cookies.get("refreshToken")?.value;
-  const accessToken = request.cookies.get("accessToken")?.value;
-
-  // 리프레쉬 만료 혹은 없는 상태는 그냥 login
-  if (!refreshToken && !accessToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // /login 진입 시 잔여 토큰 정리
+  if (request.nextUrl.pathname === "/login") {
+    const response = NextResponse.next();
+    response.cookies.delete("accessToken");
+    response.cookies.delete("refreshToken");
+    return response;
   }
 
+  const refreshToken = request.cookies.get("refreshToken")?.value;
+
+  // 리프레쉬 만료 혹은 없는 상태는 그냥 login
+  if (!refreshToken) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
   // 어차피 엑세스 토큰 있는지 없는지 중요하지않음 결국 리프레쉬 해야하는 상황이기 떄문에 바로 패스
   return NextResponse.next();
 }
@@ -21,6 +27,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // "/api/:path*", api 호출에 관련된건 proxy 에서 처리하지않음
+    "/login",
     "/lounge/:path*",
     "/meetings/:path*",
     "/users/:path*",
