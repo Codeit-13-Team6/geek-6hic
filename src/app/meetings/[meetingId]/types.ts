@@ -14,7 +14,7 @@ export interface MeetingThreadItem {
 export interface RecommendedMeetingItem {
   id: number;
   name: string;
-  image: string;
+  image: string | null;
   participantCount: number;
   capacity: number;
   registrationEnd: string;
@@ -35,7 +35,7 @@ export interface MeetingDetailData {
   registrationEnd: string;
   capacity: number;
   participantCount: number;
-  image: string;
+  image: string | null;
   description: string;
   canceledAt: string | null;
   confirmedAt: string | null;
@@ -65,7 +65,7 @@ export interface MeetingDetailApiData {
   registrationEnd: string;
   capacity: number;
   participantCount: number;
-  image: string;
+  image: string | null;
   description: string;
   canceledAt: string | null;
   confirmedAt: string | null;
@@ -122,7 +122,7 @@ export interface MeetingListItemApiData {
   registrationEnd: string;
   capacity: number;
   participantCount: number;
-  image: string;
+  image: string | null;
   description: string;
   canceledAt: string | null;
   confirmedAt: string | null;

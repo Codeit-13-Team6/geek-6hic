@@ -65,6 +65,7 @@ interface MeetingHeaderSectionProps {
   onJoin: () => Promise<void> | void;
   onCancelJoin: () => Promise<void> | void;
   onAttend: () => void;
+  onShare: () => Promise<void> | void;
   onEdit: (nextValues: Partial<MeetingDetailData>) => void;
   onDelete: () => void;
   onToggleFavorite: () => void;
@@ -83,6 +84,7 @@ export function MeetingHeaderSection({
   onJoin,
   onCancelJoin,
   onAttend,
+  onShare,
   onEdit,
   onDelete,
   onToggleFavorite,
@@ -122,6 +124,7 @@ export function MeetingHeaderSection({
     }
 
     if (data.isHost) {
+      await onShare();
       return;
     }
 
@@ -175,13 +178,17 @@ export function MeetingHeaderSection({
     <>
       <section className="grid gap-3 md:grid-cols-[333px_343px] md:gap-5 xl:grid-cols-[630px_630px] xl:gap-5">
         <div className="overflow-hidden rounded-[12px] bg-gray-100 md:h-[332px] md:w-[333px] md:rounded-[20px] xl:h-[443px] xl:w-[630px] xl:rounded-[32px]">
-          <Image
-            src={data.image}
-            alt={data.name}
-            width={760}
-            height={520}
-            className="h-[241px] w-full object-cover md:h-full"
-          />
+          {data.image ? (
+            <Image
+              src={data.image}
+              alt={data.name}
+              width={760}
+              height={520}
+              className="h-[241px] w-full object-cover md:h-full"
+            />
+          ) : (
+            <div className="h-[241px] w-full bg-gray-100 md:h-full" />
+          )}
         </div>
 
         <div className="space-y-3 md:space-y-5">

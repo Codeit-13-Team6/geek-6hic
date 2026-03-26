@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import {
   useMutation,
   useQuery,
@@ -11,8 +12,8 @@ import {
 import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
 import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
 import { MeetingLinkSection } from "@/app/meetings/[meetingId]/components/MeetingLinkSection";
-import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[meetingId]/components/RecommendedMeetingsSection";
+import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
 import {
   MeetingActionErrorResponse,
   MeetingDetailApiData,
@@ -94,6 +95,34 @@ async function addMeetingFavorite(meetingId: number) {
 
 async function removeMeetingFavorite(meetingId: number) {
   await axiosInstance.delete(`/meetings/${meetingId}/favorites`);
+}
+
+async function updateMeeting(
+  meetingId: number,
+  nextValues: Partial<MeetingDetailData>,
+) {
+  const { data } = await axiosInstance.patch<MeetingDetailApiData>(
+    `/meetings/${meetingId}`,
+    {
+      name: nextValues.name,
+      type: nextValues.type,
+      region: nextValues.region,
+      address: nextValues.link ?? nextValues.address,
+      latitude: nextValues.latitude ?? 0,
+      longitude: nextValues.longitude ?? 0,
+      dateTime: nextValues.dateTime,
+      registrationEnd: nextValues.registrationEnd,
+      capacity: nextValues.capacity,
+      image: nextValues.image,
+      description: nextValues.description,
+    },
+  );
+
+  return data;
+}
+
+async function deleteMeeting(meetingId: number) {
+  await axiosInstance.delete(`/meetings/${meetingId}`);
 }
 
 const getJoinErrorMessage = (code?: string) => {
@@ -207,8 +236,11 @@ interface MeetingDetailContentProps {
   meetingId: number;
 }
 
-export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
+export function MeetingDetailContent({
+  meetingId,
+}: MeetingDetailContentProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const [currentTimestamp] = useState(() => Date.now());
@@ -327,6 +359,41 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
     },
   });
 
+  const updateMeetingMutation = useMutation({
+    mutationFn: (nextValues: Partial<MeetingDetailData>) =>
+      updateMeeting(meetingId, nextValues),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getMeetingDetailQueryKey(meetingId),
+      });
+
+      ToastCommon({ message: "모임 수정이 반영되었습니다.", size: "sm" });
+    },
+    onError: (error: AxiosError<MeetingActionErrorResponse>) => {
+      ToastCommon({
+        message:
+          error.response?.data?.message ?? "모임 수정 중 문제가 발생했어요.",
+        size: "sm",
+      });
+    },
+  });
+
+  const deleteMeetingMutation = useMutation({
+    mutationFn: () => deleteMeeting(meetingId),
+    onSuccess: () => {
+      ToastCommon({ message: "모임이 삭제되었어요.", size: "sm" });
+      router.push("/meetings");
+      router.refresh();
+    },
+    onError: (error: AxiosError<MeetingActionErrorResponse>) => {
+      ToastCommon({
+        message:
+          error.response?.data?.message ?? "모임 삭제 중 문제가 발생했어요.",
+        size: "sm",
+      });
+    },
+  });
+
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
   const recommendationCandidates = recommendationCandidatesQuery.data?.data ?? [];
@@ -408,6 +475,8 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
 
   if (isStarted) {
     actionLabel = hasAttended ? "출석 완료" : "출석하기";
+  } else if (isHost && isClosed) {
+    actionLabel = "모집 마감";
   } else if (isHost) {
     actionLabel = "공유하기";
   } else if (isJoined) {
@@ -416,7 +485,9 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
 
   const isActionDisabled =
     isAuthLoading ||
-    (isStarted ? hasAttended : !isHost && isClosed && !isJoined);
+    (isStarted
+      ? hasAttended
+      : (isHost && isClosed) || (!isHost && isClosed && !isJoined));
   const linkGuideText = isLoggedIn
     ? "모임에 참여하면 링크를 확인할 수 있습니다."
     : "로그인 후 모임에 참여하면 링크를 확인할 수 있습니다.";
@@ -432,27 +503,41 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
     await cancelJoinMutation.mutateAsync();
   };
 
-  const handleEditMeeting = (nextValues: Partial<MeetingDetailData>) => {
-    queryClient.setQueryData<MeetingDetailApiData>(
-      getMeetingDetailQueryKey(meetingId),
-      (previous) => {
-        if (!previous) {
-          return previous;
-        }
+  const handleShareMeeting = async () => {
+    const meetingUrl = window.location.href;
 
-        return {
-          ...previous,
-          ...nextValues,
-          host: previous.host,
-          isCompleted: previous.isCompleted,
-          isFavorited: previous.isFavorited,
-          isJoined: previous.isJoined,
-        };
-      },
-    );
+    try {
+      await navigator.clipboard.writeText(meetingUrl);
+      ToastCommon({ message: "모임 링크가 복사되었어요." });
+      return;
+    } catch {
+      const textArea = document.createElement("textarea");
+      textArea.value = meetingUrl;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand("copy");
+        ToastCommon({ message: "모임 링크가 복사되었어요." });
+      } catch {
+        ToastCommon({ message: "링크 복사에 실패했습니다." });
+      } finally {
+        document.body.removeChild(textArea);
+      }
+    }
   };
 
-  const handleDeleteMeeting = () => {};
+  const handleEditMeeting = async (nextValues: Partial<MeetingDetailData>) => {
+    await updateMeetingMutation.mutateAsync(nextValues);
+  };
+
+  const handleDeleteMeeting = () => {
+    deleteMeetingMutation.mutate();
+  };
 
   const handleToggleFavorite = () => {
     favoriteMutation.mutate(data.isFavorited);
@@ -477,6 +562,7 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
         onJoin={handleJoinMeeting}
         onCancelJoin={handleCancelJoinMeeting}
         onAttend={handleAttendMeeting}
+        onShare={handleShareMeeting}
         onEdit={handleEditMeeting}
         onDelete={handleDeleteMeeting}
         onToggleFavorite={handleToggleFavorite}
