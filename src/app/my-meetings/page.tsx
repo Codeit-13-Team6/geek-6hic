@@ -65,7 +65,8 @@ export default async function Page() {
         </section>
       </div>
 
-      <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px]">
+      {/* <section className="mx-auto mt-10 min-h-[calc(100vh-220px)] w-full max-w-[1280px] "> */}
+      <section className="mx-auto mt-10 w-full max-w-[1280px] px-4 sm:px-6">
         <HydrationBoundary state={dehydrate(queryClient)}>
           <MyMeetingsClient />
         </HydrationBoundary>
