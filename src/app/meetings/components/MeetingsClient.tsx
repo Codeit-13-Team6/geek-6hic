@@ -89,7 +89,7 @@ export default function MeetingsClient() {
 
   return (
     <div className="mx-auto w-full max-w-[1280px] sm:px-6">
-      <CreateMeetingModal />
+      {/* <CreateMeetingModal /> */}
 
       <MeetingFilters
         // 현재 상태 (부모 → 자식)
@@ -101,7 +101,7 @@ export default function MeetingsClient() {
         onChangeTab={setActiveValue}
         onChangeSort={setSortValue}
         onApplyDate={setAppliedDate}
-        
+
         onResetFilters={handleResetFilters}
       />
 
