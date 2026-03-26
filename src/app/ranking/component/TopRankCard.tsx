@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Card,
   CardAction,
@@ -5,6 +6,7 @@ import {
   CardHeader,
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import profileImg from "@/assets/img/banner/banner-lg.jpg";
 
 interface TopRankCardProps {
   title?: string;
@@ -40,8 +42,16 @@ export default function TopRankCard({
   const rankData = rankNumber[rank as keyof typeof rankNumber] ?? rankNumber[0];
 
   return (
-    <Card className="flex h-[141px] w-full flex-col justify-between bg-gray-200 p-2 sm:h-[540px] sm:px-[22px] sm:py-[20px]">
-      <CardHeader className="flex justify-end px-0 pb-[16px]">
+    <Card className="relative flex h-[141px] w-full flex-col justify-between overflow-hidden bg-gray-200 p-2 sm:h-[540px] sm:px-[22px] sm:py-[20px]">
+      <Image
+        src={profileImg}
+        alt="프로필"
+        fill
+        className="object-cover"
+        unoptimized
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
+      <CardHeader className="relative z-10 flex justify-end px-0 pt-2 pb-[16px] sm:pt-5">
         <div
           className={`${rankData.badgeColor} flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
         >
@@ -49,7 +59,7 @@ export default function TopRankCard({
           <span className="hidden sm:inline">&nbsp;PLACE</span>
         </div>
       </CardHeader>
-      <div className="flex flex-col">
+      <div className="relative z-10 flex flex-col">
         <CardContent className="px-0 pb-1 sm:pb-[25px]">
           <p className="hidden pb-[8px] text-lg font-bold text-white sm:block">
             {meetType}
@@ -65,7 +75,7 @@ export default function TopRankCard({
           </div>
         </CardContent>
 
-        <CardAction className="w-full">
+        <CardAction className="relative z-10 w-full">
           {rank === 1 ? (
             <BtnCommon
               variant="orange"
