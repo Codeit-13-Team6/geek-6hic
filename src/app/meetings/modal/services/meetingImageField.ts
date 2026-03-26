@@ -54,7 +54,7 @@ export const changeMeetingImage = async ({
     ...prev,
     imageFile: nextFile,
     previewImageUrl: nextPreviewImageUrl,
-    imageUrl: "",
+    imageUrl: null,
   }));
   clearImageError();
   setIsImageUploading(true);
@@ -72,7 +72,7 @@ export const changeMeetingImage = async ({
     setFormValues((prev) => ({
       ...prev,
       imageFile: nextFile,
-      imageUrl: "",
+      imageUrl: null,
     }));
     setImageError("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
     onUploadError();
@@ -95,7 +95,7 @@ export const removeMeetingImage = ({
     ...prev,
     imageFile: null,
     previewImageUrl: "",
-    imageUrl: "",
+    imageUrl: null,
   }));
   clearImageError();
   setIsImageUploading(false);

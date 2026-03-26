@@ -3,7 +3,10 @@ import type { NextRequest } from "next/server";
 import { serverAxios } from "@/lib/server-fetcher";
 
 interface AxiosErrorLike {
-  response?: { data?: { code?: string; [key: string]: unknown }; status?: number };
+  response?: {
+    data?: { code?: string; [key: string]: unknown };
+    status?: number;
+  };
   message: string;
 }
 
@@ -96,6 +99,21 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["PATCH", "DELETE"],
     requiresAuth: true,
   },
+  {
+    pattern: /^\/meetings\/\d+$/,
+    methods: ["GET", "PATCH", "DELETE"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/participants$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/join$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
 ];
 
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러
@@ -153,7 +171,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   } catch (err) {
     const error = err as AxiosErrorLike;
     // REFRESH_FAILED: 리프레시 토큰 만료 → 클라이언트에서 로그인 페이지로 처리
-    console.log('slug catch ')
+    console.log("slug catch ");
     if (error.response?.data?.code === "REFRESH_FAILED") {
       return NextResponse.json(
         { message: "Unauthorized", code: "REFRESH_FAILED" },

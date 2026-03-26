@@ -25,6 +25,15 @@ const fetchMyMeetings = async () => {
   return data.data;
 };
 
+const fetchLoungePosts = async () => {
+  const { data } = await serverFetch({
+    method: "GET",
+    url: "/posts",
+    params: { keyword: "", sortBy: "createdAt", sortOrder: "desc", size: 20 },
+  });
+  return data;
+};
+
 export default async function Page() {
   return (
     <div className="flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
@@ -60,10 +69,18 @@ export default async function Page() {
                 </Suspense>
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
+                <Suspense fallback={<EmptyData />}>
                   {/* 서버로 뺄려다가 생각해보니까 순수 be api  가지고는 구현하는데 문제가있어서 route handler 로
-                    옮기는게 나을것같음 internal 파는것도 괜찮을것같고 일단  생각좀 해보는걸로 ,,,
-                  */}
-                  <PostList filterType={"my"} refetchType={false} />
+                          옮기는게 나을것같음 internal 파는것도 괜찮을것같고 일단  생각좀 해보는걸로 ,,,
+                        */}
+                  <PrefetchBoundary
+                    queryKey={["posts", "list", "latest", ""]}
+                    queryFn={fetchLoungePosts}
+                  >
+                    {/* TODO: 2차에서 route handler + internal 로 가공 로직 분리 예정 */}
+                    <PostList filterType={"my"} refetchType={false} />
+                  </PrefetchBoundary>
+                </Suspense>
               </TabsContent>
             </Tab>
           </section>
