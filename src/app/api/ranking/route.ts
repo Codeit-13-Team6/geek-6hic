@@ -9,7 +9,6 @@ interface MeetingRankData {
   rankScore: number;
   meetName: string;
   meetType: string;
-  linkPostId: number;
 }
 
 type MeetingRankMap = Record<number, MeetingRankData>;
@@ -19,14 +18,12 @@ interface MeetingItem {
   participantCount: number;
   type: string;
   name: string;
-  latitude: number;
-  region: string;
 }
 
-interface CommentItem {
+interface ReviewItem {
   meeting: { id: number };
-  authorId: string;
-  content: string;
+  userId: string;
+  score: number;
 }
 
 interface CursorResponse<T> {
@@ -61,7 +58,6 @@ export async function GET() {
           meetType: item.type,
           meetName: item.name,
           rankScore: 0,
-          linkPostId: Number(item.region),
         };
       });
 
@@ -71,65 +67,38 @@ export async function GET() {
 
     // 2. 전체 reviews cursor pagination 수집 후 meetingMap에 반영
     // 마찬가지로 체인형식으로 진행
-
-    // 모임과 연결된 게시물 양식 , 댓글 출석체크용 양식
-    // 'isThread_1332'
-    // 'onlyScore_3'
     cursor = undefined;
 
-    await Promise.all(
-      Object.entries(meetingMap).map(async ([id, meeting]) => {
-        if (!meeting.linkPostId) return;
+    while (true) {
+      const { data: reviewRes }: { data: CursorResponse<ReviewItem> } =
+        await serverAxios.get("/reviews", { params: { cursor } });
 
-        let cursor: string | undefined = undefined;
-
-        try {
-          while (true) {
-            const { data: commentRes }: { data: CursorResponse<CommentItem> } =
-              await serverAxios.get(
-                `/posts/${meeting.linkPostId}/comments`,
-                {
-                  params: { cursor },
-                },
-              );
-
-            for (const item of commentRes.data) {
-              if (item.content.startsWith("onlyScore_")) {
-                meeting.checkScore += Number(item.content.split("_")[2]);
-              } else {
-                meeting.commentLeng += 1;
-                if (!meeting.commentingUserList.includes(item.authorId)) {
-                  meeting.commentingUserList.push(item.authorId);
-                }
-              }
-            }
-
-            if (!commentRes.hasMore) break;
-            cursor = commentRes.nextCursor;
-          }
-        } catch {
-          // 존재하지 않는 postId → 스킵
+      reviewRes.data.forEach((item) => {
+        if (Object.prototype.hasOwnProperty.call(meetingMap, item.meeting.id)) {
+          const meeting = meetingMap[item.meeting.id];
+          meeting.commentingUserList = [
+            ...meeting.commentingUserList,
+            item.userId,
+          ];
+          meeting.commentLeng += 1;
+          meeting.checkScore += item.score;
         }
-      }),
-    );
+      });
+
+      if (!reviewRes.hasMore) break;
+      cursor = reviewRes.nextCursor;
+    }
 
     // 3. 랭킹 점수 계산 후 정렬
     const rankedList = Object.entries(meetingMap)
-      .map(([id, data]) => {
-        const commentScore = data.commentLeng * 3;
-        const userScore = data.commentingUserList.length * 30;
-        const rankScore = commentScore + data.checkScore + userScore;
-
-        console.log(
-          `[ranking] ${data.meetName}: 댓글(${data.commentLeng}×3=${commentScore}) + 출석체크점수(${data.checkScore}) + 유저(${data.commentingUserList.length}×30=${userScore}) = ${rankScore}`,
-        );
-
-        return {
-          id: Number(id),
-          ...data,
-          rankScore,
-        };
-      })
+      .map(([id, data]) => ({
+        id: Number(id),
+        ...data,
+        rankScore:
+          data.commentLeng * 3 +
+          data.checkScore +
+          data.commentingUserList.length * 30,
+      }))
       .sort((a, b) => b.rankScore - a.rankScore);
 
     return NextResponse.json(rankedList);

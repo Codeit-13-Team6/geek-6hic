@@ -1,11 +1,17 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { JoinedMeeting, JoinedMeetingsResponse, Meeting, GetMeetingListParams, } from "@/types";
-import axios from "axios";
+import {
+  JoinedMeeting,
+  JoinedMeetingsResponse,
+  Meeting,
+  GetMeetingListParams,
+  FavoritesResponse,
+  MyMeetingsResponse,
+} from "@/types";
 
 export async function getMeetingList(
-  params: GetMeetingListParams
+  params: GetMeetingListParams,
 ): Promise<JoinedMeeting[]> {
-  const response = await axiosInstance.get('/meetings', { params });
+  const response = await axiosInstance.get("/meetings", { params });
 
   return response.data.data;
 }
@@ -15,10 +21,12 @@ export async function getMeetingList(
 //   return data;
 // }
 
-// 이름 수정 필요
-export async function getMeeting(): Promise<Meeting[]> {
-  const { data } = await axiosInstance.get("/meetings/my");
-  return data.data;
+export async function getMeeting(params?: {
+  cursor?: string;
+  size?: number;
+}): Promise<MyMeetingsResponse> {
+  const { data } = await axiosInstance.get("/meetings/my", { params });
+  return data;
 }
 
 export async function getJoinedMeetings(params: {
@@ -44,9 +52,12 @@ export async function deleteFavorites(meetingId: number): Promise<void> {
   await axiosInstance.delete(`/meetings/${meetingId}/favorites`);
 }
 
-export async function getFavorites(): Promise<any[]> {
-  const { data } = await axiosInstance.get("/favorites");
-  return data.data;
+export async function getFavorites(params?: {
+  cursor?: string;
+  size?: number;
+}): Promise<FavoritesResponse> {
+  const { data } = await axiosInstance.get("/favorites", { params });
+  return data;
 }
 
 export async function postMeetType(): Promise<void> {

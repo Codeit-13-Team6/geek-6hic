@@ -6,26 +6,24 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 interface MemberProviderProps {
   children: React.ReactNode;
-  // isAuthenticated: boolean;
+  isAuthenticated: boolean;
 }
 
 export function MemberProvider({
   children,
-  // isAuthenticated,
+  isAuthenticated,
 }: MemberProviderProps) {
   const setUser = useAuthStore((s) => s.setUser);
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
   useEffect(() => {
     const init = async () => {
-      // if (!isAuthenticated) {
-      //   console.log("1");
-      //   clearAuth();
-      //   return;
-      // }
+      // 
+      if (!isAuthenticated) return;
 
       try {
         const user = await fetchMe();
+
         if (user) {
           setUser(user);
         } else {
@@ -37,7 +35,7 @@ export function MemberProvider({
     };
 
     init();
-  }, [setUser, clearAuth]);
+  }, [isAuthenticated, setUser, clearAuth]);
 
   return <>{children}</>;
 }

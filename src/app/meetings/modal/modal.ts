@@ -20,7 +20,7 @@ export interface MeetingFormValues {
   link: string;
   imageFile: File | null;
   previewImageUrl: string;
-  imageUrl: string | null;
+  imageUrl: string;
   startDate: string;
   startTime: string;
   endDate: string;
@@ -53,7 +53,7 @@ export interface MeetingBasicInfoValues {
   link: string;
   imageFile: File | null;
   previewImageUrl: string;
-  imageUrl: string | null;
+  imageUrl: string;
 }
 
 export interface MeetingBasicInfoErrors {

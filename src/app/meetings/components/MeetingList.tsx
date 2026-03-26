@@ -6,8 +6,8 @@ import alram from "@/assets/icon/alarm/alarm-blue.svg";
 import heartOff from "@/assets/icon/hearts/hearts-false.svg";
 import heartOn from "@/assets/icon/hearts/hearts-true.svg";
 import person from "@/assets/icon/person/person.svg";
-import type { JoinedMeeting } from "@/types";
 import { Progress } from "@/components/ui/ProgressCommon";
+import type { JoinedMeeting } from "@/types";
 
 interface MeetingListProps {
   meetingList: JoinedMeeting[];
@@ -27,32 +27,28 @@ export default function MeetingList({
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
-  
-    const diffMs = endDate.getTime() - now.getTime();
-  
-    if (diffMs <= 0) return null;
-  
-    const diffHours = diffMs / (1000 * 60 * 60);
-  
-    const month = endDate.getMonth() + 1;
-    const date = endDate.getDate();
+
+    const isSameYear = endDate.getFullYear() === now.getFullYear();
+    const isSameMonth = endDate.getMonth() === now.getMonth();
+    const isSameDate = endDate.getDate() === now.getDate();
+
+    const isToday = isSameYear && isSameMonth && isSameDate;
+
+    if (!isToday) return null;
+
     const hours = String(endDate.getHours()).padStart(2, "0");
-  
-    if (diffHours < 24) {
-      return `곧 마감 ${hours}시간 뒤`;
-    }
-  
-    return `${month}월 ${date}일 ${hours}시 마감`;
+
+    return `오늘 ${hours}시 마감`;
   }
 
-  // 태그(날짜계산)
+  // 날짜
   function formatDate(dateTime: string) {
     const date = new Date(dateTime);
 
     return `${date.getMonth() + 1}월 ${date.getDate()}일`;
   }
 
-  // 태그(시간계산)
+  // 시간
   function formatTime(dateTime: string) {
     const date = new Date(dateTime);
 
@@ -62,7 +58,6 @@ export default function MeetingList({
     return `${hours}:${minutes}`;
   }
 
-  // 모집마감 로직 dimd
   function isMeetingClosed(item: JoinedMeeting) {
     const now = new Date();
     const isRegistrationClosed = new Date(item.registrationEnd) < now;

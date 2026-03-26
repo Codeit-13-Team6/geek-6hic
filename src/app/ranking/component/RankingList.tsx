@@ -33,25 +33,36 @@ export default function RankingList() {
 
   return (
     <div className="animate-in fade-in duration-700">
-      <div className="flex gap-[16px] pb-[40px]">
-        <TopRankCard
-          title={top3List[1]?.meetName}
-          point={top3List[1]?.rankScore}
-          rank={2}
-          meetType={top3List[1]?.meetType}
-        />
-        <TopRankCard
-          title={top3List[0]?.meetName}
-          point={top3List[0]?.rankScore}
-          rank={1}
-          meetType={top3List[0]?.meetType}
-        />
-        <TopRankCard
-          title={top3List[2]?.meetName}
-          point={top3List[2]?.rankScore}
-          rank={3}
-          meetType={top3List[2]?.meetType}
-        />
+      <div className="pt-5 sm:pt-10">
+        <div className="flex gap-2 pb-5 sm:gap-[16px] sm:pb-[40px]">
+          <div className="flex-1">
+            {" "}
+            <TopRankCard
+              title={top3List[1]?.meetName}
+              point={top3List[1]?.rankScore}
+              rank={2}
+              meetType={top3List[1]?.meetType}
+            />
+          </div>
+
+          <div className="flex-1 -translate-y-5 sm:-translate-y-10">
+            <TopRankCard
+              title={top3List[0]?.meetName}
+              point={top3List[0]?.rankScore}
+              rank={1}
+              meetType={top3List[0]?.meetType}
+            />
+          </div>
+          <div className="flex-1">
+            {" "}
+            <TopRankCard
+              title={top3List[2]?.meetName}
+              point={top3List[2]?.rankScore}
+              rank={3}
+              meetType={top3List[2]?.meetType}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col gap-[16px]">
