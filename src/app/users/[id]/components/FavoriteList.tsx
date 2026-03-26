@@ -1,20 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { deleteFavorites, getFavorites } from "@/api/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 export default function FavoriteList() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: favoritesList } = useQuery({
-    queryKey: ["favorites"],
-    queryFn: getFavorites,
-    staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["favorites"],
+      queryFn: ({ pageParam }) =>
+        getFavorites(
+          pageParam ? { cursor: pageParam, size: 10 } : { size: 10 },
+        ),
+      initialPageParam: undefined as string | undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+    });
+
+  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
@@ -23,9 +35,17 @@ export default function FavoriteList() {
     },
   });
 
+  const allFavorites = data?.pages.flatMap((page) => page.data) ?? [];
+
+  if (allFavorites.length === 0) {
+    return (
+      <p className="py-10 text-center text-gray-400">찜한 모임이 없습니다.</p>
+    );
+  }
+
   return (
     <>
-      {favoritesList?.map((item: any) => (
+      {allFavorites.map((item: any) => (
         <UserCard
           key={item.id}
           title={item.meeting.name}
@@ -35,10 +55,13 @@ export default function FavoriteList() {
           capacity={item.meeting.capacity}
           participantCount={item.meeting.participantCount}
           defaultLiked={true}
-          onDetailClick={() => router.push(`/meeting/${item.meetingId}`)}
+          onDetailClick={() => router.push(`/meetings/${item.meetingId}`)}
           onHeartClick={() => toggleFavorite(item.meetingId)}
         />
       ))}
+      <div ref={bottomRef} className="flex h-20 items-center justify-center">
+        {isFetchingNextPage && <p>불러오는 중...</p>}
+      </div>
     </>
   );
 }
