@@ -108,9 +108,11 @@ export default function Page() {
 
         <div className="mx-auto w-full max-w-[1280px] sm:px-6">
           <MeetingFilters
+            // 자식에게 상태전달
             activeValue={activeValue}
             sortValue={sortValue}
             appliedDate={appliedDate}
+            // 부모상태 업데이트
             onChangeTab={setActiveValue}
             onChangeSort={setSortValue}
             onApplyDate={setAppliedDate}

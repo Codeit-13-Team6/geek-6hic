@@ -56,18 +56,21 @@ export default function MeetingFilters({
     (opt) => opt.value === sortValue,
   )?.label;
 
+  // 탭클릭
   const handleTabClick = (value: TabValue) => {
-    setDraftDate(undefined);
-    setIsOpen(false);
+    setDraftDate(undefined); //캘린더 선택 중이던 값 초기화 (UI 상태 리셋)
+    setIsOpen(false); //캘린더 닫기
     onChangeTab(value);
     onResetFilters();
   };
 
+  // 캘린더 초기화
   const handleCalendarReset = () => {
     setDraftDate(undefined);
     onApplyDate(undefined);
   };
 
+  // 캘린더 적용
   const handleCalendarApply = () => {
     onApplyDate(draftDate);
     setIsOpen(false);
