@@ -44,7 +44,7 @@ export function MeetingThreadSection({
 
   return (
     <section className="w-full space-y-3 md:space-y-4">
-      <h2 className="text-[24px] font-semibold text-gray-900">모임 포스트</h2>
+      <h2 className="text-[24px] font-semibold text-gray-900">모임 스레드</h2>
 
       <div className="rounded-[20px] border border-gray-100 bg-white p-6 shadow-sm md:rounded-[24px] md:p-8 xl:rounded-[32px]">
         {canWriteThread ? (
@@ -52,13 +52,13 @@ export function MeetingThreadSection({
             <div className="flex-1">
               <TextareaCommon
                 value={comment}
-                placeholder="내용을 입력해 주세요."
+                placeholder="내용을 입력해주세요"
                 onChange={(event) => setComment(event.target.value)}
                 className="min-h-[54px] resize-none"
               />
             </div>
             <BtnCommon type="button" size="sm" className="mt-auto w-[120px]">
-              포스트 작성
+              스레드 작성
             </BtnCommon>
           </div>
         ) : (
@@ -68,73 +68,65 @@ export function MeetingThreadSection({
         )}
 
         <div className="space-y-0">
-          {pagedThreads.length > 0 ? (
-            pagedThreads.map((thread) => (
-              <article
-                key={thread.id}
-                className="border-b border-gray-100 py-6 first:pt-0 last:border-b-0 last:pb-0"
-              >
-                <div className="mb-2 text-sm text-gray-500">
-                  {thread.author} · {formatDate(thread.createdAt)}
-                </div>
-                <p className="text-[15px] leading-[26px] text-gray-700">
-                  {thread.content}
-                </p>
-              </article>
-            ))
-          ) : (
-            <div className="rounded-[18px] bg-gray-50 px-5 py-8 text-center text-sm text-gray-500">
-              아직 등록된 포스트가 없습니다.
-            </div>
-          )}
+          {pagedThreads.map((thread) => (
+            <article
+              key={thread.id}
+              className="border-b border-gray-100 py-6 first:pt-0 last:border-b-0 last:pb-0"
+            >
+              <div className="mb-2 text-sm text-gray-500">
+                {thread.author} · {formatDate(thread.createdAt)}
+              </div>
+              <p className="text-[15px] leading-[26px] text-gray-700">
+                {thread.content}
+              </p>
+            </article>
+          ))}
         </div>
 
-        {threads.length > 0 ? (
-          <Pagination className="mt-8">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  disabled={currentPage === 1}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setCurrentPage((prev) => Math.max(1, prev - 1));
-                  }}
-                />
-              </PaginationItem>
+        <Pagination className="mt-8">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                disabled={currentPage === 1}
+                onClick={(event) => {
+                  event.preventDefault();
+                  setCurrentPage((prev) => Math.max(1, prev - 1));
+                }}
+              />
+            </PaginationItem>
 
-              {Array.from({ length: totalPages }, (_, index) => {
-                const page = index + 1;
+            {Array.from({ length: totalPages }, (_, index) => {
+              const page = index + 1;
 
-                return (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      isActive={page === currentPage}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setCurrentPage(page);
-                      }}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
+              return (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === currentPage}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setCurrentPage(page);
+                    }}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
 
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  disabled={currentPage === totalPages}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        ) : null}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                disabled={currentPage === totalPages}
+                onClick={(event) => {
+                  event.preventDefault();
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </section>
   );

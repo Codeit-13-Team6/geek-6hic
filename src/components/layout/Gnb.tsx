@@ -29,16 +29,16 @@ export function Gnb() {
   const user = useAuthStore((s) => s.user);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  
+  const isLoggedIn = !!user;
+
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === '/login';
-  
+
   // 태블릿, 모바일 sheetClose로 불가능해서 상태로관리
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // 로딩상태
   const isAuthReady = !isAuthLoading;
-  const isLoggedIn = isAuthReady && !!user;
 
   const handleLogout = async () => {
     await axios.post('/api/auth/logout', {}, { withCredentials: true });

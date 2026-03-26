@@ -8,12 +8,9 @@ import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
 import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
-import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/[meetingId]/components/EditMeetingModal";
-import {
-  MeetingDetailData,
-  MeetingParticipantUser,
-} from "@/app/meetings/[meetingId]/types";
+import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
+import ModalBase from "@/components/ui/ModalBase";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
   DropdownMenu,
@@ -21,17 +18,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownCommon";
-import ModalBase from "@/components/ui/ModalBase";
 import {
   Progress,
   ProgressLabel,
   ProgressValue,
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
-import { useQuery } from "@tanstack/react-query";
-import { getMeeting } from "@/api/meetings";
-import { createComment } from "@/api/comments";
-import { useParams } from "next/navigation";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -49,27 +41,16 @@ const formatHourMinute = (value: string) => {
   });
 };
 
-//임시로 나중에 !value?.includes("example.com") ~ 제거
-const hasUsableProfileImage = (
-  value: string | null | undefined,
-): value is string =>
-  Boolean(value) &&
-  !value?.includes("example.com") &&
-  !value?.startsWith("blob:");
 interface MeetingHeaderSectionProps {
   data: MeetingDetailData;
-  participantAvatars: MeetingParticipantUser[];
   isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
   actionLabel: string;
   isActionDisabled: boolean;
   shouldShowHostMenu: boolean;
   shouldShowClosedGuide: boolean;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
+  onJoin: () => void;
+  onCancelJoin: () => void;
   onAttend: () => void;
-  onShare: () => Promise<void> | void;
   onEdit: (nextValues: Partial<MeetingDetailData>) => void;
   onDelete: () => void;
   onToggleFavorite: () => void;
@@ -77,10 +58,7 @@ interface MeetingHeaderSectionProps {
 
 export function MeetingHeaderSection({
   data,
-  participantAvatars,
   isFavoritePending,
-  isJoinPending,
-  isAuthLoading,
   actionLabel,
   isActionDisabled,
   shouldShowHostMenu,
@@ -88,32 +66,19 @@ export function MeetingHeaderSection({
   onJoin,
   onCancelJoin,
   onAttend,
-  onShare,
   onEdit,
   onDelete,
   onToggleFavorite,
 }: MeetingHeaderSectionProps) {
   const router = useRouter();
+  const [isJoinPending] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoginConfirmOpen, setIsLoginConfirmOpen] = useState(false);
 
-
   const progressValue = (data.participantCount / data.capacity) * 100;
-  const visibleParticipants =
-    participantAvatars.length > 0
-      ? participantAvatars.slice(0, 3)
-      : [data.host];
-  const hiddenParticipantCount = Math.max(
-    0,
-    data.participantCount - visibleParticipants.length,
-  );
 
   const handleActionClick = async () => {
-    if (isAuthLoading) {
-      return;
-    }
-
     if (!data.isLoggedIn) {
       setIsLoginConfirmOpen(true);
       return;
@@ -124,36 +89,23 @@ export function MeetingHeaderSection({
     }
 
     if (actionLabel === "출석하기") {
-
-      if (typeof Number(data.region)) {
-        createComment(
-          Number(data.region),
-          `onlyScore_${data.region}_${Math.floor(Math.random() * 5) + 1}`,
-        );
-      }
-
       onAttend();
       return;
     }
 
     if (data.isHost) {
-      await onShare();
       return;
     }
 
     if (data.isJoined) {
-      await onCancelJoin();
+      onCancelJoin();
       return;
     }
 
-    await onJoin();
+    onJoin();
   };
 
-  const handleFavoriteClick = () => {
-    if (isAuthLoading) {
-      return;
-    }
-
+  const handleFavoriteClick = async () => {
     if (!data.isLoggedIn) {
       setIsLoginConfirmOpen(true);
       return;
@@ -166,42 +118,17 @@ export function MeetingHeaderSection({
     onToggleFavorite();
   };
 
-  const renderParticipantAvatar = (
-    participant: MeetingParticipantUser,
-    index: number,
-  ) => {
-    const displayName = participant.name || "참여자";
-    const profileImage = hasUsableProfileImage(participant.image)
-      ? participant.image
-      : profileFemaleSm;
-
-    return (
-      <Image
-        key={`${participant.id}-${index}`}
-        src={profileImage}
-        alt={displayName}
-        width={36}
-        height={36}
-        className="size-7 rounded-full border-2 border-white object-cover xl:size-9"
-      />
-    );
-  };
-
   return (
     <>
       <section className="grid gap-3 md:grid-cols-[333px_343px] md:gap-5 xl:grid-cols-[630px_630px] xl:gap-5">
         <div className="overflow-hidden rounded-[12px] bg-gray-100 md:h-[332px] md:w-[333px] md:rounded-[20px] xl:h-[443px] xl:w-[630px] xl:rounded-[32px]">
-          {data.image ? (
-            <Image
-              src={data.image}
-              alt={data.name}
-              width={760}
-              height={520}
-              className="h-[241px] w-full object-cover md:h-full"
-            />
-          ) : (
-            <div className="h-[241px] w-full bg-gray-100 md:h-full" />
-          )}
+          <Image
+            src={data.image}
+            alt={data.name}
+            width={760}
+            height={520}
+            className="h-[241px] w-full object-cover md:h-full"
+          />
         </div>
 
         <div className="space-y-3 md:space-y-5">
@@ -209,7 +136,7 @@ export function MeetingHeaderSection({
             <div className="flex items-start justify-between gap-2 md:gap-3 xl:gap-4">
               <div className="min-w-0 space-y-3 md:space-y-3 xl:space-y-4">
                 <div className="flex flex-wrap gap-1.5 md:gap-2">
-                  <TagCommon variant="blue">모임 일정</TagCommon>
+                  <TagCommon variant="blue">오늘 2시 마감</TagCommon>
                   <TagCommon variant="white">
                     {formatMonthDay(data.dateTime)}
                   </TagCommon>
@@ -238,7 +165,7 @@ export function MeetingHeaderSection({
                       >
                         <Image
                           src={meatballsLgIcon}
-                          alt="모임 메뉴 열기"
+                          alt="메뉴 열기"
                           width={32}
                           height={32}
                         />
@@ -271,7 +198,7 @@ export function MeetingHeaderSection({
               >
                 <Image
                   src={data.isFavorited ? heartsTrue : heartsFalse}
-                  alt="즐겨찾기"
+                  alt="찜하기"
                   width={24}
                   height={24}
                 />
@@ -280,11 +207,11 @@ export function MeetingHeaderSection({
               <BtnCommon
                 type="button"
                 size="md"
-                disabled={isActionDisabled || isJoinPending || isAuthLoading}
+                disabled={isActionDisabled || isJoinPending}
                 onClick={handleActionClick}
                 className="h-11 w-auto min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
               >
-                {isJoinPending ? "처리 중..." : actionLabel}
+                {isJoinPending ? "참여 처리중..." : actionLabel}
               </BtnCommon>
             </div>
 
@@ -301,12 +228,21 @@ export function MeetingHeaderSection({
                 {data.participantCount}명 참여
               </p>
               <div className="flex -space-x-2">
-                {visibleParticipants.map(renderParticipantAvatar)}
-                {hiddenParticipantCount > 0 ? (
-                  <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-semibold text-gray-600 xl:size-9 xl:text-sm">
-                    +{hiddenParticipantCount}
-                  </span>
-                ) : null}
+                {[data.host.image, data.host.image, data.host.image].map(
+                  (image, index) => (
+                    <Image
+                      key={`${image}-${index}`}
+                      src={image}
+                      alt=""
+                      width={36}
+                      height={36}
+                      className="size-7 rounded-full border-2 border-white object-cover xl:size-9"
+                    />
+                  ),
+                )}
+                <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-semibold text-gray-600 xl:size-9 xl:text-sm">
+                  +12
+                </span>
               </div>
             </div>
 
@@ -331,7 +267,6 @@ export function MeetingHeaderSection({
         data={data}
         onSubmit={onEdit}
       />
-
       <ModalBase
         disablePointerDismissal
         isOpen={isDeleteModalOpen}
@@ -369,7 +304,6 @@ export function MeetingHeaderSection({
           </BtnCommon>
         </div>
       </ModalBase>
-
       <ModalBase
         disablePointerDismissal
         isOpen={isLoginConfirmOpen}

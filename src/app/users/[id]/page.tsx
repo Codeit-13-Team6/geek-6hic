@@ -2,7 +2,7 @@ import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import PostList from "@/components/features/list/PostList";
 import ProfileSection from "./components/ProfileSection";
-import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import PrefetchBoundary from "./components/PrefetchBoundary";
 import MyMeetingList from "./components/MyMeetingList";
 import { Suspense } from "react";
 import { EmptyData } from "@/components/features/empty/EmptyData";
@@ -25,15 +25,6 @@ const fetchMyMeetings = async () => {
   return data.data;
 };
 
-const fetchLoungePosts = async () => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/posts",
-    params: { keyword: "", sortBy: "createdAt", sortOrder: "desc", size: 20 },
-  });
-  return data;
-};
-
 export default async function Page() {
   return (
     <div className="flex-1 bg-gray-50 pt-6 pb-20 md:pt-10 lg:pt-[48px]">
@@ -51,12 +42,8 @@ export default async function Page() {
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
                 <Suspense fallback={<EmptyData />}>
                   <PrefetchBoundary
-                    prefetchFn={(qc) =>
-                      qc.prefetchQuery({
-                        queryKey: ["favorites"],
-                        queryFn: fetchFavorites,
-                      })
-                    }
+                    queryKey={["favorites"]}
+                    queryFn={fetchFavorites}
                   >
                     <FavoriteList />
                   </PrefetchBoundary>
@@ -65,30 +52,18 @@ export default async function Page() {
               <TabsContent value="created" className="mt-6 md:mt-[32px]">
                 <Suspense fallback={<EmptyData />}>
                   <PrefetchBoundary
-                    prefetchFn={(qc) =>
-                      qc.prefetchQuery({
-                        queryKey: ["meetings", "my"],
-                        queryFn: fetchMyMeetings,
-                      })
-                    }
+                    queryKey={["meetings", "my"]}
+                    queryFn={fetchMyMeetings}
                   >
                     <MyMeetingList />
                   </PrefetchBoundary>
                 </Suspense>
               </TabsContent>
               <TabsContent value="lounge" className="md:mt-[32px]">
-                <Suspense fallback={<EmptyData />}>
-                  <PrefetchBoundary
-                    prefetchFn={(qc) =>
-                      qc.prefetchQuery({
-                        queryKey: ["posts", "list", "latest", ""],
-                        queryFn: fetchLoungePosts,
-                      })
-                    }
-                  >
-                    <PostList filterType={"my"} refetchType={false} />
-                  </PrefetchBoundary>
-                </Suspense>
+                  {/* 서버로 뺄려다가 생각해보니까 순수 be api  가지고는 구현하는데 문제가있어서 route handler 로
+                    옮기는게 나을것같음 internal 파는것도 괜찮을것같고 일단  생각좀 해보는걸로 ,,,
+                  */}
+                  <PostList filterType={"my"} refetchType={false} />
               </TabsContent>
             </Tab>
           </section>
