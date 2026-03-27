@@ -56,7 +56,7 @@ export function MeetingDetailView({
   onToggleFavorite,
 }: MeetingDetailViewProps) {
   return (
-    <div className="flex w-full flex-col gap-10 md:gap-12 xl:gap-16">
+    <div className="flex w-full flex-col gap-10 sm:gap-12 lg:gap-16">
       <MeetingHeaderSection
         data={data}
         participantAvatars={participantAvatars}

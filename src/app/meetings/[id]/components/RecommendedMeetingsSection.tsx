@@ -32,17 +32,17 @@ export function RecommendedMeetingsSection({
   }
 
   return (
-    <section className="w-full space-y-5 md:space-y-6">
+    <section className="w-full space-y-5 sm:space-y-6">
       <h2 className="text-[24px] font-semibold text-gray-900">
         이런 모임은 어때요?
       </h2>
 
-      <div className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
         {data.recommendedMeetings.map((meeting) => (
           <Link
             key={meeting.id}
             href={`/meetings/${meeting.id}`}
-            className="group overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:rounded-[24px]"
+            className="group overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:rounded-[24px]"
           >
             {meeting.image ? (
               <Image

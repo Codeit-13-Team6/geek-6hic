@@ -64,7 +64,7 @@ export default async function MeetingDetailPage({
   });
 
   return (
-    <main className="mx-auto flex w-full max-w-[375px] flex-col px-4 py-6 md:max-w-[744px] md:px-6 md:py-8 xl:max-w-[1280px] xl:px-0 xl:py-12">
+    <main className="mx-auto flex w-full flex-col px-4 py-6 sm:px-6 sm:py-8 lg:max-w-[1280px] lg:px-8 lg:py-12">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <MeetingDetailContent
           meetingId={resolvedMeetingId}
