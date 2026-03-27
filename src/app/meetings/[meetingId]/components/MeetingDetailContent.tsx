@@ -557,7 +557,6 @@ export function MeetingDetailContent({
   };
 
   const handleAttendMeeting = () => {
-    console.log("[attendance region]", detail.region, Number(detail.region));
     attendMutation.mutate(detail.region);
   };
 

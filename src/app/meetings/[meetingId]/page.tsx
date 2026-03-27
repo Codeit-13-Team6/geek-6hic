@@ -36,6 +36,7 @@ const getAttendancePostId = (region: string) => {
 
 const getStartOfToday = () => {
   const today = new Date();
+
   today.setHours(0, 0, 0, 0);
 
   return today;
@@ -163,12 +164,12 @@ export default async function MeetingDetailPage({
     getMeetingDetailQueryKey(resolvedMeetingId),
   );
 
-  await queryClient.prefetchQuery({
+  queryClient.prefetchQuery({
     queryKey: getMeetingParticipantsQueryKey(resolvedMeetingId),
     queryFn: () => fetchMeetingParticipantsOnServer(resolvedMeetingId),
   });
 
-  await queryClient.prefetchQuery({
+  queryClient.prefetchQuery({
     queryKey: getMeetingRecommendationCandidatesQueryKey(resolvedMeetingId),
     queryFn: () => fetchMeetingRecommendationCandidatesOnServer(),
   });
