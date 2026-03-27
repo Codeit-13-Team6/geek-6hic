@@ -240,16 +240,29 @@ const refreshAccessToken = async (
   return promise;
 };
 
-// 인증 없이 요청 가능한 경로
-const PUBLIC_PATHS = ["/meetings", "/lounge", "/posts", "/api/hot"];
+// 인증 없이 요청 가능한 경로 (정규식으로 정확히 매칭)
+const PUBLIC_PATH_PATTERNS = [
+  /\/posts$/,                       // /posts (exact)
+  /\/posts\?/,                      // /posts?cursor=...
+  /\/posts\/\d+$/,                  // /posts/123 (상세)
+  /\/posts\/\d+\?/,                 // /posts/123?...
+  /\/posts\/\d+\/comments/,         // /posts/123/comments (조회)
+  /\/meetings$/,                    // /meetings (exact)
+  /\/meetings\?/,                   // /meetings?...
+  /\/meetings\/\d+$/,               // /meetings/132 (상세)
+  /\/meetings\/\d+\?/,              // /meetings/132?...
+  /\/meetings\/\d+\/participants/,  // /meetings/132/participants
+  /\/api\/hot/,                     // /api/hot
+];
 
 const isPublicPath = (url?: string) => {
   if (!url) return false;
   try {
-    const pathname = new URL(url).pathname;
-    return PUBLIC_PATHS.some((path) => pathname.includes(path));
+    const { pathname, search } = new URL(url);
+    const full = pathname + search;
+    return PUBLIC_PATH_PATTERNS.some((pattern) => pattern.test(full));
   } catch {
-    return PUBLIC_PATHS.some((path) => url.includes(path));
+    return PUBLIC_PATH_PATTERNS.some((pattern) => pattern.test(url));
   }
 };
 

@@ -15,7 +15,7 @@ export async function uploadMeetingImage(file: File) {
     },
   );
 
-  await axios.put(issueResponse.data.presignedUrl, file, {
+  await axiosInstance.put(issueResponse.data.presignedUrl, file, {
     headers: {
       "Content-Type": contentType,
     },
