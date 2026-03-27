@@ -3,12 +3,12 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
-import { cookies } from "next/headers";
 import {
   ACCESS_TOKEN_MAX_AGE,
   REFRESH_TOKEN_MAX_AGE,
 } from "@/lib/auth-cookies";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 interface TokenPair {
   accessToken: string;

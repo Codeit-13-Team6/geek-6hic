@@ -7,15 +7,8 @@ import heartOff from "@/assets/icon/hearts/hearts-false.svg";
 import heartOn from "@/assets/icon/hearts/hearts-true.svg";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
-import type { JoinedMeeting } from "@/types";
+import { JoinedMeeting, MeetingListProps } from "@/types";
 
-interface MeetingListProps {
-  meetingList: JoinedMeeting[];
-  isLoading: boolean;
-  sortValue?: "deadline" | "participants" | null;
-  onItemClick: (item: JoinedMeeting) => void;
-  onHeartClick: (item: JoinedMeeting) => void;
-}
 
 export default function MeetingList({
   meetingList,

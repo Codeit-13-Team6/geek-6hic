@@ -3,34 +3,13 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "./component/HotPostList";
 import LoungeContent from "./component/LoungeSection";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import { serverFetch } from "@/lib/server-fetcher";
 import { Suspense } from "react";
 import { GetPostsResponse } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
-import { filterThreadPosts } from "@/lib/postUtils";
-import LoungeSkeleton from "./component/skeleton/LoungeSkeleton";
+import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
+import { fetchPosts } from "@/api";
+import { getNextPageParam } from "@/lib/pagination";
 
-const getNextPageParam = <
-  T extends { hasMore: boolean; nextCursor: string | null },
->(
-  lastPage: T,
-) => (lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined);
-
-const fetchPosts = async (cursor?: string): Promise<GetPostsResponse> => {
-  const { data: res } = await serverFetch({
-    method: "GET",
-    url: "/posts",
-    params: {
-      keyword: "",
-      sortBy: "createdAt",
-      sortOrder: "desc",
-      size: 20,
-      ...(cursor ? { cursor } : {}),
-    },
-  });
-
-  return filterThreadPosts(res);
-};
 
 export default async function LoungePage() {
   return (

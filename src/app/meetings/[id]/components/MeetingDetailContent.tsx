@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { MeetingDetailView } from "@/app/meetings/[meetingId]/components/MeetingDetailView";
-import { useMeetingDetailMutations } from "@/app/meetings/[meetingId]/hooks/useMeetingDetailMutations";
-import { useMeetingDetailQueries } from "@/app/meetings/[meetingId]/hooks/useMeetingDetailQueries";
-import { toMeetingDetailViewModel } from "@/app/meetings/[meetingId]/model/meeting-detail.selectors";
+import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
+import { useMeetingDetailMutations } from "@/app/meetings/[id]/hooks/useMeetingDetailMutations";
+import { useMeetingDetailQueries } from "@/app/meetings/[id]/hooks/useMeetingDetailQueries";
+import { toMeetingDetailViewModel } from "@/app/meetings/[id]/model/meeting-detail.selectors";
 
 interface MeetingDetailContentProps {
   meetingId: number;

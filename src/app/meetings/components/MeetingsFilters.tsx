@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/SelectCommon";
+import { MeetingFiltersProps, TabValue } from "@/types";
+
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
@@ -27,18 +29,6 @@ const SORT_OPTIONS = [
   { value: "participants", label: "참여인원 순" },
 ] as const;
 
-export type TabValue = (typeof TAB_LIST)[number]["value"];
-export type SortValue = "deadline" | "participants" | null;
-
-interface MeetingFiltersProps {
-  activeValue: TabValue;
-  sortValue: SortValue;
-  appliedDate: DateRange | undefined;
-  onChangeTab: (value: TabValue) => void;
-  onChangeSort: (value: SortValue) => void;
-  onApplyDate: (value: DateRange | undefined) => void;
-  onResetFilters: () => void;
-}
 
 export default function MeetingFilters({
   activeValue,

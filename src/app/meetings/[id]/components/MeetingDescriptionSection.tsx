@@ -1,4 +1,4 @@
-import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
+import { MeetingDetailData } from "@/app/meetings/[id]/types";
 
 interface MeetingDescriptionSectionProps {
   data: MeetingDetailData;

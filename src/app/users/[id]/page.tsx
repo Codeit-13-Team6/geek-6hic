@@ -6,7 +6,6 @@ import MyMeetingList from "./components/MyMeetingList";
 import MyPostList from "./components/MyPostList";
 import { Suspense } from "react";
 import { EmptyData } from "@/components/features/empty/EmptyData";
-import { serverFetch } from "@/lib/server-fetcher";
 import FavoriteList from "@/app/users/[id]/components/FavoriteList";
 import type {
   FavoritesResponse,
@@ -14,12 +13,8 @@ import type {
   GetPostsResponse,
 } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-
-const getNextPageParam = <
-  T extends { hasMore: boolean; nextCursor: string | null },
->(
-  lastPage: T,
-) => (lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined);
+import { fetchFavorites, fetchMyMeetings, fetchLoungePosts } from "@/api";
+import { getNextPageParam } from "@/lib/pagination";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
@@ -27,42 +22,6 @@ const defaultTabs = [
   { value: "lounge", label: "라운지 게시물" },
 ];
 
-const fetchFavorites = async (cursor?: string): Promise<FavoritesResponse> => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/favorites",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
-  });
-  return data;
-};
-
-const fetchMyMeetings = async (
-  cursor?: string,
-): Promise<MyMeetingsResponse> => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/meetings/my",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
-  });
-  return data;
-};
-
-const fetchLoungePosts = async (
-  cursor?: string,
-): Promise<GetPostsResponse> => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/posts",
-    params: {
-      keyword: "",
-      sortBy: "createdAt",
-      sortOrder: "desc",
-      size: 20,
-      ...(cursor ? { cursor } : {}),
-    },
-  });
-  return data;
-};
 
 export default async function Page() {
   return (

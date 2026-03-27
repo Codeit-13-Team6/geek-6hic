@@ -2,19 +2,12 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardHeader,
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Image from "next/image";
 import profileImg from "@/assets/img/banner/banner-lg.jpg";
+import { RankCardProps } from "@/types";
 
-interface RankCardProps {
-  title?: string;
-  point?: number;
-  rank?: number;
-  meetType?: string;
-  onDetailClick?: () => void;
-}
 
 export default function RankCard({
   title = "모임 이름이 없습니다.",

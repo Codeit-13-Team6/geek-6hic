@@ -1,3 +1,5 @@
+import type { DateRange } from "react-day-picker";
+
 export interface CreateMeeting {
   name: string;
   type: string;
@@ -18,6 +20,7 @@ export type Meeting = CreateMeeting & {
   id: number;
   participantCount: number;
 };
+
 export interface GetMeetingListParams {
   type?: string;
   // region?: string;
@@ -51,4 +54,28 @@ export interface MyMeetingsResponse {
   data: Meeting[];
   nextCursor: string | null;
   hasMore: boolean;
+}
+
+
+export type TabValue = "all" | "team" | "study" | "job" | "wework" | "etc";
+
+export type SortValue = "deadline" | "participants" | null;
+
+export interface MeetingFiltersProps {
+  activeValue: TabValue;
+  sortValue: SortValue;
+  appliedDate: DateRange | undefined;
+  onChangeTab: (value: TabValue) => void;
+  onChangeSort: (value: SortValue) => void;
+  onApplyDate: (value: DateRange | undefined) => void;
+  onResetFilters: () => void;
+}
+
+
+export interface MeetingListProps {
+  meetingList: JoinedMeeting[];
+  isLoading: boolean;
+  sortValue?: "deadline" | "participants" | null;
+  onItemClick: (item: JoinedMeeting) => void;
+  onHeartClick: (item: JoinedMeeting) => void;
 }

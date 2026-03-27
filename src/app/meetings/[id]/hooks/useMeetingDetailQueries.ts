@@ -5,12 +5,12 @@ import {
   fetchMeetingDetail,
   fetchMeetingParticipants,
   fetchMeetingRecommendationCandidates,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.api";
+} from "@/app/meetings/[id]/api/meeting-detail.api";
 import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
   getMeetingRecommendationCandidatesQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
+} from "@/app/meetings/[id]/model/meeting-detail.query-keys";
 
 export function useMeetingDetailQueries(meetingId: number) {
   const detailQuery = useQuery({

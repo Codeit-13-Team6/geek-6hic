@@ -7,14 +7,17 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import type { DateRange } from "react-day-picker";
 
 import { getMeetingList } from "@/api/meetings";
-import type { JoinedMeetingsResponse, GetMeetingListParams } from "@/types";
+import type {
+  JoinedMeetingsResponse,
+  GetMeetingListParams,
+  TabValue,
+  SortValue,
+} from "@/types";
 import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import MeetingList from "./MeetingList";
-import MeetingFilters, {
-  type SortValue,
-  type TabValue,
-} from "./MeetingsFilters";
+import MeetingFilters from "./MeetingsFilters";
 import { CreateMeetingModal } from "@/app/meetings/modal/CreateMeetingModal";
+
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
