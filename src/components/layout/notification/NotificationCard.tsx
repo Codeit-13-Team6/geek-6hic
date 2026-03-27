@@ -64,7 +64,6 @@ export default function NotificationCard({
         "flex w-full gap-4 px-4 py-3 transition-colors",
         notification.isRead ? "bg-white" : "bg-gray-50",
         "cursor-pointer",
-
         className,
       )}
       onClick={() => onClick?.(notification)}
