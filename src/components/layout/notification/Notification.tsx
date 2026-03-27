@@ -33,13 +33,11 @@ export default function Notification({
     if (!notification.isRead) {
       try {
         await markNotificationAsRead(notification.id);
-        setNotifications((prev) => {
-          const nextNotifications = prev.map((item) =>
+        setNotifications((prev) =>
+          prev.map((item) =>
             item.id === notification.id ? { ...item, isRead: true } : item,
-          );
-          onUnreadChange(nextNotifications.some((item) => !item.isRead));
-          return nextNotifications;
-        });
+          ),
+        );
       } catch (error) {
         console.error("알림 읽음 처리 실패:", error);
       }
@@ -60,7 +58,6 @@ export default function Notification({
       setNotifications((prev) =>
         prev.map((item) => ({ ...item, isRead: true })),
       );
-      onUnreadChange(false);
     } catch (error) {
       console.error("모든 알림 읽음 처리 실패:", error);
     }
@@ -70,7 +67,6 @@ export default function Notification({
     try {
       await deleteAllNotification();
       setNotifications([]);
-      onUnreadChange(false);
     } catch (error) {
       console.error("모든 알림 삭제 실패:", error);
     }
@@ -82,7 +78,6 @@ export default function Notification({
         setIsLoading(true);
         const data = await getNotifications();
         setNotifications(data);
-        onUnreadChange(data.some((item) => !item.isRead));
       } catch (error) {
         console.error("알림 조회 실패:", error);
       } finally {
@@ -91,6 +86,10 @@ export default function Notification({
     };
     fetchNotifications();
   }, [isOpen, onUnreadChange]);
+
+  useEffect(() => {
+    onUnreadChange(notifications.some((item) => !item.isRead));
+  }, [notifications, onUnreadChange]);
 
   if (!isOpen) return null;
 
