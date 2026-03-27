@@ -14,7 +14,7 @@ import profileMd from "@/assets/img/profile/female1-m.jpg";
 import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import SideBar from "@/components/layout/SideBar";
 import { useAuthStore } from "@/store/useAuthStore";
-
+import Notification from "@/components/layout/notification/Notification";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -31,8 +31,10 @@ export function Gnb() {
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const isLoggedIn = !!user;
 
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = pathname === "/login";
 
   // 태블릿, 모바일 sheetClose로 불가능해서 상태로관리
   const [isOpen, setIsOpen] = useState(false);
@@ -41,13 +43,13 @@ export function Gnb() {
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
-    await axios.post('/api/auth/logout', {}, { withCredentials: true });
+    await axios.post("/api/auth/logout", {}, { withCredentials: true });
     clearAuth();
-    router.push('/login');
+    router.push("/login");
   };
 
   const handleLogin = async () => {
-    router.push('/login');
+    router.push("/login");
   };
 
   return (
@@ -81,9 +83,13 @@ export function Gnb() {
             ))}
           </nav>
         </div>
-        <div className="flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
+        <div className="relative flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button className="flex cursor-pointer items-center justify-center">
+            <button
+              type="button"
+              onClick={() => setIsNotificationOpen((prev) => !prev)}
+              className="flex cursor-pointer items-center justify-center"
+            >
               <Image
                 src={bellIconLg}
                 alt="알림"
@@ -92,6 +98,15 @@ export function Gnb() {
                 className="hidden lg:block"
               />
             </button>
+          )}
+
+          {isLoggedIn && (
+            <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
+              <Notification
+                isOpen={isNotificationOpen}
+                onClose={() => setIsNotificationOpen(false)}
+              />
+            </div>
           )}
 
           <div className="hidden sm:block">

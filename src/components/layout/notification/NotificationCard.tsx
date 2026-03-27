@@ -2,7 +2,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import profileSm from "@/assets/img/profile/female1-sm.jpg";
 
-import type { NotificationItem } from "./notification.types";
+import type { NotificationItem } from "@/types/notification";
 
 type NotificationCardProps = {
   notification: NotificationItem;
@@ -13,9 +13,7 @@ type NotificationCardProps = {
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",
   MEETING_CANCELED: "모임 취소",
-  NEW_COMMENT: "새로운 댓글",
-  COMMENT_REPLY: "댓글 답글",
-  GENERAL: "알림",
+  COMMENT: "댓글",
 };
 
 function getNotificationTitle(notification: NotificationItem) {
