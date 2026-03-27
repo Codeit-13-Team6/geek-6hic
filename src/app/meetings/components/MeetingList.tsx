@@ -86,7 +86,7 @@ export default function MeetingList({
           <div
             key={item.id}
             onClick={() => onItemClick(item)}
-            className="relative cursor-pointer overflow-hidden rounded-3xl sm:flex sm:items-center sm:gap-5 sm:rounded-[32px] sm:bg-white sm:p-6"
+            className="group relative cursor-pointer overflow-hidden rounded-3xl border border-rose-100/60 bg-white/80 shadow-[0_4px_20px_rgba(251,113,133,0.06)] backdrop-blur-sm transition-all duration-300 hover:shadow-[0_8px_30px_rgba(251,113,133,0.12)] sm:flex sm:items-center sm:gap-5 sm:rounded-[32px] sm:p-6"
           >
             <button
               type="button"
@@ -94,7 +94,7 @@ export default function MeetingList({
                 e.stopPropagation();
                 onHeartClick(item);
               }}
-              className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white"
+              className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-rose-200/80 bg-white/90 shadow-sm backdrop-blur-sm transition-all hover:scale-105 hover:bg-rose-50"
             >
               <div className="relative h-6 w-6">
                 <Image
@@ -122,29 +122,29 @@ export default function MeetingList({
               )}
             </div>
 
-            <div className="flex flex-1 flex-col bg-white p-4 sm:p-0">
+            <div className="flex flex-1 flex-col bg-transparent p-4 sm:p-0">
               <div className="flex flex-col">
-                <h3 className="text-xl font-semibold text-black">
+                <h3 className="text-xl font-bold text-slate-800">
                   {item.name}
                 </h3>
-                <h4 className="text-sm font-semibold text-gray-500">
+                <h4 className="text-sm font-semibold text-rose-400">
                   {item.type}
                 </h4>
               </div>
 
               <div className="mt-[14px] flex flex-wrap gap-2 sm:mt-10">
-                <span className="rounded-lg border border-gray-200 px-2 py-0.5 text-sm text-gray-600">
+                <span className="rounded-lg border border-rose-200/80 bg-rose-50/50 px-2.5 py-1 text-sm font-medium text-slate-600">
                   {formatDate(item.dateTime)}
                 </span>
-                <span className="rounded-lg border border-gray-200 px-2 py-0.5 text-sm text-gray-600">
+                <span className="rounded-lg border border-rose-200/80 bg-rose-50/50 px-2.5 py-1 text-sm font-medium text-slate-600">
                   {formatTime(item.dateTime)}
                 </span>
                 {deadLine ? (
-                  <span className="flex items-center gap-1 rounded-lg bg-[rgba(24,220,255,0.2)] px-2 py-0.5">
-                    <span className="relative h-6 w-6">
+                  <span className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 px-2.5 py-1">
+                    <span className="relative h-5 w-5">
                       <Image src={alram} fill alt="알람 아이콘" />
                     </span>
-                    <span className="text-sm font-semibold text-blue-600">
+                    <span className="text-sm font-bold text-orange-600">
                       {deadLine}
                     </span>
                   </span>
@@ -160,10 +160,10 @@ export default function MeetingList({
                   value={(item.participantCount / item.capacity) * 100}
                 />
                 <p className="ml-[13px]">
-                  <span className="text-sm font-semibold text-green-500">
+                  <span className="text-sm font-bold text-rose-500">
                     {item.participantCount}
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm font-medium text-slate-500">
                     /{item.capacity}
                   </span>
                 </p>

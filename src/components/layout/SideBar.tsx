@@ -40,16 +40,16 @@ export default function SideBar({
   return (
     <SheetContent
       side="right"
-      className="z-[999999999] flex h-full w-[314px] flex-col rounded-l-[2rem] border-l border-white/60 bg-white/70 px-6 pt-6 pb-8 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] backdrop-blur-[40px] sm:max-w-[314px] [&>button.absolute]:hidden"
+      className="z-[999999999] flex h-full w-[314px] flex-col rounded-l-[2rem] border-l border-rose-100/60 bg-gradient-to-b from-white/90 to-rose-50/50 px-6 pt-6 pb-8 shadow-[-10px_0_40px_rgba(251,113,133,0.1)] backdrop-blur-[40px] sm:max-w-[314px] [&>button.absolute]:hidden"
     >
       <SheetTitle className="sr-only">모바일 네비게이션 메뉴</SheetTitle>
 
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-xl font-extrabold tracking-tight text-violet-600">
+        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-xl font-extrabold tracking-tight text-transparent">
           co-git
         </span>
-        <SheetClose className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-white active:scale-95">
-          <X className="size-5 text-slate-500 transition-colors group-hover:text-slate-900" />
+        <SheetClose className="group flex h-10 w-10 items-center justify-center rounded-full border border-rose-100/60 bg-white/60 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-rose-50 active:scale-95">
+          <X className="size-5 text-slate-500 transition-colors group-hover:text-rose-600" />
         </SheetClose>
       </div>
 
@@ -64,8 +64,8 @@ export default function SideBar({
               className={cn(
                 "font-pretendard flex items-center rounded-2xl px-5 py-3.5 text-base transition-all duration-200 active:scale-[0.98]",
                 isActive
-                  ? "bg-violet-600 font-bold text-white shadow-[0_4px_15px_rgba(139,92,246,0.3)]"
-                  : "font-medium text-slate-600 hover:bg-white/60 hover:text-slate-900",
+                  ? "bg-gradient-to-r from-rose-500 to-orange-500 font-bold text-white shadow-[0_4px_15px_rgba(251,113,133,0.3)]"
+                  : "font-medium text-slate-600 hover:bg-white/80 hover:text-rose-600",
               )}
             >
               {link.name}
@@ -75,15 +75,15 @@ export default function SideBar({
 
         {isLoggedIn && (
           <>
-            <div className="my-3 h-[1px] w-full bg-slate-200/50" />
+            <div className="my-3 h-[1px] w-full bg-rose-200/50" />
             <Link
               href={`/users/${user?.id}`}
               onClick={onClose}
               className={cn(
                 "font-pretendard flex items-center rounded-2xl px-5 py-3.5 text-base transition-all duration-200 active:scale-[0.98]",
                 pathname.startsWith(`/users`)
-                  ? "bg-violet-600 font-bold text-white shadow-[0_4px_15px_rgba(139,92,246,0.3)]"
-                  : "font-medium text-slate-600 hover:bg-white/60 hover:text-slate-900",
+                  ? "bg-gradient-to-r from-rose-500 to-orange-500 font-bold text-white shadow-[0_4px_15px_rgba(251,113,133,0.3)]"
+                  : "font-medium text-slate-600 hover:bg-white/80 hover:text-rose-600",
               )}
             >
               마이페이지
@@ -96,14 +96,14 @@ export default function SideBar({
         {isLoggedIn ? (
           <SheetClose
             onClick={handleLogout}
-            className="font-pretendard flex w-full items-center justify-center rounded-2xl border border-slate-200/50 bg-slate-100/50 px-4 py-3.5 text-base font-medium text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-800 active:scale-[0.98]"
+            className="font-pretendard flex w-full items-center justify-center rounded-2xl border border-rose-200/50 bg-rose-50/50 px-4 py-3.5 text-base font-medium text-slate-500 transition-all hover:bg-rose-100/80 hover:text-slate-800 active:scale-[0.98]"
           >
             로그아웃
           </SheetClose>
         ) : isLoginPage ? null : (
           <SheetClose
             onClick={handleLogin}
-            className="font-pretendard flex w-full items-center justify-center rounded-2xl bg-violet-600 px-4 py-3.5 text-base font-bold text-white shadow-[0_4px_15px_rgba(139,92,246,0.3)] transition-all hover:bg-violet-700 active:scale-[0.98]"
+            className="font-pretendard flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 px-4 py-3.5 text-base font-bold text-white shadow-[0_4px_15px_rgba(251,113,133,0.3)] transition-all hover:from-rose-600 hover:to-orange-600 active:scale-[0.98]"
           >
             로그인
           </SheetClose>

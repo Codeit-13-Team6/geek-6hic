@@ -138,22 +138,19 @@ export function Gnb() {
   }, [isNotificationOpen]);
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center border-b border-white/40 bg-white/60 px-4 shadow-[0_4px_30px_rgba(0,0,0,0.02)] backdrop-blur-[40px] transition-all sm:h-20 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center border-b border-rose-100/40 bg-white/70 px-4 shadow-[0_4px_30px_rgba(251,113,133,0.06)] backdrop-blur-[40px] transition-all sm:h-20 sm:px-6 lg:px-8">
       <div className="flex h-full w-full max-w-[1280px] items-center justify-between">
         <div className="flex items-center gap-8 lg:gap-12">
           <Link
             href="/"
             className="flex items-center gap-2.5 transition-transform hover:scale-105 active:scale-95"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-violet-100 bg-white shadow-[0_2px_10px_rgba(139,92,246,0.15)]">
-              <GitBranchIcon />
-            </div>
-            <span className="hidden text-xl font-extrabold tracking-tight text-slate-900 sm:block">
+            <span className="hidden bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:block">
               co-git
             </span>
           </Link>
 
-          <nav className="hidden items-center rounded-full border border-white/60 bg-white/40 p-1.5 shadow-inner backdrop-blur-md lg:flex lg:gap-1">
+          <nav className="hidden items-center rounded-full border border-rose-100/60 bg-white/60 p-1.5 shadow-inner backdrop-blur-md lg:flex lg:gap-1">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -161,8 +158,8 @@ export function Gnb() {
                 className={cn(
                   "relative rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300",
                   pathname === link.href
-                    ? "bg-white text-violet-700 shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-                    : "text-slate-500 hover:bg-white/50 hover:text-violet-600",
+                    ? "bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_2px_10px_rgba(251,113,133,0.25)]"
+                    : "text-slate-500 hover:bg-rose-50/80 hover:text-rose-600",
                 )}
               >
                 {link.name}
@@ -176,7 +173,7 @@ export function Gnb() {
               <button
                 type="button"
                 onClick={() => setIsNotificationOpen((prev) => !prev)}
-                className="group flex hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/60 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-white lg:flex"
+                className="group flex hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-rose-100/60 bg-white/60 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-rose-50 lg:flex"
               >
                 <BellIcon hasUnread={hasUnreadNotifications} />
               </button>
@@ -193,13 +190,13 @@ export function Gnb() {
 
           <div className="hidden sm:block">
             {!isAuthReady ? (
-              <div className="h-10 w-10 animate-pulse rounded-full bg-slate-200/50" />
+              <div className="h-10 w-10 animate-pulse rounded-full bg-rose-100/50" />
             ) : isLoggedIn ? (
               <button
                 className="flex cursor-pointer items-center justify-center transition-transform hover:scale-105 active:scale-95"
                 onClick={() => router.push(`/users/${user.id}`)}
               >
-                <div className="relative h-10 w-10 rounded-full bg-slate-100 p-[2px] ring-2 ring-violet-100 ring-offset-2">
+                <div className="relative h-10 w-10 rounded-full bg-gradient-to-br from-rose-100 to-orange-100 p-[2px] ring-2 ring-rose-200 ring-offset-2">
                   <Image
                     src={profileMd}
                     alt="프로필"
@@ -211,7 +208,7 @@ export function Gnb() {
             ) : isLoginPage ? null : (
               <button
                 onClick={handleLogin}
-                className="hidden cursor-pointer items-center justify-center rounded-full bg-violet-600 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-violet-700 hover:shadow-[0_4px_15px_rgba(139,92,246,0.3)] active:scale-95 lg:flex"
+                className="hidden cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-orange-500 px-6 py-2.5 text-sm font-bold text-white transition-all hover:from-rose-600 hover:to-orange-600 hover:shadow-[0_4px_15px_rgba(251,113,133,0.35)] active:scale-95 lg:flex"
               >
                 로그인
               </button>
@@ -231,7 +228,7 @@ export function Gnb() {
 
           <div className="flex items-center justify-center lg:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger className="flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:bg-white active:scale-95">
+              <SheetTrigger className="flex h-10 w-10 items-center justify-center rounded-full border border-rose-100/60 bg-white/60 shadow-sm backdrop-blur-md transition-all hover:bg-rose-50 active:scale-95">
                 <MenuIcon />
               </SheetTrigger>
               <SideBar

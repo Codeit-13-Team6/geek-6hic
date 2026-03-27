@@ -38,13 +38,8 @@ const sortOrderMap = {
 export default function MeetingsClient() {
   const router = useRouter();
 
-  // 현재 선택된 탭
   const [activeValue, setActiveValue] = useState<TabValue>("all");
-
-  // 현재 선택된 정렬
   const [sortValue, setSortValue] = useState<SortValue>(null);
-
-  // 실제 적용된 날짜 필터
   const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(
     undefined,
   );
@@ -85,7 +80,6 @@ export default function MeetingsClient() {
 
   const meetingList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
-  // 날짜 필터 적용
   const filteredMeetingList = meetingList.filter((meeting) => {
     if (!appliedDate?.from || !appliedDate?.to) return true;
 
@@ -96,19 +90,16 @@ export default function MeetingsClient() {
     return meetingTime >= fromTime && meetingTime <= toTime;
   });
 
-  // 탭 변경 시 정렬/날짜 초기화
   const handleResetFilters = () => {
     setSortValue(null);
     setAppliedDate(undefined);
   };
 
   return (
-    // Page.tsx에서 레이아웃을 잡아주므로 여기서는 불필요한 max-w 속성을 제거하고 100% 사용
     <div className="flex w-full flex-col">
       <CreateMeetingModal />
 
-      {/* 툴바 섹션 영역: MeetingFilters 컴포넌트를 이 랩퍼 안에 그대로 배치 */}
-      <div className="sticky top-6 z-40 mb-10 sm:mb-12">
+      <div className="sticky top-6 z-40 mb-8 sm:mb-10">
         <MeetingFilters
           activeValue={activeValue}
           sortValue={sortValue}
@@ -120,8 +111,7 @@ export default function MeetingsClient() {
         />
       </div>
 
-      {/* 리스트 영역: 우리가 세팅했던 2열 그리드 레이아웃 적용 */}
-      <div className="flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-2 lg:gap-8">
+      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-2 lg:gap-6">
         <MeetingList
           meetingList={filteredMeetingList}
           isLoading={isLoading}
@@ -131,20 +121,19 @@ export default function MeetingsClient() {
         />
       </div>
 
-      {/* 무한 스크롤 옵저버 영역: 텍스트 덜렁 있는 것 대신 보라색 로딩 스피너 적용 */}
       <div
         ref={bottomRef}
         className="flex h-32 w-full items-center justify-center py-10"
       >
         {isFetchingNextPage && (
-          <div className="flex items-center gap-3 text-sm font-bold text-violet-600">
-            <span className="h-5 w-5 animate-spin rounded-full border-[3px] border-violet-600 border-t-transparent"></span>
+          <div className="flex items-center gap-3 text-sm font-bold text-rose-500">
+            <span className="h-5 w-5 animate-spin rounded-full border-[3px] border-rose-400 border-t-transparent"></span>
             데이터를 불러오는 중입니다...
           </div>
         )}
         {!hasNextPage && filteredMeetingList.length > 0 && (
           <p className="text-sm font-bold text-slate-400">
-            모든 모임을 다 확인하셨습니다 ✨
+            모든 모임을 다 확인하셨습니다
           </p>
         )}
       </div>
