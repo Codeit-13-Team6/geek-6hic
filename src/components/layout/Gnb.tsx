@@ -123,11 +123,18 @@ export function Gnb() {
                   alt="알림"
                   width={24}
                   height={24}
-                  className="hidden lg:block"
                 />
               </button>
+              {isNotificationOpen && (
+                <button
+                  type="button"
+                  aria-label="알림창 닫기"
+                  onClick={() => setIsNotificationOpen(false)}
+                  className="fixed inset-0 z-40 bg-black/30 sm:hidden"
+                />
+              )}
 
-              <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
+              <div className="fixed top-0 right-0 z-50 sm:absolute sm:top-[calc(100%+12px)] sm:right-0">
                 <Notification
                   isOpen={isNotificationOpen}
                   onClose={() => setIsNotificationOpen(false)}
