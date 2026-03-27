@@ -1,30 +1,23 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
-import { useGetPostsList } from "@/hooks/queries/usePosts";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 interface Props {
   searchValue?: string;
   sortValue?: string;
-  refetchType?: boolean;
-  filterType?: "my" | "all";
 }
 
 export default function PostList({
-  filterType = "all",
   searchValue = "",
   sortValue = "latest",
-  refetchType = true,
 }: Props) {
   const router = useRouter();
-
-  const user = useAuthStore((state) => state.user);
 
   const getSortParams = () => {
     switch (sortValue) {
@@ -42,26 +35,33 @@ export default function PostList({
   const { sortBy, sortOrder } = getSortParams();
 
   // 게시글 리스트 key ["posts", "list", sortValue, searchValue]
-  const { data, isFetching } = useGetPostsList(
-    sortValue,
-    searchValue,
-    {
-      keyword: searchValue,
-      sortBy,
-      sortOrder,
-      size: filterType === "all" ? 100 : 20,
-    },
-    refetchType,
-  );
-  let postList = data?.data || [];
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["posts", "list", sortValue, searchValue],
+      queryFn: ({ pageParam }) =>
+        getPosts({
+          keyword: searchValue,
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+          size: 20,
+          ...(pageParam ? { cursor: pageParam } : {}),
+        }),
+      initialPageParam: undefined as string | undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+    });
 
-  if (filterType === "my") {
-    postList = postList.filter((post: Post) => post.author.id === user?.id);
-  }
+  const bottomRef = useIntersectionObserver(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  );
+
+  const postList = data?.pages.flatMap((page) => page.data) || [];
 
   return (
     <div
-      className={`${isFetching ? "opacity-50" : ""} flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8`}
+      className={`${isFetchingNextPage ? "opacity-50" : ""} flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8`}
     >
       <div className="flex flex-col sm:gap-8">
         {postList.length > 0 ? (
@@ -86,19 +86,16 @@ export default function PostList({
               <SearchX className="size-8 text-gray-300" />
             </div>
             <p className="text-lg font-semibold text-gray-900">
-              {filterType === "my"
-                ? "작성한 게시물이 없습니다."
-                : "검색 결과가 없습니다."}
+              검색 결과가 없습니다.
             </p>
             <p className="mt-2 text-gray-500">
-              {filterType === "all" && (
-                <p className="mt-2 text-gray-500">
-                  다른 검색어로 다시 시도해보세요.
-                </p>
-              )}
+              다른 검색어로 다시 시도해보세요.
             </p>
           </div>
         )}
+      </div>
+      <div ref={bottomRef} className="flex h-20 items-center justify-center">
+        {isFetchingNextPage && <p>불러오는 중...</p>}
       </div>
     </div>
   );

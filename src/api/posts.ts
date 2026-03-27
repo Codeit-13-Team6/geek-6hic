@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { GetPostsParams, Post } from "@/types";
+import { filterThreadPosts } from "@/lib/postUtils";
+import { GetPostsParams, GetPostsResponse, Post } from "@/types";
 import axios from "axios";
 
 export async function getHotPosts() {
@@ -7,38 +8,14 @@ export async function getHotPosts() {
   return data;
 }
 
-export const getPosts = async (params: GetPostsParams, extraHeaders?: any) => {
-  const isServer = typeof window === "undefined";
-  const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    : "";
-
-  const { data: res } = await axios.get(`${baseUrl}/api/posts`, {
+export const getPosts = async (
+  params: GetPostsParams,
+): Promise<GetPostsResponse> => {
+  const { data: res } = await axiosInstance.get("/posts", {
     params,
-    headers: { ...extraHeaders },
   });
 
-  const isNotThread = (title?: string) => {
-    if (!title) return true;
-    return title.split("_")[0] !== "isThread";
-  };
-
-  if (res?.data && Array.isArray(res.data)) {
-    const postsArray = res.data;
-
-    const filteredPosts = postsArray.filter((post: Post) =>
-      isNotThread(post.title),
-    );
-
-    return { ...res, data: filteredPosts };
-  }
-
-  // 응답 자체가 그냥 순수 배열일 때
-  else if (Array.isArray(res)) {
-    return res.filter((post: Post) => isNotThread(post.title));
-  }
-
-  return res;
+  return filterThreadPosts(res);
 };
 
 export const getPostDetail = async (postId: number, extraHeaders?: any) => {
