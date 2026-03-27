@@ -1,8 +1,7 @@
 "use client";
 
-import NotificationCard from "./NotificationCard";
-
-import type { NotificationItem } from "./notification.types";
+import NotificationCard from "@/components/layout/notification/NotificationCard";
+import type { NotificationItem } from "@/types/notification";
 
 type NotificationProps = {
   isOpen: boolean;
