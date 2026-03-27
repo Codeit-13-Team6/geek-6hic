@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
@@ -34,6 +34,7 @@ export function Gnb() {
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === "/login";
@@ -53,6 +54,25 @@ export function Gnb() {
   const handleLogin = async () => {
     router.push("/login");
   };
+
+  useEffect(() => {
+    if (!isNotificationOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNotificationOpen]);
 
   return (
     <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
@@ -92,28 +112,28 @@ export function Gnb() {
         </div>
         <div className="relative flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button
-              type="button"
-              onClick={() => setIsNotificationOpen((prev) => !prev)}
-              className="flex cursor-pointer items-center justify-center"
-            >
-              <Image
-                src={hasUnreadNotifications ? selectedBellIconLg : bellIconLg}
-                alt="알림"
-                width={24}
-                height={24}
-                className="hidden lg:block"
-              />
-            </button>
-          )}
+            <div ref={notificationRef}>
+              <button
+                type="button"
+                onClick={() => setIsNotificationOpen((prev) => !prev)}
+                className="flex cursor-pointer items-center justify-center"
+              >
+                <Image
+                  src={hasUnreadNotifications ? selectedBellIconLg : bellIconLg}
+                  alt="알림"
+                  width={24}
+                  height={24}
+                  className="hidden lg:block"
+                />
+              </button>
 
-          {isLoggedIn && (
-            <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
-              <Notification
-                isOpen={isNotificationOpen}
-                onClose={() => setIsNotificationOpen(false)}
-                onUnreadChange={setHasUnreadNotifications}
-              />
+              <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
+                <Notification
+                  isOpen={isNotificationOpen}
+                  onClose={() => setIsNotificationOpen(false)}
+                  onUnreadChange={setHasUnreadNotifications}
+                />
+              </div>
             </div>
           )}
 
