@@ -1,6 +1,6 @@
 "use client";
 
-import { MeetingScheduleStepProps } from "@/app/meetings/modal/modal";
+import { MeetingScheduleStepProps } from "@/app/meetings/modal/model/meeting-form.props";
 import { ScheduleDatePicker } from "@/app/meetings/modal/ScheduleDatePicker";
 import { ScheduleTimePicker } from "@/app/meetings/modal/ScheduleTimePicker";
 import { InputCommon } from "@/components/ui/InputCommon";
