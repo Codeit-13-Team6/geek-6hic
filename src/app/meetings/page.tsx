@@ -32,7 +32,7 @@ export default async function Page() {
         prefetchFn={(qc) =>
           qc.prefetchQuery({
             queryKey: ["meetings", "all", null],
-            queryFn: () => getMeetingList({ size: 100 }),
+            queryFn: () => getMeetingList({ size: 10 }),
           })
         }
       >

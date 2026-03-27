@@ -6,6 +6,8 @@ import {
   GetMeetingListParams,
   CreateMeeting,
   UpdateMeeting,
+  MyMeetingsResponse,
+  FavoritesResponse,
 } from "@/types";
 import axios from "axios";
 
