@@ -108,13 +108,19 @@ export default function MeetingFilters({
           </button>
 
           {isOpen ? (
-            <Calendar
-              mode="range"
-              selected={draftDate}
-              onSelect={setDraftDate}
-              onReset={handleCalendarReset}
-              onApply={handleCalendarApply}
-            />
+            <>
+              <Calendar
+                mode="range"
+                selected={draftDate}
+                onSelect={setDraftDate}
+                onReset={handleCalendarReset}
+                onApply={handleCalendarApply}
+              />
+              <div
+                onClick={() => setIsOpen(false)}
+                className="fixed top-0 left-0 w-full h-full"
+              ></div>
+            </>
           ) : null}
         </div>
 

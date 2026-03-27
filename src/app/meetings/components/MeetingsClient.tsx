@@ -101,7 +101,6 @@ export default function MeetingsClient() {
         onChangeTab={setActiveValue}
         onChangeSort={setSortValue}
         onApplyDate={setAppliedDate}
-        
         onResetFilters={handleResetFilters}
       />
 
