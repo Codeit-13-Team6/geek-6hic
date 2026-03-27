@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getNotifications } from "@/api/notifications";
+import { getNotifications, markNotificationAsRead } from "@/api/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
 import type { NotificationItem } from "@/types/notification";
 
@@ -15,7 +15,20 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
   const [isLoading, setIsLoading] = useState(false);
   // 카드 누르면 해당 모임이나 게시글로 이동
   const router = useRouter();
-  const handleNotificationClick = (notification: NotificationItem) => {
+  const handleNotificationClick = async (notification: NotificationItem) => {
+    if (!notification.isRead) {
+      try {
+        await markNotificationAsRead(notification.id);
+        setNotifications((prev) =>
+          prev.map((item) =>
+            item.id === notification.id ? { ...item, isRead: true } : item,
+          ),
+        );
+      } catch (error) {
+        console.error("알림 읽음 처리 실패:", error);
+      }
+    }
+
     if (notification.type === "COMMENT") {
       router.push(`/lounge/${notification.data.postId}`);
     } else {
