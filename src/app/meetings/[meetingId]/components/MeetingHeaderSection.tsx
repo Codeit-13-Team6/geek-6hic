@@ -169,33 +169,33 @@ export function MeetingHeaderSection({
         alt={displayName}
         width={36}
         height={36}
-        className="size-7 rounded-full border-2 border-white object-cover xl:size-9"
+        className="size-7 rounded-full border-2 border-white object-cover lg:size-9"
       />
     );
   };
 
   return (
     <>
-      <section className="grid gap-3 md:grid-cols-[333px_343px] md:gap-5 xl:grid-cols-[630px_630px] xl:gap-5">
-        <div className="overflow-hidden rounded-[12px] bg-gray-100 md:h-[332px] md:w-[333px] md:rounded-[20px] xl:h-[443px] xl:w-[630px] xl:rounded-[32px]">
+      <section className="grid grid-cols-1 gap-3 sm:gap-5 lg:grid-cols-2 lg:gap-5">
+        <div className="overflow-hidden rounded-[12px] bg-gray-100 sm:rounded-[20px] lg:rounded-[32px]">
           {data.image ? (
             <Image
               src={data.image}
               alt={data.name}
               width={760}
               height={520}
-              className="h-[241px] w-full object-cover md:h-full"
+              className="aspect-[4/3] w-full object-cover lg:aspect-[630/443]"
             />
           ) : (
-            <div className="h-[241px] w-full bg-gray-100 md:h-full" />
+            <div className="aspect-[4/3] w-full bg-gray-100 lg:aspect-[630/443]" />
           )}
         </div>
 
-        <div className="space-y-3 md:space-y-5">
-          <div className="rounded-[20px] border border-gray-100 bg-white px-6 pt-5 pb-6 shadow-sm md:h-[200px] md:w-[343px] md:px-6 md:pt-5 md:pb-6 xl:h-[282px] xl:w-[630px] xl:rounded-[28px] xl:px-10 xl:pt-[34px] xl:pb-8">
-            <div className="flex items-start justify-between gap-2 md:gap-3 xl:gap-4">
-              <div className="min-w-0 space-y-3 md:space-y-3 xl:space-y-4">
-                <div className="flex flex-wrap gap-1.5 md:gap-2">
+        <div className="space-y-3 sm:space-y-5">
+          <div className="rounded-[20px] border border-gray-100 bg-white px-6 pt-5 pb-6 shadow-sm sm:min-h-[200px] lg:min-h-[282px] lg:rounded-[28px] lg:px-10 lg:pt-[34px] lg:pb-8">
+            <div className="flex items-start justify-between gap-2 sm:gap-3 lg:gap-4">
+              <div className="min-w-0 space-y-3 sm:space-y-3 lg:space-y-4">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   <TagCommon variant="blue">모임 일정</TagCommon>
                   <TagCommon variant="white">
                     {formatMonthDay(data.dateTime)}
@@ -206,7 +206,7 @@ export function MeetingHeaderSection({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <h1 className="text-[16px] leading-[24px] font-semibold text-gray-900 xl:text-[34px] xl:leading-[42px]">
+                  <h1 className="min-w-0 text-[16px] leading-[24px] font-semibold break-words text-gray-900 lg:text-[34px] lg:leading-[42px]">
                     {data.name}
                   </h1>
                   {data.isHost ? (
@@ -247,14 +247,14 @@ export function MeetingHeaderSection({
               ) : null}
             </div>
 
-            <div className="mt-5 flex gap-2 md:mt-5 md:gap-2 xl:mt-8 xl:gap-3">
+            <div className="mt-5 flex gap-2 sm:mt-5 sm:gap-2 lg:mt-8 lg:gap-3">
               <BtnCommon
                 type="button"
                 variant="teritary"
                 size="icon-md"
                 disabled={isFavoritePending}
                 onClick={handleFavoriteClick}
-                className="size-11 shrink-0 rounded-full xl:size-16"
+                className="size-11 shrink-0 rounded-full lg:size-16"
               >
                 <Image
                   src={data.isFavorited ? heartsTrue : heartsFalse}
@@ -269,28 +269,28 @@ export function MeetingHeaderSection({
                 size="md"
                 disabled={isActionDisabled || isJoinPending || isAuthLoading}
                 onClick={handleActionClick}
-                className="h-11 w-auto min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
+                className="h-11 w-auto min-w-0 flex-1 rounded-[14px] text-[14px] lg:h-16 lg:rounded-[18px]"
               >
                 {isJoinPending ? "처리 중.." : actionLabel}
               </BtnCommon>
             </div>
 
             {shouldShowClosedGuide ? (
-              <p className="mt-3 text-[12px] text-gray-500 xl:text-sm">
+              <p className="mt-3 text-[12px] text-gray-500 lg:text-sm">
                 모집이 마감되어 더 이상 참여할 수 없습니다.
               </p>
             ) : null}
           </div>
 
-          <div className="rounded-[20px] border border-[#c7f5e8] bg-[#e6fbf5] px-6 pt-5 pb-[22px] md:h-[113px] md:w-[343px] md:px-6 md:pt-5 md:pb-[22px] xl:h-[141px] xl:w-[630px] xl:rounded-[28px] xl:px-10 xl:pt-7 xl:pb-[34px]">
-            <div className="mb-3 flex items-center gap-2 md:mb-3 md:gap-2 xl:mb-4 xl:gap-3">
-              <p className="text-main-green-700 text-[16px] font-semibold xl:text-[28px]">
+          <div className="rounded-[20px] border border-[#c7f5e8] bg-[#e6fbf5] px-6 pt-5 pb-[22px] sm:min-h-[113px] lg:min-h-[141px] lg:rounded-[28px] lg:px-10 lg:pt-7 lg:pb-[34px]">
+            <div className="mb-3 flex items-center gap-2 sm:mb-3 sm:gap-2 lg:mb-4 lg:gap-3">
+              <p className="text-main-green-700 text-[16px] font-semibold lg:text-[28px]">
                 {data.participantCount}명 참여
               </p>
               <div className="flex -space-x-2">
                 {visibleParticipants.map(renderParticipantAvatar)}
                 {hiddenParticipantCount > 0 ? (
-                  <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-semibold text-gray-600 xl:size-9 xl:text-sm">
+                  <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-semibold text-gray-600 lg:size-9 lg:text-sm">
                     +{hiddenParticipantCount}
                   </span>
                 ) : null}
@@ -305,7 +305,7 @@ export function MeetingHeaderSection({
                 }
               </ProgressValue>
             </Progress>
-            <div className="mt-2 flex justify-end text-[12px] text-gray-500 xl:text-sm">
+            <div className="mt-2 flex justify-end text-[12px] text-gray-500 lg:text-sm">
               최대 {data.capacity}명
             </div>
           </div>

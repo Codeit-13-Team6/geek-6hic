@@ -29,9 +29,9 @@ export function MeetingThreadSection({
   }
 
   return (
-    <section className="w-full space-y-3 md:space-y-4">
+    <section className="w-full space-y-3 sm:space-y-4">
       <h2 className="text-[24px] font-semibold text-gray-900">모임 스레드</h2>
-      <div className="rounded-[20px] border border-gray-100 bg-white p-6 shadow-sm md:rounded-[24px] md:p-8 xl:rounded-[32px]">
+      <div className="rounded-[20px] border border-gray-100 bg-white p-6 shadow-sm sm:rounded-[24px] sm:p-8 lg:rounded-[32px]">
         {canWriteThread && threadPost?.id ? (
           <CommentSection postId={threadPost.id} isThread={true} />
         ) : (
