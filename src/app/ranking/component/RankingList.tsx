@@ -25,7 +25,7 @@ export default function RankingList() {
     <div className="animate-in fade-in duration-700">
       <div className="pt-5 sm:pt-10">
         <div className="flex gap-2 pb-5 sm:gap-[16px] sm:pb-[40px]">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1 basis-0">
             {" "}
             <TopRankCard
               title={top3List[1]?.meetName}
