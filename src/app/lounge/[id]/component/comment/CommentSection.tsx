@@ -14,7 +14,7 @@ import Comment from "./Comment";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
-import { extractUrlsFromText } from "@/lib/linkUtils";
+import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 
 interface CommentSectionProps {

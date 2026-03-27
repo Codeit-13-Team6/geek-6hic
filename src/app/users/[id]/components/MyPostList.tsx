@@ -29,7 +29,11 @@ export default function MyPostList() {
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
     });
 
-  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  const bottomRef = useIntersectionObserver(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  );
 
   const allPosts =
     data?.pages

@@ -240,6 +240,19 @@ const refreshAccessToken = async (
   return promise;
 };
 
+// 인증 없이 요청 가능한 경로
+const PUBLIC_PATHS = ["/meetings", "/lounge", "/posts", "/api/hot"];
+
+const isPublicPath = (url?: string) => {
+  if (!url) return false;
+  try {
+    const pathname = new URL(url).pathname;
+    return PUBLIC_PATHS.some((path) => pathname.includes(path));
+  } catch {
+    return PUBLIC_PATHS.some((path) => url.includes(path));
+  }
+};
+
 // request interceptor: 매 요청마다 accessToken을 Authorization 헤더에 자동 세팅
 // accessToken 없으면 미리 refresh 시도, refreshToken도 없으면 즉시 차단
 // 리퀘스트에서는 토큰 만료 상태는 확인 불가능하고 토큰 유무에 대해서만 판단하고 처리
@@ -250,8 +263,14 @@ serverAxios.interceptors.request.use(async (config) => {
   let accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
   console.log(" 리퀘스트 완전 처음 ", config.url);
+  console.log(" isPublicPath 결과 ", isPublicPath(config.url), " refreshToken 유무 ", !!refreshToken);
 
-  // refreshToken도 없으면 요청 보내지 않고 즉시 차단
+  if (isPublicPath(config.url)) {
+    return config;
+  }
+
+
+  // refreshToken도 없으면 요청 보내지 않고 즉시 차단 (공개 경로는 제외)
   if (!refreshToken) {
     return Promise.reject(createRefreshFailedError());
   }

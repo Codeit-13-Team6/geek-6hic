@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export default function Login() {
       const res = await loginUser({ email: data.email, password: data.password });
       if (res?.ok && res.user) {
         setUser(res.user);
-        router.push("/");
+        router.push(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");

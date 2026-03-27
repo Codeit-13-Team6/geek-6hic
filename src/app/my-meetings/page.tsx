@@ -19,7 +19,7 @@ import MyMeetingsClient from "./components/MyMeetingsClient";
 
 export default async function Page() {
   const queryClient = new QueryClient();
-
+  //await 제거
   await queryClient.prefetchInfiniteQuery<
     JoinedMeetingsResponse,
     Error,
