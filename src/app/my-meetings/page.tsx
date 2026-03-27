@@ -14,7 +14,6 @@ import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { getMeetingJoinedNextPageParam } from "@/hooks/useMeetingQuery";
 
 
-
 export default async function Page() {
 
   return (

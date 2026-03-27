@@ -21,14 +21,6 @@ export async function getPostCommentsServer(
   return data;
 }
 
-export async function fetchPostDetail(postId: number) {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: `/posts/${postId}`,
-  });
-  return data;
-}
-
 
 export async function fetchPosts(cursor?: string): Promise<GetPostsResponse> {
   const { data } = await serverFetch({

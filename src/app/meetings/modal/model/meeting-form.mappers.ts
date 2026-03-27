@@ -1,4 +1,4 @@
-import type { MeetingDetailData } from "@/app/meetings/[id]/types";
+import type { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
 import { getNormalizedMeetingLink } from "@/app/meetings/modal/model/meeting-form.validation";
 import type { MeetingFormValues } from "@/app/meetings/modal/model/meeting-form.types";
 

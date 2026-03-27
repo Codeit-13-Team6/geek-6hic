@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { MeetingDetailData } from "@/app/meetings/[id]/types";
+import type { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
 import { createEmptyMeetingFormErrors } from "@/app/meetings/modal/model/meeting-form.defaults";
 import {
   toEditMeetingPayload,

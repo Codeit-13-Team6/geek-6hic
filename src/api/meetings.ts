@@ -8,7 +8,7 @@ import {
   MyMeetingsResponse,
   FavoritesResponse,
 } from "@/types";
-import type { MeetingParticipantsResponse } from "@/app/meetings/[id]/types";
+import type { MeetingParticipantsResponse } from "@/app/meetings/[meetingId]/types";
 
 
 
