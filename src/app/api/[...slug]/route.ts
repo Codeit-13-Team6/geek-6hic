@@ -129,6 +129,11 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["POST", "DELETE"],
     requiresAuth: true,
   },
+  {
+    pattern: /^\/og$/,
+    methods: ["GET"],
+    requiresAuth: false,
+  },
 ];
 
 // GET, POST 등 모든 요청을 하나로 처리하는 통합 핸들러
@@ -170,14 +175,20 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    // server-fetcher interceptor가 토큰 세팅 + 401 시 refresh 자동 처리
-    const { data, status } = await serverAxios({
+    const axiosOptions: any = {
       method: request.method,
       url: targetUrl,
       headers: { "Content-Type": "application/json" },
       data: body,
-    });
+    };
 
+    // 타겟이 /og 라면 baseURL을 강제로 최상단 루트로 덮어씌움
+    if (targetPath === "/og") {
+      axiosOptions.baseURL = "https://together-dallaem-api.vercel.app";
+    }
+
+    // server-fetcher interceptor가 토큰 세팅 + 401 시 refresh 자동 처리
+    const { data, status } = await serverAxios(axiosOptions);
     console.log(" slug 페이지 트라이문 ");
 
     const response = NextResponse.json(data, { status });

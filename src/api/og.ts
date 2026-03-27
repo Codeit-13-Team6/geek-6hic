@@ -1,9 +1,8 @@
-import axios from "axios";
+import axiosInstance from "@/lib/client-fetcher";
 
 export const getOgData = async (url: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-  const response = await axios.get(
-    `${baseUrl}/og?url=${encodeURIComponent(url)}`,
+  const response = await axiosInstance.get(
+    `/og?url=${encodeURIComponent(url)}`,
   );
   return response.data;
 };
