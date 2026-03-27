@@ -21,6 +21,7 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
     } else {
       router.push(`/meetings/${notification.data.meetingId}`);
     }
+    onClose();
   };
 
   useEffect(() => {
