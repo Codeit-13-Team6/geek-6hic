@@ -1,6 +1,11 @@
 import { serverFetch } from "@/lib/server-fetcher";
-import type { GetCommentsResponse, GetPostsResponse } from "@/types";
+import type {
+  GetCommentsResponse,
+  GetPostsResponse,
+} from "@/types";
 import { filterThreadPosts } from "@/lib/postUtils";
+
+
 
 export async function getPostCommentsServer(
   postId: number,
@@ -24,6 +29,7 @@ export async function fetchPostDetail(postId: number) {
   return data;
 }
 
+
 export async function fetchPosts(cursor?: string): Promise<GetPostsResponse> {
   const { data } = await serverFetch({
     method: "GET",
@@ -39,3 +45,5 @@ export async function fetchPosts(cursor?: string): Promise<GetPostsResponse> {
 
   return filterThreadPosts(data);
 }
+
+
