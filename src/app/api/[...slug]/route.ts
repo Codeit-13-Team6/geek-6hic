@@ -55,6 +55,11 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     requiresAuth: true,
   },
   {
+    pattern: /^\/notifications$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
     pattern: /^\/posts$/,
     methods: ["GET", "POST"],
     requiresAuth: true,

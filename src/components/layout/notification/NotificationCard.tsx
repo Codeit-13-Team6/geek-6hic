@@ -13,7 +13,7 @@ type NotificationCardProps = {
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",
   MEETING_CANCELED: "모임 취소",
-  COMMENT: "댓글",
+  COMMENT: "새로운 댓글",
 };
 
 function getNotificationTitle(notification: NotificationItem) {
@@ -77,6 +77,7 @@ export default function NotificationCard({
             width={40}
             height={40}
             className="size-10 rounded-lg object-cover"
+            unoptimized
           />
         ) : (
           <Image
@@ -85,6 +86,7 @@ export default function NotificationCard({
             width={40}
             height={40}
             className="size-10 rounded-full object-cover"
+            unoptimized
           />
         )}
       </div>
