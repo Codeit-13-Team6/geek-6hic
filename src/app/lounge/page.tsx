@@ -9,6 +9,7 @@ import { GetPostsResponse, Post } from "@/types";
 import { EmptyData } from "@/components/features/empty/EmptyData";
 import { InfiniteData } from "@tanstack/react-query";
 import { filterThreadPosts } from "@/lib/postUtils";
+import LoungeSkeleton from "./component/skeleton/LoungeSkeleton";
 
 const getNextPageParam = <
   T extends { hasMore: boolean; nextCursor: string | null },
@@ -62,12 +63,11 @@ export default async function LoungePage() {
           <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
             | 이번주 HOT 게시물
           </h2>
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
-            <HotPostList />
-          </div>
+
+          <HotPostList />
         </section>
 
-        <Suspense fallback={<EmptyData />}>
+        <Suspense fallback={<LoungeSkeleton />}>
           <PrefetchBoundary
             prefetchFn={(qc) =>
               qc.prefetchInfiniteQuery<

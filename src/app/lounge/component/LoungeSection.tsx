@@ -36,7 +36,6 @@ export default function LoungeContent() {
 
   return (
     <>
-      {/* 검색 및 필터 구역 */}
       <section className="mt-8 flex flex-col sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex w-full flex-row items-center gap-3 sm:max-w-[500px]">
           <InputCommon
@@ -75,7 +74,6 @@ export default function LoungeContent() {
         </div>
       </section>
 
-      {/* 전체 리스트 구역 */}
       <section className="mt-6 sm:mt-8">
         <PostList searchValue={searchKeyword} sortValue={sortValue} />
       </section>
