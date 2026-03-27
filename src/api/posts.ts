@@ -1,7 +1,6 @@
 import axiosInstance from "@/lib/client-fetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
 import { GetPostsParams, GetPostsResponse, Post } from "@/types";
-import axios from "axios";
 
 export async function getHotPosts() {
   const { data } = await axiosInstance.get("/hot");
@@ -18,15 +17,8 @@ export const getPosts = async (
   return filterThreadPosts(res);
 };
 
-export const getPostDetail = async (postId: number, extraHeaders?: any) => {
-  const isServer = typeof window === "undefined";
-  const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    : "";
-
-  const { data } = await axios.get(`${baseUrl}/api/posts/${postId}`, {
-    headers: { ...extraHeaders },
-  });
+export const getPostDetail = async (postId: number) => {
+  const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 };
 

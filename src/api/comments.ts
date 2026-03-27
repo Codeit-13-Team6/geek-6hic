@@ -7,7 +7,7 @@ export async function getComments(
   const { data } = await axiosInstance.get(`/posts/${postId}/comments`, {
     params: {
       sortOrder: "desc",
-      size: 10,
+      size: 100,
     },
   });
   return data;

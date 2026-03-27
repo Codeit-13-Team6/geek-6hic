@@ -27,7 +27,7 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
   {
     pattern: /^\/meetings$/,
     methods: ["GET", "POST"],
-    requiresAuth: false,
+    requiresAuth: true,
   },
   {
     pattern: /^\/meetings\/my$/,
