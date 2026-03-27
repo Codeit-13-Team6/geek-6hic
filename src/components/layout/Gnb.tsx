@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import bellIconLg from "@/assets/icon/bells/bell-default-lg-false.svg";
+import selectedBellIconLg from "@/assets/icon/bells/bell-default-lg-true.svg";
 import menu from "@/assets/icon/menu/menu.svg";
 import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
@@ -32,6 +33,7 @@ export function Gnb() {
   const isLoggedIn = !!user;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
 
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === "/login";
@@ -96,7 +98,7 @@ export function Gnb() {
               className="flex cursor-pointer items-center justify-center"
             >
               <Image
-                src={bellIconLg}
+                src={hasUnreadNotifications ? selectedBellIconLg : bellIconLg}
                 alt="알림"
                 width={24}
                 height={24}
@@ -110,6 +112,7 @@ export function Gnb() {
               <Notification
                 isOpen={isNotificationOpen}
                 onClose={() => setIsNotificationOpen(false)}
+                onUnreadChange={setHasUnreadNotifications}
               />
             </div>
           )}

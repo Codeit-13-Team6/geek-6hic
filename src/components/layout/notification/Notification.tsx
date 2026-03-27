@@ -13,9 +13,14 @@ import type { NotificationItem } from "@/types/notification";
 interface NotificationProps {
   isOpen: boolean;
   onClose: () => void;
+  onUnreadChange: (hasUnread: boolean) => void;
 }
 
-export default function Notification({ isOpen, onClose }: NotificationProps) {
+export default function Notification({
+  isOpen,
+  onClose,
+  onUnreadChange,
+}: NotificationProps) {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // 모든 알림이 읽음 처리됐는지 여부
@@ -28,11 +33,13 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
     if (!notification.isRead) {
       try {
         await markNotificationAsRead(notification.id);
-        setNotifications((prev) =>
-          prev.map((item) =>
+        setNotifications((prev) => {
+          const nextNotifications = prev.map((item) =>
             item.id === notification.id ? { ...item, isRead: true } : item,
-          ),
-        );
+          );
+          onUnreadChange(nextNotifications.some((item) => !item.isRead));
+          return nextNotifications;
+        });
       } catch (error) {
         console.error("알림 읽음 처리 실패:", error);
       }
@@ -50,9 +57,8 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
   const handleMarkAllAsRead = async () => {
     try {
       await markAllNotificationsAsRead();
-      setNotifications((prev) =>
-        prev.map((item) => ({ ...item, isRead: true })),
-      );
+      setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
+      onUnreadChange(false);
     } catch (error) {
       console.error("모든 알림 읽음 처리 실패:", error);
     }
@@ -62,19 +68,19 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
     try {
       await deleteAllNotification();
       setNotifications([]);
+      onUnreadChange(false);
     } catch (error) {
       console.error("모든 알림 삭제 실패:", error);
     }
   };
 
   useEffect(() => {
-    if (!isOpen) return;
-
     const fetchNotifications = async () => {
       try {
         setIsLoading(true);
         const data = await getNotifications();
         setNotifications(data);
+        onUnreadChange(data.some((item) => !item.isRead));
       } catch (error) {
         console.error("알림 조회 실패:", error);
       } finally {
@@ -83,7 +89,7 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
     };
 
     fetchNotifications();
-  }, [isOpen]);
+  }, [isOpen, onUnreadChange]);
 
   if (!isOpen) return null;
 
