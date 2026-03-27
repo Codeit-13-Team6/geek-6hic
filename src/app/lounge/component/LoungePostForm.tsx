@@ -7,7 +7,7 @@ import LoungeEditor from "@/components/features/editor/LoungeEditor";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/components/features/card/LinkCard";
-import { stitchPostData, LinkItem } from "@/lib/postUtils";
+import { stitchPostData, LinkItem } from "@/lib/contentLinkUtils";
 
 export interface PostPayload {
   title: string;

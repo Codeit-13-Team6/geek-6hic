@@ -1,34 +1,24 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { GetPostsParams, Post } from "@/types";
-import axios from "axios";
+import { filterThreadPosts } from "@/lib/postUtils";
+import { GetPostsParams, GetPostsResponse, Post } from "@/types";
 
 export async function getHotPosts() {
   const { data } = await axiosInstance.get("/hot");
   return data;
 }
 
-export const getPosts = async (params: GetPostsParams, extraHeaders?: any) => {
-  const isServer = typeof window === "undefined";
-  const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    : "";
-
-  const { data } = await axios.get(`${baseUrl}/api/posts`, {
+export const getPosts = async (
+  params: GetPostsParams,
+): Promise<GetPostsResponse> => {
+  const { data: res } = await axiosInstance.get("/posts", {
     params,
-    headers: { ...extraHeaders },
   });
-  return data;
+
+  return filterThreadPosts(res);
 };
 
-export const getPostDetail = async (postId: number, extraHeaders?: any) => {
-  const isServer = typeof window === "undefined";
-  const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    : "";
-
-  const { data } = await axios.get(`${baseUrl}/api/posts/${postId}`, {
-    headers: { ...extraHeaders },
-  });
+export const getPostDetail = async (postId: number) => {
+  const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 };
 

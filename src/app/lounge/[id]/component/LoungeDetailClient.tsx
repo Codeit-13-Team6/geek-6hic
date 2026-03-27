@@ -3,7 +3,7 @@
 import { PostDetailCard } from "@/components/features/card/PostDetailCard";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { parsePostData } from "@/lib/postUtils";
+import { parsePostData } from "@/lib/contentLinkUtils";
 import {
   useDeletePost,
   useGetPostDetail,
@@ -12,7 +12,6 @@ import {
 import { useState } from "react";
 import ModalBase from "@/components/ui/ModalBase";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import CommentSection from "./comment/CommentSection";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
@@ -55,28 +54,24 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-4 pb-20 sm:p-8 lg:pt-12">
-      <div className="mx-auto w-full max-w-[860px]">
-        <section className="mb-10">
-          <PostDetailCard
-            title={post.title}
-            name={post.author.name}
-            date={new Date(post.createdAt)}
-            content={mainContent} // 링크를 제외한 원래 본문 내용만
-            linkObjects={linkObjects}
-            thumbsUp={post.likeCount}
-            comment={post.comments.length || 0}
-            isOwner={isPostOwner}
-            liked={post.isLiked}
-            onEdit={handlePostEdit}
-            onDelete={handlePostDelete}
-            onLike={handleLikeClick}
-            // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
-          />
-        </section>
-
-        <CommentSection postId={postId} />
-      </div>
+    <>
+      <section className="mb-10">
+        <PostDetailCard
+          title={post.title}
+          name={post.author.name}
+          date={new Date(post.createdAt)}
+          content={mainContent} // 링크를 제외한 원래 본문 내용만
+          linkObjects={linkObjects}
+          thumbsUp={post.likeCount}
+          comment={post.comments.length || 0}
+          isOwner={isPostOwner}
+          liked={post.isLiked}
+          onEdit={handlePostEdit}
+          onDelete={handlePostDelete}
+          onLike={handleLikeClick}
+          // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
+        />
+      </section>
 
       <ModalBase
         isOpen={isDeleteModalOpen}
@@ -108,6 +103,6 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
           </div>
         </div>
       </ModalBase>
-    </div>
+    </>
   );
 }

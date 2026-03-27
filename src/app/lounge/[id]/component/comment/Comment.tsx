@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/DropdownCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { extractUrlsFromText } from "@/lib/linkUtils";
+import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 
 interface CommentProps {

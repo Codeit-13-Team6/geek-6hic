@@ -3,7 +3,7 @@ import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import defaultImg from "@/assets/img/empty/img-default.png";
-import { getPlainText } from "@/lib/postUtils";
+import { getPlainText } from "@/lib/contentLinkUtils";
 
 interface PostDetailCardProps {
   id: number;
