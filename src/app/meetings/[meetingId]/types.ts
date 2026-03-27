@@ -100,6 +100,19 @@ export interface MeetingParticipantsResponse {
   hasMore: boolean;
 }
 
+export interface MeetingAttendanceComment {
+  id: number;
+  authorId: number;
+  content: string;
+  createdAt: string;
+}
+
+export interface MeetingAttendanceCommentsResponse {
+  data: MeetingAttendanceComment[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
 export interface MeetingJoinResponse {
   message: string;
 }

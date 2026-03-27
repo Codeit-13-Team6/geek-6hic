@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  DEFAULT_MEETING_TYPE_OPTIONS,
-  MeetingBasicInfoSectionProps,
-} from "@/app/meetings/modal/modal";
+import { DEFAULT_MEETING_TYPE_OPTIONS } from "@/app/meetings/modal/model/meeting-form.constants";
+import { MeetingBasicInfoSectionProps } from "@/app/meetings/modal/model/meeting-form.props";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import {
   Select,
@@ -68,7 +66,7 @@ export function MeetingBasicInfoSection({
               <SelectValue>
                 {meetingTypeOptions.find(
                   (option) => option.value === values.category,
-                )?.label ?? "모임 종류를 선택해주세요"}
+                )?.label ?? "모임 종류를 선택해 주세요"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="w-[--anchor-width]">
@@ -91,7 +89,7 @@ export function MeetingBasicInfoSection({
         label="모임 이름"
         isRequired
         value={values.name}
-        placeholder="모임 이름을 입력해주세요"
+        placeholder="모임 이름을 입력해 주세요"
         onChange={(event) => {
           onChange({ name: event.target.value });
         }}
@@ -106,7 +104,7 @@ export function MeetingBasicInfoSection({
         label="모임 설명"
         isRequired
         value={values.description}
-        placeholder="모임 설명해주세요"
+        placeholder="모임 설명을 입력해 주세요"
         onChange={(event) => {
           onChange({ description: event.target.value });
         }}
@@ -118,7 +116,7 @@ export function MeetingBasicInfoSection({
         label="모임 링크"
         isRequired
         value={values.link}
-        placeholder="모임 링크를 입력해주세요"
+        placeholder="모임 링크를 입력해 주세요"
         onChange={(event) => {
           onChange({ link: event.target.value });
         }}
@@ -151,7 +149,7 @@ export function MeetingBasicInfoSection({
         ) : null}
 
         {isImageUploading ? (
-          <p className="text-sm text-gray-500">이미지 업로드 중...</p>
+          <p className="text-sm text-gray-500">이미지 업로드 중..</p>
         ) : null}
 
         {showImageMeta && values.imageUrl ? (

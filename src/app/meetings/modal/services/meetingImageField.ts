@@ -2,7 +2,7 @@
 
 import type { Dispatch, SetStateAction } from "react";
 
-import { MeetingFormValues } from "@/app/meetings/modal/modal";
+import { MeetingFormValues } from "@/app/meetings/modal/model/meeting-form.types";
 import { uploadMeetingImage } from "@/app/meetings/modal/services/uploadMeetingImage";
 
 interface ChangeMeetingImageParams {

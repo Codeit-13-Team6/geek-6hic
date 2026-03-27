@@ -1,25 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { fetchMe } from '@/api/auth';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useEffect } from "react";
+import { fetchMe } from "@/api/auth";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface MemberProviderProps {
   children: React.ReactNode;
-  isAuthenticated: boolean;
 }
 
 export function MemberProvider({
   children,
-  isAuthenticated,
 }: MemberProviderProps) {
   const setUser = useAuthStore((s) => s.setUser);
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
   useEffect(() => {
     const init = async () => {
-      // 
-      if (!isAuthenticated) return;
+      //
 
       try {
         const user = await fetchMe();
@@ -35,7 +32,7 @@ export function MemberProvider({
     };
 
     init();
-  }, [isAuthenticated, setUser, clearAuth]);
+  }, [ setUser, clearAuth]);
 
   return <>{children}</>;
 }

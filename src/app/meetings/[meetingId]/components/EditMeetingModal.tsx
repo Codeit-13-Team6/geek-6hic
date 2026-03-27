@@ -1,30 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
+import { useState } from "react";
 import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSection";
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
-import {
-  MeetingFormErrors,
-  MeetingFormValues,
-} from "@/app/meetings/modal/modal";
-import {
-  hasMeetingValidationError,
-  validateMeetingBasicInfoStep,
-  validateMeetingCategoryStep,
-  validateMeetingScheduleStep,
-} from "@/app/meetings/modal/meetingValidation";
-import {
-  changeMeetingImage,
-  removeMeetingImage,
-  revokeMeetingPreviewImageUrl,
-} from "@/app/meetings/modal/services/meetingImageField";
+import { useEditMeetingForm } from "@/app/meetings/modal/hooks/useEditMeetingForm";
 import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { ToastCommon } from "@/components/ui/ToastCommon";
-
-type EditMeetingTab = "basic" | "schedule";
 
 interface EditMeetingModalProps {
   isOpen: boolean;
@@ -33,98 +15,33 @@ interface EditMeetingModalProps {
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
-const getIsoDateTime = (date: string, time: string) =>
-  new Date(`${date}T${time}`).toISOString();
-
-const formatLocalDate = (value: string) => {
-  const date = new Date(value);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-};
-
-const formatLocalTime = (value: string) => {
-  const date = new Date(value);
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${hours}:${minutes}`;
-};
-
-const toFormValues = (data: MeetingDetailData): MeetingFormValues => ({
-  category: data.type,
-  name: data.name,
-  description: data.description,
-  link: data.link,
-  imageFile: null,
-  previewImageUrl: data.image ?? "",
-  imageUrl: data.image ?? "",
-  startDate: formatLocalDate(data.dateTime),
-  startTime: formatLocalTime(data.dateTime),
-  endDate: formatLocalDate(data.registrationEnd),
-  endTime: formatLocalTime(data.registrationEnd),
-  capacity: String(data.capacity),
-});
-
-const createEmptyErrors = (): MeetingFormErrors => ({
-  category: "",
-  name: "",
-  description: "",
-  link: "",
-  imageUrl: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
-  capacity: "",
-});
-
 export function EditMeetingModal({
   isOpen,
   onOpenChange,
   data,
   onSubmit,
 }: EditMeetingModalProps) {
-  const [activeTab, setActiveTab] = useState<EditMeetingTab>("basic");
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
-  const [formValues, setFormValues] = useState<MeetingFormValues>(
-    toFormValues(data),
-  );
-  const [errors, setErrors] = useState<MeetingFormErrors>(createEmptyErrors);
-  const [isImageUploading, setIsImageUploading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const previewImageUrlRef = useRef("");
-  const previousIsOpenRef = useRef(false);
-
-  const resetEditMeetingForm = (nextData: MeetingDetailData) => {
-    const nextValues = toFormValues(nextData);
-
-    previewImageUrlRef.current = nextValues.previewImageUrl;
-    setActiveTab("basic");
-    setFormValues(nextValues);
-    setErrors(createEmptyErrors());
-    setIsImageUploading(false);
-    setIsSubmitting(false);
-  };
-
-  useEffect(() => {
-    if (!previousIsOpenRef.current && isOpen) {
-      queueMicrotask(() => {
-        resetEditMeetingForm(data);
-      });
-    }
-
-    previousIsOpenRef.current = isOpen;
-  }, [data, isOpen]);
-
-  useEffect(() => {
-    return () => {
-      revokeMeetingPreviewImageUrl(previewImageUrlRef.current);
-    };
-  }, []);
+  const {
+    activeTab,
+    errors,
+    formValues,
+    isImageUploading,
+    isSubmitting,
+    setActiveTab,
+    handleChangeMeetingImage,
+    handleRemoveMeetingImage,
+    handleChangeBasicTab,
+    handleChangeScheduleTab,
+    handleSubmit,
+  } = useEditMeetingForm({
+    data,
+    isOpen,
+    onSubmit,
+    onSuccess: () => {
+      onOpenChange(false);
+    },
+  });
 
   const handleClose = () => {
     onOpenChange(false);
@@ -132,136 +49,6 @@ export function EditMeetingModal({
 
   const requestClose = () => {
     setIsCloseConfirmOpen(true);
-  };
-
-  const handleChangeMeetingImage = async (nextFile: File | null) => {
-    await changeMeetingImage({
-      nextFile,
-      previewImageUrlRef,
-      setFormValues,
-      setIsImageUploading,
-      clearImageError: () => {
-        setErrors((prev) => ({
-          ...prev,
-          imageUrl: "",
-        }));
-      },
-      setImageError: (message) => {
-        setErrors((prev) => ({
-          ...prev,
-          imageUrl: message,
-        }));
-      },
-      onUploadError: () => {
-        ToastCommon({ message: "이미지 업로드에 실패했습니다." });
-      },
-    });
-  };
-
-  const handleRemoveMeetingImage = () => {
-    removeMeetingImage({
-      previewImageUrlRef,
-      setFormValues,
-      setIsImageUploading,
-      clearImageError: () => {
-        setErrors((prev) => ({
-          ...prev,
-          imageUrl: "",
-        }));
-      },
-    });
-  };
-
-  const handleChangeBasicTab = (nextValues: {
-    category?: string;
-    name?: string;
-    description?: string;
-    link?: string;
-    imageFile?: File | null;
-    previewImageUrl?: string;
-    imageUrl?: string;
-  }) => {
-    setFormValues((prev) => ({
-      ...prev,
-      ...nextValues,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      category: nextValues.category ? "" : prev.category,
-      name: typeof nextValues.name === "string" ? "" : prev.name,
-      description:
-        typeof nextValues.description === "string" ? "" : prev.description,
-      link: typeof nextValues.link === "string" ? "" : prev.link,
-    }));
-  };
-
-  const handleChangeScheduleTab = (nextValues: {
-    startDate?: string;
-    startTime?: string;
-    endDate?: string;
-    endTime?: string;
-    capacity?: string;
-  }) => {
-    setFormValues((prev) => ({
-      ...prev,
-      ...nextValues,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      startDate: nextValues.startDate ? "" : prev.startDate,
-      startTime: nextValues.startTime ? "" : prev.startTime,
-      endDate: nextValues.endDate ? "" : prev.endDate,
-      endTime: nextValues.endTime ? "" : prev.endTime,
-      capacity: typeof nextValues.capacity === "string" ? "" : prev.capacity,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    const nextCategoryErrors = validateMeetingCategoryStep(formValues);
-    const nextBasicErrors = validateMeetingBasicInfoStep(formValues);
-    const nextScheduleErrors = validateMeetingScheduleStep(formValues);
-    const nextErrors: MeetingFormErrors = {
-      ...createEmptyErrors(),
-      ...nextCategoryErrors,
-      ...nextBasicErrors,
-      ...nextScheduleErrors,
-    };
-
-    setErrors(nextErrors);
-
-    if (
-      hasMeetingValidationError(nextCategoryErrors) ||
-      hasMeetingValidationError(nextBasicErrors)
-    ) {
-      setActiveTab("basic");
-      return;
-    }
-
-    if (hasMeetingValidationError(nextScheduleErrors)) {
-      setActiveTab("schedule");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await onSubmit({
-        type: formValues.category,
-        name: formValues.name,
-        description: formValues.description,
-        link: formValues.link,
-        image: formValues.imageUrl || formValues.previewImageUrl || null,
-        dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
-        registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
-        capacity: Number(formValues.capacity),
-      });
-
-      handleClose();
-    } catch {
-      // Error toast is handled by the parent mutation.
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -376,7 +163,7 @@ export function EditMeetingModal({
               disabled={isImageUploading || isSubmitting}
               onClick={handleSubmit}
             >
-              {isSubmitting ? "처리 중..." : "수정하기"}
+              {isSubmitting ? "처리 중.." : "수정하기"}
             </BtnCommon>
           </div>
         </div>
