@@ -1,6 +1,5 @@
 import axiosInstance from "@/lib/client-fetcher";
 import {
-  JoinedMeeting,
   JoinedMeetingsResponse,
   Meeting,
   GetMeetingListParams,
@@ -9,7 +8,8 @@ import {
   MyMeetingsResponse,
   FavoritesResponse,
 } from "@/types";
-import axios from "axios";
+import type { MeetingParticipantsResponse } from "@/app/meetings/[id]/types";
+
 
 
 export async function getMeetingList(
@@ -21,11 +21,6 @@ export async function getMeetingList(
 
   return res.data;
 }
-
-// export async function getMeetings(params: {}): Promise<Meeting[]> {
-//   const { data } = await axiosInstance.get("/meetings", { params });
-//   return data;
-// }
 
 export async function getMeeting(params?: {
   cursor?: string;
@@ -57,6 +52,7 @@ export async function updateMeeting(
   const { data } = await axiosInstance.patch(`/meetings/${meetingId}`, params);
   return data;
 }
+
 
 export async function updateFavorites(meetingId: number): Promise<void> {
   await axiosInstance.post(`/meetings/${meetingId}/favorites`);

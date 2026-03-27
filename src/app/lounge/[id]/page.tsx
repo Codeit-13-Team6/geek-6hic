@@ -1,31 +1,12 @@
 import LoungeDetailClient from "./component/LoungeDetailClient";
-import { serverFetch } from "@/lib/server-fetcher";
 import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import CommentSection from "./component/comment/CommentSection";
-import DetailSkeleton from "../component/skeleton/DetailCardSkeleton";
-import CommentSkeleton from "../component/skeleton/CommentSkeleton";
+import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
+import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
+import { getPostCommentsServer, fetchPostDetail } from "@/api";
 
-const fetchPostDetail = async (postId: number) => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: `/posts/${postId}`,
-  });
-  return data;
-};
 
-const fetchPostComments = async (postId: number) => {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: `/posts/${postId}/comments`,
-
-    params: {
-      sortOrder: "desc",
-      size: 100,
-    },
-  });
-  return data;
-};
 
 export default async function LoungeDetailPageServer({
   params,
@@ -56,7 +37,7 @@ export default async function LoungeDetailPageServer({
             prefetchFn={async (qc) => {
               await qc.prefetchQuery({
                 queryKey: ["comments", postId],
-                queryFn: () => fetchPostComments(postId),
+                queryFn: () => getPostCommentsServer(postId),
               });
             }}
           >

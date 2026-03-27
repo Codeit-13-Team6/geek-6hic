@@ -5,17 +5,7 @@ import axiosInstance from "@/lib/client-fetcher";
 import TopRankCard from "./TopRankCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
-
-interface RankedItem {
-  id: number;
-  commentLeng: number;
-  checkScore: number;
-  totalUserLeng: number;
-  commentingUserList: string[];
-  rankScore: number;
-  meetName: string;
-  meetType: string;
-}
+import { RankedItem } from "@/types";
 
 export default function RankingList() {
   const { data: rankedList } = useSuspenseQuery<RankedItem[]>({

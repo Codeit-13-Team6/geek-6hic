@@ -8,7 +8,7 @@ import type {
   MeetingActionErrorResponse,
   MeetingDetailApiData,
   MeetingDetailData,
-} from "@/app/meetings/[meetingId]/types";
+} from "@/app/meetings/[id]/types";
 import {
   addMeetingFavorite,
   attendMeeting,
@@ -17,15 +17,15 @@ import {
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.api";
+} from "@/app/meetings/[id]/api/meeting-detail.api";
 import {
   getCancelJoinErrorMessage,
   getJoinErrorMessage,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.errors";
+} from "@/app/meetings/[id]/model/meeting-detail.errors";
 import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
+} from "@/app/meetings/[id]/model/meeting-detail.query-keys";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useAuthStore } from "@/store/useAuthStore";
 

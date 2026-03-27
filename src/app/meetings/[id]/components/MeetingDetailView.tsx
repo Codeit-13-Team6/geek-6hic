@@ -3,12 +3,12 @@
 import type {
   MeetingDetailData,
   MeetingParticipantUser,
-} from "@/app/meetings/[meetingId]/types";
-import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
-import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
-import { MeetingLinkSection } from "@/app/meetings/[meetingId]/components/MeetingLinkSection";
-import { RecommendedMeetingsSection } from "@/app/meetings/[meetingId]/components/RecommendedMeetingsSection";
-import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
+} from "@/app/meetings/[id]/types";
+import { MeetingDescriptionSection } from "@/app/meetings/[id]/components/MeetingDescriptionSection";
+import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHeaderSection";
+import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
+import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
+import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThreadSection";
 
 interface MeetingDetailViewProps {
   data: MeetingDetailData;

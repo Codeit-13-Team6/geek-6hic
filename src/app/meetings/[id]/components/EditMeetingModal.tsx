@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSection";
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
 import { useEditMeetingForm } from "@/app/meetings/modal/hooks/useEditMeetingForm";
-import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
+import { MeetingDetailData } from "@/app/meetings/[id]/types";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 

@@ -7,13 +7,8 @@ import {
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import profileImg from "@/assets/img/banner/banner-lg.jpg";
+import { TopRankCardProps } from "@/types";
 
-interface TopRankCardProps {
-  title?: string;
-  point?: number;
-  rank?: number;
-  meetType?: string;
-}
 
 export default function TopRankCard({
   title = "모임 이름이 없습니다.",

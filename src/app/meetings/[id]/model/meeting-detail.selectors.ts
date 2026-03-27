@@ -4,8 +4,8 @@ import type {
   MeetingDetailData,
   MeetingListItemApiData,
   MeetingParticipant,
-} from "@/app/meetings/[meetingId]/types";
-import { getRecommendedMeetings } from "@/app/meetings/[meetingId]/model/meeting-detail.recommend";
+} from "@/app/meetings/[id]/types";
+import { getRecommendedMeetings } from "@/app/meetings/[id]/model/meeting-detail.recommend";
 
 const getIsHost = (detail: MeetingDetailApiData, user: User | null) =>
   user?.id === detail.hostId || user?.id === detail.host.id;

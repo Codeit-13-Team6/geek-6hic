@@ -4,21 +4,21 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { MeetingDetailContent } from "@/app/meetings/[meetingId]/components/MeetingDetailContent";
+import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
 import {
   fetchCurrentUserOnServer,
   fetchMeetingDetailOnServer,
   fetchMeetingParticipantsOnServer,
   fetchMeetingRecommendationCandidatesOnServer,
   fetchTodayAttendanceStatus,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.server";
-import { getAttendancePostId } from "@/app/meetings/[meetingId]/api/meeting-detail.api";
-import { MeetingDetailApiData } from "@/app/meetings/[meetingId]/types";
+} from "@/app/meetings/[id]/api/meeting-detail.server";
+import { getAttendancePostId } from "@/app/meetings/[id]/api/meeting-detail.api";
+import { MeetingDetailApiData } from "@/app/meetings/[id]/types";
 import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
   getMeetingRecommendationCandidatesQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
+} from "@/app/meetings/[id]/model/meeting-detail.query-keys";
 
 interface MeetingDetailPageProps {
   params: Promise<{

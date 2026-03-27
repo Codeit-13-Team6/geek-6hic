@@ -10,7 +10,7 @@ import type { JoinedMeetingsResponse } from "@/types";
 import MyMeetingsClient from "./components/MyMeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import MeetingCardSkeleton from "./components/MeetingCardSkeleton";
+import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { getMeetingJoinedNextPageParam } from "@/hooks/useMeetingQuery";
 
 

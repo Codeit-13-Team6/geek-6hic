@@ -2,7 +2,7 @@ import type {
   MeetingDetailApiData,
   MeetingListItemApiData,
   RecommendedMeetingItem,
-} from "@/app/meetings/[meetingId]/types";
+} from "@/app/meetings/[id]/types";
 
 const hasRecruitmentOpen = (
   meeting: Pick<

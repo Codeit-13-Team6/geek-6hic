@@ -12,7 +12,7 @@ import { ToastCommon } from "@/components/ui/ToastCommon";
 
 // 유효성검사
 import { useForm } from "react-hook-form";
-import type { SignUpFormValues } from "@/types/index";
+import type { SignUpFormValues } from "@/types";
 
 export default function SignUp() {
   const router = useRouter();
