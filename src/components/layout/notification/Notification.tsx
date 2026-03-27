@@ -73,6 +73,8 @@ export default function Notification({
   };
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const fetchNotifications = async () => {
       try {
         setIsLoading(true);
@@ -85,7 +87,7 @@ export default function Notification({
       }
     };
     fetchNotifications();
-  }, [isOpen, onUnreadChange]);
+  }, [isOpen]);
 
   useEffect(() => {
     onUnreadChange(notifications.some((item) => !item.isRead));

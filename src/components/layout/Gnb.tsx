@@ -12,6 +12,7 @@ import menu from "@/assets/icon/menu/menu.svg";
 import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
 import profileMd from "@/assets/img/profile/female1-m.jpg";
+import { getNotifications } from "@/api/notifications";
 import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import SideBar from "@/components/layout/SideBar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -81,6 +82,26 @@ export function Gnb() {
       document.body.style.overflow = previousOverflow;
     };
   }, [isNotificationOpen]);
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+
+    if (!isLoggedIn) {
+      setHasUnreadNotifications(false);
+      return;
+    }
+
+    const syncUnreadNotifications = async () => {
+      try {
+        const notifications = await getNotifications();
+        setHasUnreadNotifications(notifications.some((item) => !item.isRead));
+      } catch {
+        setHasUnreadNotifications(false);
+      }
+    };
+
+    syncUnreadNotifications();
+  }, [isAuthReady, isLoggedIn]);
 
   return (
     <header className="sticky top-0 z-100 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
