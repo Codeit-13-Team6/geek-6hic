@@ -5,7 +5,6 @@ import { Gnb } from '@/components/layout/Gnb';
 import { ToasterProvider } from '@/providers/ToasterProvider';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { MemberProvider } from '@/providers/MemberProvider';
-import { getIsAuthenticated } from '@/lib/auth.server';
 
 
 const geistSans = Geist({
@@ -28,7 +27,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isAuthenticated = await getIsAuthenticated();
 
   return (
     <html lang='en'>
@@ -37,7 +35,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <QueryProvider>
-          <MemberProvider isAuthenticated={isAuthenticated}>
+          <MemberProvider>
             <Gnb />
             <ToasterProvider />
             {children}
