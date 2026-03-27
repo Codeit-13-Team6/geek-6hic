@@ -29,6 +29,7 @@ export const config = {
   matcher: [
     "/",
     // "/api/:path*", api 호출에 관련된건 proxy 에서 처리하지않음
+    "/lounge/create",
     "/users/:path*",
     "/my-meetings/:path*",
     "/ranking/:path*",
