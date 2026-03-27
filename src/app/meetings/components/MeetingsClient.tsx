@@ -45,45 +45,43 @@ export default function MeetingsClient() {
   const [sortValue, setSortValue] = useState<SortValue>(null);
 
   // 실제 적용된 날짜 필터
-  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined);
+  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(
+    undefined,
+  );
 
   const { toggleFavorite } = useMeetingFavoriteMutation();
 
-  // 현재 탭에 맞는 API type 찾기
-  const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery<JoinedMeetingsResponse>({
+      queryKey: ["meetings", activeValue, sortValue],
+      queryFn: ({ pageParam }) => {
+        const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
+        const cursor = typeof pageParam === "string" ? pageParam : undefined;
 
-  const {
-    data,
-    isLoading,
+        const params: GetMeetingListParams = {
+          type: currentTab?.type,
+          size: 10,
+          ...(sortValue
+            ? {
+                sortBy: sortByMap[sortValue],
+                sortOrder: sortOrderMap[sortValue],
+              }
+            : {}),
+          ...(cursor ? { cursor } : {}),
+        };
+
+        return getMeetingList(params);
+      },
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+    });
+
+  const bottomRef = useIntersectionObserver(
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<JoinedMeetingsResponse>({
-    queryKey: ["meetings", activeValue, sortValue],
-    queryFn: ({ pageParam }) => {
-      const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
-      const cursor = typeof pageParam === "string" ? pageParam : undefined;
-
-      const params: GetMeetingListParams = {
-        type: currentTab?.type,
-        size: 10,
-        ...(sortValue
-          ? {
-              sortBy: sortByMap[sortValue],
-              sortOrder: sortOrderMap[sortValue],
-            }
-          : {}),
-        ...(cursor ? { cursor } : {}),
-      };
-  
-      return getMeetingList(params);
-    },
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined
-  });
-
-  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  );
 
   const meetingList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
@@ -105,23 +103,25 @@ export default function MeetingsClient() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
+    // Page.tsx에서 레이아웃을 잡아주므로 여기서는 불필요한 max-w 속성을 제거하고 100% 사용
+    <div className="flex w-full flex-col">
       <CreateMeetingModal />
 
-      <MeetingFilters
-        // 현재 상태 (부모 → 자식)
-        activeValue={activeValue}
-        sortValue={sortValue}
-        appliedDate={appliedDate}
+      {/* 툴바 섹션 영역: MeetingFilters 컴포넌트를 이 랩퍼 안에 그대로 배치 */}
+      <div className="sticky top-6 z-40 mb-10 sm:mb-12">
+        <MeetingFilters
+          activeValue={activeValue}
+          sortValue={sortValue}
+          appliedDate={appliedDate}
+          onChangeTab={setActiveValue}
+          onChangeSort={setSortValue}
+          onApplyDate={setAppliedDate}
+          onResetFilters={handleResetFilters}
+        />
+      </div>
 
-        // 상태 변경 핸들러 (자식 → 부모)
-        onChangeTab={setActiveValue}
-        onChangeSort={setSortValue}
-        onApplyDate={setAppliedDate}
-        onResetFilters={handleResetFilters}
-      />
-
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
+      {/* 리스트 영역: 우리가 세팅했던 2열 그리드 레이아웃 적용 */}
+      <div className="flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-2 lg:gap-8">
         <MeetingList
           meetingList={filteredMeetingList}
           isLoading={isLoading}
@@ -130,15 +130,24 @@ export default function MeetingsClient() {
           onHeartClick={(item) => toggleFavorite(item)}
         />
       </div>
+
+      {/* 무한 스크롤 옵저버 영역: 텍스트 덜렁 있는 것 대신 보라색 로딩 스피너 적용 */}
       <div
-          ref={bottomRef}
-          className="flex h-40 w-full items-center justify-center"
-        >
-          {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
-          {!hasNextPage && filteredMeetingList.length > 0 && (
-            <p>모든 모임을 다 확인하셨습니다! ✔️</p>
-          )}
-        </div>
+        ref={bottomRef}
+        className="flex h-32 w-full items-center justify-center py-10"
+      >
+        {isFetchingNextPage && (
+          <div className="flex items-center gap-3 text-sm font-bold text-violet-600">
+            <span className="h-5 w-5 animate-spin rounded-full border-[3px] border-violet-600 border-t-transparent"></span>
+            데이터를 불러오는 중입니다...
+          </div>
+        )}
+        {!hasNextPage && filteredMeetingList.length > 0 && (
+          <p className="text-sm font-bold text-slate-400">
+            모든 모임을 다 확인하셨습니다 ✨
+          </p>
+        )}
+      </div>
     </div>
   );
 }

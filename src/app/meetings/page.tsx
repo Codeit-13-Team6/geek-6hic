@@ -1,7 +1,3 @@
-import Image from "next/image";
-
-import bannerLg from "@/assets/img/banner/banner-lg.png";
-import bannerSm from "@/assets/img/banner/banner-sm.png";
 import MeetingsClient from "./components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/meetings";
@@ -12,54 +8,88 @@ const getNextPageParam = <
   T extends { hasMore: boolean; nextCursor: string | null },
 >(
   lastPage: T,
-) => (lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined);
+) => (lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined);
+
+// 우리가 만든 프리미엄 Git 아이콘
+const GitBranchIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="text-violet-600"
+  >
+    <line x1="6" x2="6" y1="3" y2="15" />
+    <circle cx="18" cy="6" r="3" />
+    <circle cx="6" cy="18" r="3" />
+    <path d="M18 9a9 9 0 0 1-9 9" />
+  </svg>
+);
 
 export default async function Page() {
   return (
-    <div className="w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]">
-      <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:max-w-[1280px] lg:pl-14">
-        <div>
-          <h4 className="text-sm text-green-700 sm:text-xl">
-            함께할 사람을 찾고 계신가요?
-          </h4>
-          <h3 className="mt-[10px] text-lg font-semibold sm:text-3xl">
-            지금 모임에 참여해보세요
-          </h3>
-
-          <div className="absolute left-[323px] top-7 hidden h-[273px] w-117 sm:block lg:hidden">
-            <Image src={bannerLg} fill alt="" />
-          </div>
-
-          <div className="absolute right-21 top-2 hidden h-[313px] w-134 lg:block">
-            <Image src={bannerSm} fill alt="" />
-          </div>
-        </div>
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#F5F5F7] font-sans tracking-tight text-slate-950 selection:bg-violet-500/20">
+      {/* 앰비언트 라이트: 보라색(Violet)과 차가운 얼음 빛(Ice Blue)으로 신비로운 분위기 연출 */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-[15%] -left-[10%] h-[60vw] w-[60vw] rounded-full bg-violet-200/40 blur-[130px]"></div>
+        <div className="absolute -right-[15%] bottom-[0%] h-[55vw] w-[55vw] rounded-full bg-blue-100/40 blur-[140px]"></div>
       </div>
 
-      <PrefetchBoundary
-        prefetchFn={(qc) =>
-          qc.prefetchInfiniteQuery<
-            JoinedMeetingsResponse,
-            Error,
-            InfiniteData<JoinedMeetingsResponse>,
-            readonly [string, string, null],
-            string | undefined
-          >({
-            queryKey: ["meetings", "all", null],
-            queryFn: ({ pageParam }) => {
-              const cursor = typeof pageParam === "string" ? pageParam : undefined;
-              return getMeetingList({
-                size: 10,
-                ...(cursor ? { cursor } : {}),
-              });
-            },
-            initialPageParam: undefined,
-            getNextPageParam,
-          })
-        }
-      >
-        <MeetingsClient />
-      </PrefetchBoundary>
+      <div className="relative z-10 mx-auto w-full max-w-[1280px] px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+        {/* 어제 우리가 확정했던 바로 그 프리미엄 헤더 디자인! */}
+        <header className="mb-16 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between lg:mb-20">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white bg-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-lg">
+                <GitBranchIcon />
+              </div>
+              <span className="text-sm font-semibold text-slate-500">
+                우리가 코드로 연결되는 아지트
+              </span>
+            </div>
+            <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tighter text-slate-950 sm:text-5xl lg:text-6xl">
+              <span className="text-violet-600">co-git</span>에서
+              <br />팀 메이트를 찾으세요.
+            </h1>
+          </div>
+          <p className="max-w-[260px] text-sm font-medium text-slate-600 sm:self-end sm:text-right">
+            사이드 프로젝트, 스터디, 취업 준비까지.
+            <br /> 최적의 코지트 파트너가 기다립니다.
+          </p>
+        </header>
+
+        {/* 팀원분의 무한스크롤 프리페치 로직 완벽 유지 */}
+        <PrefetchBoundary
+          prefetchFn={(qc) =>
+            qc.prefetchInfiniteQuery<
+              JoinedMeetingsResponse,
+              Error,
+              InfiniteData<JoinedMeetingsResponse>,
+              readonly [string, string, null],
+              string | undefined
+            >({
+              queryKey: ["meetings", "all", null],
+              queryFn: ({ pageParam }) => {
+                const cursor =
+                  typeof pageParam === "string" ? pageParam : undefined;
+                return getMeetingList({
+                  size: 10,
+                  ...(cursor ? { cursor } : {}),
+                });
+              },
+              initialPageParam: undefined,
+              getNextPageParam,
+            })
+          }
+        >
+          <MeetingsClient />
+        </PrefetchBoundary>
+      </div>
     </div>
   );
 }
