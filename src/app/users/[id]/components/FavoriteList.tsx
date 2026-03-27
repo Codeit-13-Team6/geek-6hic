@@ -59,8 +59,9 @@ export default function FavoriteList() {
           onHeartClick={() => toggleFavorite(item.meetingId)}
         />
       ))}
-      <div ref={bottomRef} className="flex h-20 items-center justify-center">
+      <div ref={bottomRef} className="flex h-20 items-center justify-center text-sm text-gray-400">
         {isFetchingNextPage && <p>불러오는 중...</p>}
+        {!hasNextPage && allFavorites.length > 0 && <p>더 이상 모임이 없습니다.</p>}
       </div>
     </>
   );

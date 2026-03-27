@@ -15,7 +15,7 @@ export default function MyPostList() {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["posts", "list", "latest", ""],
+      queryKey: ["posts", "list", "my", "latest", ""],
       queryFn: ({ pageParam }) =>
         getPosts({
           keyword: "",
@@ -72,8 +72,9 @@ export default function MyPostList() {
           />
         ))}
       </div>
-      <div ref={bottomRef} className="flex h-20 items-center justify-center">
+      <div ref={bottomRef} className="flex h-20 items-center justify-center text-sm text-gray-400">
         {isFetchingNextPage && <p>불러오는 중...</p>}
+        {!hasNextPage && allPosts.length > 0 && <p>더 이상 게시물이 없습니다.</p>}
       </div>
     </div>
   );
