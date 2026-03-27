@@ -4,7 +4,7 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import CommentSection from "./component/comment/CommentSection";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostCommentsServer, fetchPostDetail } from "@/api";
+import { getPostCommentsServer, fetchPostDetail } from "@/api/index.server";
 
 
 
