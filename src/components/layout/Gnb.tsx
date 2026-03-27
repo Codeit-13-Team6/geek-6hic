@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import bellIconSm from "@/assets/icon/bells/bell-default-sm-false.svg";
 import bellIconLg from "@/assets/icon/bells/bell-default-lg-false.svg";
+import selectedBellIconLg from "@/assets/icon/bells/bell-default-lg-true.svg";
 import menu from "@/assets/icon/menu/menu.svg";
 import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
@@ -33,6 +33,8 @@ export function Gnb() {
   const isLoggedIn = !!user;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   // 로그인페이지에서 로그인버튼 삭제하기 위해서
   const isLoginPage = pathname === "/login";
@@ -52,6 +54,25 @@ export function Gnb() {
   const handleLogin = async () => {
     router.push("/login");
   };
+  // 알림창 외부 클릭 시 닫기
+  useEffect(() => {
+    if (!isNotificationOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNotificationOpen]);
 
   return (
     <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
@@ -75,15 +96,15 @@ export function Gnb() {
           <nav className="hidden items-center lg:flex lg:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
-              key={link.name}
-              href={link.href}
-              className={cn(
-                "font-pretendard hover:text-main-green-600 font-medium whitespace-nowrap transition-all hover:font-semibold sm:px-2 sm:py-4 sm:text-base lg:px-4",
-                pathname === link.href
-                  ? "text-green-600 font-semibold"
-                  : "text-slate-600"
-              )}
-            >
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "font-pretendard hover:text-main-green-600 font-medium whitespace-nowrap transition-all hover:font-semibold sm:px-2 sm:py-4 sm:text-base lg:px-4",
+                  pathname === link.href
+                    ? "font-semibold text-green-600"
+                    : "text-slate-600",
+                )}
+              >
                 {link.name}
               </Link>
             ))}
@@ -91,27 +112,28 @@ export function Gnb() {
         </div>
         <div className="relative flex h-full items-center justify-center gap-4 sm:gap-3 lg:gap-6">
           {isLoggedIn && (
-            <button
-              type="button"
-              onClick={() => setIsNotificationOpen((prev) => !prev)}
-              className="flex cursor-pointer items-center justify-center"
-            >
-              <Image
-                src={bellIconLg}
-                alt="알림"
-                width={24}
-                height={24}
-                className="hidden lg:block"
-              />
-            </button>
-          )}
+            <div ref={notificationRef}>
+              <button
+                type="button"
+                onClick={() => setIsNotificationOpen((prev) => !prev)}
+                className="flex cursor-pointer items-center justify-center"
+              >
+                <Image
+                  src={hasUnreadNotifications ? selectedBellIconLg : bellIconLg}
+                  alt="알림"
+                  width={24}
+                  height={24}
+                  className="hidden lg:block"
+                />
+              </button>
 
-          {isLoggedIn && (
-            <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
-              <Notification
-                isOpen={isNotificationOpen}
-                onClose={() => setIsNotificationOpen(false)}
-              />
+              <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
+                <Notification
+                  isOpen={isNotificationOpen}
+                  onClose={() => setIsNotificationOpen(false)}
+                  onUnreadChange={setHasUnreadNotifications}
+                />
+              </div>
             </div>
           )}
 

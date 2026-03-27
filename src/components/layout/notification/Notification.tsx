@@ -1,61 +1,96 @@
 "use client";
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  deleteAllNotification,
+  getNotifications,
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
+} from "@/api/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
 import type { NotificationItem } from "@/types/notification";
 
-type NotificationProps = {
+interface NotificationProps {
   isOpen: boolean;
   onClose: () => void;
-};
+  onUnreadChange: (hasUnread: boolean) => void;
+}
 
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: 1,
-    teamId: "geek-6hic",
-    userId: 1,
-    type: "MEETING_CONFIRMED",
-    message: "‘힐링 오피스 스트레칭’ 모임 개설이 확정되었어요!",
-    data: {
-      meetingId: 101,
-      meetingName: "힐링 오피스 스트레칭",
-      image:
-        "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=200&q=80",
-    },
-    isRead: false,
-    createdAt: "2026-03-27T00:48:53.506Z",
-  },
-  {
-    id: 2,
-    teamId: "geek-6hic",
-    userId: 1,
-    type: "MEETING_CANCELED",
-    message: "‘힐링 오피스 스트레칭’ 모임이 취소되었어요.",
-    data: {
-      meetingId: 102,
-      meetingName: "힐링 오피스 스트레칭",
-      image:
-        "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=200&q=80",
-    },
-    isRead: false,
-    createdAt: "2026-03-26T23:10:00.000Z",
-  },
-  {
-    id: 3,
-    teamId: "geek-6hic",
-    userId: 1,
-    type: "COMMENT",
-    message: "딸기님이 댓글을 작성했어요. “정말 재밌어요 :)”",
-    data: {
-      postId: 31,
-      postTitle: "정말 재밌었어요",
-      commentId: 7,
-    },
-    isRead: true,
-    createdAt: "2026-03-23T14:00:00.000Z",
-  },
-];
+export default function Notification({
+  isOpen,
+  onClose,
+  onUnreadChange,
+}: NotificationProps) {
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  // 모든 알림이 읽음 처리됐는지 여부
+  const isAllRead =
+    notifications.length > 0 && notifications.every((item) => item.isRead);
 
-export default function Notification({ isOpen, onClose }: NotificationProps) {
+  // 카드 누르면 해당 모임이나 게시글로 이동 및 개별 카드 읽음 처리
+  const router = useRouter();
+  const handleNotificationClick = async (notification: NotificationItem) => {
+    if (!notification.isRead) {
+      try {
+        await markNotificationAsRead(notification.id);
+        setNotifications((prev) => {
+          const nextNotifications = prev.map((item) =>
+            item.id === notification.id ? { ...item, isRead: true } : item,
+          );
+          onUnreadChange(nextNotifications.some((item) => !item.isRead));
+          return nextNotifications;
+        });
+      } catch (error) {
+        console.error("알림 읽음 처리 실패:", error);
+      }
+    }
+
+    if (notification.type === "COMMENT") {
+      router.push(`/lounge/${notification.data.postId}`);
+    } else {
+      router.push(`/meetings/${notification.data.meetingId}`);
+    }
+    onClose();
+  };
+
+  // 모두 읽기 버튼
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllNotificationsAsRead();
+      setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
+      onUnreadChange(false);
+    } catch (error) {
+      console.error("모든 알림 읽음 처리 실패:", error);
+    }
+  };
+  // 전체 삭제 버튼(모두 읽음 처리된 경우에만 보이도록)
+  const handleDeleteAll = async () => {
+    try {
+      await deleteAllNotification();
+      setNotifications([]);
+      onUnreadChange(false);
+    } catch (error) {
+      console.error("모든 알림 삭제 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getNotifications();
+        setNotifications(data);
+        onUnreadChange(data.some((item) => !item.isRead));
+      } catch (error) {
+        console.error("알림 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [isOpen, onUnreadChange]);
+
   if (!isOpen) return null;
 
   return (
@@ -66,19 +101,24 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
         </h2>
         <button
           type="button"
-          onClick={onClose}
+          onClick={isAllRead ? handleDeleteAll : handleMarkAllAsRead}
           className="cursor-pointer text-sm font-medium text-gray-400 transition-opacity hover:text-gray-600"
         >
-          모두 읽기
+          {isAllRead ? "전체 삭제" : "모두 읽기"}
         </button>
       </div>
 
-      <div className="mt-6 max-h-[280px] overflow-x-hidden pb-4">
-        {MOCK_NOTIFICATIONS.length > 0 ? (
-          MOCK_NOTIFICATIONS.map((notification) => (
+      <div className="mt-6 max-h-[280px] overflow-x-hidden">
+        {isLoading ? (
+          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
+            알림을 불러오는 중이에요...
+          </div>
+        ) : notifications.length > 0 ? (
+          notifications.map((notification) => (
             <NotificationCard
               key={notification.id}
               notification={notification}
+              onClick={() => handleNotificationClick(notification)}
             />
           ))
         ) : (
