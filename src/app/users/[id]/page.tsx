@@ -13,7 +13,7 @@ import type {
   GetPostsResponse,
 } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-import { fetchFavorites, fetchMyMeetings, fetchLoungePosts } from "@/api";
+import { fetchFavorites, fetchMyMeetings, fetchLoungePosts } from "@/api/index.server";
 import { getNextPageParam } from "@/lib/pagination";
 
 const defaultTabs = [

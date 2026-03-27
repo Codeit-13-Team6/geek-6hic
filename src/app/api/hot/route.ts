@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {  Post } from "@/types";
-import { fetchPosts } from "@/api";
+import { fetchPosts } from "@/api/index.server";
 
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const revalidate = 600; // 10분마다 갱신 (캐싱)

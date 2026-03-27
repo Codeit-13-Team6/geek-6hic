@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { GetPostsResponse } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { fetchPosts } from "@/api";
+import { fetchPosts } from "@/api/index.server";
 import { getNextPageParam } from "@/lib/pagination";
 
 
