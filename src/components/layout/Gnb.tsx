@@ -54,7 +54,7 @@ export function Gnb() {
   const handleLogin = async () => {
     router.push("/login");
   };
-
+  // 알림창 외부 클릭 시 닫기
   useEffect(() => {
     if (!isNotificationOpen) return;
 
