@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import type { DateRange } from "react-day-picker";
 
 import { getMeetingList } from "@/api/meetings";
-import type { JoinedMeeting } from "@/types";
+import type { JoinedMeetingsResponse, GetMeetingListParams } from "@/types";
 import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import MeetingList from "./MeetingList";
 import MeetingFilters, {
@@ -51,24 +52,40 @@ export default function MeetingsClient() {
   // 현재 탭에 맞는 API type 찾기
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
-  const { data: meetingList = [], isLoading } = useQuery<JoinedMeeting[]>({
-    // 서버 prefetch key와 초기값이 같아야 캐시를 바로 사용함
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<JoinedMeetingsResponse>({
     queryKey: ["meetings", activeValue, sortValue],
-    queryFn: async () => {
-      const params = {
+    queryFn: ({ pageParam }) => {
+      const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
+      const cursor = typeof pageParam === "string" ? pageParam : undefined;
+
+      const params: GetMeetingListParams = {
         type: currentTab?.type,
-        size: 100,
+        size: 10,
         ...(sortValue
           ? {
               sortBy: sortByMap[sortValue],
               sortOrder: sortOrderMap[sortValue],
             }
           : {}),
+        ...(cursor ? { cursor } : {}),
       };
-
+  
       return getMeetingList(params);
     },
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined
   });
+
+  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+
+  const meetingList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
   // 날짜 필터 적용
   const filteredMeetingList = meetingList.filter((meeting) => {
@@ -88,7 +105,7 @@ export default function MeetingsClient() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] sm:px-6">
+    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
       <CreateMeetingModal />
 
       <MeetingFilters
@@ -113,6 +130,15 @@ export default function MeetingsClient() {
           onHeartClick={(item) => toggleFavorite(item)}
         />
       </div>
+      <div
+          ref={bottomRef}
+          className="flex h-40 w-full items-center justify-center"
+        >
+          {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
+          {!hasNextPage && filteredMeetingList.length > 0 && (
+            <p>모든 모임을 다 확인하셨습니다! ✔️</p>
+          )}
+        </div>
     </div>
   );
 }

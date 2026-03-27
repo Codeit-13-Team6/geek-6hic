@@ -5,6 +5,14 @@ import bannerSm from "@/assets/img/banner/banner-sm.png";
 import MeetingsClient from "./components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/meetings";
+import type { JoinedMeetingsResponse } from "@/types";
+import type { InfiniteData } from "@tanstack/react-query";
+
+const getNextPageParam = <
+  T extends { hasMore: boolean; nextCursor: string | null },
+>(
+  lastPage: T,
+) => (lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined);
 
 export default async function Page() {
   return (
@@ -30,9 +38,23 @@ export default async function Page() {
 
       <PrefetchBoundary
         prefetchFn={(qc) =>
-          qc.prefetchQuery({
+          qc.prefetchInfiniteQuery<
+            JoinedMeetingsResponse,
+            Error,
+            InfiniteData<JoinedMeetingsResponse>,
+            readonly [string, string, null],
+            string | undefined
+          >({
             queryKey: ["meetings", "all", null],
-            queryFn: () => getMeetingList({ size: 10 }),
+            queryFn: ({ pageParam }) => {
+              const cursor = typeof pageParam === "string" ? pageParam : undefined;
+              return getMeetingList({
+                size: 10,
+                ...(cursor ? { cursor } : {}),
+              });
+            },
+            initialPageParam: undefined,
+            getNextPageParam,
           })
         }
       >
