@@ -253,9 +253,9 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <BtnCommon className="gap-[4px]" type="button" onClick={handleOpenModal}>
-        <Image src={plusIcon} alt="모임 만들기 추가 아이콘" />
-        모임 만들기
+      <BtnCommon className="z-99 fixed bottom-6 right-4 sm:py-4 lg:bottom-14 lg:right-[86px] gap-[4px] rounded-full sm:rounded-3xl max-w-12 max-h-12 sm:max-h-full sm:max-w-47" type="button" onClick={handleOpenModal}>
+        <Image src={plusIcon} alt="모임 만들기 추가" />
+        <span className="hidden sm:block">모임 만들기</span>
       </BtnCommon>
 
       <ModalBase

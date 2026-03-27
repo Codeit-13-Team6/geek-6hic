@@ -6,16 +6,20 @@ import {
   GetMeetingListParams,
   CreateMeeting,
   UpdateMeeting,
+  MyMeetingsResponse,
+  FavoritesResponse,
 } from "@/types";
 import axios from "axios";
 
 
 export async function getMeetingList(
   params: GetMeetingListParams,
-): Promise<JoinedMeeting[]> {
-  const response = await axiosInstance.get("/meetings", { params });
+): Promise<JoinedMeetingsResponse> {
+  const res = await axiosInstance.get<JoinedMeetingsResponse>("/meetings", {
+    params,
+  });
 
-  return response.data.data;
+  return res.data;
 }
 
 // export async function getMeetings(params: {}): Promise<Meeting[]> {
