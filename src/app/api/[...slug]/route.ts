@@ -109,26 +109,21 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["GET", "POST"],
     requiresAuth: true,
   },
-  {
-    pattern: /^\/posts\/\d+\/comments\/\d+$/,
-    methods: ["PATCH", "DELETE"],
-    requiresAuth: true,
-  },
-  {
-    pattern: /^\/meetings\/\d+$/,
-    methods: ["GET", "PATCH", "DELETE"],
-    requiresAuth: true,
-  },
-  {
-    pattern: /^\/meetings\/\d+\/participants$/,
-    methods: ["GET"],
-    requiresAuth: true,
-  },
-  {
-    pattern: /^\/meetings\/\d+\/join$/,
-    methods: ["POST", "DELETE"],
-    requiresAuth: true,
-  },
+    {
+      pattern: /^\/meetings\/\d+/,
+      methods: ["GET", "PATCH", "DELETE"],
+      requiresAuth: false,
+    },
+    {
+      pattern: /^\/meetings\/\d+\/participants/,
+      methods: ["GET"],
+      requiresAuth: true,
+    },
+    {
+      pattern: /^\/meetings\/\d+\/join/,
+      methods: ["POST", "DELETE"],
+      requiresAuth: true,
+    },
   {
     pattern: /^\/og$/,
     methods: ["GET"],
@@ -153,6 +148,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   );
 
   if (!matchedRule) {
+    console.log(`No such rule for ${targetPath}`);
     return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
 

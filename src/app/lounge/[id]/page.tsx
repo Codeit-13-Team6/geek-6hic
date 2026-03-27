@@ -4,9 +4,19 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import CommentSection from "./component/comment/CommentSection";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostCommentsServer, fetchPostDetail } from "@/api/index.server";
+import { getPostCommentsServer,  } from "@/api/index.server";
+import type { GetPostsResponse } from "@/types";
+import { serverFetch } from "@/lib/server-fetcher";
 
 
+
+export async function fetchPostDetail(postId: number) {
+  const { data } = await serverFetch({
+    method: "GET",
+    url: `/posts/${postId}`,
+  });
+  return data;
+}
 
 export default async function LoungeDetailPageServer({
   params,
