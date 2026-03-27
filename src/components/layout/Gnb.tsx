@@ -57,7 +57,6 @@ export function Gnb() {
   // 알림창 외부 클릭 시 닫기
   useEffect(() => {
     if (!isNotificationOpen) return;
-
     const handleClickOutside = (event: MouseEvent) => {
       if (
         notificationRef.current &&
@@ -66,16 +65,25 @@ export function Gnb() {
         setIsNotificationOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isNotificationOpen]);
 
+  useEffect(() => {
+    if (!isNotificationOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isNotificationOpen]);
+
   return (
-    <header className="sticky top-0 z-50 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
+    <header className="sticky top-0 z-100 flex h-12 w-full items-center justify-center border-b border-gray-200 bg-white px-5 sm:h-22 sm:px-10">
       <div className="flex h-8 w-full max-w-7xl items-center justify-between sm:h-14">
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -123,11 +131,18 @@ export function Gnb() {
                   alt="알림"
                   width={24}
                   height={24}
-                  className="hidden lg:block"
                 />
               </button>
+              {isNotificationOpen && (
+                <button
+                  type="button"
+                  aria-label="알림창 닫기"
+                  onClick={() => setIsNotificationOpen(false)}
+                  className="fixed inset-0 z-40 bg-black/30 sm:hidden"
+                />
+              )}
 
-              <div className="absolute top-[calc(100%+12px)] right-0 z-50 hidden lg:block">
+              <div className="fixed top-0 right-0 z-50 sm:absolute sm:top-[calc(100%+12px)] sm:right-0">
                 <Notification
                   isOpen={isNotificationOpen}
                   onClose={() => setIsNotificationOpen(false)}
