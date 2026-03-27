@@ -3,6 +3,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { ReactNode } from "react";
 
 interface PrefetchBoundaryProps {
@@ -19,6 +20,7 @@ export default async function PrefetchBoundary({
   try {
     await prefetchFn(queryClient);
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error("[SSR Prefetch Error]:", error);
   }
 

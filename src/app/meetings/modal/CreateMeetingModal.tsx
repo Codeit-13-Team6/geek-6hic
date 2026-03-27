@@ -64,7 +64,7 @@ export function CreateMeetingModal() {
         type="button"
         onClick={handleOpenModal}
       >
-        <Image src={plusIcon} alt="모임 만들기 아이콘" />
+        <Image src={plusIcon} alt="모임 만들기 추가" />
         <span className="hidden sm:block">모임 만들기</span>
       </BtnCommon>
 

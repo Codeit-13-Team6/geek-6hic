@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 import bellIconSm from "@/assets/icon/bells/bell-default-sm-false.svg";
 import bellIconLg from "@/assets/icon/bells/bell-default-lg-false.svg";
 import menu from "@/assets/icon/menu/menu.svg";
@@ -74,10 +75,15 @@ export function Gnb() {
           <nav className="hidden items-center lg:flex lg:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
-                key={link.name}
-                href={link.href}
-                className="font-pretendard hover:text-main-green-600 font-medium whitespace-nowrap text-slate-600 transition-all hover:font-semibold sm:px-2 sm:py-4 sm:text-base lg:px-4"
-              >
+              key={link.name}
+              href={link.href}
+              className={cn(
+                "font-pretendard hover:text-main-green-600 font-medium whitespace-nowrap transition-all hover:font-semibold sm:px-2 sm:py-4 sm:text-base lg:px-4",
+                pathname === link.href
+                  ? "text-green-600 font-semibold"
+                  : "text-slate-600"
+              )}
+            >
                 {link.name}
               </Link>
             ))}
