@@ -1,7 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getNotifications, markNotificationAsRead } from "@/api/notifications";
+import {
+  deleteAllNotification,
+  getNotifications,
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
+} from "@/api/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
 import type { NotificationItem } from "@/types/notification";
 
@@ -13,7 +18,11 @@ interface NotificationProps {
 export default function Notification({ isOpen, onClose }: NotificationProps) {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  // 카드 누르면 해당 모임이나 게시글로 이동
+  // 모든 알림이 읽음 처리됐는지 여부
+  const isAllRead =
+    notifications.length > 0 && notifications.every((item) => item.isRead);
+
+  // 카드 누르면 해당 모임이나 게시글로 이동 및 개별 카드 읽음 처리
   const router = useRouter();
   const handleNotificationClick = async (notification: NotificationItem) => {
     if (!notification.isRead) {
@@ -35,6 +44,27 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
       router.push(`/meetings/${notification.data.meetingId}`);
     }
     onClose();
+  };
+
+  // 모두 읽기 버튼
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllNotificationsAsRead();
+      setNotifications((prev) =>
+        prev.map((item) => ({ ...item, isRead: true })),
+      );
+    } catch (error) {
+      console.error("모든 알림 읽음 처리 실패:", error);
+    }
+  };
+  // 전체 삭제 버튼(모두 읽음 처리된 경우에만 보이도록)
+  const handleDeleteAll = async () => {
+    try {
+      await deleteAllNotification();
+      setNotifications([]);
+    } catch (error) {
+      console.error("모든 알림 삭제 실패:", error);
+    }
   };
 
   useEffect(() => {
@@ -65,17 +95,17 @@ export default function Notification({ isOpen, onClose }: NotificationProps) {
         </h2>
         <button
           type="button"
-          onClick={onClose}
+          onClick={isAllRead ? handleDeleteAll : handleMarkAllAsRead}
           className="cursor-pointer text-sm font-medium text-gray-400 transition-opacity hover:text-gray-600"
         >
-          모두 읽기
+          {isAllRead ? "전체 삭제" : "모두 읽기"}
         </button>
       </div>
 
       <div className="mt-6 max-h-[280px] overflow-x-hidden">
         {isLoading ? (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
-            알림을 불러오는 중이에요.
+            알림을 불러오는 중이에요...
           </div>
         ) : notifications.length > 0 ? (
           notifications.map((notification) => (
