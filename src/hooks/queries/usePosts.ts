@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getHotPosts, getPostDetail, getPosts } from "@/api/posts";
 import { getOgData } from "@/api/og";
-import { parsePostData } from "@/lib/postUtils";
+import { parsePostData } from "@/lib/contentLinkUtils";
 import { likePost, unlikePost } from "@/api/posts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost, deletePost } from "@/api/posts";

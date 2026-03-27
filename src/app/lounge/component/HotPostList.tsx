@@ -13,7 +13,7 @@ export default function HotPostList() {
   if (isLoading) {
     return (
       <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-gray-400">
-        🔥 핫 게시물을 불러오는 중...
+        핫 게시물을 불러오는 중... 🔥
       </div>
     );
   }
