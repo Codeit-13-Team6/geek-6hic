@@ -5,8 +5,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   MEETING_CATEGORY_LIST,
-  MeetingCategoryStepProps,
-} from "@/app/meetings/modal/modal";
+} from "@/app/meetings/modal/model/meeting-form.constants";
+import { MeetingCategoryStepProps } from "@/app/meetings/modal/model/meeting-form.props";
 
 export function MeetingCategoryStep({
   value,

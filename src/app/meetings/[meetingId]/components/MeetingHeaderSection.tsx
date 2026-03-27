@@ -45,7 +45,6 @@ const formatHourMinute = (value: string) => {
   });
 };
 
-//임시로 나중에 !value?.includes("example.com") ~ 제거
 const hasUsableProfileImage = (
   value: string | null | undefined,
 ): value is string =>
@@ -259,7 +258,7 @@ export function MeetingHeaderSection({
               >
                 <Image
                   src={data.isFavorited ? heartsTrue : heartsFalse}
-                  alt="즐겨찾기"
+                  alt="좋아요"
                   width={24}
                   height={24}
                 />
@@ -272,7 +271,7 @@ export function MeetingHeaderSection({
                 onClick={handleActionClick}
                 className="h-11 w-auto min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
               >
-                {isJoinPending ? "처리 중..." : actionLabel}
+                {isJoinPending ? "처리 중.." : actionLabel}
               </BtnCommon>
             </div>
 
