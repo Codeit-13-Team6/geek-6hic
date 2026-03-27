@@ -89,14 +89,13 @@ export default function Notification({
         setIsLoading(false);
       }
     };
-
     fetchNotifications();
   }, [isOpen, onUnreadChange]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="h-[100dvh] w-[314px] overflow-hidden rounded-l-3xl bg-white shadow-none sm:h-auto sm:rounded-3xl sm:shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
+    <div className="flex h-[100dvh] w-[314px] flex-col overflow-hidden rounded-l-3xl bg-white shadow-none sm:h-auto sm:rounded-3xl sm:shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
       <div className="flex justify-between gap-2 px-6 pt-6">
         <h2 className="font-pretendard text-lg font-semibold text-gray-900">
           알림 내역
@@ -110,7 +109,7 @@ export default function Notification({
         </button>
       </div>
 
-      <div className="mt-6 h-[100dvh] overflow-x-hidden sm:max-h-[280px]">
+      <div className="mt-6 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain sm:max-h-[280px] sm:flex-none">
         {isLoading ? (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
             알림을 불러오는 중이에요...
