@@ -33,13 +33,11 @@ export default function Notification({
     if (!notification.isRead) {
       try {
         await markNotificationAsRead(notification.id);
-        setNotifications((prev) => {
-          const nextNotifications = prev.map((item) =>
+        setNotifications((prev) =>
+          prev.map((item) =>
             item.id === notification.id ? { ...item, isRead: true } : item,
-          );
-          onUnreadChange(nextNotifications.some((item) => !item.isRead));
-          return nextNotifications;
-        });
+          ),
+        );
       } catch (error) {
         console.error("알림 읽음 처리 실패:", error);
       }
@@ -57,8 +55,9 @@ export default function Notification({
   const handleMarkAllAsRead = async () => {
     try {
       await markAllNotificationsAsRead();
-      setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-      onUnreadChange(false);
+      setNotifications((prev) =>
+        prev.map((item) => ({ ...item, isRead: true })),
+      );
     } catch (error) {
       console.error("모든 알림 읽음 처리 실패:", error);
     }
@@ -68,7 +67,6 @@ export default function Notification({
     try {
       await deleteAllNotification();
       setNotifications([]);
-      onUnreadChange(false);
     } catch (error) {
       console.error("모든 알림 삭제 실패:", error);
     }
@@ -80,21 +78,23 @@ export default function Notification({
         setIsLoading(true);
         const data = await getNotifications();
         setNotifications(data);
-        onUnreadChange(data.some((item) => !item.isRead));
       } catch (error) {
         console.error("알림 조회 실패:", error);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchNotifications();
   }, [isOpen, onUnreadChange]);
+
+  useEffect(() => {
+    onUnreadChange(notifications.some((item) => !item.isRead));
+  }, [notifications, onUnreadChange]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="w-[314px] overflow-hidden rounded-3xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
+    <div className="flex h-[100dvh] w-[314px] flex-col overflow-hidden rounded-l-3xl bg-white shadow-none sm:h-auto sm:rounded-3xl sm:shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
       <div className="flex justify-between gap-2 px-6 pt-6">
         <h2 className="font-pretendard text-lg font-semibold text-gray-900">
           알림 내역
@@ -108,7 +108,7 @@ export default function Notification({
         </button>
       </div>
 
-      <div className="mt-6 max-h-[280px] overflow-x-hidden">
+      <div className="mt-6 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain sm:max-h-[280px] sm:flex-none">
         {isLoading ? (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
             알림을 불러오는 중이에요...
