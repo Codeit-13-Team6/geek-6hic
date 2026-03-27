@@ -1,17 +1,56 @@
 import type { StaticImageData } from "next/image";
+import towerWork from "@/assets/img/category/business.jpg";
+import etcImage from "@/assets/img/category/etc.jpg";
+import JobIShoes from "@/assets/img/category/fitness-health.jpg";
+import teamBulb from "@/assets/img/bulb/elec-bulb.jpg";
+import studyImage from "@/assets/img/category/study.jpg";
 
 export interface MeetingTypeOption {
   value: string;
   label: string;
 }
 
-export const DEFAULT_MEETING_TYPE_OPTIONS: MeetingTypeOption[] = [
-  { value: "TEAM_MEETING", label: "취미/여가" },
-  { value: "STUDY", label: "스터디" },
-  { value: "WEWORK", label: "네트워킹" },
-  { value: "JOB_SEEKER", label: "취업" },
-  { value: "ETC", label: "기타" },
+export interface MeetingCategoryItem {
+  value: string;
+  label: string;
+  imageSrc: StaticImageData;
+  className?: string;
+}
+
+export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
+  {
+    value: "취미/여가",
+    label: "팀미팅",
+    imageSrc: teamBulb,
+  },
+  {
+    value: "스터디",
+    label: "스터디",
+    imageSrc: studyImage,
+  },
+  {
+    value: "비즈니스",
+    label: "위워크",
+    imageSrc: towerWork,
+  },
+  {
+    value: "가족/육아",
+    label: "취준생",
+    imageSrc: JobIShoes,
+  },
+  {
+    value: "기타",
+    label: "기타",
+    imageSrc: etcImage,
+    className: "col-span-2",
+  },
 ];
+
+export const DEFAULT_MEETING_TYPE_OPTIONS: MeetingTypeOption[] =
+  MEETING_CATEGORY_LIST.map(({ value, label }) => ({
+    value,
+    label,
+  }));
 
 export interface MeetingFormValues {
   category: string;
@@ -86,13 +125,6 @@ export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps 
 export interface MeetingCategoryStepProps {
   value: string;
   onChange: (value: string) => void;
-}
-
-export interface MeetingCategoryItem {
-  value: string;
-  label: string;
-  imageSrc: StaticImageData;
-  className?: string;
 }
 
 export interface MeetingScheduleStepValues {

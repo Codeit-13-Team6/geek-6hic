@@ -20,6 +20,7 @@ import {
   MeetingParticipantsResponse,
   RecommendedMeetingItem,
 } from "@/app/meetings/[meetingId]/types";
+import { createComment } from "@/api/comments";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import axiosInstance from "@/lib/client-fetcher";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -35,6 +36,12 @@ const getMeetingParticipantsQueryKey = (meetingId: number) =>
 
 const getMeetingRecommendationCandidatesQueryKey = (meetingId: number) =>
   ["meeting-recommendation-candidates", meetingId] as const;
+
+const getAttendancePostId = (region: string) => {
+  const postId = Number(region);
+
+  return Number.isFinite(postId) && postId > 0 ? postId : null;
+};
 
 async function fetchMeetingDetail(meetingId: number) {
   const { data } = await axiosInstance.get<MeetingDetailApiData>(
@@ -230,15 +237,19 @@ const getRecommendedMeetings = ({
 
 interface MeetingDetailContentProps {
   meetingId: number;
+  initialHasAttended: boolean;
 }
 
-export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
+export function MeetingDetailContent({
+  meetingId,
+  initialHasAttended,
+}: MeetingDetailContentProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const [currentTimestamp] = useState(() => Date.now());
-  const [hasAttended, setHasAttended] = useState(false);
+  const [hasAttended, setHasAttended] = useState(initialHasAttended);
 
   const detailQuery = useQuery({
     queryKey: getMeetingDetailQueryKey(meetingId),
@@ -388,6 +399,30 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
     },
   });
 
+  const attendMutation = useMutation({
+    mutationFn: async (region: string) => {
+      const postId = getAttendancePostId(region);
+
+      if (!postId) {
+        throw new Error("INVALID_ATTENDANCE_POST_ID");
+      }
+
+      await createComment(
+        postId,
+        `onlyScore_${region}_${Math.floor(Math.random() * 5) + 1}`,
+      );
+    },
+    onSuccess: () => {
+      setHasAttended(true);
+    },
+    onError: () => {
+      ToastCommon({
+        message: "출석 처리 중 문제가 발생했어요.",
+        size: "sm",
+      });
+    },
+  });
+
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
   const recommendationCandidates =
@@ -504,25 +539,8 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
     try {
       await navigator.clipboard.writeText(meetingUrl);
       ToastCommon({ message: "모임 링크가 복사되었어요." });
-      return;
     } catch {
-      const textArea = document.createElement("textarea");
-      textArea.value = meetingUrl;
-      textArea.style.position = "fixed";
-      textArea.style.opacity = "0";
-
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        document.execCommand("copy");
-        ToastCommon({ message: "모임 링크가 복사되었어요." });
-      } catch {
-        ToastCommon({ message: "링크 복사에 실패했습니다." });
-      } finally {
-        document.body.removeChild(textArea);
-      }
+      ToastCommon({ message: "링크 복사에 실패했습니다." });
     }
   };
 
@@ -539,7 +557,8 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
   };
 
   const handleAttendMeeting = () => {
-    setHasAttended(true);
+    console.log("[attendance region]", detail.region, Number(detail.region));
+    attendMutation.mutate(detail.region);
   };
 
   return (
@@ -548,7 +567,11 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
         data={data}
         participantAvatars={participants.map((participant) => participant.user)}
         isFavoritePending={favoriteMutation.isPending}
-        isJoinPending={joinMutation.isPending || cancelJoinMutation.isPending}
+        isJoinPending={
+          joinMutation.isPending ||
+          cancelJoinMutation.isPending ||
+          attendMutation.isPending
+        }
         isAuthLoading={isAuthLoading}
         actionLabel={actionLabel}
         isActionDisabled={isActionDisabled}

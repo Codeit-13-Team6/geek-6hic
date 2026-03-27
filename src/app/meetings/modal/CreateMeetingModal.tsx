@@ -30,7 +30,7 @@ import { createMeeting, updateMeeting } from "@/api/meetings";
 import { createPost } from "@/api/posts";
 
 const INITIAL_FORM_VALUES: MeetingFormValues = {
-  category: "TEAM_MEETING",
+  category: "취미/여가",
   name: "",
   description: "",
   link: "",
@@ -253,7 +253,11 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <BtnCommon className="gap-[4px]" type="button" onClick={handleOpenModal}>
+      <BtnCommon
+        className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
+        type="button"
+        onClick={handleOpenModal}
+      >
         <Image src={plusIcon} alt="모임 만들기 추가 아이콘" />
         모임 만들기
       </BtnCommon>

@@ -258,7 +258,7 @@ export function EditMeetingModal({
 
       handleClose();
     } catch {
-      // Error toast is handled by the parent mutation.
+      // updateMeetingMutation toast handles the error
     } finally {
       setIsSubmitting(false);
     }

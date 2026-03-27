@@ -52,6 +52,7 @@ const hasUsableProfileImage = (
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
+
 interface MeetingHeaderSectionProps {
   data: MeetingDetailData;
   participantAvatars: MeetingParticipantUser[];
@@ -64,7 +65,7 @@ interface MeetingHeaderSectionProps {
   shouldShowClosedGuide: boolean;
   onJoin: () => Promise<void> | void;
   onCancelJoin: () => Promise<void> | void;
-  onAttend: () => void;
+  onAttend: () => Promise<void> | void;
   onShare: () => Promise<void> | void;
   onEdit: (nextValues: Partial<MeetingDetailData>) => void;
   onDelete: () => void;
@@ -119,7 +120,7 @@ export function MeetingHeaderSection({
     }
 
     if (actionLabel === "출석하기") {
-      onAttend();
+      await onAttend();
       return;
     }
 
