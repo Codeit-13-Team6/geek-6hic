@@ -3,29 +3,12 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import LoungeEditor from "@/components/features/editor/LoungeEditor";
+import LoungeEditor from "@/app/lounge/component/editor/LoungeEditor";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
-import LinkCard from "@/components/features/card/LinkCard";
-import { stitchPostData, LinkItem } from "@/lib/contentLinkUtils";
-
-export interface PostPayload {
-  title: string;
-  content: string; // (본문 + 링크) HTML 콘텐츠
-  image?: string;
-}
-
-interface LoungePostFormProps {
-  initialData?: {
-    title: string;
-    content: string; // 링크 없는 본문 콘텐츠
-    links: LinkItem[];
-    image?: string; // 기존 썸네일
-  };
-  onSubmit: (payload: PostPayload) => void;
-  isSubmitting: boolean;
-  submitButtonText?: string;
-}
+import LinkCard from "@/app/lounge/component/LinkCard";
+import { stitchPostData } from "@/lib/contentLinkUtils";
+import { PostPayload, LoungePostFormProps } from "@/types";
 
 export default function LoungePostForm({
   initialData,

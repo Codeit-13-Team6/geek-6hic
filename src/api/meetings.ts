@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 import {
   JoinedMeetingsResponse,
   Meeting,
@@ -8,9 +8,6 @@ import {
   MyMeetingsResponse,
   FavoritesResponse,
 } from "@/types";
-import type { MeetingParticipantsResponse } from "@/app/meetings/[meetingId]/types";
-
-
 
 export async function getMeetingList(
   params: GetMeetingListParams,
@@ -52,7 +49,6 @@ export async function updateMeeting(
   const { data } = await axiosInstance.patch(`/meetings/${meetingId}`, params);
   return data;
 }
-
 
 export async function updateFavorites(meetingId: number): Promise<void> {
   await axiosInstance.post(`/meetings/${meetingId}/favorites`);

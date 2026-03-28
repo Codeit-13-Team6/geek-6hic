@@ -9,7 +9,7 @@ import {
 } from "@/components/shadcnOrigin/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-interface ContentProps extends React.ComponentProps<
+export interface ContentProps extends React.ComponentProps<
   typeof DropdownMenuContent
 > {
   size?: "sm" | "md" | "lg";

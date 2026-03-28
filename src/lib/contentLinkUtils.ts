@@ -1,10 +1,4 @@
-export interface LinkItem {
-  id: string;
-  url: string;
-  title: string;
-  image: string;
-}
-
+import { LinkItem } from "@/types";
 /**
  * 서버에서 받은 혼합된 html을 콘텐츠와 링크로 분리하는 함수
  */

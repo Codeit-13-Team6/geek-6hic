@@ -12,15 +12,7 @@ import {
   CardTitle,
 } from "@/components/shadcnOrigin/card";
 import { getRelativeTime } from "@/lib/getRelativeTime";
-
-interface HotPostCardCommonProps {
-  title?: string;
-  date?: string | Date;
-  imageSrc?: string | null;
-  thumbsUp?: number;
-  comment?: number;
-  onDetailClick?: () => void;
-}
+import { HotPostCardCommonProps } from "@/types";
 
 export function HotPostCard({
   title = "제목이 없습니다.",

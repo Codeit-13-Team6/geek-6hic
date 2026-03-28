@@ -7,12 +7,7 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-
-const getNextPageParam = <
-  T extends { hasMore: boolean; nextCursor: string | null },
->(
-  lastPage: T,
-) => (lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined);
+import { getNextPageParam } from "@/lib/pagination";
 
 export default async function Page() {
   return (
@@ -26,11 +21,11 @@ export default async function Page() {
             지금 모임에 참여해보세요
           </h3>
 
-          <div className="absolute left-[323px] top-7 hidden h-[273px] w-117 sm:block lg:hidden">
+          <div className="absolute top-7 left-[323px] hidden h-[273px] w-117 sm:block lg:hidden">
             <Image src={bannerLg} fill alt="" />
           </div>
 
-          <div className="absolute right-21 top-2 hidden h-[313px] w-134 lg:block">
+          <div className="absolute top-2 right-21 hidden h-[313px] w-134 lg:block">
             <Image src={bannerSm} fill alt="" />
           </div>
         </div>
@@ -47,7 +42,8 @@ export default async function Page() {
           >({
             queryKey: ["meetings", "all", null],
             queryFn: ({ pageParam }) => {
-              const cursor = typeof pageParam === "string" ? pageParam : undefined;
+              const cursor =
+                typeof pageParam === "string" ? pageParam : undefined;
               return getMeetingList({
                 size: 10,
                 ...(cursor ? { cursor } : {}),

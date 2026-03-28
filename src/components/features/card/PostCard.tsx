@@ -4,19 +4,7 @@ import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
-
-interface PostDetailCardProps {
-  id: number;
-  title: string;
-  content: string;
-  authorName: string;
-  date: string;
-  timeAgo: string;
-  likeCount: number;
-  commentCount: number;
-  thumbnailUrl?: string | null;
-  onDetailClick?: () => void;
-}
+import { PostCardProps } from "@/types";
 
 export default function PostCard({
   title,
@@ -27,7 +15,7 @@ export default function PostCard({
   commentCount,
   thumbnailUrl,
   onDetailClick,
-}: PostDetailCardProps) {
+}: PostCardProps) {
   const pureContent = getPlainText(content);
 
   return (

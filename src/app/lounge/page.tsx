@@ -7,9 +7,8 @@ import { Suspense } from "react";
 import { GetPostsResponse } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { fetchPosts } from "@/api/index.server";
+import { getPosts } from "@/api/index-server";
 import { getNextPageParam } from "@/lib/pagination";
-
 
 export default async function LoungePage() {
   return (
@@ -56,7 +55,7 @@ export default async function LoungePage() {
                 string | undefined
               >({
                 queryKey: ["posts", "list", "latest", ""],
-                queryFn: ({ pageParam }) => fetchPosts(pageParam),
+                queryFn: ({ pageParam }) => getPosts(pageParam),
                 initialPageParam: undefined,
                 getNextPageParam,
               })

@@ -5,7 +5,6 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import MyMeetingList from "./components/MyMeetingList";
 import MyPostList from "./components/MyPostList";
 import { Suspense } from "react";
-import { EmptyData } from "@/components/features/empty/EmptyData";
 import FavoriteList from "@/app/users/[id]/components/FavoriteList";
 import type {
   FavoritesResponse,
@@ -13,15 +12,19 @@ import type {
   GetPostsResponse,
 } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-import { fetchFavorites, fetchMyMeetings, fetchLoungePosts } from "@/api/index.server";
+import {
+  getFavorites,
+  getMyMeetings,
+  getLoungePosts,
+} from "@/api/index-server";
 import { getNextPageParam } from "@/lib/pagination";
+import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
   { value: "created", label: "내가 만든 모임" },
   { value: "lounge", label: "라운지 게시물" },
 ];
-
 
 export default async function Page() {
   return (
@@ -38,7 +41,7 @@ export default async function Page() {
           <section className="flex min-w-0 flex-1 flex-col scroll-auto">
             <Tab tabs={defaultTabs}>
               <TabsContent value="liked" className="mt-6 md:mt-[32px]">
-                <Suspense fallback={<EmptyData />}>
+                <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
                       qc.prefetchInfiniteQuery<
@@ -49,7 +52,7 @@ export default async function Page() {
                         string | undefined
                       >({
                         queryKey: ["favorites"],
-                        queryFn: ({ pageParam }) => fetchFavorites(pageParam),
+                        queryFn: ({ pageParam }) => getFavorites(pageParam),
                         initialPageParam: undefined,
                         getNextPageParam,
                       })
@@ -60,7 +63,7 @@ export default async function Page() {
                 </Suspense>
               </TabsContent>
               <TabsContent value="created" className="mt-6 md:mt-[32px]">
-                <Suspense fallback={<EmptyData />}>
+                <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
                       qc.prefetchInfiniteQuery<
@@ -71,7 +74,7 @@ export default async function Page() {
                         string | undefined
                       >({
                         queryKey: ["meetings", "my"],
-                        queryFn: ({ pageParam }) => fetchMyMeetings(pageParam),
+                        queryFn: ({ pageParam }) => getMyMeetings(pageParam),
                         initialPageParam: undefined,
                         getNextPageParam,
                       })
@@ -82,7 +85,7 @@ export default async function Page() {
                 </Suspense>
               </TabsContent>
               <TabsContent value="lounge" className="mt-6 md:mt-[32px]">
-                <Suspense fallback={<EmptyData />}>
+                <Suspense fallback={<UserTabSkeleton variant="post" />}>
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
                       qc.prefetchInfiniteQuery<
@@ -93,7 +96,7 @@ export default async function Page() {
                         string | undefined
                       >({
                         queryKey: ["posts", "list", "my", "latest", ""],
-                        queryFn: ({ pageParam }) => fetchLoungePosts(pageParam),
+                        queryFn: ({ pageParam }) => getLoungePosts(pageParam),
                         initialPageParam: undefined,
                         getNextPageParam,
                       })

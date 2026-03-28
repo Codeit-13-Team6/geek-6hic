@@ -14,19 +14,7 @@ import {
   CardTitle,
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-
-interface UserCardProps {
-  title?: string;
-  type?: string;
-  date?: Date;
-  imageSrc?: string;
-  participantCount?: number;
-  capacity?: number;
-  defaultLiked?: boolean;
-  showLikeBtn?: boolean;
-  onHeartClick?: (liked: boolean) => void;
-  onDetailClick?: () => void;
-}
+import { UserCardProps } from "@/types";
 
 export function UserCard({
   title = "제목이 없습니다.",
@@ -44,9 +32,9 @@ export function UserCard({
 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const next = !isLiked;
-    setIsLiked(next);
-    onHeartClick?.(next);
+    const isNext = !isLiked;
+    setIsLiked(isNext);
+    onHeartClick?.(isNext);
   };
 
   const handleDetailClick = () => {

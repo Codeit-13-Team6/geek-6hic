@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
-import {  Post } from "@/types";
-import { fetchPosts } from "@/api/index.server";
+import { Post } from "@/types";
+import { getPosts } from "@/api/index-server";
+import { AxiosError } from "axios";
 
+interface AxiosErrorLike {
+  response?: {
+    data?: { code?: string; [key: string]: unknown };
+    status?: number;
+  };
+  message: string;
+}
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const revalidate = 600; // 10분마다 갱신 (캐싱)
 
@@ -34,7 +42,7 @@ export async function GET() {
       //   },
       // );
 
-      const response = await fetchPosts(cursor);
+      const response = await getPosts(cursor);
 
       const posts = response.data || [];
 

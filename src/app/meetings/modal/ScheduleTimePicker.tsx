@@ -10,16 +10,7 @@ import {
 } from "@/components/shadcnOrigin/popover";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TimePickerCommon } from "@/components/ui/TimePickerCommon";
-
-interface ScheduleTimePickerProps {
-  id: string;
-  label?: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  onChange: (value: string) => void;
-}
+import { ScheduleTimePickerProps } from "@/types";
 
 export function ScheduleTimePicker({
   id,

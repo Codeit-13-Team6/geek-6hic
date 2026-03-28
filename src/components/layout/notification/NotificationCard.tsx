@@ -2,13 +2,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import profileSm from "@/assets/img/profile/female1-sm.jpg";
 
-import type { NotificationItem } from "@/types/notification";
-
-type NotificationCardProps = {
-  notification: NotificationItem;
-  onClick?: (notification: NotificationItem) => void;
-  className?: string;
-};
+import { NotificationItem, NotificationCardProps } from "@/types";
 
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",

@@ -1,6 +1,6 @@
 "use client";
 
-import { PostDetailCard } from "@/components/features/card/PostDetailCard";
+import { PostDetailCard } from "@/app/lounge/[id]/component/PostDetailCard";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { parsePostData } from "@/lib/contentLinkUtils";

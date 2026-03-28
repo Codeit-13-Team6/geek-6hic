@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { serverAxios } from "@/lib/server-fetcher";
+import { serverAxios } from "@/lib/serverFetcher";
+import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {
   response?: {
@@ -24,6 +25,21 @@ interface RouteRule {
 // 백엔드로 프록시할 라우트 화이트리스트
 // 여기 없는 경로는 404로 차단 (등록된 경로만 백엔드로 통과)
 const PROXY_ROUTE_RULES: RouteRule[] = [
+  {
+    pattern: /^\/meetings\/\d+\/participants$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/join$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+$/,
+    methods: ["GET", "PATCH", "DELETE"],
+    requiresAuth: false,
+  },
   {
     pattern: /^\/meetings$/,
     methods: ["GET", "POST"],
@@ -109,21 +125,6 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["GET", "POST"],
     requiresAuth: true,
   },
-    {
-      pattern: /^\/meetings\/\d+/,
-      methods: ["GET", "PATCH", "DELETE"],
-      requiresAuth: false,
-    },
-    {
-      pattern: /^\/meetings\/\d+\/participants/,
-      methods: ["GET"],
-      requiresAuth: true,
-    },
-    {
-      pattern: /^\/meetings\/\d+\/join/,
-      methods: ["POST", "DELETE"],
-      requiresAuth: true,
-    },
   {
     pattern: /^\/og$/,
     methods: ["GET"],
@@ -171,7 +172,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const axiosOptions: any = {
+    const axiosOptions: AxiosRequestConfig = {
       method: request.method,
       url: targetUrl,
       headers: { "Content-Type": "application/json" },

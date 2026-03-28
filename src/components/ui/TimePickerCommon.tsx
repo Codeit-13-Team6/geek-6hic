@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-interface TimePickerCommonProps {
-  value: string;
-  onChange: (value: string) => void;
-}
+import { TimePickerCommonProps } from "@/types";
+
 function TimePickerCommon({ value, onChange }: TimePickerCommonProps) {
   const hours = Array.from({ length: 24 }, (_, i) =>
     String(i).padStart(2, "0"),

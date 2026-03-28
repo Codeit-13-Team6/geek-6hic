@@ -44,8 +44,50 @@ export interface JoinedMeetingsResponse {
   hasMore: boolean;
 }
 
+export interface HostProps {
+  id: number;
+  name: string;
+  image: string | null;
+}
+
+export interface MeetingDetailResponseProps {
+  id: number;
+  teamId: string;
+  name: string;
+  type: string;
+  region: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  dateTime: string;
+  registrationEnd: string;
+  capacity: number;
+  participantCount: number;
+  image: string | null;
+  description: string;
+  canceledAt: string | null;
+  confirmedAt: string | null;
+  hostId: number;
+  createdBy: number;
+  updatedAt: string;
+  createdAt: string;
+  host: HostProps;
+  isFavorited: boolean;
+  isJoined: boolean;
+  isCompleted: boolean;
+}
+
+export interface FavoritesResponseData {
+  id: number;
+  teamId: string;
+  meetingId: number;
+  userId: number;
+  createdAt: string;
+  meeting: MeetingDetailResponseProps;
+}
+
 export interface FavoritesResponse {
-  data: any[];
+  data: FavoritesResponseData[];
   nextCursor: string | null;
   hasMore: boolean;
 }
@@ -55,7 +97,6 @@ export interface MyMeetingsResponse {
   nextCursor: string | null;
   hasMore: boolean;
 }
-
 
 export type TabValue = "all" | "team" | "study" | "job" | "wework" | "etc";
 
@@ -70,7 +111,6 @@ export interface MeetingFiltersProps {
   onApplyDate: (value: DateRange | undefined) => void;
   onResetFilters: () => void;
 }
-
 
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];

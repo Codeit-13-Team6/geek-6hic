@@ -7,7 +7,7 @@ import PostCard from "@/components/features/card/PostCard";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { SearchX } from "lucide-react";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useIntersectionObserver } from "@/hooks";
 
 export default function MyPostList() {
   const router = useRouter();
@@ -72,9 +72,14 @@ export default function MyPostList() {
           />
         ))}
       </div>
-      <div ref={bottomRef} className="flex h-20 items-center justify-center text-sm text-gray-400">
+      <div
+        ref={bottomRef}
+        className="flex h-20 items-center justify-center text-sm text-gray-400"
+      >
         {isFetchingNextPage && <p>불러오는 중...</p>}
-        {!hasNextPage && allPosts.length > 0 && <p>더 이상 게시물이 없습니다.</p>}
+        {!hasNextPage && allPosts.length > 0 && (
+          <p>더 이상 게시물이 없습니다.</p>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 import TopRankCard from "./TopRankCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";

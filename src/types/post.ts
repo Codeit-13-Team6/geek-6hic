@@ -35,3 +35,55 @@ export interface GetPostsResponse {
   nextCursor: string | null;
   hasMore: boolean;
 }
+
+export interface PostListProps {
+  searchValue?: string;
+  sortValue?: string;
+}
+
+export interface PostCardProps {
+  id: number;
+  title: string;
+  content: string;
+  authorName: string;
+  date: string;
+  timeAgo: string;
+  likeCount: number;
+  commentCount: number;
+  thumbnailUrl?: string | null;
+  onDetailClick?: () => void;
+}
+
+export interface PostDetailCardProps {
+  title?: string;
+  date?: Date;
+  name?: string;
+  img?: string;
+  linkObjects?: {
+    id: string;
+    title: string;
+    url: string;
+  }[];
+  content?: string;
+  avatar?: string;
+  thumbsUp?: number;
+  comment?: number;
+  liked?: boolean;
+  isOwner?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onLike?: () => void;
+}
+
+export interface UserCardProps {
+  title?: string;
+  type?: string;
+  date?: Date;
+  imageSrc?: string;
+  participantCount?: number;
+  capacity?: number;
+  defaultLiked?: boolean;
+  showLikeBtn?: boolean;
+  onHeartClick?: (liked: boolean) => void;
+  onDetailClick?: () => void;
+}

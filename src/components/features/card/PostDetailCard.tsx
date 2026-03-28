@@ -20,27 +20,7 @@ import {
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { Link2 } from "lucide-react";
 import { CompactLinkList } from "../list/CompactLinkList";
-
-interface PostDetailCardProps {
-  title?: string;
-  date?: Date;
-  name?: string;
-  img?: string;
-  linkObjects?: {
-    id: string;
-    title: string;
-    url: string;
-  }[];
-  content?: string;
-  avatar?: string;
-  thumbsUp?: number;
-  comment?: number;
-  liked?: boolean;
-  isOwner?: boolean;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onLike?: () => void;
-}
+import { PostDetailCardProps } from "@/types";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",

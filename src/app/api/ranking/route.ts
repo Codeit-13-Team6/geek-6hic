@@ -1,4 +1,4 @@
-import { serverAxios } from "@/lib/server-fetcher";
+import { serverAxios } from "@/lib/serverFetcher";
 import { NextResponse } from "next/server";
 import { CursorResponse } from "@/types";
 

@@ -1,16 +1,11 @@
 import { useState, DragEvent } from "react";
 import { getOgData } from "@/api/og";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-
-interface OGData {
-  id: string;
-  title: string;
-  image: string;
-  url: string;
-}
+import { LinkItem } from "@/types";
+import axios, { AxiosError } from "axios";
 
 export const useLoungeLink = () => {
-  const [linkList, setLinkList] = useState<OGData[]>([]);
+  const [linkList, setLinkList] = useState<LinkItem[]>([]);
   const [thumbnailImage, setThumbnailImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
@@ -24,11 +19,11 @@ export const useLoungeLink = () => {
     setIsLoading(true);
     try {
       const result = await getOgData(linkUrl);
-      const newLink: OGData = {
+      const newLink: LinkItem = {
         id: crypto.randomUUID(),
         title: result.title || "제목 없음",
-        image: result.image || "",
         url: result.url || linkUrl,
+        image: result.image || "",
       };
 
       setLinkList((prev) => {
@@ -41,8 +36,11 @@ export const useLoungeLink = () => {
       });
 
       return true; // 성공 시 입력창 비우기 용도
-    } catch (error: any) {
+    } catch (error) {
       console.error("OG Fetch Error:", error);
+
+      // 일단은 axios error 아니면 바로 자르긴하는데 문제되면 그냥 error any 로 하고 받기
+      if (!axios.isAxiosError(error)) return false;
 
       const status = error.response?.status;
       let errorMessage = "링크 정보를 가져올 수 없습니다.";

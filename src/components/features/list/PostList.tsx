@@ -7,16 +7,12 @@ import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-
-interface Props {
-  searchValue?: string;
-  sortValue?: string;
-}
+import { PostListProps } from "@/types";
 
 export default function PostList({
   searchValue = "",
   sortValue = "latest",
-}: Props) {
+}: PostListProps) {
   const router = useRouter();
 
   const getSortParams = () => {

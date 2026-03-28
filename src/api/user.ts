@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/client-fetcher";
-import { Meeting, User, UserProfileUpdateProps } from "@/types";
+import axiosInstance from "@/lib/clientFetcher";
+import { User, UserProfileUpdateProps } from "@/types";
 
 export async function getUser(): Promise<User> {
   const { data } = await axiosInstance.get("/users/me");

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { setAuthCookies } from "@/lib/auth-cookies";
+import { setAuthCookies } from "@/lib/authCookies";
 
 // 클라이언트 인터셉터에서 호출하는 토큰 갱신 엔드포인트
 // refreshToken 쿠키를 읽어 백엔드에 갱신 요청 → 새 토큰을 쿠키에 저장
