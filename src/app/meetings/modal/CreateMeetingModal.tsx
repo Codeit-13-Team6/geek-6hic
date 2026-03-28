@@ -6,9 +6,9 @@ import { useState } from "react";
 import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
 import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep";
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
-import { useCreateMeetingForm } from "@/app/meetings/modal/hooks/useCreateMeetingForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
+import { useCreateMeetingForm } from "@/hooks/meetings/useCreateMeetingForm";
 
 export function CreateMeetingModal() {
   const [isOpen, setIsOpen] = useState(false);

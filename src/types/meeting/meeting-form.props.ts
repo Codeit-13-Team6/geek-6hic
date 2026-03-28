@@ -2,7 +2,7 @@ import type {
   MeetingBasicInfoErrors,
   MeetingBasicInfoValues,
   MeetingScheduleStepValues,
-} from "@/app/meetings/modal/model/meeting-form.types";
+} from "@/types/meeting-form.types";
 
 export interface MeetingBasicInfoStepProps {
   values: MeetingBasicInfoValues;

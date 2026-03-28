@@ -6,7 +6,7 @@ import type {
   MeetingJoinResponse,
   MeetingListResponse,
   MeetingParticipantsResponse,
-} from "@/app/meetings/[meetingId]/types";
+} from "@/types/meetingTypes";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
 const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;

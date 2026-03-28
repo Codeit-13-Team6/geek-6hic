@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { EmptyData } from "@/components/features/empty/EmptyData";
-import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
-import { useMeetingQuery } from "@/hooks/useMeetingQuery";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingList from "../../meetings/components/MeetingList";
+import { useMeetingQuery } from "@/hooks/meetings/useMeetingQuery";
+import { useMeetingFavoriteMutation } from "@/hooks/meetings/useMeetingFavoriteMutation";
 
 export default function MyMeetingsClient() {
   const router = useRouter();
@@ -14,7 +14,11 @@ export default function MyMeetingsClient() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingQuery();
 
-  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  const bottomRef = useIntersectionObserver(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  );
 
   const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
 

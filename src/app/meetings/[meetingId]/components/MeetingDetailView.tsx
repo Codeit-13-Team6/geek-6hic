@@ -1,14 +1,14 @@
 "use client";
 
-import type {
-  MeetingDetailData,
-  MeetingParticipantUser,
-} from "@/app/meetings/[meetingId]/types";
 import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
 import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
 import { MeetingLinkSection } from "@/app/meetings/[meetingId]/components/MeetingLinkSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[meetingId]/components/RecommendedMeetingsSection";
 import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
+import {
+  MeetingDetailData,
+  MeetingParticipantUser,
+} from "@/types/meeting/meetingTypes";
 
 interface MeetingDetailViewProps {
   data: MeetingDetailData;

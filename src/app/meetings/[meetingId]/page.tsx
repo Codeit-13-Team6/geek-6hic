@@ -5,20 +5,21 @@ import {
 } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { MeetingDetailContent } from "@/app/meetings/[meetingId]/components/MeetingDetailContent";
+import { getAttendancePostId } from "@/api/meeting-detail.api";
+
 import {
   fetchCurrentUserOnServer,
   fetchMeetingDetailOnServer,
   fetchMeetingParticipantsOnServer,
   fetchMeetingRecommendationCandidatesOnServer,
   fetchTodayAttendanceStatus,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.server";
-import { getAttendancePostId } from "@/app/meetings/[meetingId]/api/meeting-detail.api";
-import { MeetingDetailApiData } from "@/app/meetings/[meetingId]/types";
+} from "@/api/meeting-detail.server";
 import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
   getMeetingRecommendationCandidatesQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
+} from "@/hooks/meetings/meeting-detail.query-keys";
+import { MeetingDetailApiData } from "@/types/meeting/meetingTypes";
 
 interface MeetingDetailPageProps {
   params: Promise<{

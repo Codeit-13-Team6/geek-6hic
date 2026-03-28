@@ -2,15 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
-  fetchMeetingDetail,
-  fetchMeetingParticipants,
-  fetchMeetingRecommendationCandidates,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.api";
-import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
   getMeetingRecommendationCandidatesQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
+} from "./meeting-detail.query-keys";
+import {
+  fetchMeetingDetail,
+  fetchMeetingParticipants,
+  fetchMeetingRecommendationCandidates,
+} from "@/api/meeting-detail.api";
 
 export function useMeetingDetailQueries(meetingId: number) {
   const detailQuery = useQuery({

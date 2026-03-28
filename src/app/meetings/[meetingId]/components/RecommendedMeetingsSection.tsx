@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
 import { TagCommon } from "@/components/ui/TagCommon";
+import { MeetingDetailData } from "@/types/meeting/meetingTypes";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);

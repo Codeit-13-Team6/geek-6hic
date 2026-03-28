@@ -9,11 +9,8 @@ import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
 import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
-import { EditMeetingModal } from "@/app/meetings/[meetingId]/components/EditMeetingModal";
-import {
-  MeetingDetailData,
-  MeetingParticipantUser,
-} from "@/app/meetings/[meetingId]/types";
+import { EditMeetingModal } from "@/app/meetings/modal/EditMeetingModal";
+
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
   DropdownMenu,
@@ -28,6 +25,10 @@ import {
   ProgressValue,
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
+import {
+  MeetingDetailData,
+  MeetingParticipantUser,
+} from "@/types/meeting/meetingTypes";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);

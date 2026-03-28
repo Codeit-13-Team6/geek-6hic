@@ -3,29 +3,31 @@
 import { useEffect, useRef, useState } from "react";
 import axiosInstance from "@/lib/client-fetcher";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import {
-  INITIAL_MEETING_FORM_VALUES,
-  TOTAL_MEETING_FORM_STEPS,
-} from "@/app/meetings/modal/model/meeting-form.defaults";
-import { toCreateMeetingPayload } from "@/app/meetings/modal/model/meeting-form.mappers";
-import type { MeetingFormValues } from "@/app/meetings/modal/model/meeting-form.types";
+
 import {
   hasMeetingValidationError,
   validateMeetingBasicInfoStep,
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
-} from "@/app/meetings/modal/model/meeting-form.validation";
+} from "@/lib/meeting-form.validation";
+import { MeetingFormValues } from "@/types/meeting/meeting-form.types";
 import {
   changeMeetingImage,
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
-} from "@/app/meetings/modal/services/meetingImageField";
+} from "./meetingImageField";
+import {
+  INITIAL_MEETING_FORM_VALUES,
+  toCreateMeetingPayload,
+  TOTAL_MEETING_FORM_STEPS,
+} from "./useEditMeetingForm";
 
 export function useCreateMeetingForm(onSuccess?: () => void) {
   const [currentStep, setCurrentStep] = useState(1);
   const [touchedStepList, setTouchedStepList] = useState<number[]>([]);
-  const [formValues, setFormValues] =
-    useState<MeetingFormValues>(INITIAL_MEETING_FORM_VALUES);
+  const [formValues, setFormValues] = useState<MeetingFormValues>(
+    INITIAL_MEETING_FORM_VALUES,
+  );
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState("");
 

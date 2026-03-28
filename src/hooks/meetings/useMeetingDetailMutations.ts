@@ -4,11 +4,7 @@ import { useState } from "react";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type {
-  MeetingActionErrorResponse,
-  MeetingDetailApiData,
-  MeetingDetailData,
-} from "@/app/meetings/[meetingId]/types";
+
 import {
   addMeetingFavorite,
   attendMeeting,
@@ -17,17 +13,49 @@ import {
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
-} from "@/app/meetings/[meetingId]/api/meeting-detail.api";
-import {
-  getCancelJoinErrorMessage,
-  getJoinErrorMessage,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.errors";
+} from "@/api/meeting-detail.api";
+
+import { ToastCommon } from "@/components/ui/ToastCommon";
+import { useAuthStore } from "@/store/useAuthStore";
 import {
   getMeetingDetailQueryKey,
   getMeetingParticipantsQueryKey,
-} from "@/app/meetings/[meetingId]/model/meeting-detail.query-keys";
-import { ToastCommon } from "@/components/ui/ToastCommon";
-import { useAuthStore } from "@/store/useAuthStore";
+} from "./meeting-detail.query-keys";
+import {
+  MeetingActionErrorResponse,
+  MeetingDetailApiData,
+  MeetingDetailData,
+} from "@/types/meeting/meetingTypes";
+
+const getJoinErrorMessage = (code?: string) => {
+  switch (code) {
+    case "CANCELED":
+      return "취소된 모임은 참여할 수 없어요.";
+    case "REGISTRATION_CLOSED":
+      return "모집이 마감된 모임이에요.";
+    case "CAPACITY_FULL":
+      return "정원이 가득 찬 모임이에요.";
+    case "ALREADY_JOINED":
+      return "이미 참여 중인 모임이에요.";
+    case "NOT_FOUND":
+      return "존재하지 않는 모임이에요.";
+    case "REFRESH_FAILED":
+      return "로그인 후 다시 참여해 주세요.";
+    default:
+      return "참여 처리 중 문제가 발생했어요.";
+  }
+};
+
+const getCancelJoinErrorMessage = (code?: string) => {
+  switch (code) {
+    case "NOT_FOUND":
+      return "존재하지 않는 모임이에요.";
+    case "REFRESH_FAILED":
+      return "로그인 후 다시 참여 취소해 주세요.";
+    default:
+      return "참여 취소 처리 중 문제가 발생했어요.";
+  }
+};
 
 export function useMeetingDetailMutations({
   meetingId,

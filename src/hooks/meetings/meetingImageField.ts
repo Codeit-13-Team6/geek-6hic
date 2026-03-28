@@ -1,9 +1,8 @@
 "use client";
 
+import { MeetingFormValues } from "@/types/meeting/meeting-form.types";
 import type { Dispatch, SetStateAction } from "react";
-
-import { MeetingFormValues } from "@/app/meetings/modal/model/meeting-form.types";
-import { uploadMeetingImage } from "@/app/meetings/modal/services/uploadMeetingImage";
+import { uploadMeetingImage } from "./uploadMeetingImage";
 
 interface ChangeMeetingImageParams {
   nextFile: File | null;

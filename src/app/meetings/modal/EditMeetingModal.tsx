@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSection";
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
-import { useEditMeetingForm } from "@/app/meetings/modal/hooks/useEditMeetingForm";
-import { MeetingDetailData } from "@/app/meetings/[meetingId]/types";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
+import { useEditMeetingForm } from "@/hooks/meetings/useEditMeetingForm";
+import { MeetingDetailData } from "@/types/meeting/meetingTypes";
 
 interface EditMeetingModalProps {
   isOpen: boolean;

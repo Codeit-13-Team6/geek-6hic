@@ -13,11 +13,10 @@ import type {
   TabValue,
   SortValue,
 } from "@/types";
-import { useMeetingFavoriteMutation } from "@/hooks/useMeetingFavoriteMutation";
 import MeetingList from "./MeetingList";
 import MeetingFilters from "./MeetingsFilters";
 import { CreateMeetingModal } from "@/app/meetings/modal/CreateMeetingModal";
-
+import { useMeetingFavoriteMutation } from "@/hooks/meetings/useMeetingFavoriteMutation";
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
@@ -48,45 +47,46 @@ export default function MeetingsClient() {
   const [sortValue, setSortValue] = useState<SortValue>(null);
 
   // 실제 적용된 날짜 필터
-  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(undefined);
+  const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(
+    undefined,
+  );
 
   const { toggleFavorite } = useMeetingFavoriteMutation();
 
   // 현재 탭에 맞는 API type 찾기
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
 
-  const {
-    data,
-    isLoading,
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery<JoinedMeetingsResponse>({
+      queryKey: ["meetings", activeValue, sortValue],
+      queryFn: ({ pageParam }) => {
+        const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
+        const cursor = typeof pageParam === "string" ? pageParam : undefined;
+
+        const params: GetMeetingListParams = {
+          type: currentTab?.type,
+          size: 10,
+          ...(sortValue
+            ? {
+                sortBy: sortByMap[sortValue],
+                sortOrder: sortOrderMap[sortValue],
+              }
+            : {}),
+          ...(cursor ? { cursor } : {}),
+        };
+
+        return getMeetingList(params);
+      },
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+    });
+
+  const bottomRef = useIntersectionObserver(
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<JoinedMeetingsResponse>({
-    queryKey: ["meetings", activeValue, sortValue],
-    queryFn: ({ pageParam }) => {
-      const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
-      const cursor = typeof pageParam === "string" ? pageParam : undefined;
-
-      const params: GetMeetingListParams = {
-        type: currentTab?.type,
-        size: 10,
-        ...(sortValue
-          ? {
-              sortBy: sortByMap[sortValue],
-              sortOrder: sortOrderMap[sortValue],
-            }
-          : {}),
-        ...(cursor ? { cursor } : {}),
-      };
-  
-      return getMeetingList(params);
-    },
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.nextCursor ?? undefined : undefined
-  });
-
-  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  );
 
   const meetingList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
@@ -116,7 +116,6 @@ export default function MeetingsClient() {
         activeValue={activeValue}
         sortValue={sortValue}
         appliedDate={appliedDate}
-
         // 상태 변경 핸들러 (자식 → 부모)
         onChangeTab={setActiveValue}
         onChangeSort={setSortValue}
@@ -134,14 +133,14 @@ export default function MeetingsClient() {
         />
       </div>
       <div
-          ref={bottomRef}
-          className="flex h-40 w-full items-center justify-center"
-        >
-          {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
-          {!hasNextPage && filteredMeetingList.length > 0 && (
-            <p>모든 모임을 다 확인하셨습니다! ✔️</p>
-          )}
-        </div>
+        ref={bottomRef}
+        className="flex h-40 w-full items-center justify-center"
+      >
+        {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
+        {!hasNextPage && filteredMeetingList.length > 0 && (
+          <p>모든 모임을 다 확인하셨습니다! ✔️</p>
+        )}
+      </div>
     </div>
   );
 }

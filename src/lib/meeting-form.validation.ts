@@ -1,7 +1,7 @@
 import type {
   MeetingFormErrors,
   MeetingFormValues,
-} from "@/app/meetings/modal/model/meeting-form.types";
+} from "@/types/meeting-form.types";
 
 export const getNormalizedMeetingLink = (link: string) => {
   const trimmedLink = link.trim();
