@@ -11,25 +11,16 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 
-import type { StaticImageData } from "next/image";
 import teamBulb from "@/assets/img/bulb/elec-bulb.jpg";
 import studyImage from "@/assets/img/category/study.jpg";
 import towerWork from "@/assets/img/category/business.jpg";
 import JobIShoes from "@/assets/img/category/fitness-health.jpg";
 import etcImage from "@/assets/img/category/etc.jpg";
-import { MeetingBasicInfoSectionProps } from "@/types/meeting/meeting-form.props";
-
-export interface MeetingTypeOption {
-  value: string;
-  label: string;
-}
-
-export interface MeetingCategoryItem {
-  value: string;
-  label: string;
-  imageSrc: StaticImageData;
-  className?: string;
-}
+import { MeetingBasicInfoSectionProps } from "@/types/meeting/meetingTypes";
+import {
+  MeetingTypeOption,
+  MeetingCategoryItem,
+} from "@/types/meeting/meetingTypes";
 
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   {

@@ -1,8 +1,4 @@
-import { MeetingDetailData } from "@/types/meeting/meetingTypes";
-
-interface MeetingDescriptionSectionProps {
-  data: MeetingDetailData;
-}
+import { MeetingDescriptionSectionProps } from "@/types/meeting/meetingTypes";
 
 export function MeetingDescriptionSection({
   data,

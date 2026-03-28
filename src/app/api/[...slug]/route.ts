@@ -25,6 +25,33 @@ interface RouteRule {
 // 여기 없는 경로는 404로 차단 (등록된 경로만 백엔드로 통과)
 const PROXY_ROUTE_RULES: RouteRule[] = [
   {
+    pattern: /^\/meetings\/\d+\/participants$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+\/join$/,
+    methods: ["POST", "DELETE"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/\d+$/, // 끝에 $를 붙여서 정확히 일치시켜야 함
+    methods: ["GET", "PATCH", "DELETE"],
+    requiresAuth: false,
+  },
+
+  // 2. 그 다음 덜 구체적인 경로 (목록)
+  {
+    pattern: /^\/meetings$/,
+    methods: ["GET", "POST"],
+    requiresAuth: true,
+  },
+  {
+    pattern: /^\/meetings\/my$/,
+    methods: ["GET"],
+    requiresAuth: true,
+  },
+  {
     pattern: /^\/meetings$/,
     methods: ["GET", "POST"],
     requiresAuth: true,
@@ -109,21 +136,6 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     methods: ["GET", "POST"],
     requiresAuth: true,
   },
-    {
-      pattern: /^\/meetings\/\d+/,
-      methods: ["GET", "PATCH", "DELETE"],
-      requiresAuth: false,
-    },
-    {
-      pattern: /^\/meetings\/\d+\/participants/,
-      methods: ["GET"],
-      requiresAuth: true,
-    },
-    {
-      pattern: /^\/meetings\/\d+\/join/,
-      methods: ["POST", "DELETE"],
-      requiresAuth: true,
-    },
   {
     pattern: /^\/og$/,
     methods: ["GET"],

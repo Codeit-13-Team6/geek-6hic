@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/client-fetcher";
-import { UploadImageResponse } from "@/types/meeting/meeting-image.types";
+import { UploadImageResponse } from "@/types/meeting/meetingTypes";
 
 export async function uploadMeetingImage(file: File) {
   const fileName = file.name;

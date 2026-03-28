@@ -1,12 +1,12 @@
 import type { AxiosResponse } from "axios";
 import { serverAxios, serverFetch } from "@/lib/server-fetcher";
 import type { User } from "@/types";
-import type {
+import {
   MeetingAttendanceCommentsResponse,
   MeetingDetailApiData,
   MeetingListResponse,
   MeetingParticipantsResponse,
-} from "@/types/meetingTypes";
+} from "@/types/meeting/meetingTypes";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
 const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;

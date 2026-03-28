@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { MeetingDetailContent } from "@/app/meetings/[meetingId]/components/MeetingDetailContent";
+import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
 import { getAttendancePostId } from "@/api/meeting-detail.api";
 
 import {
@@ -19,27 +19,22 @@ import {
   getMeetingParticipantsQueryKey,
   getMeetingRecommendationCandidatesQueryKey,
 } from "@/hooks/meetings/meeting-detail.query-keys";
-import { MeetingDetailApiData } from "@/types/meeting/meetingTypes";
-
-interface MeetingDetailPageProps {
-  params: Promise<{
-    meetingId: string;
-  }>;
-}
+import {
+  MeetingDetailApiData,
+  MeetingDetailPageProps,
+} from "@/types/meeting/meetingTypes";
 
 export default async function MeetingDetailPage({
   params,
 }: MeetingDetailPageProps) {
-  const { meetingId } = await params;
-  const resolvedMeetingId = Number(meetingId);
+  const { id } = await params;
+  const resolvedMeetingId = Number(id);
 
-  if (!Number.isFinite(resolvedMeetingId)) {
-    notFound();
-  }
+  console.log("lllllllllresolvedMeetingId", resolvedMeetingId);
 
   const queryClient = new QueryClient();
 
-  await queryClient.fetchQuery({
+  queryClient.fetchQuery({
     queryKey: getMeetingDetailQueryKey(resolvedMeetingId),
     queryFn: () => fetchMeetingDetailOnServer(resolvedMeetingId),
   });
@@ -48,12 +43,12 @@ export default async function MeetingDetailPage({
     getMeetingDetailQueryKey(resolvedMeetingId),
   );
 
-  await queryClient.prefetchQuery({
+  queryClient.prefetchQuery({
     queryKey: getMeetingParticipantsQueryKey(resolvedMeetingId),
     queryFn: () => fetchMeetingParticipantsOnServer(resolvedMeetingId),
   });
 
-  await queryClient.prefetchQuery({
+  queryClient.prefetchQuery({
     queryKey: getMeetingRecommendationCandidatesQueryKey(resolvedMeetingId),
     queryFn: () => fetchMeetingRecommendationCandidatesOnServer(),
   });

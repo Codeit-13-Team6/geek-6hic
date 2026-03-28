@@ -1,37 +1,15 @@
 "use client";
 
-import { MeetingDescriptionSection } from "@/app/meetings/[meetingId]/components/MeetingDescriptionSection";
-import { MeetingHeaderSection } from "@/app/meetings/[meetingId]/components/MeetingHeaderSection";
-import { MeetingLinkSection } from "@/app/meetings/[meetingId]/components/MeetingLinkSection";
-import { RecommendedMeetingsSection } from "@/app/meetings/[meetingId]/components/RecommendedMeetingsSection";
-import { MeetingThreadSection } from "@/app/meetings/[meetingId]/components/MeetingThreadSection";
+import { MeetingDescriptionSection } from "@/app/meetings/[id]/components/MeetingDescriptionSection";
+import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHeaderSection";
+import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
+import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
+import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThreadSection";
 import {
   MeetingDetailData,
   MeetingParticipantUser,
+  MeetingDetailViewProps,
 } from "@/types/meeting/meetingTypes";
-
-interface MeetingDetailViewProps {
-  data: MeetingDetailData;
-  participantAvatars: MeetingParticipantUser[];
-  isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
-  actionLabel: string;
-  isActionDisabled: boolean;
-  shouldShowHostMenu: boolean;
-  shouldShowClosedGuide: boolean;
-  canViewLink: boolean;
-  canWriteThread: boolean;
-  linkGuideText: string;
-  threadGuideText: string;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
-  onAttend: () => Promise<void> | void;
-  onShare: () => Promise<void> | void;
-  onEdit: (nextValues: Partial<MeetingDetailData>) => void;
-  onDelete: () => void;
-  onToggleFavorite: () => void;
-}
 
 export function MeetingDetailView({
   data,

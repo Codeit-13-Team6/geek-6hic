@@ -6,14 +6,7 @@ import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useEditMeetingForm } from "@/hooks/meetings/useEditMeetingForm";
-import { MeetingDetailData } from "@/types/meeting/meetingTypes";
-
-interface EditMeetingModalProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  data: MeetingDetailData;
-  onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
-}
+import { EditMeetingModalProps } from "@/types/meeting/meetingTypes";
 
 export function EditMeetingModal({
   isOpen,

@@ -10,7 +10,7 @@ import {
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
 } from "@/lib/meeting-form.validation";
-import { MeetingFormValues } from "@/types/meeting/meeting-form.types";
+import { MeetingFormValues } from "@/types/meeting/meetingTypes";
 import {
   changeMeetingImage,
   removeMeetingImage,

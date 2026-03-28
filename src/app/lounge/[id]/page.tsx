@@ -1,14 +1,11 @@
 import LoungeDetailClient from "./component/LoungeDetailClient";
 import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import CommentSection from "./component/comment/CommentSection";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostCommentsServer,  } from "@/api/index.server";
-import type { GetPostsResponse } from "@/types";
+import { getPostCommentsServer } from "@/api/index.server";
 import { serverFetch } from "@/lib/server-fetcher";
-
-
+import CommentSection from "./component/CommentSection";
 
 export async function fetchPostDetail(postId: number) {
   const { data } = await serverFetch({

@@ -28,6 +28,7 @@ import { TagCommon } from "@/components/ui/TagCommon";
 import {
   MeetingDetailData,
   MeetingParticipantUser,
+  MeetingHeaderSectionProps,
 } from "@/types/meeting/meetingTypes";
 
 const formatMonthDay = (value: string) => {
@@ -52,25 +53,6 @@ const hasUsableProfileImage = (
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
-
-interface MeetingHeaderSectionProps {
-  data: MeetingDetailData;
-  participantAvatars: MeetingParticipantUser[];
-  isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
-  actionLabel: string;
-  isActionDisabled: boolean;
-  shouldShowHostMenu: boolean;
-  shouldShowClosedGuide: boolean;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
-  onAttend: () => Promise<void> | void;
-  onShare: () => Promise<void> | void;
-  onEdit: (nextValues: Partial<MeetingDetailData>) => void;
-  onDelete: () => void;
-  onToggleFavorite: () => void;
-}
 
 export function MeetingHeaderSection({
   data,

@@ -1,12 +1,12 @@
 import axiosInstance from "@/lib/client-fetcher";
 import { createComment } from "@/api/comments";
-import type {
+import {
   MeetingDetailApiData,
   MeetingDetailData,
   MeetingJoinResponse,
   MeetingListResponse,
   MeetingParticipantsResponse,
-} from "@/types/meetingTypes";
+} from "@/types/meeting/meetingTypes";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
 const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MeetingDetailView } from "@/app/meetings/[meetingId]/components/MeetingDetailView";
+import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
 
 import type { User } from "@/types";
 import { useMeetingDetailQueries } from "@/hooks/meetings/useMeetingDetailQueries";
@@ -12,6 +12,7 @@ import {
   MeetingListItemApiData,
   MeetingParticipant,
   RecommendedMeetingItem,
+  MeetingDetailContentProps,
 } from "@/types/meeting/meetingTypes";
 
 const hasRecruitmentOpen = (
@@ -226,11 +227,6 @@ export const toMeetingDetailViewModel = ({
     threadGuideText,
   };
 };
-
-interface MeetingDetailContentProps {
-  meetingId: number;
-  hasAttendedInitially: boolean;
-}
 
 export function MeetingDetailContent({
   meetingId,

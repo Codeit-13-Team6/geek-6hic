@@ -1,8 +1,4 @@
-interface MeetingLinkSectionProps {
-  link: string;
-  canViewLink: boolean;
-  guideText: string;
-}
+import { MeetingLinkSectionProps } from "@/types/meeting/meetingTypes";
 
 export function MeetingLinkSection({
   link,
@@ -20,13 +16,15 @@ export function MeetingLinkSection({
           className={`block text-[16px] text-gray-700 transition ${
             canViewLink
               ? "hover:text-main-green-600"
-              : "pointer-events-none select-none blur-[6px]"
+              : "pointer-events-none blur-[6px] select-none"
           }`}
         >
           {link}
         </a>
         {!canViewLink ? (
-          <p className="mt-2 text-sm text-gray-500 md:text-[15px]">{guideText}</p>
+          <p className="mt-2 text-sm text-gray-500 md:text-[15px]">
+            {guideText}
+          </p>
         ) : null}
       </div>
     </section>

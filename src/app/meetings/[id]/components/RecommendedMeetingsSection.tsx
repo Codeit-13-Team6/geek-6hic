@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { TagCommon } from "@/components/ui/TagCommon";
-import { MeetingDetailData } from "@/types/meeting/meetingTypes";
+import { RecommendedMeetingsSectionProps } from "@/types/meeting/meetingTypes";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -19,10 +19,6 @@ const formatHourMinute = (value: string) => {
     hour12: false,
   });
 };
-
-interface RecommendedMeetingsSectionProps {
-  data: MeetingDetailData;
-}
 
 export function RecommendedMeetingsSection({
   data,

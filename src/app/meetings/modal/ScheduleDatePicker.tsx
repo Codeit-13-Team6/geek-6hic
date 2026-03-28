@@ -12,18 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/shadcnOrigin/popover";
-
-interface ScheduleDatePickerProps {
-  id: string;
-  label: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  min?: string;
-  max?: string;
-  onChange: (value: string) => void;
-}
+import { ScheduleDatePickerProps } from "@/types/meeting/meetingTypes";
 
 const getParsedDate = (value: string) => {
   if (!value) {

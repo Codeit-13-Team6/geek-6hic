@@ -19,7 +19,7 @@ import {
 import {
   MeetingFormErrors,
   MeetingFormValues,
-} from "@/types/meeting/meeting-form.types";
+} from "@/types/meeting/meetingTypes";
 import { MeetingDetailData } from "@/types/meeting/meetingTypes";
 
 export const getIsoDateTime = (date: string, time: string) => {

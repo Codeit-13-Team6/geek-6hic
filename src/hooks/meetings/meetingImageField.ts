@@ -1,6 +1,6 @@
 "use client";
 
-import { MeetingFormValues } from "@/types/meeting/meeting-form.types";
+import { MeetingFormValues } from "@/types/meeting/meetingTypes";
 import type { Dispatch, SetStateAction } from "react";
 import { uploadMeetingImage } from "./uploadMeetingImage";
 
