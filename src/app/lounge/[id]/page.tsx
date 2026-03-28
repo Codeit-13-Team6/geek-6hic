@@ -18,7 +18,6 @@ const fetchPostComments = async (postId: number) => {
   const { data } = await serverFetch({
     method: "GET",
     url: `/posts/${postId}/comments`,
-
     params: {
       sortOrder: "desc",
       size: 100,
@@ -30,14 +29,17 @@ const fetchPostComments = async (postId: number) => {
 export default async function LoungeDetailPageServer({
   params,
 }: {
-  params: Promise<{ id: string }>; // Next.js 15+ 에서는 params가 Promise
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const postId = Number(id);
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-4 pb-20 sm:p-8 lg:pt-12">
-      <div className="mx-auto w-full max-w-[860px]">
+    <div className="relative min-h-screen w-full bg-[#FAF9F6] p-4 pb-24 sm:p-12 lg:pt-16">
+      {/* 종이 질감 패턴 */}
+      <div className="pointer-events-none fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/felt.png')] opacity-[0.02]" />
+
+      <div className="relative z-10 mx-auto w-full max-w-[860px]">
         <Suspense fallback={<DetailSkeleton />}>
           <PrefetchBoundary
             prefetchFn={async (qc) => {

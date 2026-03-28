@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from "@/components/shadcnOrigin/card";
-import { BtnCommon } from "@/components/ui/BtnCommon";
 import Image from "next/image";
+import { Card, CardAction, CardContent } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/banner/banner-lg.jpg";
 
 interface RankCardProps {
@@ -18,49 +12,53 @@ interface RankCardProps {
 
 export default function RankCard({
   title = "모임 이름이 없습니다.",
-  point = 123123,
+  point = 0,
   rank = 0,
   meetType = "스터디",
   onDetailClick = () => {},
 }: RankCardProps) {
   return (
-    <Card className="flex flex-row justify-evenly gap-2 bg-white px-3 py-2 ring-0! sm:h-[100px] sm:justify-between sm:gap-0 sm:px-[32px] sm:py-[10px]">
-      <CardContent className="flex min-w-0 shrink-0 flex-row items-center justify-center px-0">
-        <article className="flex shrink-0 flex-row items-center justify-center px-0">
-          <div className="text-main-green-500 pr-2 text-base font-semibold sm:pr-[32px] sm:text-xl">
-            {rank}
-          </div>
-          <div className="relative flex h-12 w-12 !shrink-0 items-center justify-center overflow-hidden rounded-xl bg-transparent sm:h-[71px] sm:w-[71px] sm:rounded-[24px]">
-            <Image
-              src={profileImg}
-              alt="프로필"
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        </article>
-        <section className="flex w-[110px] flex-col justify-center pl-2 sm:w-auto sm:max-w-[740px] sm:pr-[80px] sm:pl-[32px]">
-          <h3 className="text-md truncate font-semibold text-ellipsis whitespace-nowrap text-black sm:text-xl">
+    <Card className="flex flex-row items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:border-[#260656]/30 hover:shadow-[0_12px_24px_-10px_rgba(38,6,86,0.1)] sm:h-24 sm:px-8">
+      <CardContent className="flex min-w-0 items-center gap-6 p-0 sm:gap-10">
+        <span className="text-lg font-black tracking-tighter text-[#260656] italic sm:text-2xl">
+          {rank.toString().padStart(2, "0")}
+        </span>
+
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-100 sm:h-16 sm:w-16 sm:rounded-2xl">
+          <Image
+            src={profileImg}
+            alt="썸네일"
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-col">
+          <h3 className="truncate text-base font-black tracking-tight text-slate-950 sm:text-xl">
             {title}
           </h3>
-          <p className="text-sm font-bold text-gray-500 sm:text-lg">
+          <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
             {meetType}
           </p>
-        </section>
+        </div>
       </CardContent>
-      <CardAction className="flex flex-row items-center gap-2 py-[20px] sm:gap-[32px]">
-        <p className="text-main-green-600 flex items-end text-sm font-bold whitespace-nowrap sm:text-2xl">
-          {point}점
-        </p>
-        <BtnCommon
+
+      <CardAction className="flex items-center gap-6 p-0">
+        <div className="flex items-baseline gap-1">
+          <span className="text-lg font-black text-[#260656] sm:text-2xl">
+            {point.toLocaleString()}
+          </span>
+          <span className="text-[10px] font-bold text-slate-300 uppercase">
+            PTS
+          </span>
+        </div>
+        <button
           onClick={onDetailClick}
-          variant="outline"
-          size="sm"
-          className="w-20 rounded-lg sm:w-[125px]"
+          className="hidden rounded-xl bg-slate-50 px-6 py-3 text-[10px] font-black tracking-widest text-slate-500 transition-all hover:bg-[#260656] hover:text-white sm:block"
         >
-          상세보기
-        </BtnCommon>
+          DETAIL
+        </button>
       </CardAction>
     </Card>
   );

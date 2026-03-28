@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/Calendar";
-import { motion } from "framer-motion";
+// framer-motion 제거 (매거진 스타일에 불필요)
 import {
   Select,
   SelectContent,
@@ -31,6 +31,7 @@ const SORT_OPTIONS = [
 export type TabValue = (typeof TAB_LIST)[number]["value"];
 export type SortValue = "deadline" | "participants" | null;
 
+// 원본 props 타입 정의 완벽 유지
 interface MeetingFiltersProps {
   activeValue: TabValue;
   sortValue: SortValue;
@@ -77,60 +78,54 @@ export default function MeetingFilters({
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-3xl border border-rose-100/60 bg-white/70 p-3 shadow-[0_10px_40px_rgba(251,113,133,0.06)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:pl-4">
-      <div className="scrollbar-hide flex overflow-x-auto pb-1 sm:pb-0">
-        <ul className="flex gap-1">
-          {TAB_LIST.map(({ value, label }) => {
-            const isActive = activeValue === value;
-            return (
-              <li key={value} className="relative shrink-0">
-                {isActive && (
-                  <motion.div
-                    layoutId="active-tab-indicator"
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 shadow-md shadow-rose-500/25"
-                    initial={false}
-                    transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 35,
-                    }}
-                  />
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleTabClick(value)}
-                  className={cn(
-                    "relative z-10 flex items-center justify-center rounded-xl px-5 py-2 text-sm font-bold transition-colors duration-200",
-                    isActive
-                      ? "text-white"
-                      : "text-slate-500 hover:bg-rose-50/80 hover:text-rose-600",
-                  )}
-                >
-                  {label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+    // 매거진 스타일 툴바: 직선적인 레이아웃, 여백 확대
+    <div className="mb-2 flex flex-col gap-10 border-b border-slate-200 pb-10 lg:flex-row lg:items-center lg:justify-between">
+      {/* 탭 리스트: 각진 태그 스타일, 언더라인 포인트 */}
+      <nav className="flex flex-wrap gap-x-8 gap-y-4 pb-1">
+        {TAB_LIST.map(({ value, label }) => {
+          const isActive = activeValue === value;
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => handleTabClick(value)}
+              className={cn(
+                "relative pb-3 text-sm font-black tracking-wide transition-all outline-none",
+                isActive
+                  ? "text-[#260656]" // 활성 탭 색상 변경: 딥 퍼플(#260656)
+                  : "text-slate-300 hover:text-slate-500",
+              )}
+            >
+              {label}
+              {isActive && (
+                // 활성 탭 언더라인 색상 변경: 딥 퍼플(#260656)
+                <span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#260656]" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
 
-      <div className="flex flex-wrap items-center gap-2 pr-1 lg:shrink-0">
+      {/* 우측 필터 영역: 각진 디자인, 굵은 테두리 */}
+      <div className="flex flex-wrap items-center gap-6 pr-1 lg:shrink-0">
         <div className="relative z-20">
           <button
             type="button"
-            className="flex h-10 items-center justify-center gap-2 rounded-xl border border-rose-100/80 bg-white px-5 text-sm font-bold text-slate-600 transition-all hover:border-rose-200 hover:bg-rose-50/80 hover:text-rose-600"
             onClick={() => setIsOpen(true)}
+            // 호버/활성 색상 변경: 딥 퍼플(#260656)
+            className="border-b-2 border-slate-900 pb-1 text-xs font-black tracking-widest text-slate-900 uppercase transition-all outline-none hover:border-[#260656] hover:text-[#260656]"
           >
-            {appliedDate ? "날짜 변경" : "날짜 선택"}
+            {appliedDate ? "PICKED DATE" : "SELECT DATE"}
           </button>
 
           {isOpen ? (
             <>
               <div
                 onClick={() => setIsOpen(false)}
-                className="fixed inset-0 z-40 cursor-default"
+                className="fixed inset-0 z-40"
               />
-              <div className="absolute top-12 right-0 z-50 mt-1 rounded-2xl border border-rose-100 bg-white p-3 shadow-[0_10px_40px_rgba(251,113,133,0.12)]">
+              {/* 달력 모달: 각진 디자인, 굵은 테두리 */}
+              <div className="absolute top-12 right-0 z-50 rounded-none border-2 border-slate-900 bg-white p-4 shadow-2xl">
                 <Calendar
                   mode="range"
                   selected={draftDate}
@@ -151,21 +146,20 @@ export default function MeetingFilters({
             }
           }}
         >
-          <SelectTrigger className="flex h-10 w-[130px] items-center justify-between rounded-xl border border-rose-100/80 bg-white px-4 text-sm font-bold text-slate-600 transition-all hover:border-rose-200 hover:bg-rose-50/80 hover:text-rose-600">
-            {currentSortLabel ? (
-              <span>{currentSortLabel}</span>
-            ) : (
-              <SelectValue placeholder="정렬 선택" />
-            )}
+          {/* 정렬 셀렉트: 굵은 테두리, 각진 디자인 */}
+          <SelectTrigger className="h-auto border-none p-0 text-xs font-black tracking-widest text-slate-900 uppercase outline-none focus:ring-0">
+            <SelectValue placeholder="SORT BY" />
           </SelectTrigger>
 
-          <SelectContent className="w-[130px] rounded-xl border border-rose-100 bg-white shadow-[0_10px_40px_rgba(251,113,133,0.12)]">
+          {/* 셀렉트 드롭다운: 각진 디자인, 굵은 테두리 */}
+          <SelectContent className="rounded-none border-2 border-slate-900 bg-white shadow-2xl">
             <SelectGroup>
               {SORT_OPTIONS.map((item) => (
                 <SelectItem
                   key={item.value}
                   value={item.value}
-                  className="cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 focus:bg-rose-50 focus:text-rose-600"
+                  // 호버 색상 변경: 딥 퍼플(#260656)
+                  className="cursor-pointer font-bold focus:bg-[#260656] focus:text-white"
                 >
                   {item.label}
                 </SelectItem>

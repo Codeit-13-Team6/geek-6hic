@@ -7,6 +7,7 @@ import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { cn } from "@/lib/utils";
 
 interface Props {
   searchValue?: string;
@@ -34,7 +35,6 @@ export default function PostList({
 
   const { sortBy, sortOrder } = getSortParams();
 
-  // 게시글 리스트 key ["posts", "list", sortValue, searchValue]
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["posts", "list", sortValue, searchValue],
@@ -61,9 +61,12 @@ export default function PostList({
 
   return (
     <div
-      className={`${isFetchingNextPage ? "opacity-50" : ""} flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8`}
+      className={cn(
+        "flex w-full flex-col rounded-[2rem] border border-slate-100 bg-white/60 p-6 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)] backdrop-blur-md sm:p-10",
+        isFetchingNextPage && "opacity-60",
+      )}
     >
-      <div className="flex flex-col sm:gap-8">
+      <div className="flex flex-col gap-10 sm:gap-14">
         {postList.length > 0 ? (
           postList.map((post: Post) => (
             <PostCard
@@ -81,21 +84,24 @@ export default function PostList({
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-gray-50">
-              <SearchX className="size-8 text-gray-300" />
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50">
+              <SearchX className="size-10 text-slate-300" />
             </div>
-            <p className="text-lg font-semibold text-gray-900">
-              검색 결과가 없습니다.
-            </p>
-            <p className="mt-2 text-gray-500">
-              다른 검색어로 다시 시도해보세요.
-            </p>
+            <p className="text-xl font-black text-slate-900">NOT FOUND.</p>
+            <p className="mt-2 text-slate-400">다른 키워드로 검색해 보세요.</p>
           </div>
         )}
       </div>
-      <div ref={bottomRef} className="flex h-20 items-center justify-center">
-        {isFetchingNextPage && <p>불러오는 중...</p>}
+      <div
+        ref={bottomRef}
+        className="mt-10 flex h-32 items-center justify-center border-t border-slate-100"
+      >
+        {isFetchingNextPage && (
+          <p className="animate-pulse text-[10px] font-black tracking-[0.4em] text-[#260656] uppercase">
+            Fetching Archive...
+          </p>
+        )}
       </div>
     </div>
   );

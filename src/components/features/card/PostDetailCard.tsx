@@ -1,13 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
-import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
-import messageIcon from "@/assets/icon/message/message.svg";
-import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
-import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
   DropdownMenu,
@@ -18,37 +13,31 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/DropdownCommon";
 import { getRelativeTime } from "@/lib/getRelativeTime";
-import { Link2 } from "lucide-react";
+import { Link2, MoreHorizontal } from "lucide-react";
 import { CompactLinkList } from "../list/CompactLinkList";
+import { cn } from "@/lib/utils";
 
-interface PostDetailCardProps {
-  title?: string;
-  date?: Date;
-  name?: string;
-  img?: string;
-  linkObjects?: {
-    id: string;
-    title: string;
-    url: string;
-  }[];
-  content?: string;
-  avatar?: string;
-  thumbsUp?: number;
-  comment?: number;
-  liked?: boolean;
-  isOwner?: boolean;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onLike?: () => void;
-}
+const HeartIcon = ({ liked }: { liked: boolean }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill={liked ? "#260656" : "none"}
+    stroke={liked ? "#260656" : "#cbd5e1"}
+    strokeWidth="2"
+    className="transition-all"
+  >
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+  </svg>
+);
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
   date = new Date(),
   name = "익명",
-  content = "본문내용 ",
+  content = "",
   linkObjects = [],
-  avatar = "https://avatar.vercel.sh/shadcn1",
   thumbsUp = 0,
   comment = 0,
   liked = false,
@@ -56,28 +45,32 @@ export function PostDetailCard({
   onEdit,
   onDelete,
   onLike,
-}: PostDetailCardProps) {
+}: any) {
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
+
   return (
-    <Card className="relative rounded-[32px] p-8 sm:p-10 lg:p-14">
-      <div className="absolute top-7 right-6 sm:top-10 sm:right-8 lg:top-14 lg:right-12">
+    <Card className="relative overflow-hidden rounded-[2.5rem] border-slate-200 bg-white p-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] sm:p-12 lg:p-16">
+      {/* 관리 메뉴 */}
+      <div className="absolute top-10 right-8 sm:top-12 sm:right-12">
         {isOwner && (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="cursor-pointer">
-                <Image
-                  src={meatballsIcon}
-                  alt="상세보기 아이콘"
-                  width={32}
-                  height={32}
-                />
+            <DropdownMenuTrigger className="outline-none">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 transition-colors hover:bg-slate-100">
+                <MoreHorizontal className="size-6 text-slate-400" />
               </div>
             </DropdownMenuTrigger>
-
-            <DropdownMenuContent size="sm">
-              <DropdownMenuItem onClick={onEdit}>수정하기</DropdownMenuItem>
-
-              <DropdownMenuItem variant="destructive" onClick={onDelete}>
+            <DropdownMenuContent className="rounded-xl border-2 border-slate-900 bg-white">
+              <DropdownMenuItem
+                onClick={onEdit}
+                className="font-bold focus:bg-slate-100"
+              >
+                수정하기
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={onDelete}
+                className="font-bold focus:bg-red-50 focus:text-red-600"
+              >
                 삭제하기
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -85,67 +78,79 @@ export function PostDetailCard({
         )}
       </div>
 
-      <CardTitle className="mb-4 pr-6 text-xl font-bold text-gray-800 sm:mb-5 sm:text-2xl lg:mb-6 lg:text-3xl">
-        {title}
-      </CardTitle>
+      <div className="mb-10 sm:mb-14">
+        <p className="mb-4 text-[10px] font-black tracking-[0.4em] text-[#260656] uppercase">
+          Archive / Article
+        </p>
+        <CardTitle className="text-3xl leading-[1.15] font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+          {title}
+        </CardTitle>
+      </div>
 
-      <CardContent className="px-0">
-        <div className="relative mb-6 flex items-center gap-2 text-xs text-gray-500 sm:mb-8 sm:text-sm lg:text-base">
-          <Image
-            className="rounded-full"
-            src={avatar && profileImg}
-            alt="프로필 이미지"
-            width={24}
-            height={24}
-          />
-          <span>{name}</span>
-          <span className="text-gray-300">•</span>
-          <span>
-            {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
-          </span>
+      <CardContent className="p-0">
+        <div className="mb-12 flex items-center gap-4">
+          <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-slate-200">
+            <Image
+              src={profileImg}
+              alt="프로필"
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-black text-slate-900">{name}</span>
+            <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+              {date.getFullYear()}.
+              {String(date.getMonth() + 1).padStart(2, "0")}.
+              {String(date.getDate()).padStart(2, "0")}
+            </span>
+          </div>
         </div>
 
-        <div // 상세 페이지 뷰어 스타일링
-          className="prose prose-slate prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#f1f1ef] prose-code:text-red-400 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-medium prose-code:text-[0.9em] prose-pre:bg-[#f7f6f3] prose-pre:text-[#37352f] prose-pre:border prose-pre:border-[#e9e9e7] prose-pre:rounded-md prose-pre:p-4 prose-h1:my-5 prose-h2:my-3 prose-h3:my-3 max-w-none text-gray-700"
+        {/* 본문 에디터 스타일 정돈 */}
+        <div
+          className="prose prose-slate prose-headings:font-black prose-headings:tracking-tight prose-p:leading-relaxed prose-strong:text-slate-950 prose-code:bg-slate-100 prose-code:text-[#260656] prose-pre:bg-slate-950 prose-pre:rounded-2xl max-w-none text-slate-700"
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
 
+        {/* 참고 링크 섹션 */}
         {linkObjects && linkObjects.length > 0 && (
-          <div className="mt-10 border-t border-gray-100 pt-8">
-            <h5 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
-              <Link2 className="size-4" /> 참고 링크 ({linkObjects.length})
+          <div className="mt-16 rounded-3xl border border-slate-100 bg-slate-50/50 p-6 sm:p-10">
+            <h5 className="mb-6 flex items-center gap-3 text-xs font-black tracking-[0.2em] text-[#260656] uppercase">
+              <Link2 className="size-4" /> REFERENCES ({linkObjects.length})
             </h5>
-
             <CompactLinkList links={linkObjects} />
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-between text-xs text-gray-500 sm:mt-8 sm:text-sm lg:text-base">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-sm sm:text-base">
+        <div className="mt-16 flex items-center justify-between border-t border-slate-100 pt-10">
+          <div className="flex items-center gap-6">
+            <span className="text-[11px] font-black tracking-widest text-slate-400 uppercase">
               {getRelativeTime(date)}
             </span>
-
-            <div className="flex items-center gap-1">
-              <Image src={thumbsUpIcon} alt="like" width={16} height={16} />
-              <span>{thumbsUp}</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Image src={messageIcon} alt="comment" width={16} height={16} />
-              <span>{comment}</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-xs font-black text-[#260656]">
+                <span className="opacity-50">LIKES</span>
+                <span>{thumbsUp}</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-black text-slate-400">
+                <span className="opacity-50">COMMENTS</span>
+                <span>{comment}</span>
+              </div>
             </div>
           </div>
 
           {!isOwner && (
-            <BtnCommon onClick={onLike} size="icon-sm" variant="teritary">
-              <Image
-                src={liked ? heartsTrue : heartsFalse}
-                alt="heart"
-                width={20}
-                height={20}
-              />
-            </BtnCommon>
+            <button
+              onClick={onLike}
+              className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-2xl transition-all active:scale-90",
+                liked ? "bg-[#260656]/5" : "bg-slate-50 hover:bg-slate-100",
+              )}
+            >
+              <HeartIcon liked={liked} />
+            </button>
           )}
         </div>
       </CardContent>

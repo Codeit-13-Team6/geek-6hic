@@ -7,27 +7,28 @@ import { useGetHotPosts } from "@/hooks/queries/usePosts";
 
 export default function HotPostList() {
   const router = useRouter();
-
   const { data: hotList = [], isLoading } = useGetHotPosts();
 
   if (isLoading) {
     return (
-      <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-gray-400">
-        핫 게시물을 불러오는 중... 🔥
+      <div className="flex h-[150px] w-full items-center justify-center border border-slate-100 bg-white/60 backdrop-blur-sm">
+        <p className="animate-pulse text-[10px] font-black tracking-[0.4em] text-[#260656] uppercase">
+          Fetching Hot Archive...
+        </p>
       </div>
     );
   }
 
   if (hotList.length === 0) {
     return (
-      <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-sm text-gray-500 shadow-sm sm:text-base">
-        이번 주 핫 게시물이 없습니다. 🔥
+      <div className="flex h-[150px] w-full items-center justify-center border border-slate-100 bg-white text-xs font-bold tracking-widest text-slate-300 uppercase">
+        No Hot Archive Found. 🔥
       </div>
     );
   }
 
   return (
-    <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
+    <div className="scrollbar-hide flex gap-6 overflow-x-auto p-1 pb-6 sm:gap-8">
       {hotList.map((post: Post) => (
         <HotPostCard
           key={post.id}

@@ -27,40 +27,37 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
     post?.content || "",
   );
 
-  const handlePostDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
+  const handlePostDelete = () => setIsDeleteModalOpen(true);
   const handleConfirmDelete = () => {
     removePost();
     setIsDeleteModalOpen(false);
   };
-  const handlePostEdit = () => {
-    router.push(`/lounge/edit/${postId}`);
-  };
-
+  const handlePostEdit = () => router.push(`/lounge/edit/${postId}`);
   const handleLikeClick = () => {
-    if (post) {
-      toggleLike(post.isLiked);
-    }
+    if (post) toggleLike(post.isLiked);
   };
 
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (isError || !post) {
-    return <div>게시글을 찾을 수 없습니다.</div>;
-  }
+  if (isLoading)
+    return (
+      <div className="animate-pulse py-20 text-center font-black text-[#260656]">
+        FETCHING ARCHIVE...
+      </div>
+    );
+  if (isError || !post)
+    return (
+      <div className="py-20 text-center font-bold text-slate-400 uppercase">
+        Archive Not Found.
+      </div>
+    );
 
   return (
     <>
-      <section className="mb-10">
+      <section className="mb-12">
         <PostDetailCard
           title={post.title}
           name={post.author.name}
           date={new Date(post.createdAt)}
-          content={mainContent} // 링크를 제외한 원래 본문 내용만
+          content={mainContent}
           linkObjects={linkObjects}
           thumbsUp={post.likeCount}
           comment={post.comments.length || 0}
@@ -69,34 +66,32 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
           onEdit={handlePostEdit}
           onDelete={handlePostDelete}
           onLike={handleLikeClick}
-          // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
         />
       </section>
 
       <ModalBase
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="게시글 삭제"
+        title="DELETE ARCHIVE"
+        contentClassName="rounded-[2rem] border-slate-200 shadow-2xl"
       >
-        <div className="flex flex-col gap-6 pt-4">
-          <p className="leading-relaxed text-gray-700">
-            게시글을 삭제하시겠습니까? <br />
-            삭제된 게시글은 복구할 수 없습니다.
+        <div className="flex flex-col gap-8 pt-4">
+          <p className="text-lg leading-relaxed font-bold text-slate-900">
+            기록을 삭제하시겠습니까? <br />
+            삭제된 아카이브는 복구할 수 없습니다.
           </p>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-3">
             <BtnCommon
               variant="teritary"
               onClick={() => setIsDeleteModalOpen(false)}
-              size="sm"
-              className="w-[60px]"
+              className="rounded-xl px-6 py-3 font-bold text-slate-400"
             >
               취소
             </BtnCommon>
             <BtnCommon
               onClick={handleConfirmDelete}
-              size="sm"
-              className="w-[60px]"
+              className="rounded-xl bg-[#260656] px-8 py-3 font-black text-white shadow-[4px_4px_0_rgba(38,6,86,0.2)]"
             >
               삭제
             </BtnCommon>

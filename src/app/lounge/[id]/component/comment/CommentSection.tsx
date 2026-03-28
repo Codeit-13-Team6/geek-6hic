@@ -16,19 +16,11 @@ import ModalBase from "@/components/ui/ModalBase";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
+import { cn } from "@/lib/utils";
 
-interface CommentSectionProps {
-  postId: number;
-  isThread?: boolean;
-}
-
-export default function CommentSection({
-  postId,
-  isThread = false,
-}: CommentSectionProps) {
+export default function CommentSection({ postId, isThread = false }: any) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
-
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const [threadContent, setThreadContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
@@ -47,61 +39,32 @@ export default function CommentSection({
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-
-      if (isThread) {
-        setThreadContent(""); // 스레드 입력창(state) 초기화
-      } else if (commentRef.current) {
-        commentRef.current.value = ""; // 일반 댓글창(ref) 초기화
-      }
+      if (isThread) setThreadContent("");
+      else if (commentRef.current) commentRef.current.value = "";
     },
-    onError: () => {
-      ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
-    },
+    onError: () =>
+      ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" }),
   });
 
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
       ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
-    },
-    onError: () => {
-      ToastCommon({ message: "댓글 삭제에 실패했습니다.", size: "sm" });
     },
   });
 
   const { mutate: editComment } = useMutation({
-    mutationFn: ({
-      commentId,
-      content,
-    }: {
-      commentId: number;
-      content: string;
-    }) => updateComment(postId, commentId, content),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
-    },
-    onError: () => {
-      ToastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
-    },
+    mutationFn: ({ commentId, content }: any) =>
+      updateComment(postId, commentId, content),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] }),
   });
+
   const handlePostComment = () => {
-    // 실시간 카드 리스트로 발생하는 렌더링 최적화
     const value = isThread ? threadContent : commentRef.current?.value || "";
     if (!value.trim()) return;
-
     postComment(value);
-  };
-
-  const handleEdit = (commentId: number, newContent: string) => {
-    editComment({ commentId, content: newContent });
-  };
-
-  const handleDelete = (commentId: number) => {
-    setDeleteTargetId(commentId);
   };
 
   const handleConfirmDelete = () => {
@@ -112,61 +75,49 @@ export default function CommentSection({
   };
 
   return (
-    <section className="flex flex-col gap-4 sm:gap-4">
-      <h3 className="text-base font-bold text-gray-800 sm:text-lg lg:text-xl">
-        {isThread ? "Our Thread" : "댓글"}{" "}
-        <span className="text-green-500">{commentsList.length || 0}</span>
-      </h3>
+    <section className="mt-20 flex flex-col gap-10">
+      <div className="flex items-center justify-between border-b-2 border-slate-900 pb-4">
+        <h3 className="text-sm font-black tracking-[0.2em] text-slate-950 uppercase">
+          Discussion{" "}
+          <span className="ml-2 text-[#260656]">{commentsList.length}</span>
+        </h3>
+      </div>
 
-      {/* 입력창 분기 처리 */}
-      {isThread ? (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3 md:flex-row">
-            <div className="flex-1">
-              <TextareaCommon
-                value={threadContent}
-                placeholder="스레드에 남길 메시지나 공유할 링크를 자유롭게 입력해주세요! (URL 입력 시 자동으로 카드가 생성됩니다)"
-                onChange={(event) => setThreadContent(event.target.value)}
-                className="min-h-[100px] resize-none"
-                disabled={isPosting}
-              />
-            </div>
-            <BtnCommon
-              className="mt-auto h-[40px] w-full !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[65px] sm:w-[70px] sm:text-base"
-              onClick={handlePostComment}
-              disabled={!threadContent.trim() || isPosting}
-            >
-              {isPosting ? "작성 중..." : "작성"}
-            </BtnCommon>
-          </div>
-          {linkObjects.length > 0 && (
+      {/* 1. 댓글 입력창: 묵직한 필드 형태 (댓글 목록과 확실히 차별화) */}
+      <div className="relative rounded-2xl border-2 border-slate-100 bg-white p-5 transition-all focus-within:border-[#260656] focus-within:ring-4 focus-within:ring-[#260656]/5">
+        <textarea
+          ref={isThread ? null : commentRef}
+          value={isThread ? threadContent : undefined}
+          onChange={
+            isThread ? (e) => setThreadContent(e.target.value) : undefined
+          }
+          rows={isThread ? 5 : 3}
+          disabled={isPosting}
+          placeholder={isPosting ? "기록 중..." : "의견을 자유롭게 남겨주세요."}
+          className="w-full resize-none border-none bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:ring-0 sm:text-base"
+        />
+        <div className="mt-4 flex items-center justify-between border-t border-slate-50 pt-4">
+          <p className="text-[10px] font-bold tracking-tight text-slate-400 uppercase">
+            Co-git Community Archive
+          </p>
+          <button
+            onClick={handlePostComment}
+            disabled={isPosting || (isThread ? !threadContent.trim() : false)}
+            className="rounded-lg bg-[#260656] px-8 py-3 text-xs font-black tracking-widest text-white transition-all hover:bg-[#1a043d] active:scale-95 disabled:opacity-30"
+          >
+            {isPosting ? "POSTING..." : "REGISTER"}
+          </button>
+        </div>
+        {linkObjects.length > 0 && isThread && (
+          <div className="mt-4 border-t border-slate-50 pt-4">
             <CompactLinkList links={linkObjects} isPreview={true} />
-          )}
-        </div>
-      ) : (
-        <div className="relative flex items-center gap-3 rounded-[16px] bg-slate-50 p-2 shadow-sm">
-          <textarea
-            ref={commentRef}
-            rows={1}
-            disabled={isPosting}
-            placeholder={isPosting ? "등록 중..." : "여기에 댓글을 남겨보세요."}
-            className="w-full resize-none border-none bg-transparent pl-2 text-gray-700 placeholder:text-gray-300 focus:ring-0 focus:outline-none sm:text-lg"
-          />
-          <div className="flex justify-end">
-            <BtnCommon
-              onClick={handlePostComment}
-              disabled={isPosting}
-              className="h-[40px] w-[65px] !rounded-[12px] text-sm font-bold sm:h-[50px] sm:w-[70px] sm:text-base"
-            >
-              등록
-            </BtnCommon>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* 댓글 목록 */}
-      <div className="flex flex-col divide-y divide-slate-200">
-        {commentsList.map((item) => (
+      {/* 2. 댓글 목록: 리스트 형태로 쫙 깔리는 디자인 (카드 느낌 제거) */}
+      <div className="flex flex-col">
+        {commentsList.map((item: any) => (
           <Comment
             key={item.id}
             id={item.id}
@@ -174,41 +125,38 @@ export default function CommentSection({
             content={item.content}
             date={new Date(item.createdAt)}
             isOwner={userId !== null && userId === item.author.id}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
+            onDelete={(id: number) => setDeleteTargetId(id)}
+            onEdit={(id: number, content: string) =>
+              editComment({ commentId: id, content })
+            }
           />
         ))}
       </div>
 
-      {/* 페이지네이션 섹션 */}
-      <div className="mt-10 flex items-center justify-center gap-4 text-sm font-medium text-gray-400"></div>
-
       <ModalBase
         isOpen={deleteTargetId !== null}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setDeleteTargetId(null);
-        }}
-        title="댓글 삭제"
+        onOpenChange={() => setDeleteTargetId(null)}
+        title="DELETE"
       >
-        <div className="flex flex-col gap-6 pt-4">
-          <p className="text-gray-700">댓글을 삭제하시겠습니까?</p>
-
-          <div className="flex justify-end gap-2">
-            <BtnCommon
-              variant="teritary"
+        <div className="flex flex-col gap-8 pt-4">
+          <p className="text-lg leading-tight font-bold text-slate-900">
+            해당 기록을 영구적으로
+            <br />
+            삭제하시겠습니까?
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
               onClick={() => setDeleteTargetId(null)}
-              size="sm"
-              className="w-[60px]"
+              className="px-6 py-3 text-xs font-black text-slate-400"
             >
               취소
-            </BtnCommon>
-            <BtnCommon
+            </button>
+            <button
               onClick={handleConfirmDelete}
-              size="sm"
-              className="w-[60px]"
+              className="rounded-xl bg-red-600 px-8 py-3 text-xs font-black text-white shadow-lg shadow-red-600/20"
             >
-              확인
-            </BtnCommon>
+              삭제
+            </button>
           </div>
         </div>
       </ModalBase>

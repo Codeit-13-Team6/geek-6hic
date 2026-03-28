@@ -14,7 +14,7 @@ function Progress({
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex flex-wrap gap-3", className)}
+      className={cn("flex flex-wrap gap-2.5", className)}
       {...props}
     >
       {children}
@@ -29,7 +29,8 @@ function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
       className={cn(
-        "relative flex h-1.5 w-full items-center overflow-x-hidden rounded-full bg-rose-100",
+        // rounded-full 제거 -> 직각(rounded-none), 배경색 차분한 그레이로 변경
+        "relative flex h-2 w-full items-center overflow-hidden rounded-none bg-slate-200",
         className,
       )}
       data-slot="progress-track"
@@ -46,7 +47,8 @@ function ProgressIndicator({
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
       className={cn(
-        "h-full rounded-full bg-gradient-to-r from-rose-400 to-orange-400 transition-all",
+        // 그라데이션 제거 -> 솔리드 딥 퍼플(#260656), 직각 마감
+        "h-full rounded-none bg-[#260656] transition-all duration-500 ease-in-out",
         className,
       )}
       {...props}
@@ -57,7 +59,10 @@ function ProgressIndicator({
 function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
-      className={cn("text-sm font-medium", className)}
+      className={cn(
+        "text-[10px] font-black tracking-widest text-slate-900 uppercase",
+        className,
+      )}
       data-slot="progress-label"
       {...props}
     />
@@ -68,7 +73,7 @@ function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
   return (
     <ProgressPrimitive.Value
       className={cn(
-        "text-muted-foreground ml-auto text-sm tabular-nums",
+        "ml-auto text-[10px] font-black tracking-widest text-[#260656] tabular-nums",
         className,
       )}
       data-slot="progress-value"

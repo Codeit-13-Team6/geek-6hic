@@ -9,12 +9,11 @@ import { useCreateMeetingForm } from "@/app/meetings/modal/hooks/useCreateMeetin
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 
-// 기존 plusIcon 이미지 대신 프리미엄 테마에 맞는 SVG 아이콘으로 대체
 const PlusIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
+    width="22"
+    height="22"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -71,32 +70,38 @@ export function CreateMeetingModal() {
       requestCloseModal();
       return;
     }
-
     setIsOpen(true);
   };
 
   return (
     <>
-      {/* 1. 플로팅 액션 버튼(FAB): 활기찬 로즈-오렌지 그라데이션 */}
+      {/* 1. 플로팅 액션 버튼(FAB): 세련된 딥 퍼플 솔리드 스타일 */}
       <BtnCommon
-        className="group fixed right-4 bottom-6 z-[99] flex h-14 w-14 cursor-pointer items-center justify-center gap-2 rounded-full border border-rose-200 bg-gradient-to-r from-rose-500 to-orange-500 font-bold text-white shadow-[0_8px_30px_rgba(251,113,133,0.35)] transition-all duration-300 hover:scale-105 hover:from-rose-600 hover:to-orange-600 active:scale-95 sm:h-14 sm:w-auto sm:px-6 lg:right-10 lg:bottom-10"
+        className="group fixed right-4 bottom-6 z-[99] flex h-14 w-14 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#260656] font-bold text-white shadow-[0_12px_24px_-8px_rgba(38,6,86,0.4)] transition-all duration-300 hover:scale-105 hover:bg-[#1a043d] active:scale-95 sm:h-14 sm:w-auto sm:px-6 lg:right-10 lg:bottom-10"
         type="button"
         onClick={handleOpenModal}
       >
         <PlusIcon />
-        <span className="hidden sm:block sm:text-base md:text-lg">
-          모임 만들기
+        <span className="hidden sm:block sm:text-sm sm:font-black sm:tracking-widest">
+          모임 생성
         </span>
       </BtnCommon>
 
-      {/* 2. 메인 폼 모달: 밝고 활기찬 글래스모피즘 */}
+      {/* 2. 메인 폼 모달: 소프트 매거진 글래스모피즘 */}
       <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={handleOpenChangeModal}
-        contentClassName="w-[544px] max-w-[calc(100vw-24px)] rounded-[2rem] border border-rose-100/60 bg-white/95 px-8 py-10 sm:px-12 sm:py-12 shadow-[0_20px_60px_rgba(251,113,133,0.1)] backdrop-blur-xl"
-        title={`모임 만들기 ${currentStep}/${totalSteps}`}
+        contentClassName="w-[544px] max-w-[calc(100vw-24px)] rounded-[2rem] border border-slate-200 bg-white/95 px-8 py-10 sm:px-12 sm:py-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] backdrop-blur-xl"
+        title={`STEP ${currentStep} / ${totalSteps}`}
       >
+        <div className="mb-8">
+          <p className="text-[10px] font-black tracking-[0.3em] text-[#260656] uppercase">
+            New Archive
+          </p>
+          <div className="mt-1 h-1 w-8 bg-[#260656]" />
+        </div>
+
         {currentStep === 1 ? (
           <MeetingCategoryStep
             value={formValues.category}
@@ -147,65 +152,44 @@ export function CreateMeetingModal() {
           />
         ) : null}
 
-        <div className="mt-8 flex gap-3">
-          {currentStep === 1 ? (
-            <BtnCommon
-              type="button"
-              variant="outline"
-              size="md"
-              className="flex-1 rounded-2xl border-rose-200 bg-white text-slate-600 transition-all hover:bg-rose-50 hover:text-rose-600 active:scale-[0.98]"
-              onClick={requestCloseModal}
-            >
-              취소
-            </BtnCommon>
-          ) : (
-            <BtnCommon
-              type="button"
-              variant="outline"
-              size="md"
-              className="flex-1 rounded-2xl border-rose-200 bg-white text-slate-600 transition-all hover:bg-rose-50 hover:text-rose-600 active:scale-[0.98]"
-              onClick={handlePrevStep}
-            >
-              이전
-            </BtnCommon>
-          )}
+        <div className="mt-10 flex gap-3">
+          <BtnCommon
+            type="button"
+            variant="outline"
+            size="md"
+            className="flex-1 rounded-xl border-slate-200 bg-white text-slate-500 transition-all hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98]"
+            onClick={currentStep === 1 ? requestCloseModal : handlePrevStep}
+          >
+            {currentStep === 1 ? "취소" : "이전"}
+          </BtnCommon>
 
-          {currentStep < totalSteps ? (
-            <BtnCommon
-              type="button"
-              size="md"
-              className="flex-1 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_4px_15px_rgba(251,113,133,0.25)] transition-all hover:from-rose-600 hover:to-orange-600 active:scale-[0.98]"
-              onClick={handleNextStep}
-            >
-              다음
-            </BtnCommon>
-          ) : (
-            <BtnCommon
-              type="button"
-              size="md"
-              className="flex-1 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_4px_15px_rgba(251,113,133,0.25)] transition-all hover:from-rose-600 hover:to-orange-600 active:scale-[0.98]"
-              onClick={handleSubmitMeeting}
-            >
-              모임 만들기
-            </BtnCommon>
-          )}
+          <BtnCommon
+            type="button"
+            size="md"
+            className="flex-1 rounded-xl bg-[#260656] text-sm font-bold text-white shadow-[0_8px_16px_-4px_rgba(38,6,86,0.3)] transition-all hover:bg-[#1a043d] active:scale-[0.98]"
+            onClick={
+              currentStep < totalSteps ? handleNextStep : handleSubmitMeeting
+            }
+          >
+            {currentStep < totalSteps ? "다음" : "모임 만들기"}
+          </BtnCommon>
         </div>
       </ModalBase>
 
-      {/* 3. 취소/나가기 확인 모달: 밝고 활기찬 글래스모피즘 */}
+      {/* 3. 취소/나가기 확인 모달 */}
       <ModalBase
         disablePointerDismissal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
-        contentClassName="w-[400px] max-w-[calc(100vw-24px)] rounded-[2rem] border border-rose-100/60 bg-white/95 px-8 py-10 shadow-[0_20px_60px_rgba(251,113,133,0.1)] backdrop-blur-xl"
+        contentClassName="w-[400px] max-w-[calc(100vw-24px)] rounded-[2rem] border border-slate-200 bg-white px-8 py-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]"
         title=""
       >
         <div className="pt-2 text-center">
-          <p className="text-[24px] font-bold tracking-tight text-slate-900">
-            취소하시겠습니까?
+          <p className="text-[20px] font-bold tracking-tight text-slate-950">
+            작성을 취소하시겠습니까?
           </p>
-          <p className="mt-3 text-[16px] font-medium text-slate-500">
-            저장하지 않은 내용은 사라집니다.
+          <p className="mt-3 text-[14px] font-medium text-slate-400">
+            저장하지 않은 데이터는 모두 삭제됩니다.
           </p>
         </div>
 
@@ -214,15 +198,15 @@ export function CreateMeetingModal() {
             type="button"
             variant="teritary"
             size="md"
-            className="rounded-2xl border border-rose-200 bg-rose-50/80 text-slate-600 transition-all hover:bg-rose-100 active:scale-[0.98]"
+            className="rounded-xl bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-[0.98]"
             onClick={() => setIsCloseConfirmOpen(false)}
           >
-            계속 작성하기
+            계속 작성
           </BtnCommon>
           <BtnCommon
             type="button"
             size="md"
-            className="rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_4px_15px_rgba(251,113,133,0.25)] transition-all hover:from-rose-600 hover:to-orange-600 active:scale-[0.98]"
+            className="rounded-xl bg-[#260656] font-bold text-white shadow-[0_8px_16px_-4px_rgba(38,6,86,0.2)] transition-all hover:bg-[#1a043d] active:scale-[0.98]"
             onClick={() => {
               setIsCloseConfirmOpen(false);
               handleCloseModal();

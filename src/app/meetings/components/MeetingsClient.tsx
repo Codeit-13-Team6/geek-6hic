@@ -99,7 +99,7 @@ export default function MeetingsClient() {
     <div className="flex w-full flex-col">
       <CreateMeetingModal />
 
-      <div className="sticky top-6 z-40 mb-8 sm:mb-10">
+      <div className="sticky top-6 z-40 mb-2 sm:mb-16">
         <MeetingFilters
           activeValue={activeValue}
           sortValue={sortValue}
@@ -111,7 +111,8 @@ export default function MeetingsClient() {
         />
       </div>
 
-      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-2 lg:gap-6">
+      {/* 리스트 그리드 간격 넓혀서 개방감 확보 */}
+      <div className="grid gap-x-12 gap-y-16 sm:grid-cols-2">
         <MeetingList
           meetingList={filteredMeetingList}
           isLoading={isLoading}
@@ -121,19 +122,20 @@ export default function MeetingsClient() {
         />
       </div>
 
+      {/* 하단 로딩 영역: 굵은 상단 보더, 딥 퍼플 텍스트 적용 */}
       <div
         ref={bottomRef}
-        className="flex h-32 w-full items-center justify-center py-10"
+        className="mt-20 flex h-40 w-full items-center justify-center border-t-2 border-slate-950"
       >
         {isFetchingNextPage && (
-          <div className="flex items-center gap-3 text-sm font-bold text-rose-500">
-            <span className="h-5 w-5 animate-spin rounded-full border-[3px] border-rose-400 border-t-transparent"></span>
-            데이터를 불러오는 중입니다...
-          </div>
+          // 로딩 텍스트 포인트 컬러 변경: 딥 퍼플(#260656)
+          <p className="animate-pulse text-xs font-black tracking-[0.4em] text-[#260656] uppercase">
+            Fetching Data...
+          </p>
         )}
         {!hasNextPage && filteredMeetingList.length > 0 && (
-          <p className="text-sm font-bold text-slate-400">
-            모든 모임을 다 확인하셨습니다
+          <p className="text-xs font-black tracking-[0.4em] text-slate-300 uppercase">
+            End of Archive
           </p>
         )}
       </div>

@@ -1,7 +1,8 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
-import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -10,47 +11,26 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/DropdownCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
-
-interface CommentProps {
-  id: number;
-  name?: string;
-  img?: string;
-  date?: Date;
-  content?: string;
-  isOwner: boolean;
-  onDelete: (id: number) => void;
-  onEdit: (id: number, newContent: string) => void;
-}
+import { MoreHorizontal } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Comment({
   id,
-  name = "익명",
-  img,
-  date = new Date(),
-  content = "",
-  isOwner = false,
+  name,
+  date,
+  content,
+  isOwner,
   onDelete,
   onEdit,
-}: CommentProps) {
+}: any) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(content);
 
-  useEffect(() => {
-    if (isEditing && textareaRef.current) {
-      const length = textareaRef.current.value.length;
-      textareaRef.current.focus();
-      textareaRef.current.setSelectionRange(length, length);
-    }
-  }, [isEditing]);
-
-  // 원본 content에서 url 제거 (스레드 게시물 전용)
   const displayContent = content
     .replace(/(?:https?:\/\/|www\.)[^\s]+/g, "")
-    .replace(/\n\s*\n/g, "\n")
     .trim();
   const linkObjects = extractUrlsFromText(content);
 
@@ -60,106 +40,110 @@ export default function Comment({
     setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setEditValue(content);
-    setIsEditing(false);
-  };
-
   return (
-    <article className="flex flex-col border-b border-gray-100 py-5 last:border-none sm:py-6">
-      {/* 프로필 정보 + 메뉴 버튼 */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-gray-500 sm:text-sm">
-          <Image
-            className="shrink-0 rounded-full"
-            src={img ?? profileImg}
-            alt="프로필 이미지"
-            width={24}
-            height={24}
-          />
-          <span className="font-medium text-gray-700">{name}</span>
-          <span className="mx-0.5 text-gray-300">•</span>
-          <span>
-            {date
-              .toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })
-              .slice(0, -1)}
-          </span>
-        </div>
-
-        {/* 메뉴 버튼 (수정 중이 아닐 때만 노출) */}
-        {isOwner && !isEditing && (
-          <div className="shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="focus:outline-none">
-                <div className="cursor-pointer p-1">
-                  <Image
-                    src={meatballsIcon}
-                    alt="상세보기 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent size="sm" align="end">
-                <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                  수정하기
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={() => onDelete(id)}
-                >
-                  삭제하기
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+    <article className="group relative flex flex-col border-b border-slate-200 py-10 last:border-none sm:py-12">
+      <div className="flex items-start justify-between">
+        <div className="flex w-full items-start gap-4 sm:gap-6">
+          {/* 1. 아바타 영역: 간격을 더 넓혀서 본문과 분리 */}
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-white">
+            <Image
+              src={profileImg}
+              alt="프로필"
+              fill
+              className="object-cover"
+              unoptimized
+            />
           </div>
-        )}
-      </div>
 
-      {/* 내용 영역 (일반 모드 vs 수정 모드) */}
-      {isEditing ? (
-        <div className="mt-3 pl-[32px]">
-          <textarea
-            ref={textareaRef}
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm text-gray-700 focus:outline-none sm:text-base"
-            rows={3}
-          />
-          <div className="mt-2 flex justify-end gap-2 text-sm font-medium">
-            <BtnCommon
-              onClick={handleCancel}
-              size="sm"
-              variant="teritary"
-              className="w-[50px] sm:w-[60px]"
-            >
-              취소
-            </BtnCommon>
-            <BtnCommon
-              onClick={handleSave}
-              size="sm"
-              className="w-[50px] sm:w-[60px]"
-              disabled={!editValue.trim() || editValue === content}
-            >
-              저장
-            </BtnCommon>
-          </div>
-        </div>
-      ) : (
-        <div className="pl-[32px]">
-          {displayContent && (
-            <div className="pt-1.5 text-sm leading-relaxed whitespace-pre-wrap text-gray-700 sm:text-base">
-              {displayContent}
+          <div className="flex flex-1 flex-col pt-0.5">
+            {/* 2. 상단 정보: 닉네임과 날짜의 가독성 확보 */}
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-base font-black tracking-tight text-slate-950">
+                  {name}
+                </span>
+                <span className="text-[11px] font-bold tracking-widest text-slate-300 uppercase">
+                  {date.getFullYear()}.
+                  {String(date.getMonth() + 1).padStart(2, "0")}.
+                  {String(date.getDate()).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* 관리 메뉴: 본문 우측 상단으로 배치 고정 */}
+              {isOwner && !isEditing && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-slate-50">
+                      <MoreHorizontal className="size-5 text-slate-400" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="rounded-xl border-2 border-slate-900 bg-white shadow-xl"
+                  >
+                    <DropdownMenuItem
+                      onClick={() => setIsEditing(true)}
+                      className="font-bold focus:bg-slate-50"
+                    >
+                      수정하기
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onClick={() => onDelete(id)}
+                      className="font-bold focus:bg-red-50 focus:text-red-600"
+                    >
+                      삭제하기
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
-          )}
-          {linkObjects.length > 0 && <CompactLinkList links={linkObjects} />}
+
+            {/* 3. 본문 영역: 왼쪽 쏠림을 방지하기 위해 max-width를 넉넉히 확보 */}
+            {isEditing ? (
+              <div className="mt-2 w-full max-w-2xl">
+                <textarea
+                  ref={textareaRef}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  className="w-full resize-none rounded-xl border-2 border-slate-100 bg-slate-50 p-4 text-sm font-medium text-slate-700 transition-all outline-none focus:border-[#260656]/30 focus:bg-white"
+                  rows={4}
+                />
+                <div className="mt-3 flex justify-end gap-3">
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditValue(content);
+                    }}
+                    className="text-[11px] font-black text-slate-400 hover:text-slate-600"
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="text-[11px] font-black text-[#260656] hover:underline"
+                  >
+                    SAVE CHANGES
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-5">
+                {displayContent && (
+                  <p className="max-w-3xl text-base leading-relaxed whitespace-pre-wrap text-slate-600">
+                    {displayContent}
+                  </p>
+                )}
+                {linkObjects.length > 0 && (
+                  <div className="mt-2 w-full max-w-xl">
+                    <CompactLinkList links={linkObjects} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
     </article>
   );
 }
