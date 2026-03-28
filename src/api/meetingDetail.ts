@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 import { createComment } from "@/api/comments";
 import {
   MeetingDetailApiData,
@@ -6,7 +6,8 @@ import {
   MeetingJoinResponse,
   MeetingListResponse,
   MeetingParticipantsResponse,
-} from "@/types/meeting/meetingTypes";
+} from "@/types";
+import { UploadImageResponse } from "@/types";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
 const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;
@@ -17,7 +18,7 @@ export const getAttendancePostId = (region: string) => {
   return Number.isFinite(postId) && postId > 0 ? postId : null;
 };
 
-export async function fetchMeetingDetail(meetingId: number) {
+export async function getMeetingDetail(meetingId: number) {
   const { data } = await axiosInstance.get<MeetingDetailApiData>(
     `/meetings/${meetingId}`,
   );
@@ -25,7 +26,7 @@ export async function fetchMeetingDetail(meetingId: number) {
   return data;
 }
 
-export async function fetchMeetingParticipants(meetingId: number) {
+export async function getMeetingParticipants(meetingId: number) {
   const { data } = await axiosInstance.get<MeetingParticipantsResponse>(
     `/meetings/${meetingId}/participants`,
     {
@@ -38,7 +39,7 @@ export async function fetchMeetingParticipants(meetingId: number) {
   return data;
 }
 
-export async function fetchMeetingRecommendationCandidates() {
+export async function getMeetingRecommendationCandidates() {
   const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
     params: {
       sortBy: "dateTime",
@@ -113,4 +114,26 @@ export async function attendMeeting(region: string) {
     postId,
     `onlyScore_${region}_${Math.floor(Math.random() * 5) + 1}`,
   );
+}
+
+export async function uploadMeetingImage(file: File) {
+  const fileName = file.name;
+  const contentType = file.type || "image/jpeg";
+
+  const issueResponse = await axiosInstance.post<UploadImageResponse>(
+    "/images",
+    {
+      fileName,
+      contentType,
+      folder: "meetings",
+    },
+  );
+
+  await axiosInstance.put(issueResponse.data.presignedUrl, file, {
+    headers: {
+      "Content-Type": contentType,
+    },
+  });
+
+  return issueResponse.data.publicUrl;
 }

@@ -3,7 +3,7 @@
 import { ScheduleDatePicker } from "@/app/meetings/modal/ScheduleDatePicker";
 import { ScheduleTimePicker } from "@/app/meetings/modal/ScheduleTimePicker";
 import { InputCommon } from "@/components/ui/InputCommon";
-import { MeetingScheduleStepProps } from "@/types/meeting/meetingTypes";
+import { MeetingScheduleStepProps } from "@/types";
 
 const getTodayDateString = () => {
   const now = new Date();

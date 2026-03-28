@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-
+import { ToastCommonProps } from "@/types";
 /**
  * 예시)
  * ToastCommon({ message: "성공적으로 저장되었습니다." });
@@ -12,15 +12,6 @@ import { cn } from "@/lib/utils";
  *   className: "border border-red-500",
  * });
  */
-
-type ToastSize = "lg" | "sm";
-
-interface ToastCommonProps {
-  message: string;
-  size?: ToastSize;
-  duration?: number;
-  className?: string;
-}
 
 // 피그마 기준 크기 규격입니다.
 const TOAST_SIZE_STYLES = {

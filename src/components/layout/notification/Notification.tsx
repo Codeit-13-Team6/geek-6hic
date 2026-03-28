@@ -9,12 +9,7 @@ import {
 } from "@/api/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
 import type { NotificationItem } from "@/types/notification";
-
-interface NotificationProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onUnreadChange: (hasUnread: boolean) => void;
-}
+import { NotificationProps } from "@/types";
 
 export default function Notification({
   isOpen,
@@ -110,7 +105,7 @@ export default function Notification({
         </button>
       </div>
 
-      <div className="mt-6 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain sm:max-h-[280px] sm:flex-none">
+      <div className="mt-6 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain sm:max-h-[280px] sm:flex-none">
         {isLoading ? (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
             알림을 불러오는 중이에요...

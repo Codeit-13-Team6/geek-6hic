@@ -5,8 +5,8 @@ import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSe
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { useEditMeetingForm } from "@/hooks/meetings/useEditMeetingForm";
-import { EditMeetingModalProps } from "@/types/meeting/meetingTypes";
+import { useEditMeetingForm } from "@/hooks/useEditMeetingForm";
+import { EditMeetingModalProps } from "@/types";
 
 export function EditMeetingModal({
   isOpen,

@@ -4,8 +4,7 @@ import { useState } from "react";
 import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
 
 import type { User } from "@/types";
-import { useMeetingDetailQueries } from "@/hooks/meetings/useMeetingDetailQueries";
-import { useMeetingDetailMutations } from "@/hooks/meetings/useMeetingDetailMutations";
+import { useMeetingDetailQueries, useMeetingDetailMutations } from "@/hooks";
 import {
   MeetingDetailApiData,
   MeetingDetailData,
@@ -13,7 +12,7 @@ import {
   MeetingParticipant,
   RecommendedMeetingItem,
   MeetingDetailContentProps,
-} from "@/types/meeting/meetingTypes";
+} from "@/types";
 
 const hasRecruitmentOpen = (
   meeting: Pick<

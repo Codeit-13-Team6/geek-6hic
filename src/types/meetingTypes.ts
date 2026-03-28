@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import { Dispatch, SetStateAction } from "react";
 
 export interface MeetingDetailHost {
   id: number;
@@ -153,6 +154,23 @@ export interface MeetingDetailData {
   isLoggedIn: boolean;
   threads: MeetingThreadItem[];
   recommendedMeetings: RecommendedMeetingItem[];
+}
+
+export interface ChangeMeetingImageParams {
+  nextFile: File | null;
+  previewImageUrlRef: { current: string };
+  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
+  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
+  clearImageError: () => void;
+  setImageError: (message: string) => void;
+  onUploadError: () => void;
+}
+
+export interface RemoveMeetingImageParams {
+  previewImageUrlRef: { current: string };
+  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
+  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
+  clearImageError: () => void;
 }
 
 export interface MeetingDetailViewProps {

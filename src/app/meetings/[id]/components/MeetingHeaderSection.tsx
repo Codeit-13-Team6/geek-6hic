@@ -25,11 +25,7 @@ import {
   ProgressValue,
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
-import {
-  MeetingDetailData,
-  MeetingParticipantUser,
-  MeetingHeaderSectionProps,
-} from "@/types/meeting/meetingTypes";
+import { MeetingParticipantUser, MeetingHeaderSectionProps } from "@/types";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);

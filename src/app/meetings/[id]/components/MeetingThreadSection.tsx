@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getThreadPost } from "@/api/posts";
-import CommentSection from "@/app/lounge/[id]/component/CommentSection";
-import { MeetingThreadSectionProps } from "@/types/meeting/meetingTypes";
+import { MeetingThreadSectionProps } from "@/types";
+import CommentSection from "@/components/features/comment/CommentSection";
 
 export function MeetingThreadSection({
   meetingId,

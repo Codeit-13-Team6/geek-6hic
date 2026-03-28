@@ -9,6 +9,7 @@ import {
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { SideBarProps } from "@/types";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -17,14 +18,6 @@ const NAV_LINKS = [
   { name: "스프린트 라운지", href: "/lounge" },
 ];
 
-interface SideBarProps {
-  isLoggedIn: boolean;
-  handleLogout: () => Promise<void>;
-  handleLogin: () => void;
-  onClose: () => void;
-}
-
-// TO DO: 시간 관계상 추후 기능을 붙힐 수 있는 뼈대 ui 구현 -> 필요에 의해 디자인 수정 + 기능 추가
 export default function SideBar({
   isLoggedIn,
   handleLogout,

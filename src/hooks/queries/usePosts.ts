@@ -7,8 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost, deletePost } from "@/api/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import { PostPayload } from "@/app/lounge/component/LoungePostForm";
-import { GetPostsParams, Post } from "@/types";
+import { GetPostsParams, Post, PostPayload } from "@/types";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)

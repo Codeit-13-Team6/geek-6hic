@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
 import { GetPostsParams, GetPostsResponse, Post } from "@/types";
 

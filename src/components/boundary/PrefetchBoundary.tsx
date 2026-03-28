@@ -4,12 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { ReactNode } from "react";
-
-interface PrefetchBoundaryProps {
-  children: ReactNode;
-  prefetchFn: (qc: QueryClient) => Promise<void>;
-}
+import { PrefetchBoundaryProps } from "@/types";
 
 export default async function PrefetchBoundary({
   prefetchFn,

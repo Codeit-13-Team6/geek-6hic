@@ -16,11 +16,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
-
-interface CommentSectionProps {
-  postId: number;
-  isThread?: boolean;
-}
+import { CommentSectionProps } from "@/types";
 
 export default function CommentSection({
   postId,
@@ -39,6 +35,7 @@ export default function CommentSection({
     queryFn: () => getComments(postId),
     enabled: !!postId,
   });
+
   const commentsList = comments?.data || [];
 
   const { mutate: postComment, isPending: isPosting } = useMutation({

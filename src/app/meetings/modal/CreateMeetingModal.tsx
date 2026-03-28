@@ -8,7 +8,7 @@ import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep"
 import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { useCreateMeetingForm } from "@/hooks/meetings/useCreateMeetingForm";
+import { useCreateMeetingForm } from "@/hooks";
 
 export function CreateMeetingModal() {
   const [isOpen, setIsOpen] = useState(false);

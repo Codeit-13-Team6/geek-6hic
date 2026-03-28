@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import axios from "axios";
 
-import { setAuthCookies } from "@/lib/auth-cookies";
+import { setAuthCookies } from "@/lib/authCookies";
 
 // JWT payload의 exp 클레임을 읽어 토큰 만료 시간만 확인
 function isTokenExpired(token: string): boolean {
@@ -17,9 +17,6 @@ function isTokenExpired(token: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-
-
-
   // auth 관련 API는 인증 불필요 (refresh 무한루프 방지 포함)
   if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
@@ -31,10 +28,8 @@ export async function proxy(request: NextRequest) {
 
   const isApiRequest = pathname.startsWith("/api");
 
-
   // 토큰이 하나도 없는 경우
   if (!accessToken && !refreshToken) {
-
     // 페이지 요청: 로그인 페이지로 리다이렉트
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -76,7 +71,6 @@ export async function proxy(request: NextRequest) {
     const response = NextResponse.next({
       request: { headers: requestHeaders },
     });
-
 
     // 브라우저에 토큰 저장시켜서 다음 요청부턴 이거 사용하게함
     setAuthCookies(response, data);

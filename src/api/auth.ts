@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { User } from "@/types/user";
 import type { SignUpFormValues } from "@/types";
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 
 // 로그인 응답 타입 정의
 export interface LoginResult {
@@ -18,9 +18,7 @@ export async function loginUser(data: {
   email: string;
   password: string;
 }): Promise<LoginResult> {
-  const res = await axios.post("/api/auth/login", data, {
-    withCredentials: true,
-  });
+  const res = await axiosInstance.post("/auth/login", data);
   return res.data;
 }
 
@@ -35,7 +33,7 @@ export async function signupUser(
     companyName: data.introduce,
   };
 
-  const res = await axios.post("/api/auth/signup", payload, {
+  const res = await axiosInstance.post("/api/auth/signup", payload, {
     withCredentials: true,
   });
 
@@ -43,7 +41,7 @@ export async function signupUser(
 }
 
 // 클라이언트 유저 BFF 호출 함수
-export async function fetchMe(): Promise<User | null> {
+export async function getUserData(): Promise<User | null> {
   try {
     // ** 이제 /api/users/me 라는 물리적 파일은 없음
     // ** -> axiosInstance를 통해 baseURL: "/api" 설정 + withCredentials: true 자동으로 됨

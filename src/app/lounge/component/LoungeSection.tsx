@@ -11,7 +11,7 @@ import {
   SelectValue,
   SelectGroup,
 } from "@/components/ui/SelectCommon";
-import PostList from "../../../components/features/list/PostList";
+import PostList from "@/components/features/list/PostList";
 
 export default function LoungeContent() {
   const [searchValue, setSearchValue] = useState("");

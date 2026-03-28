@@ -1,25 +1,18 @@
 import type { AxiosResponse } from "axios";
-import { serverAxios, serverFetch } from "@/lib/server-fetcher";
+import { serverAxios, serverFetch } from "@/lib/serverFetcher";
 import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,
   MeetingDetailApiData,
   MeetingListResponse,
   MeetingParticipantsResponse,
-} from "@/types/meeting/meetingTypes";
+} from "@/types";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
 const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;
 const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";
 
-const getStartOfToday = () => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return today;
-};
-
-export async function fetchMeetingDetailOnServer(meetingId: number) {
+export async function getMeetingDetail(meetingId: number) {
   const response = await serverFetch<MeetingDetailApiData>({
     url: `/meetings/${meetingId}`,
     method: "GET",
@@ -28,7 +21,7 @@ export async function fetchMeetingDetailOnServer(meetingId: number) {
   return response.data;
 }
 
-export async function fetchMeetingParticipantsOnServer(meetingId: number) {
+export async function getMeetingParticipants(meetingId: number) {
   const response = await serverFetch<MeetingParticipantsResponse>({
     url: `/meetings/${meetingId}/participants`,
     method: "GET",
@@ -40,7 +33,7 @@ export async function fetchMeetingParticipantsOnServer(meetingId: number) {
   return response.data;
 }
 
-export async function fetchMeetingRecommendationCandidatesOnServer() {
+export async function getMeetingRecommendationCandidates() {
   const response = await serverFetch<MeetingListResponse>({
     url: "/meetings",
     method: "GET",
@@ -54,7 +47,7 @@ export async function fetchMeetingRecommendationCandidatesOnServer() {
   return response.data;
 }
 
-export async function fetchCurrentUserOnServer() {
+export async function getCurrentUserOnServer() {
   try {
     const response = await serverAxios.get<User>("/users/me");
     return response.data;
@@ -63,7 +56,7 @@ export async function fetchCurrentUserOnServer() {
   }
 }
 
-export async function fetchTodayAttendanceStatus({
+export async function getTodayAttendanceStatus({
   postId,
   userId,
 }: {
@@ -73,6 +66,13 @@ export async function fetchTodayAttendanceStatus({
   if (!postId || !userId) {
     return false;
   }
+
+  const getStartOfToday = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return today;
+  };
 
   try {
     const startOfToday = getStartOfToday();

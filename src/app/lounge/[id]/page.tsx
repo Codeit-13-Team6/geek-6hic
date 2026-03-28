@@ -3,17 +3,8 @@ import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostCommentsServer } from "@/api/index.server";
-import { serverFetch } from "@/lib/server-fetcher";
-import CommentSection from "./component/CommentSection";
-
-export async function fetchPostDetail(postId: number) {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: `/posts/${postId}`,
-  });
-  return data;
-}
+import { getPostDetail, getPostCommentsServer } from "@/api/index-server";
+import CommentSection from "@/components/features/comment/CommentSection";
 
 export default async function LoungeDetailPageServer({
   params,
@@ -31,7 +22,7 @@ export default async function LoungeDetailPageServer({
             prefetchFn={async (qc) => {
               await qc.prefetchQuery({
                 queryKey: ["post", postId],
-                queryFn: () => fetchPostDetail(postId),
+                queryFn: () => getPostDetail(postId),
               });
             }}
           >

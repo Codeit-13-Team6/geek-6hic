@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
 import {
@@ -9,18 +9,19 @@ import {
   validateMeetingBasicInfoStep,
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
-} from "@/lib/meeting-form.validation";
-import { MeetingFormValues } from "@/types/meeting/meetingTypes";
+} from "@/lib/meetingFormValidation";
 import {
   changeMeetingImage,
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
-} from "./meetingImageField";
+} from "../lib/meetingFormImage";
 import {
   INITIAL_MEETING_FORM_VALUES,
   toCreateMeetingPayload,
-  TOTAL_MEETING_FORM_STEPS,
 } from "./useEditMeetingForm";
+import { MeetingFormValues } from "@/types/meetingTypes";
+
+const TOTAL_MEETING_FORM_STEPS = 3;
 
 export function useCreateMeetingForm(onSuccess?: () => void) {
   const [currentStep, setCurrentStep] = useState(1);

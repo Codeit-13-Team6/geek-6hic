@@ -16,11 +16,11 @@ import studyImage from "@/assets/img/category/study.jpg";
 import towerWork from "@/assets/img/category/business.jpg";
 import JobIShoes from "@/assets/img/category/fitness-health.jpg";
 import etcImage from "@/assets/img/category/etc.jpg";
-import { MeetingBasicInfoSectionProps } from "@/types/meeting/meetingTypes";
 import {
+  MeetingBasicInfoSectionProps,
   MeetingTypeOption,
   MeetingCategoryItem,
-} from "@/types/meeting/meetingTypes";
+} from "@/types";
 
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   {

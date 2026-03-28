@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { TagCommon } from "@/components/ui/TagCommon";
-import { RecommendedMeetingsSectionProps } from "@/types/meeting/meetingTypes";
+import { RecommendedMeetingsSectionProps } from "@/types";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);

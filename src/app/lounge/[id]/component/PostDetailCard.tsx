@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/DropdownCommon";
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { Link2 } from "lucide-react";
-import { CompactLinkList } from "../list/CompactLinkList";
+import { CompactLinkList } from "../../../../components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
 
 export function PostDetailCard({

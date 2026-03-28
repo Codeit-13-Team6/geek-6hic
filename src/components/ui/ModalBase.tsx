@@ -1,13 +1,12 @@
-
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogTitle,
 } from "@/components/shadcnOrigin/dialog";
-import { ReactNode } from "react";
 import { Button } from "@/components/shadcnOrigin/button";
 import { XIcon } from "lucide-react";
+import { ModalCommonProps } from "@/types";
 
 /**
  * 예시)
@@ -30,16 +29,6 @@ import { XIcon } from "lucide-react";
  *   </>
  * );
  */
-
-interface ModalCommonProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  children: ReactNode;
-  title?: string;
-  titleClassName?: string;
-  contentClassName?: string;
-  disablePointerDismissal?: boolean;
-}
 
 export default function ModalBase({
   isOpen,

@@ -4,12 +4,7 @@ import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import "./LoungeEditor.css";
-
-interface EditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-}
+import { EditorProps } from "@/types";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false, // SSR(서버 사이드 렌더링)을 비활성화

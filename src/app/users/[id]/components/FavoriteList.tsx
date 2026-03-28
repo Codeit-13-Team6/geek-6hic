@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { deleteFavorites, getFavorites } from "@/api/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useIntersectionObserver } from "@/hooks";
 
 export default function FavoriteList() {
   const router = useRouter();
@@ -26,7 +26,11 @@ export default function FavoriteList() {
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
     });
 
-  const bottomRef = useIntersectionObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  const bottomRef = useIntersectionObserver(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  );
 
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
@@ -45,13 +49,13 @@ export default function FavoriteList() {
 
   return (
     <>
-      {allFavorites.map((item: any) => (
+      {allFavorites.map((item) => (
         <UserCard
           key={item.id}
           title={item.meeting.name}
           type={item.meeting.type}
           date={new Date(item.meeting.dateTime)}
-          imageSrc={item.meeting.image}
+          imageSrc={item.meeting.image ?? undefined}
           capacity={item.meeting.capacity}
           participantCount={item.meeting.participantCount}
           defaultLiked={true}
@@ -59,9 +63,14 @@ export default function FavoriteList() {
           onHeartClick={() => toggleFavorite(item.meetingId)}
         />
       ))}
-      <div ref={bottomRef} className="flex h-20 items-center justify-center text-sm text-gray-400">
+      <div
+        ref={bottomRef}
+        className="flex h-20 items-center justify-center text-sm text-gray-400"
+      >
         {isFetchingNextPage && <p>불러오는 중...</p>}
-        {!hasNextPage && allFavorites.length > 0 && <p>더 이상 모임이 없습니다.</p>}
+        {!hasNextPage && allFavorites.length > 0 && (
+          <p>더 이상 모임이 없습니다.</p>
+        )}
       </div>
     </>
   );

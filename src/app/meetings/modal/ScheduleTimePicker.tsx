@@ -10,7 +10,7 @@ import {
 } from "@/components/shadcnOrigin/popover";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TimePickerCommon } from "@/components/ui/TimePickerCommon";
-import { ScheduleTimePickerProps } from "@/types/meeting/meetingTypes";
+import { ScheduleTimePickerProps } from "@/types";
 
 export function ScheduleTimePicker({
   id,

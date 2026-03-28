@@ -1,10 +1,5 @@
 import { Link2 } from "lucide-react";
-
-interface LinkItem {
-  id: string;
-  url: string;
-  title: string;
-}
+import { LinkItem } from "@/types";
 
 export function CompactLinkList({
   links,

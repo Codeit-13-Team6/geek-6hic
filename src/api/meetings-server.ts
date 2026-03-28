@@ -1,4 +1,4 @@
-import { serverFetch } from "@/lib/server-fetcher";
+import { serverFetch } from "@/lib/serverFetcher";
 import type { JoinedMeetingsResponse } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {

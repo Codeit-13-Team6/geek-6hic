@@ -1,4 +1,4 @@
-import { MeetingLinkSectionProps } from "@/types/meeting/meetingTypes";
+import { MeetingLinkSectionProps } from "@/types";
 
 export function MeetingLinkSection({
   link,

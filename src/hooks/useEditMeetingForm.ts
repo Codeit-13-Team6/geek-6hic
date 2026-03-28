@@ -7,7 +7,7 @@ import {
   validateMeetingBasicInfoStep,
   validateMeetingCategoryStep,
   validateMeetingScheduleStep,
-} from "@/lib/meeting-form.validation";
+} from "@/lib/meetingFormValidation";
 
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
@@ -15,12 +15,12 @@ import {
   changeMeetingImage,
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
-} from "./meetingImageField";
+} from "../lib/meetingFormImage";
 import {
+  MeetingDetailData,
   MeetingFormErrors,
   MeetingFormValues,
-} from "@/types/meeting/meetingTypes";
-import { MeetingDetailData } from "@/types/meeting/meetingTypes";
+} from "@/types";
 
 export const getIsoDateTime = (date: string, time: string) => {
   return new Date(`${date}T${time}`).toISOString();
@@ -115,8 +115,6 @@ export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
   endTime: "",
   capacity: "",
 };
-
-export const TOTAL_MEETING_FORM_STEPS = 3;
 
 export const createEmptyMeetingFormErrors = (): MeetingFormErrors => ({
   category: "",

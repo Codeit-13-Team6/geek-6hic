@@ -1,25 +1,7 @@
 "use client";
 
-import { MeetingFormValues } from "@/types/meeting/meetingTypes";
-import type { Dispatch, SetStateAction } from "react";
-import { uploadMeetingImage } from "./uploadMeetingImage";
-
-interface ChangeMeetingImageParams {
-  nextFile: File | null;
-  previewImageUrlRef: { current: string };
-  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
-  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
-  clearImageError: () => void;
-  setImageError: (message: string) => void;
-  onUploadError: () => void;
-}
-
-interface RemoveMeetingImageParams {
-  previewImageUrlRef: { current: string };
-  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
-  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
-  clearImageError: () => void;
-}
+import { uploadMeetingImage } from "@/api/meetingDetail";
+import { ChangeMeetingImageParams, RemoveMeetingImageParams } from "@/types";
 
 // 미리보기로 만든 blob URL만 직접 해제한다.
 export const revokeMeetingPreviewImageUrl = (previewImageUrl: string) => {

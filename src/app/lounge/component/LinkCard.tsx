@@ -1,22 +1,6 @@
 import React from "react";
 import { GripVertical, ImageIcon, Link2, X } from "lucide-react";
-
-interface LinkCardProps {
-  link: {
-    id: string;
-    title: string;
-    image: string;
-    url: string;
-  };
-  index: number;
-  isThumbnail: boolean;
-  isDragging: boolean;
-  onDragStart: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
-  onDragOver: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
-  onDragEnd: (e: React.DragEvent<HTMLDivElement>) => void;
-  onSelect: (imageUrl: string) => void;
-  onRemove: (id: string) => void;
-}
+import { LinkCardProps } from "@/types";
 
 export default function LinkCard({
   link,
@@ -35,7 +19,7 @@ export default function LinkCard({
       onDragStart={(e) => onDragStart(e, index)}
       onDragOver={(e) => onDragOver(e, index)}
       onDragEnd={onDragEnd}
-      onClick={() => onSelect(link.image)}
+      onClick={() => onSelect(link.image || "")}
       className={`group relative flex cursor-pointer items-center gap-3 rounded-[12px] border p-3 pr-10 transition-all sm:gap-4 sm:p-4 sm:pr-12 ${
         isThumbnail
           ? "border-green-500 bg-green-50 shadow-md"

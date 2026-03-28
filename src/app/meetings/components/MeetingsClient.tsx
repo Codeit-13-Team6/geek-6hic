@@ -13,10 +13,10 @@ import type {
   TabValue,
   SortValue,
 } from "@/types";
-import MeetingList from "./MeetingList";
+import MeetingList from "../../../components/features/list/MeetingList";
 import MeetingFilters from "./MeetingsFilters";
 import { CreateMeetingModal } from "@/app/meetings/modal/CreateMeetingModal";
-import { useMeetingFavoriteMutation } from "@/hooks/meetings/useMeetingFavoriteMutation";
+import { useMeetingFavoriteMutation } from "@/hooks";
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },

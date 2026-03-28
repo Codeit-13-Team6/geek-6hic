@@ -5,11 +5,7 @@ import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHead
 import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
 import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThreadSection";
-import {
-  MeetingDetailData,
-  MeetingParticipantUser,
-  MeetingDetailViewProps,
-} from "@/types/meeting/meetingTypes";
+import { MeetingDetailViewProps } from "@/types";
 
 export function MeetingDetailView({
   data,

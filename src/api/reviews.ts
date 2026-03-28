@@ -1,7 +1,6 @@
-import { Meeting } from "@/types";
-import axiosInstance from "@/lib/client-fetcher";
+import axiosInstance from "@/lib/clientFetcher";
 
-export async function getReviews(params: {}): Promise<any[]> {
+export async function getReviews(params: {}): Promise<void[]> {
   const { data } = await axiosInstance.get("/reviews", { params });
   return data;
 }

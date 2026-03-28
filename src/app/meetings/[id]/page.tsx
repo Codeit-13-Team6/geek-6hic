@@ -3,26 +3,16 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
-import { getAttendancePostId } from "@/api/meeting-detail.api";
 
 import {
-  fetchCurrentUserOnServer,
-  fetchMeetingDetailOnServer,
-  fetchMeetingParticipantsOnServer,
-  fetchMeetingRecommendationCandidatesOnServer,
-  fetchTodayAttendanceStatus,
-} from "@/api/meeting-detail.server";
-import {
-  getMeetingDetailQueryKey,
-  getMeetingParticipantsQueryKey,
-  getMeetingRecommendationCandidatesQueryKey,
-} from "@/hooks/meetings/meeting-detail.query-keys";
-import {
-  MeetingDetailApiData,
-  MeetingDetailPageProps,
-} from "@/types/meeting/meetingTypes";
+  getCurrentUserOnServer,
+  getMeetingDetail,
+  getMeetingParticipants,
+  getMeetingRecommendationCandidates,
+  getTodayAttendanceStatus,
+} from "@/api/meetingDetail-server";
+import { MeetingDetailApiData, MeetingDetailPageProps } from "@/types";
 
 export default async function MeetingDetailPage({
   params,
@@ -30,31 +20,37 @@ export default async function MeetingDetailPage({
   const { id } = await params;
   const resolvedMeetingId = Number(id);
 
-  console.log("lllllllllresolvedMeetingId", resolvedMeetingId);
-
   const queryClient = new QueryClient();
 
   queryClient.fetchQuery({
-    queryKey: getMeetingDetailQueryKey(resolvedMeetingId),
-    queryFn: () => fetchMeetingDetailOnServer(resolvedMeetingId),
+    queryKey: ["meeting-detail", resolvedMeetingId],
+    queryFn: () => getMeetingDetail(resolvedMeetingId),
   });
 
-  const meetingDetail = queryClient.getQueryData<MeetingDetailApiData>(
-    getMeetingDetailQueryKey(resolvedMeetingId),
-  );
+  const meetingDetail = queryClient.getQueryData<MeetingDetailApiData>([
+    "meeting-detail",
+    resolvedMeetingId,
+  ]);
 
   queryClient.prefetchQuery({
-    queryKey: getMeetingParticipantsQueryKey(resolvedMeetingId),
-    queryFn: () => fetchMeetingParticipantsOnServer(resolvedMeetingId),
+    queryKey: ["meeting-participants", resolvedMeetingId],
+    queryFn: () => getMeetingParticipants(resolvedMeetingId),
   });
 
   queryClient.prefetchQuery({
-    queryKey: getMeetingRecommendationCandidatesQueryKey(resolvedMeetingId),
-    queryFn: () => fetchMeetingRecommendationCandidatesOnServer(),
+    queryKey: ["meeting-recommendation-candidates", resolvedMeetingId],
+    queryFn: () => getMeetingRecommendationCandidates(),
   });
 
-  const user = await fetchCurrentUserOnServer();
-  const hasAttendedInitially = await fetchTodayAttendanceStatus({
+  const user = await getCurrentUserOnServer();
+
+  const getAttendancePostId = (region: string) => {
+    const postId = Number(region);
+
+    return Number.isFinite(postId) && postId > 0 ? postId : null;
+  };
+
+  const hasAttendedInitially = await getTodayAttendanceStatus({
     postId: getAttendancePostId(meetingDetail?.region ?? ""),
     userId: user?.id,
   });

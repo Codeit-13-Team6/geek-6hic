@@ -3,10 +3,7 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
-import {
-  ACCESS_TOKEN_MAX_AGE,
-  REFRESH_TOKEN_MAX_AGE,
-} from "@/lib/auth-cookies";
+import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from "@/lib/authCookies";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
@@ -160,8 +157,6 @@ const refreshAccessToken = async (
       Promise.resolve(false),
     ]);
 
-
-
     if (!isSettled) {
       // 아직 진행 중인 refresh가 있음 → 완료될 때까지 대기
       // 합류하면 rotation으로 무효한 토큰을 받을 수 있으므로 대기 후 새로 refresh
@@ -224,7 +219,9 @@ const refreshAccessToken = async (
       try {
         await setTokenCookies(data as TokenPair);
       } catch {
-        console.log(`[server-fetcher] 쿠키 세팅 실패 (토큰은 정상): ${requestUrl}`);
+        console.log(
+          `[server-fetcher] 쿠키 세팅 실패 (토큰은 정상): ${requestUrl}`,
+        );
       }
 
       return data as TokenPair;
@@ -242,17 +239,17 @@ const refreshAccessToken = async (
 
 // 인증 없이 요청 가능한 경로 (정규식으로 정확히 매칭)
 const PUBLIC_PATH_PATTERNS = [
-  /\/posts$/,                       // /posts (exact)
-  /\/posts\?/,                      // /posts?cursor=...
-  /\/posts\/\d+$/,                  // /posts/123 (상세)
-  /\/posts\/\d+\?/,                 // /posts/123?...
-  /\/posts\/\d+\/comments/,         // /posts/123/comments (조회)
-  /\/meetings$/,                    // /meetings (exact)
-  /\/meetings\?/,                   // /meetings?...
-  /\/meetings\/\d+$/,               // /meetings/132 (상세)
-  /\/meetings\/\d+\?/,              // /meetings/132?...
-  /\/meetings\/\d+\/participants/,  // /meetings/132/participants
-  /\/api\/hot/,                     // /api/hot
+  /\/posts$/, // /posts (exact)
+  /\/posts\?/, // /posts?cursor=...
+  /\/posts\/\d+$/, // /posts/123 (상세)
+  /\/posts\/\d+\?/, // /posts/123?...
+  /\/posts\/\d+\/comments/, // /posts/123/comments (조회)
+  /\/meetings$/, // /meetings (exact)
+  /\/meetings\?/, // /meetings?...
+  /\/meetings\/\d+$/, // /meetings/132 (상세)
+  /\/meetings\/\d+\?/, // /meetings/132?...
+  /\/meetings\/\d+\/participants/, // /meetings/132/participants
+  /\/api\/hot/, // /api/hot
 ];
 
 const isPublicPath = (url?: string) => {
@@ -276,12 +273,16 @@ serverAxios.interceptors.request.use(async (config) => {
   let accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
   console.log(" 리퀘스트 완전 처음 ", config.url);
-  console.log(" isPublicPath 결과 ", isPublicPath(config.url), " refreshToken 유무 ", !!refreshToken);
+  console.log(
+    " isPublicPath 결과 ",
+    isPublicPath(config.url),
+    " refreshToken 유무 ",
+    !!refreshToken,
+  );
 
   if (isPublicPath(config.url)) {
     return config;
   }
-
 
   // refreshToken도 없으면 요청 보내지 않고 즉시 차단 (공개 경로는 제외)
   if (!refreshToken) {
@@ -313,7 +314,6 @@ serverAxios.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryableRequestConfig | undefined;
     console.log("응답 인터셉터 1", error);
-
 
     // config 없는 에러 = 직접 만든 REFRESH_FAILED 에러
     // config 있는 에러 = 백엔드에서 떨어지는 에러 = 403, 404, 500 등

@@ -1,11 +1,33 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { EmptyData } from "@/components/features/empty/EmptyData";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import MeetingList from "../../meetings/components/MeetingList";
-import { useMeetingQuery } from "@/hooks/meetings/useMeetingQuery";
-import { useMeetingFavoriteMutation } from "@/hooks/meetings/useMeetingFavoriteMutation";
+import MeetingList from "../../../components/features/list/MeetingList";
+import { useMeetingFavoriteMutation } from "@/hooks";
+import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
+import { getJoinedMeetings } from "@/api/meetings";
+import type { JoinedMeetingsResponse } from "@/types";
+
+export function getMeetingJoinedNextPageParam(
+  lastPage: JoinedMeetingsResponse,
+) {
+  return lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined;
+}
+
+export const meetingJoinedInfiniteQueryOptions =
+  infiniteQueryOptions<JoinedMeetingsResponse>({
+    queryKey: ["meetings", "joined"],
+    queryFn: ({ pageParam }) =>
+      getJoinedMeetings(
+        pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
+      ),
+    initialPageParam: undefined,
+    getNextPageParam: getMeetingJoinedNextPageParam,
+  });
+
+export function useMeetingQuery() {
+  return useInfiniteQuery(meetingJoinedInfiniteQueryOptions);
+}
 
 export default function MyMeetingsClient() {
   const router = useRouter();
@@ -26,14 +48,6 @@ export default function MyMeetingsClient() {
     return (
       <div className="flex min-h-[calc(100vh-220px)] items-center justify-center text-center">
         <p>데이터를 불러오고 있어요...</p>
-      </div>
-    );
-  }
-
-  if (allMeetings.length === 0) {
-    return (
-      <div className="flex min-h-[calc(100vh-220px)] items-center justify-center">
-        <EmptyData variant="myMeeting" />
       </div>
     );
   }

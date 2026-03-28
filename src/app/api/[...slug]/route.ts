@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { serverAxios } from "@/lib/server-fetcher";
+import { serverAxios } from "@/lib/serverFetcher";
+import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {
   response?: {
@@ -35,21 +36,9 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     requiresAuth: true,
   },
   {
-    pattern: /^\/meetings\/\d+$/, // 끝에 $를 붙여서 정확히 일치시켜야 함
+    pattern: /^\/meetings\/\d+$/,
     methods: ["GET", "PATCH", "DELETE"],
     requiresAuth: false,
-  },
-
-  // 2. 그 다음 덜 구체적인 경로 (목록)
-  {
-    pattern: /^\/meetings$/,
-    methods: ["GET", "POST"],
-    requiresAuth: true,
-  },
-  {
-    pattern: /^\/meetings\/my$/,
-    methods: ["GET"],
-    requiresAuth: true,
   },
   {
     pattern: /^\/meetings$/,
@@ -183,7 +172,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const axiosOptions: any = {
+    const axiosOptions: AxiosRequestConfig = {
       method: request.method,
       url: targetUrl,
       headers: { "Content-Type": "application/json" },

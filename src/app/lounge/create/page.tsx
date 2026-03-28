@@ -1,7 +1,7 @@
 "use client";
 
 import LoungePostForm from "@/app/lounge/component/LoungePostForm";
-import { useCreatePost } from "@/hooks/queries/usePosts";
+import { useCreatePost } from "@/hooks";
 
 export default function LoungeCreatePage() {
   const { mutate: handleCreate, isPending } = useCreatePost();

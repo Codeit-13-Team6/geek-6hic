@@ -13,17 +13,7 @@ import {
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
-
-interface CommentProps {
-  id: number;
-  name?: string;
-  img?: string;
-  date?: Date;
-  content?: string;
-  isOwner: boolean;
-  onDelete: (id: number) => void;
-  onEdit: (id: number, newContent: string) => void;
-}
+import { CommentProps } from "@/types";
 
 export default function Comment({
   id,
