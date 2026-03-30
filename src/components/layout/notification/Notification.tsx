@@ -111,13 +111,17 @@ export default function Notification({
             알림을 불러오는 중이에요...
           </div>
         ) : notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <NotificationCard
-              key={notification.id}
-              notification={notification}
-              onClick={() => handleNotificationClick(notification)}
-            />
-          ))
+          notifications.map((notification) =>
+            notification?.message?.split("_")[0] !== '"isThread' ? (
+              <NotificationCard
+                key={notification.id}
+                notification={notification}
+                onClick={() => handleNotificationClick(notification)}
+              />
+            ) : (
+              <></>
+            ),
+          )
         ) : (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
             아직 알림이 없어요.
