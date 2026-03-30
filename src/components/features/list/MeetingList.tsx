@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import demoImage from "@/assets/img/mock/banner-lg-demo.jpg";
+import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import alram from "@/assets/icon/alarm/alarm-blue.svg";
 import heartOff from "@/assets/icon/hearts/hearts-false.svg";
 import heartOn from "@/assets/icon/hearts/hearts-true.svg";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
-
+import { cn } from "@/lib/utils";
 
 export default function MeetingList({
   meetingList,
@@ -16,38 +16,28 @@ export default function MeetingList({
   sortValue,
   onHeartClick,
 }: MeetingListProps) {
-  // 마감날짜 계산기
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
-
     const isSameYear = endDate.getFullYear() === now.getFullYear();
     const isSameMonth = endDate.getMonth() === now.getMonth();
     const isSameDate = endDate.getDate() === now.getDate();
-
     const isToday = isSameYear && isSameMonth && isSameDate;
 
     if (!isToday) return null;
-
     const hours = String(endDate.getHours()).padStart(2, "0");
-
     return `오늘 ${hours}시 마감`;
   }
 
-  // 날짜
   function formatDate(dateTime: string) {
     const date = new Date(dateTime);
-
     return `${date.getMonth() + 1}월 ${date.getDate()}일`;
   }
 
-  // 시간
   function formatTime(dateTime: string) {
     const date = new Date(dateTime);
-
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-
     return `${hours}:${minutes}`;
   }
 
@@ -55,7 +45,6 @@ export default function MeetingList({
     const now = new Date();
     const isRegistrationClosed = new Date(item.registrationEnd) < now;
     const isFull = item.participantCount >= item.capacity;
-
     return isRegistrationClosed || isFull;
   }
 
@@ -68,8 +57,9 @@ export default function MeetingList({
     <>
       {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
+        const isFull = item.participantCount >= item.capacity;
         const deadLine = getDeadlineLabel(item.registrationEnd);
-        const overlayLabel = item.isCompleted
+        const statusLabel = item.isCompleted
           ? "참여 완료"
           : isClosed
             ? "모집 마감"
@@ -79,87 +69,120 @@ export default function MeetingList({
           <div
             key={item.id}
             onClick={() => onItemClick(item)}
-            className="relative cursor-pointer overflow-hidden rounded-3xl sm:flex sm:items-center sm:gap-5 sm:rounded-[32px] sm:bg-white sm:p-6"
+            className={cn(
+              "group focus:ring-main-purple/20 relative flex cursor-pointer flex-col overflow-hidden rounded-[28px] bg-white transition-all duration-300 hover:-translate-y-1.5 focus:ring-4 sm:flex-row sm:items-stretch sm:gap-0 sm:p-0",
+              "shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05),_0_20px_40px_-10px_rgba(38,6,86,0.05)]",
+              "hover:shadow-[0_25px_50px_-10px_rgba(38,6,86,0.1)]",
+              statusLabel ? "opacity-95" : "",
+            )}
           >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onHeartClick(item);
-              }}
-              className="absolute top-4 right-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white"
-            >
-              <div className="relative h-6 w-6">
-                <Image
-                  src={item.isFavorited ? heartOn : heartOff}
-                  fill
-                  alt="찜"
-                />
-              </div>
-            </button>
-
-            <div className="relative h-39 w-full overflow-hidden sm:h-[170px] sm:w-[170px] sm:rounded-3xl">
+            <div className="relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[220px]">
               <Image
-                src={item.image || demoImage}
+                src={item.image || defaultImage}
                 fill
+                className={cn(
+                  "object-cover transition-transform duration-500 group-hover:scale-105",
+                  statusLabel ? "grayscale-[40%]" : "",
+                )}
                 alt="게시물 이미지"
                 unoptimized
               />
-
-              {overlayLabel && (
-                <div className="absolute flex h-full w-full items-center justify-center bg-black/70">
-                  <span className="rounded-full font-[Tenada] text-2xl font-semibold text-white">
-                    {overlayLabel}
-                  </span>
-                </div>
+              {statusLabel && (
+                <span
+                  className={cn(
+                    "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold shadow-sm",
+                    item.isCompleted
+                      ? "bg-slate-900/80 text-slate-100"
+                      : "bg-slate-200 text-slate-500",
+                  )}
+                >
+                  {item.isCompleted && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                  )}
+                  {statusLabel}
+                </span>
               )}
             </div>
 
-            <div className="flex flex-1 flex-col bg-white p-4 sm:p-0">
-              <div className="flex flex-col">
-                <h3 className="text-xl font-semibold text-black">
+            <div className="flex flex-1 flex-col justify-between p-6 sm:p-8">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-light-purple text-sm font-black tracking-[0.2em] uppercase">
+                  {item.type}
+                </span>
+                <h3 className="line-clamp-2 text-xl leading-tight font-black tracking-tight text-slate-950 sm:text-2xl">
                   {item.name}
                 </h3>
-                <h4 className="text-sm font-semibold text-gray-500">
-                  {item.type}
-                </h4>
               </div>
 
-              <div className="mt-[14px] flex flex-wrap gap-2 sm:mt-10">
-                <span className="rounded-lg border border-gray-200 px-2 py-0.5 text-sm text-gray-600">
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="rounded-xl bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-600">
                   {formatDate(item.dateTime)}
                 </span>
-                <span className="rounded-lg border border-gray-200 px-2 py-0.5 text-sm text-gray-600">
+                <span className="rounded-xl bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-600">
                   {formatTime(item.dateTime)}
                 </span>
-                {deadLine ? (
-                  <span className="flex items-center gap-1 rounded-lg bg-[rgba(24,220,255,0.2)] px-2 py-0.5">
-                    <span className="relative h-6 w-6">
+
+                {deadLine && !statusLabel ? (
+                  <span className="bg-main-purple/10 flex items-center gap-1.5 rounded-xl px-3.5 py-1.5">
+                    <span className="relative h-4.5 w-4.5 opacity-70">
                       <Image src={alram} fill alt="알람 아이콘" />
                     </span>
-                    <span className="text-sm font-semibold text-blue-600">
+                    <span className="text-main-purple text-xs font-black">
                       {deadLine}
                     </span>
                   </span>
                 ) : null}
               </div>
 
-              <div className="mt-5 flex w-full items-center">
-                <div className="relative h-4 w-4 shrink-0">
-                  <Image src={person} fill alt="인원" />
+              <div className="mt-6 flex w-full items-center justify-between border-t border-slate-100 pt-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative h-4 w-4 opacity-40">
+                      <Image src={person} fill alt="인원" />
+                    </div>
+                    <p>
+                      <span
+                        className={cn(
+                          "text-sm font-black",
+                          isFull ? "text-slate-400" : "text-main-purple",
+                        )}
+                      >
+                        {item.participantCount}
+                      </span>
+                      <span className="text-xs font-bold text-slate-400">
+                        /{item.capacity}
+                      </span>
+                    </p>
+                  </div>
+                  <Progress
+                    className={cn(
+                      // 고치기 - 프로그레스 게이지 안 나타남, w값 조절 안됨
+                      "mt-1 block h-1.5 w-[80px] overflow-hidden rounded-full bg-slate-100",
+
+                      isFull || isClosed
+                        ? "[&_[data-slot=progress-indicator]]:bg-slate-300"
+                        : "[&_[data-slot=progress-indicator]]:bg-main-purple",
+                    )}
+                    value={(item.participantCount / item.capacity) * 100}
+                  />
                 </div>
-                <Progress
-                  className="ml-[5px] w-full"
-                  value={(item.participantCount / item.capacity) * 100}
-                />
-                <p className="ml-[13px]">
-                  <span className="text-sm font-semibold text-green-500">
-                    {item.participantCount}
-                  </span>
-                  <span className="text-sm text-gray-600">
-                    /{item.capacity}
-                  </span>
-                </p>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onHeartClick(item);
+                  }}
+                  className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-slate-50 transition-all hover:scale-110 hover:bg-slate-100"
+                >
+                  <div className="relative h-5 w-5">
+                    <Image
+                      src={item.isFavorited ? heartOn : heartOff}
+                      fill
+                      alt="찜"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
           </div>

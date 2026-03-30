@@ -108,22 +108,22 @@ export default function MeetingsClient() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
+    <div className="w-full">
       <CreateMeetingModal />
 
-      <MeetingFilters
-        // 현재 상태 (부모 → 자식)
-        activeValue={activeValue}
-        sortValue={sortValue}
-        appliedDate={appliedDate}
-        // 상태 변경 핸들러 (자식 → 부모)
-        onChangeTab={setActiveValue}
-        onChangeSort={setSortValue}
-        onApplyDate={setAppliedDate}
-        onResetFilters={handleResetFilters}
-      />
+      <div className="mb-10 sm:mb-14">
+        <MeetingFilters
+          activeValue={activeValue}
+          sortValue={sortValue}
+          appliedDate={appliedDate}
+          onChangeTab={setActiveValue}
+          onChangeSort={setSortValue}
+          onApplyDate={setAppliedDate}
+          onResetFilters={handleResetFilters}
+        />
+      </div>
 
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
+      <div className="flex flex-col gap-6 sm:gap-8 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-12">
         <MeetingList
           meetingList={filteredMeetingList}
           isLoading={isLoading}
@@ -132,13 +132,28 @@ export default function MeetingsClient() {
           onHeartClick={(item) => toggleFavorite(item)}
         />
       </div>
+
       <div
         ref={bottomRef}
-        className="flex h-40 w-full items-center justify-center"
+        className="mt-20 flex h-60 w-full flex-col items-center justify-center border-t border-slate-100"
       >
-        {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
-        {!hasNextPage && filteredMeetingList.length > 0 && (
-          <p>모든 모임을 다 확인하셨습니다! ✔️</p>
+        {isFetchingNextPage ? (
+          <div className="flex flex-col items-center gap-3">
+            <div className="bg-main-purple h-1 w-12 animate-pulse" />
+            <p className="text-main-purple text-[10px] font-black tracking-[0.4em] uppercase">
+              Updating Archive...
+            </p>
+          </div>
+        ) : (
+          !hasNextPage &&
+          filteredMeetingList.length > 0 && (
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-1.5 w-8 bg-slate-900" />
+              <p className="text-[11px] font-black tracking-[0.2em] text-slate-300 uppercase">
+                End of Archive.
+              </p>
+            </div>
+          )
         )}
       </div>
     </div>

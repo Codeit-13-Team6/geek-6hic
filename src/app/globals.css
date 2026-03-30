@@ -1,10 +1,9 @@
-@config "../../tailwind.config.ts";
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* --- 1. Fonts --- */
 @font-face {
   font-family: "Pretendard";
   src: url("/fonts/PretendardVariable.ttf") format("woff2-variations");
@@ -21,228 +20,54 @@
   font-display: swap;
 }
 
+/* --- 2. Tailwind v4 Theme --- */
 @theme {
-  /* 1. Grayscale 컬러 등록 */
-  --color-gray-50: #f6f7f9;
-  --color-gray-100: #edeff1;
-  --color-gray-200: #dddddd;
-  --color-gray-300: #cccccc;
-  --color-gray-400: #bbbbbb;
-  --color-gray-500: #a4a4a4;
-  --color-gray-600: #737373;
-  --color-gray-700: #4a4a4a;
-  --color-gray-800: #333333;
-  --color-gray-900: #191919;
+  /* 보라색 명칭 통일 */
+  --color-main-purple: #260656;
+  --color-main-purple-light: #a580ca;
+  --color-point-purple: #4a1985;
 
-  /* 2. Green 컬러 등록 */
-  --color-main-green-100: #edfff5;
-  --color-main-green-200: #dffaeb;
-  --color-main-green-300: #c5f1d9;
-  --color-main-green-400: #afefd1;
-  --color-main-green-500: #00bb86;
-  --color-main-green-600: #009973;
-  --color-main-green-700: #0c7665;
+  /* 그레이톤 정리 */
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-400: #94a3b8;
+  --color-slate-600: #475569;
+  --color-slate-900: #0f172a;
 
-  /* 3. Blue & Error 컬러 등록 */
-  --color-blue-100: #d6f9ff;
-  --color-blue-500: #2099fd;
-  --color-blue-600: #337aff;
-  --color-error: #e91616;
-
-  /* 4. 배경 이미지 그라데이션 등록 */
-  --background-image-gradient-100: linear-gradient(
-    135deg,
-    #e9fbf1 0%,
-    #e9fcfc 100%
-  );
-  --background-image-gradient-200: linear-gradient(
-    135deg,
-    #def8ea 0%,
-    #d9f6f4 100%
-  );
-  --background-image-gradient-500: linear-gradient(
-    135deg,
-    #17da71 0%,
-    #08ddf0 100%
-  );
-  --background-image-gradient-600: linear-gradient(
-    135deg,
-    #00d361 0%,
-    #00b9de 100%
-  );
-
-  /* 5. 폰트 등록 */
+  /* 폰트 */
   --font-pretendard: "Pretendard", sans-serif;
   --font-tenada: "Tenada", sans-serif;
 
-  /* Text Sizes */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  --text-2xl: 24px;
-  --text-3xl: 30px;
-
-  /* Display 스타일 */
-  --text-display-md: 40px;
-  --text-display-lg: 48px;
-  --text-display-xl: 56px;
-
-  /*Text Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extra-bold: 800;
+  /* 시스템 설정 */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --shadow-mag: 4px 4px 0 rgba(38, 6, 86, 0.15);
 }
 
+/* --- 3. Base Variables --- */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-@theme inline {
-  --font-sans: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
-
-/* 커스텀 스크롤 */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 8px;
+  /* 배경은 여기서 한 번만 등록 (미팅페이지 포함 전체 적용) */
+  --background: #fcfdfe;
+  --foreground: #0f172a;
+  --primary: #260656;
+  --border: #f1f5f9;
+  --ring: #260656;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
   }
   body {
-    @apply bg-background text-foreground font-pretendard;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-pretendard);
+    -webkit-font-smoothing: antialiased;
   }
-  html {
-    @apply font-pretendard;
+}
+
+@layer utilities {
+  .shadow-mag {
+    box-shadow: var(--shadow-mag);
   }
-}
-
-/* Quill 에디터 정렬 클래스 지원 (상세 페이지 뷰어용) */
-.prose .ql-align-center {
-  text-align: center;
-}
-
-.prose .ql-align-right {
-  text-align: right;
-}
-
-.prose .ql-align-justify {
-  text-align: justify;
 }

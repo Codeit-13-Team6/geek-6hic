@@ -1,7 +1,3 @@
-import Image from "next/image";
-
-import bannerLg from "@/assets/img/banner/banner-lg.png";
-import bannerSm from "@/assets/img/banner/banner-sm.png";
 import MeetingsClient from "./components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/client/meetings";
@@ -9,27 +5,64 @@ import type { JoinedMeetingsResponse } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
 
+const GitBranchIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="square"
+    className="text-white"
+  >
+    <line x1="6" x2="6" y1="3" y2="15" />
+    <circle cx="18" cy="6" r="3" />
+    <circle cx="6" cy="18" r="3" />
+    <path d="M18 9a9 9 0 0 1-9 9" />
+  </svg>
+);
+
 export default async function Page() {
   return (
-    <div className="w-full bg-gray-50 pb-20 sm:pt-6 lg:pt-[48px]">
-      <div className="relative mx-auto flex min-h-48 w-full items-center overflow-hidden bg-[#9debcd] bg-[url('/img/banner/banner-lg-demo.jpg')] bg-cover bg-center bg-no-repeat pl-4 sm:min-h-61 sm:max-w-[calc(100%-48px)] sm:rounded-3xl sm:bg-none sm:pl-10 lg:max-w-[1280px] lg:pl-14">
-        <div>
-          <h4 className="text-sm text-green-700 sm:text-xl">
-            함께할 사람을 찾고 계신가요?
-          </h4>
-          <h3 className="mt-[10px] text-lg font-semibold sm:text-3xl">
-            지금 모임에 참여해보세요
-          </h3>
+    <div className="relative w-full py-8 lg:py-20">
+      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15">
+        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
+          <div className="flex flex-col gap-6 sm:gap-8">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="bg-main-purple shadow-mag flex h-12 w-12 items-center justify-center sm:h-16 sm:w-16">
+                <GitBranchIcon />
+              </div>
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
+                Connection / Archive
+              </span>
+            </div>
 
-          <div className="absolute top-7 left-[323px] hidden h-[273px] w-117 sm:block lg:hidden">
-            <Image src={bannerLg} fill alt="" />
+            <h1 className="text-5xl leading-[1.1] font-black tracking-tighter text-slate-950 sm:text-7xl lg:text-8xl">
+              CO-GIT
+              <br />
+              <span className="text-main-purple">CONNECTION.</span>
+            </h1>
           </div>
 
-          <div className="absolute top-2 right-21 hidden h-[313px] w-134 lg:block">
-            <Image src={bannerSm} fill alt="" />
+          <div className="flex flex-col items-end gap-4 text-right">
+            <div className="flex max-w-[470px] md:block">
+              <div className="space-y-3">
+                <div className="bg-main-purple hidden h-1.5 w-20 md:ml-auto md:block"></div>
+                <p className="text-lg leading-tight font-bold text-slate-900 sm:text-xl lg:text-2xl">
+                  스프린터 파트너들과 <br className="sm:hidden md:block" />
+                  공유하고, 협업하고, 성장하는 공간
+                </p>
+                <p className="text-sm font-medium text-slate-400">
+                  모임을 생성하여 아지트를 만들어보세요.
+                </p>
+              </div>
+              <div className="bg-main-purple ml-4 w-1.5 shrink-0 md:hidden"></div>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
       <PrefetchBoundary
         prefetchFn={(qc) =>
