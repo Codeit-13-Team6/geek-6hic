@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
-import { getPosts } from "@/api/posts";
+import { getPosts } from "@/api/client/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";

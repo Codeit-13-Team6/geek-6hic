@@ -18,8 +18,8 @@ import JobIShoes from "@/assets/img/category/fitness-health.jpg";
 import etcImage from "@/assets/img/category/etc.jpg";
 import {
   MeetingBasicInfoSectionProps,
-  MeetingTypeOption,
   MeetingCategoryItem,
+  TabItem,
 } from "@/types";
 
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
@@ -51,7 +51,7 @@ export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   },
 ];
 
-export const DEFAULT_MEETING_TYPE_OPTIONS: MeetingTypeOption[] =
+export const DEFAULT_MEETING_TYPE_OPTIONS: TabItem[] =
   MEETING_CATEGORY_LIST.map(({ value, label }) => ({
     value,
     label,

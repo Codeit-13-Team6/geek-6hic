@@ -27,7 +27,7 @@ function OAuthCallbackContent() {
         );
 
         if (data.ok) {
-          router.refresh(); // 서버 컴포넌트 캐시 갱신 안되는거때문에 fetchMe 가 실행안됨
+          router.refresh();
           window.location.replace("/");
         } else {
           router.replace("/login");
@@ -41,7 +41,7 @@ function OAuthCallbackContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-gray-500">로그인 처리 중...</p>
+      <p className="text-gray-500">로그인 중...</p>
     </div>
   );
 }
@@ -51,7 +51,7 @@ export default function OAuthCallbackPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center">
-          <p className="text-gray-500">로그인 처리 중...</p>
+          <p className="text-gray-500">로그인 중...</p>
         </div>
       }
     >

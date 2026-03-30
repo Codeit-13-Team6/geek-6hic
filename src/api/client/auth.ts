@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { User } from "@/types/user";
+import type { User } from "@/types";
 import type { SignUpFormValues } from "@/types";
 import axiosInstance from "@/lib/clientFetcher";
 

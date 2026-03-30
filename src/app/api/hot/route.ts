@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Post } from "@/types";
-import { getPosts } from "@/api/index-server";
+import { getPosts } from "@/api/server";
 import { AxiosError } from "axios";
 
 interface AxiosErrorLike {

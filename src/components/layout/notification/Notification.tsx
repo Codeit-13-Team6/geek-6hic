@@ -6,9 +6,9 @@ import {
   getNotifications,
   markAllNotificationsAsRead,
   markNotificationAsRead,
-} from "@/api/notifications";
+} from "@/api/client/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
-import type { NotificationItem } from "@/types/notification";
+import type { NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 
 export default function Notification({

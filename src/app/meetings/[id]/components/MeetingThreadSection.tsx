@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getThreadPost } from "@/api/posts";
+import { getThreadPost } from "@/api/client/posts";
 import { MeetingThreadSectionProps } from "@/types";
 import CommentSection from "@/components/features/comment/CommentSection";
 

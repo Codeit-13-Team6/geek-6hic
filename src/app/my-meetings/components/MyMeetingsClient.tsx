@@ -5,7 +5,7 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingList from "../../../components/features/list/MeetingList";
 import { useMeetingFavoriteMutation } from "@/hooks";
 import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
-import { getJoinedMeetings } from "@/api/meetings";
+import { getJoinedMeetings } from "@/api/client/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 
 export function getMeetingJoinedNextPageParam(

@@ -1,3 +1,5 @@
+import type { CursorResponse } from "./pagination";
+
 export interface Post {
   id: number;
   teamId: string;
@@ -30,11 +32,7 @@ export interface GetPostsParams {
   size?: number;
 }
 
-export interface GetPostsResponse {
-  data: Post[];
-  nextCursor: string | null;
-  hasMore: boolean;
-}
+export type GetPostsResponse = CursorResponse<Post>;
 
 export interface PostListProps {
   searchValue?: string;
@@ -73,17 +71,4 @@ export interface PostDetailCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onLike?: () => void;
-}
-
-export interface UserCardProps {
-  title?: string;
-  type?: string;
-  date?: Date;
-  imageSrc?: string;
-  participantCount?: number;
-  capacity?: number;
-  defaultLiked?: boolean;
-  showLikeBtn?: boolean;
-  onHeartClick?: (liked: boolean) => void;
-  onDetailClick?: () => void;
 }

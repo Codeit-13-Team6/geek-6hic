@@ -6,7 +6,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteFavorites, getFavorites } from "@/api/meetings";
+import { deleteFavorites, getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 

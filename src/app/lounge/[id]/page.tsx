@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostDetail, getPostCommentsServer } from "@/api/index-server";
+import { getPostDetail, getPostCommentsServer } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
 
 export default async function LoungeDetailPageServer({

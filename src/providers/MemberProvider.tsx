@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { getUserData } from "@/api/auth";
+import { getUserData } from "@/api/client/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { MemberProviderProps } from "@/types";
 

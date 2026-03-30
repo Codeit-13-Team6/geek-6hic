@@ -2,7 +2,7 @@ import Image from "next/image";
 import { InfiniteData } from "@tanstack/react-query";
 import savedLg from "@/assets/img/head/saved-lg.jpg";
 import savedSm from "@/assets/img/head/saved-sm.jpg";
-import { getJoinedMeetingsServer } from "@/api/meetings-server";
+import { getJoinedMeetingsServer } from "@/api/server/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 import MyMeetingsClient from "./components/MyMeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";

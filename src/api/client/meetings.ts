@@ -4,7 +4,6 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
-  UpdateMeeting,
   MyMeetingsResponse,
   FavoritesResponse,
 } from "@/types";
@@ -44,7 +43,7 @@ export async function createMeeting(meeting: CreateMeeting): Promise<Meeting> {
 
 export async function updateMeeting(
   meetingId: number,
-  params: UpdateMeeting,
+  params: Partial<CreateMeeting>,
 ): Promise<Meeting> {
   const { data } = await axiosInstance.patch(`/meetings/${meetingId}`, params);
   return data;

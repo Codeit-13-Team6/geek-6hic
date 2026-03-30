@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadMeetingImage } from "@/api/meetingDetail";
+import { uploadMeetingImage } from "@/api/client/meetingDetail";
 import { ChangeMeetingImageParams, RemoveMeetingImageParams } from "@/types";
 
 // 미리보기로 만든 blob URL만 직접 해제한다.

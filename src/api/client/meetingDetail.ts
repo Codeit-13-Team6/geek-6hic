@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/clientFetcher";
-import { createComment } from "@/api/comments";
+import { createComment } from "@/api/client/comments";
 import {
   MeetingDetailApiData,
   MeetingDetailData,

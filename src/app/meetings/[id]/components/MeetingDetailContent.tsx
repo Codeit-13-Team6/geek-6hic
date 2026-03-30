@@ -99,27 +99,20 @@ const getIsJoined = ({
   participants,
   user,
   isHost,
+  isLoggedIn,
 }: {
   detail: MeetingDetailApiData;
   participants: MeetingParticipant[];
   user: User | null;
   isHost: boolean;
+  isLoggedIn: boolean;
 }) =>
-  detail.isJoined ||
   isHost ||
-  (user
-    ? participants.some((participant) => participant.userId === user.id)
-    : false);
+  (isLoggedIn &&
+    (detail.isJoined ||
+      participants.some((participant) => participant.userId === user?.id)));
 
-const getIsLoggedIn = ({
-  user,
-  detail,
-  isHost,
-}: {
-  user: User | null;
-  detail: MeetingDetailApiData;
-  isHost: boolean;
-}) => Boolean(user) || detail.isJoined || detail.isFavorited || isHost;
+const getIsLoggedIn = ({ user }: { user: User | null }) => Boolean(user);
 
 export const toMeetingDetailViewModel = ({
   detail,
@@ -139,8 +132,14 @@ export const toMeetingDetailViewModel = ({
   hasAttended: boolean;
 }) => {
   const isHost = getIsHost(detail, user);
-  const isJoined = getIsJoined({ detail, participants, user, isHost });
-  const isLoggedIn = getIsLoggedIn({ user, detail, isHost });
+  const isLoggedIn = getIsLoggedIn({ user });
+  const isJoined = getIsJoined({
+    detail,
+    participants,
+    user,
+    isHost,
+    isLoggedIn,
+  });
   const recommendedMeetings = getRecommendedMeetings({
     currentMeeting: detail,
     candidates: recommendationCandidates,
@@ -191,7 +190,9 @@ export const toMeetingDetailViewModel = ({
 
   let actionLabel = "참여하기";
 
-  if (isStarted) {
+  if (!isLoggedIn) {
+    actionLabel = "참여하기";
+  } else if (isStarted) {
     actionLabel = hasAttended ? "출석 완료" : "출석하기";
   } else if (isHost && isClosed) {
     actionLabel = "모집 마감";

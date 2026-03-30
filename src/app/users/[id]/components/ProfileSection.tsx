@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
 import editImg from "@/assets/icon/edit/edit-sm.svg";
-import { updateUserProfile } from "@/api/user";
+import { updateUserProfile } from "@/api/client/user";
 import { User, UserProfileUpdateProps } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
 import ModalBase from "@/components/ui/ModalBase";
