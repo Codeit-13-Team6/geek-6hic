@@ -3,8 +3,8 @@
 import Image from "next/image";
 import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import alram from "@/assets/icon/alarm/alarm-blue.svg";
-import heartOff from "@/assets/icon/hearts/hearts-false.svg";
-import heartOn from "@/assets/icon/hearts/hearts-true.svg";
+import { Heart } from "lucide-react";
+
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
@@ -175,15 +175,16 @@ export default function MeetingList({
                         e.stopPropagation();
                         onHeartClick(item);
                       }}
-                      className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-slate-50 transition-all hover:scale-110 hover:bg-slate-100"
+                      className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
                     >
-                      <div className="relative h-5 w-5">
-                        <Image
-                          src={item.isFavorited ? heartOn : heartOff}
-                          fill
-                          alt="찜"
-                        />
-                      </div>
+                      <Heart
+                        className={cn(
+                          "h-5 w-5 transition-all",
+                          item.isFavorited
+                            ? "fill-indigo-400 text-indigo-400"
+                            : "fill-slate-200 text-slate-200",
+                        )}
+                      />
                     </button>
                   }
                 >
@@ -193,15 +194,16 @@ export default function MeetingList({
                       e.stopPropagation();
                       onHeartClick(item);
                     }}
-                    className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
                   >
-                    <div className="relative h-6 w-6">
-                      <Image
-                        src={item.isFavorited ? heartOn : heartOff}
-                        fill
-                        alt="찜"
-                      />
-                    </div>
+                    <Heart
+                      className={cn(
+                        "h-5 w-5 transition-all",
+                        item.isFavorited
+                          ? "fill-indigo-400 text-indigo-400"
+                          : "fill-slate-200 text-slate-200",
+                      )}
+                    />
                   </button>
                 </LoginModal>
               </div>
