@@ -96,7 +96,7 @@ export default function MeetingFilters({
           <button
             type="button"
             className={cn(
-              "cursor-pointer pb-0.5 text-[11px] font-black tracking-widest uppercase transition-colors sm:text-xs",
+              "cursor-pointer pb-0.5 text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",
               appliedDate
                 ? "text-main-purple"
                 : "hover:text-main-purple text-slate-900",
@@ -136,7 +136,7 @@ export default function MeetingFilters({
         >
           <SelectTrigger
             suppressHydrationWarning
-            className="h-auto w-auto gap-2 border-none bg-transparent p-0 text-[11px] font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
+            className="h-auto w-auto gap-2 border-none bg-transparent p-0 text-xs font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
           >
             {currentSortLabel ? (
               <span className="text-main-purple">{currentSortLabel}</span>
@@ -155,7 +155,7 @@ export default function MeetingFilters({
                 <SelectItem
                   key={item.value}
                   value={item.value}
-                  className="focus:text-main-purple cursor-pointer rounded-lg px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-slate-50"
+                  className="focus:text-main-purple cursor-pointer rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-slate-50"
                 >
                   {item.label}
                 </SelectItem>
