@@ -9,6 +9,9 @@ import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
+import MeetingFilters from "@/app/meetings/components/MeetingsFilters";
+import MeetingList from "@/components/features/list/MeetingList";
+import LoginModal from "@/components/modal/LoginModal";
 
 export function CreateMeetingModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,14 +62,27 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <BtnCommon
-        className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
-        type="button"
-        onClick={handleOpenModal}
+      <LoginModal
+        fallback={
+          <BtnCommon
+            className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
+            type="button"
+            onClick={()=> {}}
+          >
+            <Image src={plusIcon} alt="모임 만들기 추가" />
+            <span className="hidden sm:block">모임 만들기</span>
+          </BtnCommon>
+        }
       >
-        <Image src={plusIcon} alt="모임 만들기 추가" />
-        <span className="hidden sm:block">모임 만들기</span>
-      </BtnCommon>
+        <BtnCommon
+          className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
+          type="button"
+          onClick={handleOpenModal}
+        >
+          <Image src={plusIcon} alt="모임 만들기 추가" />
+          <span className="hidden sm:block">모임 만들기</span>
+        </BtnCommon>
+      </LoginModal>
 
       <ModalBase
         disablePointerDismissal

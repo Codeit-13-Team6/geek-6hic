@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
 import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
+import LoginModal from "@/components/modal/LoginModal";
+import Link from "next/link";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -121,10 +123,10 @@ export function MeetingHeaderSection({
       return;
     }
 
-    if (!data.isLoggedIn) {
-      setIsLoginConfirmOpen(true);
-      return;
-    }
+    // if (!data.isLoggedIn) {
+    //   setIsLoginConfirmOpen(true);
+    //   return;
+    // }
 
     if (isFavoritePending) {
       return;
@@ -228,31 +230,71 @@ export function MeetingHeaderSection({
             </div>
 
             <div className="mt-5 flex gap-2 md:mt-5 md:gap-2 xl:mt-8 xl:gap-3">
-              <BtnCommon
-                type="button"
-                variant="teritary"
-                size="icon-md"
-                disabled={isFavoritePending}
-                onClick={handleFavoriteClick}
-                className="size-11 shrink-0 rounded-full xl:size-16"
+              <LoginModal
+                fallback={
+                  <BtnCommon
+                    type="button"
+                    variant="teritary"
+                    size="icon-md"
+                    disabled={isFavoritePending}
+                    onClick={() => {}}
+                    className="size-11 shrink-0 rounded-full xl:size-16"
+                  >
+                    <Image
+                      src={data.isFavorited ? heartsTrue : heartsFalse}
+                      alt="좋아요"
+                      width={24}
+                      height={24}
+                    />
+                  </BtnCommon>
+                }
               >
-                <Image
-                  src={data.isFavorited ? heartsTrue : heartsFalse}
-                  alt="좋아요"
-                  width={24}
-                  height={24}
-                />
-              </BtnCommon>
+                <BtnCommon
+                  type="button"
+                  variant="teritary"
+                  size="icon-md"
+                  disabled={isFavoritePending}
+                  onClick={handleFavoriteClick}
+                  className="size-11 shrink-0 rounded-full xl:size-16"
+                >
+                  <Image
+                    src={data.isFavorited ? heartsTrue : heartsFalse}
+                    alt="좋아요"
+                    width={24}
+                    height={24}
+                  />
+                </BtnCommon>
+              </LoginModal>
 
-              <BtnCommon
-                type="button"
-                size="md"
-                disabled={isActionDisabled || isJoinPending || isAuthLoading}
-                onClick={handleActionClick}
-                className="h-11 w-auto min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
-              >
-                {isJoinPending ? "처리 중.." : actionLabel}
-              </BtnCommon>
+              <div className=" flex-1 ">
+                <LoginModal
+                  fallback={
+                    <BtnCommon
+                      type="button"
+                      size="md"
+                      disabled={
+                        isActionDisabled || isJoinPending || isAuthLoading
+                      }
+                      onClick={() => {}}
+                      className="h-11 min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
+                    >
+                      {isJoinPending ? "처리 중.." : actionLabel}
+                    </BtnCommon>
+                  }
+                >
+                  <BtnCommon
+                    type="button"
+                    size="md"
+                    disabled={
+                      isActionDisabled || isJoinPending || isAuthLoading
+                    }
+                    onClick={handleActionClick}
+                    className="h-11  min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
+                  >
+                    {isJoinPending ? "처리 중.." : actionLabel}
+                  </BtnCommon>
+                </LoginModal>
+              </div>
             </div>
 
             {shouldShowClosedGuide ? (

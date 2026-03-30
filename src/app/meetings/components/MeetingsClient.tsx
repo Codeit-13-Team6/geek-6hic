@@ -111,6 +111,7 @@ export default function MeetingsClient() {
     <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
       <CreateMeetingModal />
 
+
       <MeetingFilters
         // 현재 상태 (부모 → 자식)
         activeValue={activeValue}

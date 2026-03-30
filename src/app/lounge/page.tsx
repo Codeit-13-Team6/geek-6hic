@@ -9,6 +9,7 @@ import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
+import LoginModal from "@/components/modal/LoginModal";
 
 export default async function LoungePage() {
   return (
@@ -30,11 +31,19 @@ export default async function LoungePage() {
             </div>
           </div>
 
-          <Link href="/lounge/create" className="hidden sm:block">
-            <BtnCommon size="fixedSize" className="w-auto px-6">
-              + 게시물 등록하기
-            </BtnCommon>
-          </Link>
+          <LoginModal
+            fallback={
+              <BtnCommon size="fixedSize" className="w-auto px-6">
+                + 게시물 등록하기
+              </BtnCommon>
+            }
+          >
+            <Link href="/lounge/create" className="hidden sm:block">
+              <BtnCommon size="fixedSize" className="w-auto px-6">
+                + 게시물 등록하기
+              </BtnCommon>
+            </Link>
+          </LoginModal>
         </div>
         <section className="mt-8 sm:mt-12">
           <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">

@@ -27,8 +27,18 @@ function OAuthCallbackContent() {
         );
 
         if (data.ok) {
+          const returnUrl = document.cookie
+            .split("; ")
+            .find((c) => c.startsWith("oauthReturnUrl="))
+            ?.split("=")
+            .slice(1)
+            .join("=");
+          // 쿠키 삭제
+          document.cookie = "oauthReturnUrl=;path=/;max-age=0";
           router.refresh();
-          window.location.replace("/");
+          const decoded = returnUrl ? decodeURIComponent(returnUrl) : "/";
+          const isLoginPage = new URL(decoded, window.location.origin).pathname.startsWith("/login");
+          window.location.replace(isLoginPage ? "/" : decoded);
         } else {
           router.replace("/login");
         }
