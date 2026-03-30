@@ -280,15 +280,13 @@ serverAxios.interceptors.request.use(async (config) => {
     !!refreshToken,
   );
 
-  if (isPublicPath(config.url)) {
-    return config;
-  }
-
   // refreshToken도 없으면 요청 보내지 않고 즉시 차단 (공개 경로는 제외)
   if (!refreshToken) {
+    if (isPublicPath(config.url)) {
+      return config;
+    }
     return Promise.reject(createRefreshFailedError());
   }
-
   if (!accessToken) {
     // accessToken만 없으면 미리 refresh 시도
     const userId = getUserIdFromToken(refreshToken);

@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
       "picsum.photos",
       "via.placeholder.com",
     ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

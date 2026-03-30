@@ -66,16 +66,18 @@ export default function MeetingList({
 
   return (
     <>
+
       {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const deadLine = getDeadlineLabel(item.registrationEnd);
-        const overlayLabel = item.isCompleted
+
+        const overlayLabel = item.isJoined
           ? "참여 완료"
           : isClosed
             ? "모집 마감"
             : null;
-
         return (
+
           <div
             key={item.id}
             onClick={() => onItemClick(item)}

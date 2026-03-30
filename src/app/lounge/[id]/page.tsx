@@ -21,7 +21,7 @@ export default async function LoungeDetailPageServer({
           <PrefetchBoundary
             prefetchFn={async (qc) => {
               await qc.prefetchQuery({
-                queryKey: ["post", postId],
+                queryKey: ["post", "edit-og", postId],
                 queryFn: () => getPostDetail(postId),
               });
             }}
