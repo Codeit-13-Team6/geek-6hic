@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
-import type { User } from "@/types/index";
+import type { User } from "@/types";
 import { setAuthCookies } from "@/lib/authCookies";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;

@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
-import { signupUser } from "@/api/auth";
+import { signupUser } from "@/api/client/auth";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
 // 유효성검사

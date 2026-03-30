@@ -16,7 +16,7 @@ import {
   getFavorites,
   getMyMeetings,
   getLoungePosts,
-} from "@/api/index-server";
+} from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 

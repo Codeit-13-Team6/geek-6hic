@@ -7,7 +7,7 @@ import {
   deleteComment,
   getComments,
   updateComment,
-} from "@/api/comments";
+} from "@/api/client/comments";
 import { useAuthStore } from "@/store/useAuthStore";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";

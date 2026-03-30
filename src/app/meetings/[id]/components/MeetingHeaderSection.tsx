@@ -25,7 +25,7 @@ import {
   ProgressValue,
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
-import { MeetingParticipantUser, MeetingHeaderSectionProps } from "@/types";
+import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -133,7 +133,7 @@ export function MeetingHeaderSection({
   };
 
   const renderParticipantAvatar = (
-    participant: MeetingParticipantUser,
+    participant: MeetingMember,
     index: number,
   ) => {
     const displayName = participant.name || "참여자";

@@ -1,5 +1,5 @@
 import { useState, DragEvent } from "react";
-import { getOgData } from "@/api/og";
+import { getOgData } from "@/api/client/og";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { LinkItem } from "@/types";
 import axios, { AxiosError } from "axios";

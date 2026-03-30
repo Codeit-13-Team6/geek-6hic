@@ -2,10 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getMeeting } from "@/api/meetings";
+import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
-import { MeetingDetailResponseProps } from "@/types";
 
 export default function MyMeetingList() {
   const router = useRouter();

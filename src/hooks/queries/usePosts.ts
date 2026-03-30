@@ -1,10 +1,10 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getHotPosts, getPostDetail, getPosts } from "@/api/posts";
-import { getOgData } from "@/api/og";
+import { getHotPosts, getPostDetail, getPosts } from "@/api/client/posts";
+import { getOgData } from "@/api/client/og";
 import { parsePostData } from "@/lib/contentLinkUtils";
-import { likePost, unlikePost } from "@/api/posts";
+import { likePost, unlikePost } from "@/api/client/posts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost, updatePost, deletePost } from "@/api/posts";
+import { createPost, updatePost, deletePost } from "@/api/client/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { GetPostsParams, Post, PostPayload } from "@/types";

@@ -1,3 +1,5 @@
+import type { CursorResponse } from "./pagination";
+
 export type NotificationType =
   | "MEETING_CONFIRMED"
   | "MEETING_CANCELED"
@@ -23,8 +25,16 @@ export interface NotificationItem {
   createdAt: string;
 }
 
-export interface NotificationListResponse {
-  data: NotificationItem[];
-  nextCursor: string | null;
-  hasMore: boolean;
+export type NotificationListResponse = CursorResponse<NotificationItem>;
+
+export interface NotificationProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onUnreadChange: (hasUnread: boolean) => void;
+}
+
+export interface NotificationCardProps {
+  notification: NotificationItem;
+  onClick?: (notification: NotificationItem) => void;
+  className?: string;
 }

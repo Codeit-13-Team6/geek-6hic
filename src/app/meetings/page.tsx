@@ -4,7 +4,7 @@ import bannerLg from "@/assets/img/banner/banner-lg.png";
 import bannerSm from "@/assets/img/banner/banner-sm.png";
 import MeetingsClient from "./components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import { getMeetingList } from "@/api/meetings";
+import { getMeetingList } from "@/api/client/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";

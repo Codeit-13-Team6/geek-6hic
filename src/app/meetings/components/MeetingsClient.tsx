@@ -6,7 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import type { DateRange } from "react-day-picker";
 
-import { getMeetingList } from "@/api/meetings";
+import { getMeetingList } from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,

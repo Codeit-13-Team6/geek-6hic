@@ -41,7 +41,7 @@ export async function GET() {
     // meeting 수집이 현재 api 스펙 상의 제한으로 인해 체인형식으로 진행
     // 미리 준비한 미팅맵에 값들을 바인딩하는 형태
     const meetingMap: MeetingRankMap = {};
-    let cursor: string | undefined = undefined;
+    let cursor: string | null | undefined = undefined;
 
     while (true) {
       const { data: meetRes }: { data: CursorResponse<MeetingItem> } =
@@ -76,7 +76,7 @@ export async function GET() {
       Object.entries(meetingMap).map(async ([id, meeting]) => {
         if (!meeting.linkPostId) return;
 
-        let cursor: string | undefined = undefined;
+        let cursor: string | null | undefined = undefined;
 
         try {
           while (true) {

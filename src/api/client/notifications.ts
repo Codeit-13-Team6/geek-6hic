@@ -2,7 +2,7 @@ import axiosInstance from "@/lib/clientFetcher";
 import type {
   NotificationItem,
   NotificationListResponse,
-} from "@/types/notification";
+} from "@/types";
 
 //전체 알람 조회
 export async function getNotifications(): Promise<NotificationItem[]> {

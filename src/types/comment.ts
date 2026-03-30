@@ -1,3 +1,5 @@
+import type { CursorResponse } from "./pagination";
+
 export interface Author {
   id: number;
   name: string;
@@ -15,8 +17,4 @@ export interface Comment {
   updatedAt: string;
 }
 
-export interface GetCommentsResponse {
-  data: Comment[];
-  nextCursor: string | null;
-  hasMore: boolean;
-}
+export type GetCommentsResponse = CursorResponse<Comment>;

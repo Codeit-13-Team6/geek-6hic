@@ -3,7 +3,6 @@ export * from "./comment";
 export * from "./common";
 export * from "./lounge";
 export * from "./meeting";
-export * from "./meetingTypes";
 export * from "./notification";
 export * from "./pagination";
 export * from "./post";

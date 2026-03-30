@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "@/api/posts";
+import { getPosts } from "@/api/client/posts";
 import PostCard from "@/components/features/card/PostCard";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";

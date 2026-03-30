@@ -14,12 +14,12 @@ import {
   changeMeetingImage,
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
-} from "../lib/meetingFormImage";
+} from "@/lib/meetingFormImage";
 import {
   INITIAL_MEETING_FORM_VALUES,
   toCreateMeetingPayload,
 } from "./useEditMeetingForm";
-import { MeetingFormValues } from "@/types/meetingTypes";
+import { MeetingFormValues } from "@/types";
 
 const TOTAL_MEETING_FORM_STEPS = 3;
 

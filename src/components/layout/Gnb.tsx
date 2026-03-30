@@ -12,11 +12,12 @@ import menu from "@/assets/icon/menu/menu.svg";
 import logoSm from "@/assets/img/logo/logo-sm.jpg";
 import logoLg from "@/assets/img/logo/logo-lg.jpg";
 import profileMd from "@/assets/img/profile/female1-m.jpg";
-import { getNotifications } from "@/api/notifications";
+import { getNotifications } from "@/api/client/notifications";
 import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import SideBar from "@/components/layout/SideBar";
 import { useAuthStore } from "@/store/useAuthStore";
 import Notification from "@/components/layout/notification/Notification";
+import axiosInstance from "@/lib/clientFetcher";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -47,7 +48,7 @@ export function Gnb() {
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
-    await axios.post("/api/auth/logout", {}, { withCredentials: true });
+    await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
     clearAuth();
     router.push("/login");
   };

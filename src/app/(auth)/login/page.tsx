@@ -10,7 +10,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
-import { loginUser } from "@/api";
+import { loginUser } from "@/api/client";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Login() {

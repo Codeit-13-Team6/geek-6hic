@@ -11,7 +11,7 @@ import {
   getMeetingParticipants,
   getMeetingRecommendationCandidates,
   getTodayAttendanceStatus,
-} from "@/api/meetingDetail-server";
+} from "@/api/server/meetingDetail";
 import { MeetingDetailApiData, MeetingDetailPageProps } from "@/types";
 
 export default async function MeetingDetailPage({

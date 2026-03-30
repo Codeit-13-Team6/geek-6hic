@@ -20,7 +20,7 @@ import {
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
-} from "@/api/meetingDetail";
+} from "@/api/client/meetingDetail";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useAuthStore } from "@/store/useAuthStore";
 import {
@@ -30,7 +30,7 @@ import {
   MeetingDetailApiData,
   MeetingDetailData,
 } from "@/types";
-import { deleteFavorites, updateFavorites } from "@/api";
+import { deleteFavorites, updateFavorites } from "@/api/client";
 
 const getJoinErrorMessage = (code?: string) => {
   switch (code) {
