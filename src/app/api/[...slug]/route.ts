@@ -121,12 +121,22 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
     requiresAuth: true,
   },
   {
-    pattern: /^\/posts\/\d+\/comments$/,
-    methods: ["GET", "POST"],
+    pattern: /^\/posts\/\d+\/comments\/\d+$/,
+    methods: ["PATCH", "DELETE"],
     requiresAuth: true,
   },
   {
+    pattern: /^\/posts\/\d+\/comments$/,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    requiresAuth: false,
+  },
+  {
     pattern: /^\/og$/,
+    methods: ["GET"],
+    requiresAuth: false,
+  },
+  {
+    pattern: /^\/hot$/,
     methods: ["GET"],
     requiresAuth: false,
   },

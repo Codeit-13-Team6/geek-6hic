@@ -32,6 +32,7 @@ export default function RankingList() {
               point={top3List[1]?.rankScore}
               rank={2}
               meetType={top3List[1]?.meetType}
+              onDetailClick={() => router.push(`/meetings/${top3List[1]?.id}`)}
             />
           </div>
 
@@ -41,6 +42,7 @@ export default function RankingList() {
               point={top3List[0]?.rankScore}
               rank={1}
               meetType={top3List[0]?.meetType}
+              onDetailClick={() => router.push(`/meetings/${top3List[0]?.id}`)}
             />
           </div>
           <div className="flex-1">
@@ -50,6 +52,7 @@ export default function RankingList() {
               point={top3List[2]?.rankScore}
               rank={3}
               meetType={top3List[2]?.meetType}
+              onDetailClick={() => router.push(`/meetings/${top3List[3]?.id}`)}
             />
           </div>
         </div>
