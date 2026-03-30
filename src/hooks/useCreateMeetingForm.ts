@@ -20,6 +20,8 @@ import {
   toCreateMeetingPayload,
 } from "./useEditMeetingForm";
 import { MeetingFormValues } from "@/types";
+import { createMeeting, createPost, updateMeeting } from "@/api/client";
+import { useRouter } from "next/navigation";
 
 const TOTAL_MEETING_FORM_STEPS = 3;
 
@@ -33,6 +35,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   const [imageErrorMessage, setImageErrorMessage] = useState("");
 
   const previewImageUrlRef = useRef("");
+  const router = useRouter();
 
   useEffect(() => {
     return () => {
@@ -173,10 +176,24 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
 
     try {
       const payload = toCreateMeetingPayload(formValues);
-      const { data } = await axiosInstance.post("/meetings", payload);
+      const newMeeting = await createMeeting(payload);
+      const newMeetingId = newMeeting.id;
 
-      ToastCommon({ message: `${data.name} 모임 생성 완료` });
+      const newPost = await createPost({
+        title: `isThread_${newMeetingId}`,
+        content:
+          "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
+      });
+
+      const createdPostId = newPost.id;
+
+      await updateMeeting(newMeetingId, {
+        region: String(createdPostId),
+      });
+
+      ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
       onSuccess?.();
+      router.push(`/meetings/${newMeetingId}`);
     } catch (error) {
       console.error("meeting create error", error);
       ToastCommon({ message: "모임 생성에 실패했습니다." });
