@@ -177,39 +177,7 @@ export default function SignUp() {
                 children="회원가입"
               />
             </form>
-            <div className="mt-8 mb-6 flex items-center gap-4">
-              <div className="h-px flex-1 bg-gray-300"></div>
-              <p className="shrink text-[15px] font-medium text-gray-500">
-                SNS 계정으로 회원가입
-              </p>
-              <div className="h-px flex-1 bg-gray-300"></div>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <BtnCommon
-                className={`border border-gray-200 bg-white text-base text-gray-800 hover:bg-white sm:w-1/2`}
-                size={"fixedSize"}
-              >
-                <Image
-                  src={googleIcon}
-                  width="24"
-                  height="24"
-                  alt="구글 아이콘"
-                />
-                <p className="ml-3">구글로 계속하기</p>
-              </BtnCommon>
-              <BtnCommon
-                className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] sm:w-1/2"
-                size={"fixedSize"}
-              >
-                <Image
-                  src={kakaoIcon}
-                  width="24"
-                  height="24"
-                  alt="카카오 아이콘"
-                />
-                <p className="ml-3">카카오로 계속하기</p>
-              </BtnCommon>
-            </div>
+
             <div className="mt-8 flex items-center justify-center gap-1">
               <p className="font-regular text-sm text-gray-800">
                 이미 회원이신가요?

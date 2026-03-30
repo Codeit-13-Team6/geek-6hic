@@ -113,9 +113,11 @@ export default function MeetingsClient() {
 
       <div className="mb-10 sm:mb-14">
         <MeetingFilters
+          // 현재 상태 (부모 → 자식)
           activeValue={activeValue}
           sortValue={sortValue}
           appliedDate={appliedDate}
+          // 상태 변경 핸들러 (자식 → 부모)
           onChangeTab={setActiveValue}
           onChangeSort={setSortValue}
           onApplyDate={setAppliedDate}

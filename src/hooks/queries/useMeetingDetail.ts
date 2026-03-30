@@ -31,6 +31,7 @@ import {
   MeetingDetailData,
 } from "@/types";
 import { deleteFavorites, updateFavorites } from "@/api/client";
+import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 
 const getJoinErrorMessage = (code?: string) => {
   switch (code) {
@@ -149,54 +150,12 @@ export function useMeetingDetailMutations({
       isFavorited
         ? removeMeetingFavorite(meetingId)
         : addMeetingFavorite(meetingId),
-    onMutate: async (isFavorited) => {
-      await queryClient.cancelQueries({
-        queryKey: ["meeting-detail", meetingId],
-      });
-
-      const previousDetail = queryClient.getQueryData<MeetingDetailApiData>([
-        "meeting-detail",
-        meetingId,
-      ]);
-
-      queryClient.setQueryData<MeetingDetailApiData>(
-        ["meeting-detail", meetingId],
-        (previous) => {
-          if (!previous) {
-            return previous;
-          }
-
-          return {
-            ...previous,
-            isFavorited: !isFavorited,
-          };
-        },
-      );
-
-      return { previousDetail };
-    },
-    onError: (
-      _error,
-      _isFavorited,
-      context: { previousDetail?: MeetingDetailApiData } | undefined,
-    ) => {
-      if (context?.previousDetail) {
-        queryClient.setQueryData(
-          ["meeting-detail", meetingId],
-          context.previousDetail,
-        );
-      }
-
-      ToastCommon({
-        message: "찜하기 처리 중 문제가 발생했어요.",
-        size: "sm",
-      });
-    },
-    onSettled: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["meeting-detail", meetingId],
-      });
-    },
+    ...useOptimisticMutation<MeetingDetailApiData, boolean>(queryClient, {
+      queryKey: ["meeting-detail", meetingId],
+      updater: (old, isFavorited) => ({ ...old, isFavorited: !isFavorited }),
+      invalidateKeys: [["meeting-detail", meetingId]],
+      onErrorMessage: "찜하기 처리 중 문제가 발생했어요.",
+    }),
   });
 
   const updateMeetingMutation = useMutation({
@@ -238,6 +197,10 @@ export function useMeetingDetailMutations({
     mutationFn: attendMeeting,
     onSuccess: () => {
       setHasAttended(true);
+      ToastCommon({
+        message: "출석이 완료되었습니다.",
+        size: "sm",
+      });
     },
     onError: () => {
       ToastCommon({
@@ -348,3 +311,4 @@ export function useMeetingFavoriteMutation() {
     error: mutation.error,
   };
 }
+

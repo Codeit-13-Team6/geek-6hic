@@ -88,7 +88,7 @@ export default function NotificationCard({
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <h3 className="truncate text-base font-semibold text-gray-900">
-              {title}
+              {title}ss
             </h3>
           </div>
 

@@ -9,6 +9,7 @@ import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
 import { cn } from "@/lib/utils";
+import LoginModal from "@/components/modal/LoginModal";
 
 export default function MeetingList({
   meetingList,
@@ -59,12 +60,11 @@ export default function MeetingList({
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
         const deadLine = getDeadlineLabel(item.registrationEnd);
-        const statusLabel = item.isCompleted
+        const statusLabel = item.isJoined
           ? "참여 완료"
           : isClosed
             ? "모집 마감"
             : null;
-
         return (
           <div
             key={item.id}
@@ -167,22 +167,43 @@ export default function MeetingList({
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onHeartClick(item);
-                  }}
-                  className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-slate-50 transition-all hover:scale-110 hover:bg-slate-100"
+                <LoginModal
+                  fallback={
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onHeartClick(item);
+                      }}
+                      className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-slate-50 transition-all hover:scale-110 hover:bg-slate-100"
+                    >
+                      <div className="relative h-5 w-5">
+                        <Image
+                          src={item.isFavorited ? heartOn : heartOff}
+                          fill
+                          alt="찜"
+                        />
+                      </div>
+                    </button>
+                  }
                 >
-                  <div className="relative h-5 w-5">
-                    <Image
-                      src={item.isFavorited ? heartOn : heartOff}
-                      fill
-                      alt="찜"
-                    />
-                  </div>
-                </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onHeartClick(item);
+                    }}
+                    className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
+                  >
+                    <div className="relative h-6 w-6">
+                      <Image
+                        src={item.isFavorited ? heartOn : heartOff}
+                        fill
+                        alt="찜"
+                      />
+                    </div>
+                  </button>
+                </LoginModal>
               </div>
             </div>
           </div>

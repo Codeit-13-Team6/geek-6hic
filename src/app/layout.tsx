@@ -6,6 +6,7 @@ import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

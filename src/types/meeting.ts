@@ -94,6 +94,7 @@ export interface MeetingDetailData extends MeetingResponseBase {
 export interface JoinedMeeting extends Meeting {
   isFavorited: boolean;
   joinedAt: string;
+  isJoined: boolean;
   isCompleted: boolean;
 }
 

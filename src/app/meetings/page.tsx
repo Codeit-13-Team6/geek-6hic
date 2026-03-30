@@ -1,9 +1,36 @@
 import MeetingsClient from "./components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import { getMeetingList } from "@/api/client/meetings";
+import { getMeetingList } from "@/api/server";
 import type { JoinedMeetingsResponse } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
+import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
+import { Suspense } from "react";
+
+function MeetingFilterSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
+      <div className="mt-6 mb-4 flex flex-col">
+        <div className="flex gap-2">
+          {["전체", "팀미팅", "스터디", "취준생", "위워크", "기타"].map(
+            (label) => (
+              <div
+                key={label}
+                className="rounded-[14px] bg-gray-100 px-4 py-2 text-transparent"
+              >
+                {label}
+              </div>
+            ),
+          )}
+        </div>
+        <div className="mt-2 flex items-center justify-end gap-2">
+          <div className="h-[38px] w-[70px] rounded-md bg-gray-100" />
+          <div className="h-[50px] w-[140px] rounded-[12px] bg-gray-100" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const GitBranchIcon = () => (
   <svg
@@ -64,31 +91,40 @@ export default async function Page() {
         </div>
       </header>
 
-      <PrefetchBoundary
-        prefetchFn={(qc) =>
-          qc.prefetchInfiniteQuery<
-            JoinedMeetingsResponse,
-            Error,
-            InfiniteData<JoinedMeetingsResponse>,
-            readonly [string, string, null],
-            string | undefined
-          >({
-            queryKey: ["meetings", "all", null],
-            queryFn: ({ pageParam }) => {
-              const cursor =
-                typeof pageParam === "string" ? pageParam : undefined;
-              return getMeetingList({
-                size: 10,
-                ...(cursor ? { cursor } : {}),
-              });
-            },
-            initialPageParam: undefined,
-            getNextPageParam,
-          })
+      <Suspense
+        fallback={
+          <div className="mx-auto max-w-[1280px]">
+            <MeetingFilterSkeleton />
+            <MeetingCardSkeleton />
+          </div>
         }
       >
-        <MeetingsClient />
-      </PrefetchBoundary>
+        <PrefetchBoundary
+          prefetchFn={(qc) =>
+            qc.prefetchInfiniteQuery<
+              JoinedMeetingsResponse,
+              Error,
+              InfiniteData<JoinedMeetingsResponse>,
+              readonly [string, string, null],
+              string | undefined
+            >({
+              queryKey: ["meetings", "all", null],
+              queryFn: ({ pageParam }) => {
+                const cursor =
+                  typeof pageParam === "string" ? pageParam : undefined;
+                return getMeetingList({
+                  size: 10,
+                  ...(cursor ? { cursor } : {}),
+                });
+              },
+              initialPageParam: undefined,
+              getNextPageParam,
+            })
+          }
+        >
+          <MeetingsClient />
+        </PrefetchBoundary>
+      </Suspense>
     </div>
   );
 }

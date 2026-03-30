@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
 
-import type { User } from "@/types";
+import { JoinedMeeting, User } from "@/types";
 import { useMeetingDetailQueries, useMeetingDetailMutations } from "@/hooks";
 import {
   MeetingDetailApiData,
@@ -41,6 +41,51 @@ const toRecommendedMeetingItem = (
   registrationEnd: meeting.registrationEnd,
   dateTime: meeting.dateTime,
 });
+
+interface GetActionLabelProps {
+  isLoggedIn: boolean;
+  isHost: boolean;
+  isComplete: boolean;
+  isClosed: boolean;
+  hasAttended: boolean;
+  isJoined: boolean;
+}
+
+const getActionLabel = ({
+  isLoggedIn,
+  isHost,
+  isComplete,
+  isClosed,
+  hasAttended,
+  isJoined,
+}: GetActionLabelProps) => {
+  if (!isLoggedIn) {
+    return isClosed || isComplete ? "모집 마감" : "참여하기";
+  }
+
+  if (isHost) {
+    // closed = 사람 다찼따
+    if (isClosed) {
+      if (isComplete) {
+        // complete be 에서 내려주는 값
+        return hasAttended ? "출석 완료" : "출석하기";
+      } else {
+        return "모집 마감";
+      }
+    } else {
+      return "공유 하기";
+    }
+  }
+
+  if (isComplete) {
+    if (isJoined) return hasAttended ? "출석 완료" : "출석하기";
+    return "모집 마감";
+  }
+
+  if (isJoined) return "참여 취소하기";
+
+  return "참여하기";
+};
 
 export const getRecommendedMeetings = ({
   currentMeeting,
@@ -106,11 +151,14 @@ const getIsJoined = ({
   user: User | null;
   isHost: boolean;
   isLoggedIn: boolean;
-}) =>
-  isHost ||
-  (isLoggedIn &&
-    (detail.isJoined ||
-      participants.some((participant) => participant.userId === user?.id)));
+}) => {
+  return (
+    isHost ||
+    (isLoggedIn &&
+      (detail.isJoined ||
+        participants.some((participant) => participant.userId === user?.id)))
+  );
+};
 
 const getIsLoggedIn = ({ user }: { user: User | null }) => Boolean(user);
 
@@ -140,6 +188,7 @@ export const toMeetingDetailViewModel = ({
     isHost,
     isLoggedIn,
   });
+
   const recommendedMeetings = getRecommendedMeetings({
     currentMeeting: detail,
     candidates: recommendationCandidates,
@@ -178,35 +227,52 @@ export const toMeetingDetailViewModel = ({
   };
 
   const isStarted = new Date(data.dateTime).getTime() <= currentTimestamp;
-  const isClosed =
-    Boolean(data.canceledAt) ||
-    new Date(data.registrationEnd).getTime() < currentTimestamp ||
-    data.participantCount >= data.capacity;
-  const canViewLink = isHost || (isLoggedIn && isJoined);
+
+  const canViewLink = isLoggedIn && isJoined;
   const canWriteThread = isHost || (isLoggedIn && isJoined);
   const shouldShowHostMenu = isHost;
+
+  const isComplete = detail.isCompleted;
+
+  function isMeetingClosed(detail: MeetingDetailApiData) {
+    const now = new Date();
+    const isRegistrationClosed = new Date(detail.registrationEnd) < now;
+    const isFull = detail.participantCount >= detail.capacity;
+
+    return isRegistrationClosed || isFull;
+  }
+
+  const isClosed = isMeetingClosed(detail);
+
   const shouldShowClosedGuide =
     isLoggedIn && !isHost && !isJoined && isClosed && !isStarted;
 
-  let actionLabel = "참여하기";
+  const actionLabel = getActionLabel({
+    isLoggedIn,
+    isHost,
+    isComplete,
+    isClosed,
+    hasAttended,
+    isJoined,
+  });
 
-  if (!isLoggedIn) {
-    actionLabel = "참여하기";
-  } else if (isStarted) {
-    actionLabel = hasAttended ? "출석 완료" : "출석하기";
-  } else if (isHost && isClosed) {
-    actionLabel = "모집 마감";
-  } else if (isHost) {
-    actionLabel = "공유하기";
-  } else if (isJoined) {
-    actionLabel = "참여 취소하기";
-  }
+  // console.log(isStarted, actionLabel, isHost, isClosed, " 누구새오 ");
 
-  const isActionDisabled =
-    isAuthLoading ||
-    (isStarted
-      ? hasAttended
-      : (isHost && isClosed) || (!isHost && isClosed && !isJoined));
+  //
+  // console.log(
+  //   hasAttended,
+  //   actionLabel,
+  //   isAuthLoading,
+  //   isStarted,
+  //   hasAttended,
+  //   isHost && isClosed,
+  //   !isHost && isClosed && !isJoined,
+  // );
+
+  const isActionDisabled = () => {
+    if (actionLabel === "모집 마감" || actionLabel === "출석 완료") return true;
+    return false;
+  };
   const linkGuideText = isLoggedIn
     ? "모임에 참여하면 링크를 확인할 수 있습니다."
     : "로그인 후 모임에 참여하면 링크를 확인할 수 있습니다.";
@@ -287,31 +353,35 @@ export function MeetingDetailContent({
   });
 
   return (
-    <MeetingDetailView
-      data={viewModel.data}
-      participantAvatars={viewModel.participantAvatars}
-      isFavoritePending={favoriteMutation.isPending}
-      isJoinPending={
-        joinMutation.isPending ||
-        cancelJoinMutation.isPending ||
-        attendMutation.isPending
-      }
-      isAuthLoading={isAuthLoading}
-      actionLabel={viewModel.actionLabel}
-      isActionDisabled={viewModel.isActionDisabled}
-      shouldShowHostMenu={viewModel.shouldShowHostMenu}
-      shouldShowClosedGuide={viewModel.shouldShowClosedGuide}
-      canViewLink={viewModel.canViewLink}
-      canWriteThread={viewModel.canWriteThread}
-      linkGuideText={viewModel.linkGuideText}
-      threadGuideText={viewModel.threadGuideText}
-      onJoin={handleJoinMeeting}
-      onCancelJoin={handleCancelJoinMeeting}
-      onAttend={() => handleAttendMeeting(detail.region)}
-      onShare={handleShareMeeting}
-      onEdit={handleEditMeeting}
-      onDelete={handleDeleteMeeting}
-      onToggleFavorite={() => handleToggleFavorite(viewModel.data.isFavorited)}
-    />
+    <>
+      <MeetingDetailView
+        data={viewModel.data}
+        participantAvatars={viewModel.participantAvatars}
+        isFavoritePending={favoriteMutation.isPending}
+        isJoinPending={
+          joinMutation.isPending ||
+          cancelJoinMutation.isPending ||
+          attendMutation.isPending
+        }
+        isAuthLoading={isAuthLoading}
+        actionLabel={viewModel.actionLabel}
+        isActionDisabled={viewModel.isActionDisabled()}
+        shouldShowHostMenu={viewModel.shouldShowHostMenu}
+        shouldShowClosedGuide={viewModel.shouldShowClosedGuide}
+        canViewLink={viewModel.canViewLink}
+        canWriteThread={viewModel.canWriteThread}
+        linkGuideText={viewModel.linkGuideText}
+        threadGuideText={viewModel.threadGuideText}
+        onJoin={handleJoinMeeting}
+        onCancelJoin={handleCancelJoinMeeting}
+        onAttend={() => handleAttendMeeting(detail.region)}
+        onShare={handleShareMeeting}
+        onEdit={handleEditMeeting}
+        onDelete={handleDeleteMeeting}
+        onToggleFavorite={() =>
+          handleToggleFavorite(viewModel.data.isFavorited)
+        }
+      />
+    </>
   );
 }
