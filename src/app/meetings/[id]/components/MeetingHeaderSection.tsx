@@ -98,6 +98,7 @@ export function MeetingHeaderSection({
     }
 
     if (actionLabel === "출석하기") {
+      console.log(4)
       await onAttend();
       return;
     }

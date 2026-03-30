@@ -7,7 +7,7 @@ import {
 } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import profileImg from "@/assets/img/banner/banner-lg.jpg";
-import { TopRankCardProps } from "@/types";
+import { RankCardProps } from "@/types";
 
 
 export default function TopRankCard({
@@ -15,7 +15,8 @@ export default function TopRankCard({
   point = 123123,
   rank = 0,
   meetType = "스터디",
-}: TopRankCardProps) {
+  onDetailClick = () => {},
+}: RankCardProps) {
   const rankNumber = {
     1: {
       pointColor: "text-[#ffb900] ",
@@ -75,6 +76,7 @@ export default function TopRankCard({
             <BtnCommon
               variant="orange"
               className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
+              onClick={onDetailClick}
             >
               <p className="text-sm font-semibold text-gray-900 sm:text-xl">
                 상세보기

@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosInstance from "@/lib/clientFetcher";
 import { createComment } from "@/api/client/comments";
 import {
@@ -129,7 +130,9 @@ export async function uploadMeetingImage(file: File) {
     },
   );
 
-  await axiosInstance.put(issueResponse.data.presignedUrl, file, {
+  // S3 presigned URL로 직접 업로드할 때는 baseURL이나 withCredentials가 설정된 axiosInstance 대신
+  // 순수 axios를 사용하여 CORS 이슈를 방지합니다.
+  await axios.put(issueResponse.data.presignedUrl, file, {
     headers: {
       "Content-Type": contentType,
     },
