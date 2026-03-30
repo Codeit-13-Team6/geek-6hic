@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/SelectCommon";
 import { MeetingFiltersProps, TabValue } from "@/types";
 
-
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
   { value: "team", label: "팀미팅", type: "팀미팅" },
@@ -29,7 +28,6 @@ const SORT_OPTIONS = [
   { value: "participants", label: "참여인원 순" },
 ] as const;
 
-
 export default function MeetingFilters({
   activeValue,
   sortValue,
@@ -39,7 +37,9 @@ export default function MeetingFilters({
   onApplyDate,
   onResetFilters,
 }: MeetingFiltersProps) {
-  const [draftDate, setDraftDate] = useState<DateRange | undefined>(appliedDate);
+  const [draftDate, setDraftDate] = useState<DateRange | undefined>(
+    appliedDate,
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   const currentSortLabel = SORT_OPTIONS.find(
@@ -67,48 +67,60 @@ export default function MeetingFilters({
   };
 
   return (
-    <div className="mb-4 mt-6 flex flex-col">
-      <ul className="flex gap-2 overflow-auto">
+    <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
         {TAB_LIST.map(({ value, label }) => (
-          <li key={value} className="shrink-0">
+          <li key={value} className="relative shrink-0 pb-2">
             <button
               type="button"
               onClick={() => handleTabClick(value)}
               className={cn(
-                "shrink-0 cursor-pointer rounded-[14px] px-4 py-2 transition-colors",
+                "text-sm font-black tracking-tight transition-all sm:text-base",
                 activeValue === value
-                  ? "bg-gray-700 font-bold text-white"
-                  : "bg-gray-100 text-gray-800",
+                  ? "text-main-purple"
+                  : "text-slate-300 hover:text-slate-500",
               )}
             >
               {label}
             </button>
+            {activeValue === value && (
+              <div className="bg-main-purple absolute bottom-0 left-0 h-1 w-full" />
+            )}
           </li>
         ))}
       </ul>
 
-      <div className="mt-2 flex items-center justify-end">
+      <div className="flex shrink-0 items-center justify-end gap-6 sm:gap-8">
+        {/* 날짜 선택 */}
         <div className="relative">
           <button
             type="button"
-            className="cursor-pointer"
+            className={cn(
+              "cursor-pointer pb-0.5 text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",
+              appliedDate
+                ? "text-main-purple"
+                : "hover:text-main-purple text-slate-900",
+            )}
             onClick={() => setIsOpen(true)}
           >
-            날짜 선택
+            Select Date
           </button>
 
           {isOpen ? (
             <>
-              <Calendar
-                mode="range"
-                selected={draftDate}
-                onSelect={setDraftDate}
-                onReset={handleCalendarReset}
-                onApply={handleCalendarApply}
-              />
+              {/* 캘린더 팝업 */}
+              <div className="shadow-mag absolute top-8 right-0 z-50 rounded-2xl bg-white">
+                <Calendar
+                  mode="range"
+                  selected={draftDate}
+                  onSelect={setDraftDate}
+                  onReset={handleCalendarReset}
+                  onApply={handleCalendarApply}
+                />
+              </div>
               <div
                 onClick={() => setIsOpen(false)}
-                className="fixed top-0 left-0 w-full h-full"
+                className="fixed inset-0 z-40 bg-transparent"
               ></div>
             </>
           ) : null}
@@ -122,18 +134,29 @@ export default function MeetingFilters({
             }
           }}
         >
-          <SelectTrigger className="h-[50px]! w-[140px] rounded-[12px]! px-4 text-sm font-medium text-gray-800">
+          <SelectTrigger
+            suppressHydrationWarning
+            className="h-auto w-auto gap-2 border-none bg-transparent p-0 text-xs font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
+          >
             {currentSortLabel ? (
-              <span>{currentSortLabel}</span>
+              <span className="text-main-purple">{currentSortLabel}</span>
             ) : (
-              <SelectValue placeholder="정렬 선택" />
+              <SelectValue placeholder="SORT BY" />
             )}
           </SelectTrigger>
-
-          <SelectContent className="w-[140px]">
-            <SelectGroup>
+          <SelectContent
+            alignItemWithTrigger={false}
+            sideOffset={2}
+            align="end"
+            className="z-50 min-w-[140px] overflow-hidden rounded-xl border-0 bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 outline-none"
+          >
+            <SelectGroup className="p-1">
               {SORT_OPTIONS.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
+                <SelectItem
+                  key={item.value}
+                  value={item.value}
+                  className="focus:text-main-purple cursor-pointer rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-slate-50"
+                >
                   {item.label}
                 </SelectItem>
               ))}
