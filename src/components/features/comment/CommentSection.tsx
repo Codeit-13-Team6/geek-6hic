@@ -16,7 +16,8 @@ import ModalBase from "@/components/ui/ModalBase";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
-import { CommentSectionProps } from "@/types";
+import { CommentSectionProps, GetCommentsResponse } from "@/types";
+import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 
 export default function CommentSection({
   postId,
@@ -56,18 +57,23 @@ export default function CommentSection({
     },
   });
 
+
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
+    ...useOptimisticMutation<GetCommentsResponse, number>(queryClient, {
+      queryKey: ["comments", postId],
+      updater: (old, commentId) => ({
+        ...old,
+        data: old.data.filter((c) => c.id !== commentId),
+      }),
+      invalidateKeys: [["comments", postId], ["post", postId], ["posts"]],
+      onErrorMessage: "댓글 삭제에 실패했습니다.",
+    }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
       ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
-    onError: () => {
-      ToastCommon({ message: "댓글 삭제에 실패했습니다.", size: "sm" });
-    },
   });
+
 
   const { mutate: editComment } = useMutation({
     mutationFn: ({
@@ -77,14 +83,23 @@ export default function CommentSection({
       commentId: number;
       content: string;
     }) => updateComment(postId, commentId, content),
+    ...useOptimisticMutation<
+      GetCommentsResponse,
+      { commentId: number; content: string }
+    >(queryClient, {
+      queryKey: ["comments", postId],
+      updater: (old, { commentId, content }) => ({
+        ...old,
+        data: old.data.map((c) => (c.id === commentId ? { ...c, content } : c)),
+      }),
+      invalidateKeys: [["comments", postId]],
+      onErrorMessage: "댓글 수정에 실패했습니다.",
+    }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
     },
-    onError: () => {
-      ToastCommon({ message: "댓글 수정에 실패했습니다.", size: "sm" });
-    },
   });
+
   const handlePostComment = () => {
     // 실시간 카드 리스트로 발생하는 렌더링 최적화
     const value = isThread ? threadContent : commentRef.current?.value || "";
@@ -163,18 +178,22 @@ export default function CommentSection({
 
       {/* 댓글 목록 */}
       <div className="flex flex-col divide-y divide-slate-200">
-        {commentsList.map((item) => (
-          <Comment
-            key={item.id}
-            id={item.id}
-            name={item.author.name}
-            content={item.content}
-            date={new Date(item.createdAt)}
-            isOwner={userId !== null && userId === item.author.id}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        ))}
+        {commentsList.map((item) =>
+          item.content.split("_")[0] !== "onlyScore" ? (
+            <Comment
+              key={item.id}
+              id={item.id}
+              name={item.author.name}
+              content={item.content}
+              date={new Date(item.createdAt)}
+              isOwner={userId !== null && userId === item.author.id}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          ) : (
+            <div key={item.id} className="hidden"/>
+          ),
+        )}
       </div>
 
       {/* 페이지네이션 섹션 */}

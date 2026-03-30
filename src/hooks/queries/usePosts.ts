@@ -8,6 +8,7 @@ import { createPost, updatePost, deletePost } from "@/api/client/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { GetPostsParams, Post, PostPayload } from "@/types";
+import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
@@ -174,33 +175,52 @@ export const useDeletePost = (postId: number) => {
 export const useToggleLike = (postId: number) => {
   const queryClient = useQueryClient();
 
+
+
   return useMutation({
     mutationFn: (isLiked: boolean) =>
       isLiked ? unlikePost(postId) : likePost(postId),
-    onMutate: async () => {
-      // 낙관적 업데이트
-      await queryClient.cancelQueries({ queryKey: ["post", postId] });
-      const previousPost = queryClient.getQueryData(["post", postId]);
-
-      queryClient.setQueryData(["post", postId], (oldData: Post) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          isLiked: !oldData.isLiked,
-          likeCount: oldData.isLiked
-            ? oldData.likeCount - 1
-            : oldData.likeCount + 1,
-        };
-      });
-      return { previousPost };
-    },
-    onError: (_err, _isLiked, context) => {
-      queryClient.setQueryData(["post", postId], context?.previousPost);
-      ToastCommon({ message: "좋아요 처리에 실패했습니다.", size: "sm" });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["post"] });
-    },
+    ...useOptimisticMutation<Post, boolean>(queryClient, {
+      queryKey: ["post", postId],
+      updater: (old) => ({
+        ...old,
+        isLiked: !old.isLiked,
+        likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
+      }),
+      invalidateKeys: [["post", postId], ["post"]],
+      onErrorMessage: "좋아요 처리에 실패했습니다.",
+    }),
   });
+
+
+
+  // return useMutation({
+  //   mutationFn: (isLiked: boolean) =>
+  //     isLiked ? unlikePost(postId) : likePost(postId),
+  //   onMutate: async () => {
+  //     // 낙관적 업데이트
+  //     await queryClient.cancelQueries({ queryKey: ["post", postId] });
+  //     const previousPost = queryClient.getQueryData(["post", postId]);
+  //
+  //     queryClient.setQueryData(["post", postId], (oldData: Post) => {
+  //       if (!oldData) return oldData;
+  //       return {
+  //         ...oldData,
+  //         isLiked: !oldData.isLiked,
+  //         likeCount: oldData.isLiked
+  //           ? oldData.likeCount - 1
+  //           : oldData.likeCount + 1,
+  //       };
+  //     });
+  //     return { previousPost };
+  //   },
+  //   onError: (_err, _isLiked, context) => {
+  //     queryClient.setQueryData(["post", postId], context?.previousPost);
+  //     ToastCommon({ message: "좋아요 처리에 실패했습니다.", size: "sm" });
+  //   },
+  //   onSettled: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["post", postId] });
+  //     queryClient.invalidateQueries({ queryKey: ["post"] });
+  //   },
+  // });
 };

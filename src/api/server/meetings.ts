@@ -13,3 +13,16 @@ export async function getJoinedMeetingsServer(params: {
 
   return data;
 }
+
+export async function getMeetingList(params: {
+  cursor?: string;
+  size?: number;
+}): Promise<JoinedMeetingsResponse> {
+  const { data } = await serverFetch<JoinedMeetingsResponse>({
+    method: "GET",
+    url: "/meetings",
+    params,
+  });
+
+  return data;
+}

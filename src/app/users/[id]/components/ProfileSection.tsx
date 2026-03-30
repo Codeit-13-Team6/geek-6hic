@@ -42,12 +42,14 @@ export default function ProfileSection() {
     },
   });
 
-  const onSubmitProfile = profileForm.handleSubmit(({ email, image, ...data }) => {
-    updateProfile({
-      ...data,
-      ...(image && { image }),
-    });
-  });
+  const onSubmitProfile = profileForm.handleSubmit(
+    ({ email, image, ...data }) => {
+      updateProfile({
+        ...data,
+        ...(image && { image }),
+      });
+    },
+  );
 
   return (
     <>
@@ -184,7 +186,12 @@ export default function ProfileSection() {
               >
                 취소
               </BtnCommon>
-              <BtnCommon size={"md"} className="flex-1" type="submit" disabled={isPending}>
+              <BtnCommon
+                size={"md"}
+                className="flex-1"
+                type="submit"
+                disabled={isPending}
+              >
                 수정하기
               </BtnCommon>
             </div>
