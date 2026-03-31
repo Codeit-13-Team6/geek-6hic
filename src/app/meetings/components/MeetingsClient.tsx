@@ -31,11 +31,10 @@ const sortByMap = {
   deadline: "registrationEnd",
   participants: "participantCount",
 } as const;
-
-const sortOrderMap = {
-  deadline: "asc",
-  participants: "desc",
-} as const;
+// const sortOrderMap = {
+//   deadline: "asc",
+//   participants: "desc",
+// } as const;
 
 export default function MeetingsClient() {
   const router = useRouter();
@@ -52,7 +51,12 @@ export default function MeetingsClient() {
     undefined,
   );
 
-  const { toggleFavorite } = useMeetingFavoriteMutation();
+  const { toggleFavorite } = useMeetingFavoriteMutation([
+    "meetings",
+    activeValue,
+    sortValue,
+    isSortDesc,
+  ]);
 
   // 현재 탭에 맞는 API type 찾기
   const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);

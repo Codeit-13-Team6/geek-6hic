@@ -42,6 +42,7 @@ export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormP
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log(data)
     setIsLoading(true);
     setError(null);
 
@@ -85,6 +86,7 @@ export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormP
     <div>
       <h1 className="text-center text-base font-semibold text-gray-900 sm:text-2xl">
         {title}
+
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
