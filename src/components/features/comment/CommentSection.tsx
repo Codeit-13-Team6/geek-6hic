@@ -103,7 +103,10 @@ export default function CommentSection({
   const handlePostComment = () => {
     // 실시간 카드 리스트로 발생하는 렌더링 최적화
     const value = isThread ? threadContent : commentRef.current?.value || "";
-    if (!value.trim()) return;
+    if (!value.trim()) return ToastCommon({
+      message: "내용을 입력해주세요.",
+      size: "sm",
+    });
 
     postComment(value);
   };

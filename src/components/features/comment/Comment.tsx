@@ -14,6 +14,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 export default function Comment({
   id,
@@ -45,7 +46,7 @@ export default function Comment({
   const linkObjects = extractUrlsFromText(content);
 
   const handleSave = () => {
-    if (!editValue.trim()) return;
+    if (!editValue.trim()) return ;
     onEdit(id, editValue);
     setIsEditing(false);
   };

@@ -76,9 +76,16 @@ export default function LoungePostForm({
     const trimmedTitle = title.trim();
     const trimmedContentText = plainText.trim();
 
-    if (!trimmedTitle || !trimmedContentText) {
+    if (!trimmedTitle ) {
       return ToastCommon({
-        message: "제목과 내용을 모두 입력해주세요.",
+        message: "제목을 입력해주세요.",
+        size: "sm",
+      });
+    }
+
+    if (linkList.length === 0 && trimmedContentText.length === 0) {
+      return ToastCommon({
+        message: "본문 내용 또는 링크를 입력해주세요",
         size: "sm",
       });
     }
@@ -121,7 +128,7 @@ export default function LoungePostForm({
           <BtnCommon
             onClick={handleLocalSubmit}
             disabled={isSubmitting}
-            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
+            className="!h-[40px]  flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
           >
             {submitButtonText}
           </BtnCommon>
