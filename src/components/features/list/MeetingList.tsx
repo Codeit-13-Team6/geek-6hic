@@ -163,11 +163,8 @@ export default function MeetingList({
                   fallback={
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onHeartClick(item);
-                      }}
-                      className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-slate-50"
+                      onClick={() => {}}
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                     >
                       <Heart
                         className={cn(
@@ -186,7 +183,7 @@ export default function MeetingList({
                       e.stopPropagation();
                       onHeartClick(item);
                     }}
-                    className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-slate-50"
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                   >
                     <Heart
                       className={cn(

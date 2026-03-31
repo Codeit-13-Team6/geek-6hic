@@ -1,5 +1,4 @@
-"use client";
-
+import { Suspense } from "react";
 import LoginForm from "./LoginForm";
 
 export default function Login() {
@@ -10,7 +9,9 @@ export default function Login() {
     >
       <div className="w-full px-4 sm:mx-auto sm:max-w-142 sm:px-0">
         <div className="rounded-xl border bg-white px-4 py-6 sm:rounded-[40px] sm:px-16 sm:py-10">
+          <Suspense fallback={<div>로그인 화면 불러오는 중...</div>}>
           <LoginForm  />
+          </Suspense>
         </div>
       </div>
     </section>
