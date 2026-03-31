@@ -10,77 +10,88 @@ import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import LoginModal from "@/components/modal/LoginModal";
+import { MessageSquareText } from "lucide-react";
 
 export default async function LoungePage() {
   return (
-    <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
-      <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        {/* 헤더 구역 */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex size-[36px] shrink-0 items-center justify-center rounded-full sm:mr-2 sm:size-[54px]">
-              <span className="text-3xl sm:text-5xl">💬</span>
+    <div className="relative w-full">
+      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-20 sm:pb-12 lg:pb-12">
+        <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
+          <div className="flex flex-col gap-8">
+            <div className="flex items-center gap-4">
+              <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">
+                <MessageSquareText className="text-white" size={24} />
+              </div>
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase">
+                Community / Lounge
+              </span>
             </div>
-            <div>
-              <h1 className="text-[20px] font-bold text-gray-900 sm:text-[24px] lg:text-[32px]">
-                스프린트 라운지
+            <div className="space-y-2">
+              <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
+                SPRINT{" "}
+                <span className="text-main-purple uppercase">Lounge.</span>
               </h1>
-              <p className="mt-1 text-base font-medium text-gray-500 sm:text-lg lg:text-xl">
-                코드잇 스프린터의 정보 공유 라운지
-              </p>
             </div>
           </div>
 
-          <LoginModal
-            fallback={
-              <BtnCommon size="fixedSize" className="w-auto px-6">
-                + 게시물 등록하기
-              </BtnCommon>
-            }
-          >
-            <Link href="/lounge/create" className="hidden sm:block">
-              <BtnCommon size="fixedSize" className="w-auto px-6">
-                + 게시물 등록하기
-              </BtnCommon>
-            </Link>
-          </LoginModal>
+          <div className="hidden items-end self-end text-right sm:flex sm:flex-col">
+            <div className="max-w-[420px]">
+              <LoginModal
+                fallback={
+                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                    <span className="text-xs tracking-widest uppercase">
+                      + Create Post
+                    </span>
+                  </BtnCommon>
+                }
+              >
+                <Link href="/lounge/create" className="hidden sm:block">
+                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                    <span className="text-xs tracking-widest uppercase">
+                      + Create Post
+                    </span>
+                  </BtnCommon>
+                </Link>
+              </LoginModal>
+            </div>
+          </div>
         </div>
-        <section className="mt-8 sm:mt-12">
-          <h2 className="mb-4 text-[18px] font-bold text-gray-900 sm:mb-6 sm:text-[20px]">
-            | 이번주 HOT 게시물
-          </h2>
+      </header>
 
-          <HotPostList />
-        </section>
+      <section className="mb-20">
+        <div className="mb-10 flex items-center gap-3">
+          <div className="bg-main-purple h-[6px] w-8 rounded-full" />
+          <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+            Weekly HOT Posts
+          </span>
+        </div>
+        <HotPostList />
+      </section>
 
-        <Suspense fallback={<LoungeSkeleton />}>
-          <PrefetchBoundary
-            prefetchFn={(qc) =>
-              qc.prefetchInfiniteQuery<
-                GetPostsResponse,
-                Error,
-                InfiniteData<GetPostsResponse>,
-                readonly string[],
-                string | undefined
-              >({
-                queryKey: ["posts", "list", "latest", ""],
-                queryFn: ({ pageParam }) => getPosts(pageParam),
-                initialPageParam: undefined,
-                getNextPageParam,
-              })
-            }
-          >
-            <LoungeContent />
-          </PrefetchBoundary>
-        </Suspense>
-      </div>
+      <Suspense fallback={<LoungeSkeleton />}>
+        <PrefetchBoundary
+          prefetchFn={(qc) =>
+            qc.prefetchInfiniteQuery<
+              GetPostsResponse,
+              Error,
+              InfiniteData<GetPostsResponse>,
+              readonly string[],
+              string | undefined
+            >({
+              queryKey: ["posts", "list", "latest", ""],
+              queryFn: ({ pageParam }) => getPosts(pageParam),
+              initialPageParam: undefined,
+              getNextPageParam,
+            })
+          }
+        >
+          <LoungeContent />
+        </PrefetchBoundary>
+      </Suspense>
 
       <Link href="/lounge/create">
-        <BtnCommon
-          size="icon-md"
-          className="fixed right-4 bottom-6 z-50 size-14 pb-1 text-3xl leading-none shadow-lg transition-transform hover:scale-105 sm:hidden"
-        >
-          +
+        <BtnCommon className="bg-main-purple fixed right-6 bottom-8 z-50 flex h-14 w-14 items-center justify-center rounded-full border-none text-white shadow-2xl transition-transform hover:scale-110 sm:hidden">
+          <span className="pb-1 text-3xl font-light">+</span>
         </BtnCommon>
       </Link>
     </div>

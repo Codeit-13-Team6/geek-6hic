@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-sm.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
@@ -5,6 +7,7 @@ import messageIcon from "@/assets/icon/message/message.svg";
 import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function PostCard({
   title,
@@ -21,80 +24,80 @@ export default function PostCard({
   return (
     <article
       onClick={onDetailClick}
-      className="flex cursor-pointer flex-col gap-4 transition-colors hover:bg-gray-50 sm:flex-row sm:gap-8 sm:rounded-l-[12px]"
+      className="group flex cursor-pointer flex-col gap-6 border-b border-slate-100 bg-transparent py-8 transition-all hover:bg-slate-100/50 sm:flex-row sm:gap-10 sm:px-4"
     >
-      {/* 데스크탑 썸네일 */}
-      <div className="relative hidden size-40 shrink-0 overflow-hidden rounded-[12px] sm:block lg:size-50">
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:aspect-square sm:h-40 sm:w-40 lg:h-48 lg:w-48">
         <img
           src={thumbnailUrl || defaultImg.src}
-          alt="게시물 썸네일"
-          className="h-full w-full object-cover"
+          alt="thumb"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {
-            // 주소는 있는데 깨진 링크면 기본 이미지로 교체
             (e.target as HTMLImageElement).src = defaultImg.src;
           }}
         />
+        <div className="absolute inset-0 bg-slate-950/5" />
       </div>
 
-      <div className="flex flex-1 flex-col border-b border-slate-200 px-4 pt-4 pb-6 sm:px-2">
-        <h3 className="mb-3 text-base font-bold text-gray-800 sm:mb-2 sm:text-xl">
-          {title}
-        </h3>
-
-        {/* 모바일 썸네일*/}
-        <div className="relative mb-4 block aspect-video w-full shrink-0 overflow-hidden rounded-[12px] sm:hidden">
-          <img
-            src={thumbnailUrl || defaultImg.src}
-            alt="게시물 썸네일"
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = defaultImg.src;
-            }}
-          />
-        </div>
-
-        <p className="mb-4 line-clamp-2 text-sm text-gray-600 sm:mb-0 sm:text-lg">
-          {pureContent || "내용이 없는 게시글입니다."}
-        </p>
-
-        <div className="mt-auto flex items-center justify-between text-xs text-gray-400 sm:text-sm">
-          <div className="flex items-center gap-2">
-            <div className="flex size-6 items-center justify-center">
-              <Image
-                src={profileImg}
-                alt="프로필"
-                width={24}
-                height={24}
-                className="rounded-full"
-                unoptimized
-              />
-            </div>
-            <span>
-              {authorName} <span className="ml-2">{date}</span>
+      <div className="flex flex-1 flex-col justify-between py-1">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              {date}
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="flex items-center gap-0.5">
+          <h3 className="group-hover:text-main-purple line-clamp-2 text-xl font-bold tracking-tighter text-slate-950 transition-colors sm:text-2xl lg:text-3xl">
+            {title}
+          </h3>
+
+          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500 sm:text-base">
+            {pureContent || "내용이 없는 게시글입니다."}
+          </p>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative size-8 overflow-hidden rounded-full shadow-sm ring-2 ring-white">
+              <Image
+                src={profileImg}
+                alt="author"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+            <span className="text-xs font-semibold tracking-tight text-slate-900 sm:text-sm">
+              {authorName}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4 text-slate-400">
+            <div className="flex items-center gap-1.5 transition-colors group-hover:text-slate-600">
               <Image
                 src={thumbsUpIcon}
-                alt="좋아요 아이콘"
-                width={15}
-                height={15}
+                alt="like"
+                width={14}
+                height={14}
+                className="opacity-60"
                 unoptimized
               />
-              {likeCount}
-            </span>
-            <span className="flex items-center gap-0.5">
+              <span className="text-[11px] font-black tracking-tighter sm:text-sm">
+                {likeCount}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 transition-colors group-hover:text-slate-600">
               <Image
                 src={messageIcon}
-                alt="댓글 아이콘"
-                width={15}
-                height={15}
+                alt="comment"
+                width={14}
+                height={14}
+                className="opacity-60"
                 unoptimized
               />
-              {commentCount}
-            </span>
+              <span className="text-[11px] font-black tracking-tighter sm:text-sm">
+                {commentCount}
+              </span>
+            </div>
           </div>
         </div>
       </div>
