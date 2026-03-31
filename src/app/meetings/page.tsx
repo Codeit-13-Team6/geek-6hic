@@ -53,7 +53,7 @@ const GitBranchIcon = () => (
 
 export default async function Page() {
   return (
-    <div className="relative w-full py-8 lg:py-20">
+    <div className="relative w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15">
         <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-6 sm:gap-8">

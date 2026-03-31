@@ -101,7 +101,7 @@ export function Gnb() {
             </span>
           </Link>
 
-          <nav className="hidden items-center lg:flex lg:gap-6">
+          <nav className="hidden items-center sm:flex sm:gap-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}

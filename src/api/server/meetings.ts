@@ -4,6 +4,9 @@ import type { JoinedMeetingsResponse } from "@/types";
 export async function getJoinedMeetingsServer(params: {
   cursor?: string;
   size?: number;
+  sortOrder?: "asc" | "desc";
+  sortBy?: "dateTime" | "registrationEnd" | "joinedAt";
+  completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await serverFetch<JoinedMeetingsResponse>({
     method: "GET",

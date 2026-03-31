@@ -150,7 +150,7 @@ export default function MeetingsClient() {
           !hasNextPage &&
           filteredMeetingList.length > 0 && (
             <div className="flex flex-col items-center gap-4">
-              <div className="h-1.5 w-8 bg-slate-900" />
+              <div className="h-1.5 w-8 bg-slate-400" />
               <p className="text-[11px] font-black tracking-[0.2em] text-slate-300 uppercase">
                 End of Archive.
               </p>

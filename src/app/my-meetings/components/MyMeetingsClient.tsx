@@ -31,7 +31,6 @@ export function useMeetingQuery() {
 
 export default function MyMeetingsClient() {
   const router = useRouter();
-
   const { toggleFavorite } = useMeetingFavoriteMutation();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingQuery();
@@ -41,20 +40,28 @@ export default function MyMeetingsClient() {
     hasNextPage,
     isFetchingNextPage,
   );
-
   const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
 
   if (status === "pending") {
     return (
-      <div className="flex min-h-[calc(100vh-220px)] items-center justify-center text-center">
-        <p>데이터를 불러오고 있어요...</p>
+      <div className="flex min-h-[300px] items-center justify-center">
+        <p className="text-xs font-black tracking-widest text-slate-300 uppercase">
+          Syncing Archive...
+        </p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
+      <div className="mb-12 flex items-center gap-3">
+        <div className="bg-main-purple h-[6px] w-8" />
+        <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+          Joined Index
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-10">
         <MeetingList
           meetingList={allMeetings}
           isLoading={isFetchingNextPage}
@@ -62,14 +69,29 @@ export default function MyMeetingsClient() {
           onHeartClick={(item) => toggleFavorite(item)}
         />
       </div>
+
       <section>
         <div
           ref={bottomRef}
-          className="flex h-40 w-full items-center justify-center"
+          className="mt-20 flex h-60 w-full flex-col items-center justify-center border-t border-slate-100"
         >
-          {isFetchingNextPage && <p>데이터를 더 불러오고 있어요...</p>}
-          {!hasNextPage && allMeetings.length > 0 && (
-            <p>모든 모임을 다 확인하셨습니다! ✔️</p>
+          {isFetchingNextPage ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="bg-main-purple h-1 w-12 animate-pulse" />
+              <p className="text-main-purple text-[10px] font-black tracking-[0.4em] uppercase">
+                Updating Archive...
+              </p>
+            </div>
+          ) : (
+            !hasNextPage &&
+            allMeetings.length > 0 && (
+              <div className="flex flex-col items-center gap-4">
+                <div className="h-1.5 w-8 bg-slate-400" />
+                <p className="text-[11px] font-black tracking-[0.2em] text-slate-300 uppercase">
+                  End of Archive.
+                </p>
+              </div>
+            )
           )}
         </div>
       </section>

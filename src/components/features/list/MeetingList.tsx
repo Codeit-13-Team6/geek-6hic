@@ -53,11 +53,17 @@ export default function MeetingList({
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
         const deadLine = getDeadlineLabel(item.registrationEnd);
-        const statusLabel = item.isJoined
-          ? "참여중"
-          : isClosed
-            ? "모집 마감"
-            : null;
+
+        const isUserJoined =
+          item.isJoined || (!!item.joinedAt && !item.isCompleted);
+        const isFinished = isClosed || item.isCompleted;
+
+        let statusLabel = null;
+        if (isUserJoined) {
+          statusLabel = "참여중";
+        } else if (isFinished) {
+          statusLabel = "모집 마감";
+        }
 
         return (
           <div
@@ -85,12 +91,12 @@ export default function MeetingList({
                 <span
                   className={cn(
                     "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-bold shadow-sm backdrop-blur-md",
-                    item.isJoined
+                    isUserJoined
                       ? "bg-slate-900/80 text-slate-100"
                       : "bg-slate-100 text-slate-500",
                   )}
                 >
-                  {item.isJoined && (
+                  {isUserJoined && (
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                   )}
                   {statusLabel}
