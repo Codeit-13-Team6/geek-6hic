@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import ModalBase from "@/components/ui/ModalBase";
 import { BtnCommon } from "@/components/ui/BtnCommon";
+import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
@@ -46,11 +47,11 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
   };
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <DetailSkeleton />;
   }
 
   if (isError || !post) {
-    return <div>게시글을 찾을 수 없습니다.</div>;
+    return <div >게시글을 찾을 수 없습니다.</div>;
   }
 
   return (
