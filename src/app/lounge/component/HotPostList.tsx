@@ -4,30 +4,36 @@ import { useRouter } from "next/navigation";
 import { Post } from "@/types";
 import { HotPostCard } from "./HotPostCard";
 import { useGetHotPosts } from "@/hooks/queries/usePosts";
+import { Loader2, Flame } from "lucide-react";
 
 export default function HotPostList() {
   const router = useRouter();
-
   const { data: hotList = [], isLoading } = useGetHotPosts();
 
   if (isLoading) {
     return (
-      <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-gray-400">
-        핫 게시물을 불러오는 중... 🔥
+      <div className="flex h-[200px] w-full flex-col items-center justify-center gap-3 rounded-[32px] border border-slate-100 bg-slate-50/50">
+        <Loader2 className="text-main-purple animate-spin" size={24} />
+        <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
+          Loading Trends...
+        </span>
       </div>
     );
   }
 
   if (hotList.length === 0) {
     return (
-      <div className="flex h-[150px] w-full items-center justify-center rounded-[16px] bg-white text-sm text-gray-500 shadow-sm sm:text-base">
-        이번 주 핫 게시물이 없습니다. 🔥
+      <div className="flex h-[200px] w-full flex-col items-center justify-center gap-2 rounded-[32px] border border-dashed border-slate-200 text-slate-400">
+        <Flame size={24} className="opacity-20" />
+        <p className="text-xs font-bold tracking-widest uppercase opacity-50">
+          이번주의 HOT 게시물이 없습니다.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="scrollbar-hide flex gap-4 overflow-x-auto p-0.5 pt-1 pb-4 sm:gap-6">
+    <div className="scrollbar-hide -mx-4 flex gap-5 overflow-x-auto px-4 pb-8 sm:-mx-6 sm:gap-8 sm:px-6 lg:-mx-8 lg:px-8">
       {hotList.map((post: Post) => (
         <HotPostCard
           key={post.id}

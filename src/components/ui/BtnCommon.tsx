@@ -2,33 +2,32 @@
 
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "w-full cursor-pointer group/button inline-flex shrink-0 items-center justify-center rounded-10 border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "w-full cursor-pointer group/button inline-flex shrink-0 items-center justify-center rounded-xl border border-transparent bg-clip-padding text-sm font-black whitespace-nowrap transition-all outline-none select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-main-green-500 text-white hover:bg-main-green-600 disabled:bg-gray-100 disabled:text-gray-600",
+          "bg-main-purple text-white hover:bg-slate-900 disabled:bg-gray-100 disabled:text-gray-600",
         outline:
-          "bg-background text-main-green-600 border border-main-green-500 hover:bg-main-green-100",
+          "bg-transparent text-slate-950 border-2 border-slate-950 hover:bg-slate-950 hover:text-white",
         teritary:
-          "bg-white text-gray-600 border border-gray-200 hover:bg-main-green-100 aria-expanded:bg-secondary",
+          "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50",
         orange:
-          "bg-[#ffb900] text-gray-600 border border-gray-200 hover:bg-main-green-100 aria-expanded:bg-secondary",
+          "bg-[#FFB900] text-slate-950 border-none hover:bg-[#E5A700] shadow-lg shadow-[#FFB900]/20",
       },
       size: {
-        default: "h-15 text-xl font-semibold rounded-2xl",
-        sm: "h-10 text-sm font-semibold rounded-xl px-4",
-        md: "h-12 text-base font-semibold rounded-xl sm:h-14 sm:text-xl",
-        fixedSize: "h-12 text-base font-semibold rounded-xl", // 반응형으로 변하지 않는 버튼(회원가입/로그인에서 사용 중)
-        icon: "size-8",
-        "icon-xs": "size-4.5 rounded-full",
+        default: "h-14 text-lg font-black rounded-2xl px-6",
+        sm: "h-10 text-xs font-black rounded-xl px-4 uppercase tracking-widest",
+        md: "h-12 text-base font-black rounded-xl sm:h-14 sm:text-lg",
+        fixedSize: "h-12 text-base font-black rounded-xl px-6",
+        icon: "size-10 rounded-full",
+        "icon-xs": "size-6 rounded-full",
         "icon-sm": "size-10 rounded-full",
-        "icon-md": "size-12 rounded-full",
-        "icon-lg": "size-15 rounded-full",
+        "icon-md": "size-14 rounded-full",
+        "icon-lg": "size-16 rounded-full",
       },
     },
     defaultVariants: {

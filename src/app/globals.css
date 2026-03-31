@@ -55,6 +55,19 @@
 }
 
 @layer base {
+  :root {
+    --ring: transparent; /* 링 색상을 투명으로 초기화 */
+  }
+
+  /* 모든 입력 요소와 버튼에서 강제 포커스 링 제거 */
+  *:focus {
+    outline: none !important;
+  }
+
+  *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
   * {
     border-color: var(--border);
   }

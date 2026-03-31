@@ -5,9 +5,10 @@ import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/client/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
-import { SearchX } from "lucide-react";
+import { SearchX, Loader2 } from "lucide-react"; // Loader2 추가로 간지 상승
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { PostListProps } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function PostList({
   searchValue = "",
@@ -30,7 +31,6 @@ export default function PostList({
 
   const { sortBy, sortOrder } = getSortParams();
 
-  // 게시글 리스트 key ["posts", "list", sortValue, searchValue]
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["posts", "list", sortValue, searchValue],
@@ -57,41 +57,54 @@ export default function PostList({
 
   return (
     <div
-      className={`${isFetchingNextPage ? "opacity-50" : ""} flex w-full flex-col rounded-[24px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:p-6 md:p-8`}
+      className={cn(
+        "w-full transition-opacity duration-500",
+        isFetchingNextPage && "opacity-70",
+      )}
     >
-      <div className="flex flex-col sm:gap-8">
+      <div className="flex flex-col">
         {postList.length > 0 ? (
-          postList.map((post: Post) => (
-            <PostCard
-              key={post.id}
-              {...post}
-              authorName={post.author.name}
-              commentCount={post._count.comments}
-              date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
-                month: "long",
-                day: "numeric",
-              })}
-              timeAgo={post.createdAt}
-              thumbnailUrl={post.image}
-              onDetailClick={() => router.push(`/lounge/${post.id}`)}
-            />
-          ))
+          <div className="grid grid-cols-1 gap-1 sm:gap-2">
+            {postList.map((post: Post) => (
+              <PostCard
+                key={post.id}
+                {...post}
+                authorName={post.author.name}
+                commentCount={post._count.comments}
+                date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
+                  month: "long",
+                  day: "numeric",
+                })}
+                timeAgo={post.createdAt}
+                thumbnailUrl={post.image}
+                onDetailClick={() => router.push(`/lounge/${post.id}`)}
+              />
+            ))}
+          </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-gray-50">
-              <SearchX className="size-8 text-gray-300" />
+          <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
+            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
+              <SearchX className="size-10 text-slate-200" strokeWidth={1.5} />
             </div>
-            <p className="text-lg font-semibold text-gray-900">
-              검색 결과가 없습니다.
-            </p>
-            <p className="mt-2 text-gray-500">
-              다른 검색어로 다시 시도해보세요.
+            <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
+              No Results found.
+            </h3>
+            <p className="mt-2 text-sm font-medium text-slate-400">
+              다른 키워드로 아카이브를 탐색해보세요.
             </p>
           </div>
         )}
       </div>
-      <div ref={bottomRef} className="flex h-20 items-center justify-center">
-        {isFetchingNextPage && <p>불러오는 중...</p>}
+
+      <div ref={bottomRef} className="flex h-32 items-center justify-center">
+        {isFetchingNextPage && (
+          <div className="flex items-center gap-3">
+            <Loader2 className="text-main-purple animate-spin" size={20} />
+            <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
+              Updating Archive...
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

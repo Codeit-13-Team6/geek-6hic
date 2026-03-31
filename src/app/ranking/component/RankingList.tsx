@@ -25,7 +25,7 @@ export default function RankingList() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
       <div className="mb-12 flex items-center gap-3">
-        <div className="bg-main-purple h-[6px] w-8" />
+        <div className="bg-main-purple h-[6px] w-8 rounded-full" />
         <span className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
           Weekly Top 3
         </span>
