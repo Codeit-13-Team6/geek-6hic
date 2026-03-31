@@ -57,7 +57,7 @@ export default function MyMeetingsClient() {
       <div className="mb-12 flex items-center gap-3">
         <div className="bg-main-purple h-[6px] w-8" />
         <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
-          Joined Index
+          Joined List
         </span>
       </div>
 

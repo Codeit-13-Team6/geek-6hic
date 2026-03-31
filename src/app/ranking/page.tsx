@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+import { Trophy } from "lucide-react";
 
 const RankingList = dynamic(() => import("./component/RankingList"), {
   ssr: false,
@@ -11,30 +12,43 @@ const RankingList = dynamic(() => import("./component/RankingList"), {
 
 export default function Page() {
   return (
-    <div className="w-full bg-gray-50 pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
-      <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <section className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex size-[36px] shrink-0 items-center justify-center rounded-full sm:mr-2 sm:size-[54px]">
-              <span className="text-3xl sm:text-5xl">💬</span>
+    <div className="relative w-full">
+      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:pb-12">
+        <div className="grid grid-cols-1 gap-5 sm:items-end md:grid-cols-2 md:items-center">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-4">
+              <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">
+                <Trophy className="text-white" size={24} />
+              </div>
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase">
+                Meeting / Ranking
+              </span>
             </div>
-            <div>
-              <h1 className="text-[20px] font-bold text-gray-900 sm:text-[24px] lg:text-[32px]">
-                모임 랭킹
+            <div className="space-y-2">
+              <h1 className="text-[32px] leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
+                MEETING{" "}
+                <span className="text-main-purple uppercase">Ranking.</span>
               </h1>
-              <p className="mt-1 text-base font-medium text-gray-500 sm:text-lg lg:text-xl">
-                모임 랭킹을 확인할 수 있어요 🫶
+            </div>
+          </div>
+
+          <div className="flex flex-col items-end self-end text-right">
+            <div className="max-w-[420px]">
+              <div className="bg-main-purple mb-2 hidden h-1.5 w-16 md:ml-auto md:block" />
+              <p className="text-sm font-medium tracking-tight text-slate-400 sm:text-base">
+                스프린터 파트너들이 가장 활발하게 <br />
+                활동 중인 모임 리스트를 확인해보세요.
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </header>
 
-        <section className="mt-6 sm:mt-9">
-          <Suspense fallback={<RankingListSkeleton />}>
-            <RankingList />
-          </Suspense>
-        </section>
-      </div>
+      <section className="mt-3 sm:mt-9">
+        <Suspense fallback={<RankingListSkeleton />}>
+          <RankingList />
+        </Suspense>
+      </section>
     </div>
   );
 }

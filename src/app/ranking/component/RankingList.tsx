@@ -3,6 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/clientFetcher";
 import TopRankCard from "./TopRankCard";
+import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
 import { RankedItem } from "@/types";
@@ -22,43 +23,54 @@ export default function RankingList() {
   const top10List = rankedList.slice(3, 10);
 
   return (
-    <div className="animate-in fade-in duration-700">
-      <div className="pt-5 sm:pt-10">
-        <div className="flex gap-2 pb-5 sm:gap-[16px] sm:pb-[40px]">
-          <div className="min-w-0 flex-1 basis-0">
-            {" "}
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <div className="mb-12 flex items-center gap-3">
+        <div className="bg-main-purple h-[6px] w-8" />
+        <span className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
+          Weekly Top 3
+        </span>
+      </div>
+
+      <section className="mb-10 md:mb-15">
+        {/* 1데스크톱 & 태블릿 */}
+        <div className="hidden items-end gap-6 md:flex lg:gap-10">
+          <div className="flex-1">
             <TopRankCard
-              title={top3List[1]?.meetName}
-              point={top3List[1]?.rankScore}
               rank={2}
-              meetType={top3List[1]?.meetType}
+              item={top3List[1]}
               onDetailClick={() => router.push(`/meetings/${top3List[1]?.id}`)}
             />
           </div>
-
-          <div className="flex-1 -translate-y-5 sm:-translate-y-10">
+          <div className="flex-[1.15] -translate-y-8">
             <TopRankCard
-              title={top3List[0]?.meetName}
-              point={top3List[0]?.rankScore}
               rank={1}
-              meetType={top3List[0]?.meetType}
+              item={top3List[0]}
               onDetailClick={() => router.push(`/meetings/${top3List[0]?.id}`)}
             />
           </div>
           <div className="flex-1">
-            {" "}
             <TopRankCard
-              title={top3List[2]?.meetName}
-              point={top3List[2]?.rankScore}
               rank={3}
-              meetType={top3List[2]?.meetType}
-              onDetailClick={() => router.push(`/meetings/${top3List[3]?.id}`)}
+              item={top3List[2]}
+              onDetailClick={() => router.push(`/meetings/${top3List[2]?.id}`)}
             />
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col gap-[16px]">
+        {/* 모바일 */}
+        <div className="flex flex-col gap-3 md:hidden">
+          {top3List.map((item, idx) => (
+            <TopRankMobileCard
+              key={item.id || idx}
+              rank={idx + 1}
+              item={item}
+              onDetailClick={() => router.push(`/meetings/${item.id}`)}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-1 sm:gap-2">
         {top10List.map((item, index) => (
           <RankCard
             key={item.id}
@@ -66,10 +78,11 @@ export default function RankingList() {
             point={item.rankScore}
             rank={index + 4}
             meetType={item.meetType}
+            image={item.image}
             onDetailClick={() => router.push(`/meetings/${item.id}`)}
           />
         ))}
-      </div>
+      </section>
     </div>
   );
 }

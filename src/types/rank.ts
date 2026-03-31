@@ -18,4 +18,5 @@ export interface RankedItem {
   rankScore: number;
   meetName: string;
   meetType: string;
+  image?: string;
 }
