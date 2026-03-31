@@ -54,9 +54,21 @@
   --ring: #260656;
 }
 
+/* 💡 모달 오버레이가 GNB를 덮도록 강제 설정 */
+.fixed {
+  z-index: 9999;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
 @layer base {
   :root {
     --ring: transparent; /* 링 색상을 투명으로 초기화 */
+    --background: #ffffff;
+    --foreground: #0f172a; /* slate-950 */
   }
 
   /* 모든 입력 요소와 버튼에서 강제 포커스 링 제거 */
