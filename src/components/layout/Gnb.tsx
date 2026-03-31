@@ -108,7 +108,7 @@ export function Gnb() {
                 href={link.href}
                 className={cn(
                   "relative py-2 text-sm font-bold tracking-tight transition-all",
-                  pathname === link.href
+                  pathname.startsWith(link.href)
                     ? "text-main-purple after:bg-main-purple after:absolute after:-bottom-1 after:left-1/2 after:h-[3px] after:w-5 after:-translate-x-1/2 after:rounded-full"
                     : "text-slate-400 hover:text-slate-900",
                 )}
