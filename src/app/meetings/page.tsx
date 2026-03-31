@@ -75,17 +75,16 @@ export default async function Page() {
 
           <div className="flex flex-col items-end gap-4 text-right">
             <div className="flex max-w-[470px] md:block">
-              <div className="space-y-3">
-                <div className="bg-main-purple hidden h-1.5 w-20 md:ml-auto md:block"></div>
-                <p className="text-lg leading-tight font-bold text-slate-900 sm:text-xl lg:text-2xl">
+              <div className="space-y-1">
+                <div className="bg-main-purple mb-2 hidden h-1.5 w-20 md:ml-auto md:block"></div>
+                <p className="text-lg font-medium tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
                   스프린터 파트너들과 <br className="sm:hidden md:block" />
                   공유하고, 협업하고, 성장하는 공간
                 </p>
-                <p className="text-sm font-medium text-slate-400">
+                <p className="text-sm font-light tracking-tight text-slate-400 md:text-base">
                   모임을 생성하여 아지트를 만들어보세요.
                 </p>
               </div>
-              <div className="bg-main-purple ml-4 w-1.5 shrink-0 md:hidden"></div>
             </div>
           </div>
         </div>
