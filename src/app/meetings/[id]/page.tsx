@@ -1,6 +1,7 @@
 import {
   dehydrate,
   HydrationBoundary,
+  type InfiniteData,
   QueryClient,
 } from "@tanstack/react-query";
 import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
@@ -12,7 +13,16 @@ import {
   getMeetingRecommendationCandidates,
   getTodayAttendanceStatus,
 } from "@/api/server/meetingDetail";
-import { MeetingDetailApiData, MeetingDetailPageProps } from "@/types";
+import {
+  type GetPostsResponse,
+  MeetingDetailApiData,
+  MeetingDetailPageProps,
+} from "@/types";
+import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
+import { Suspense } from "react";
+import { getLoungePosts } from "@/api/server";
+import { getNextPageParam } from "@/lib/pagination";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 
 export default async function MeetingDetailPage({
   params,
@@ -22,25 +32,10 @@ export default async function MeetingDetailPage({
 
   const queryClient = new QueryClient();
 
-  queryClient.fetchQuery({
-    queryKey: ["meeting-detail", resolvedMeetingId],
-    queryFn: () => getMeetingDetail(resolvedMeetingId),
-  });
-
   const meetingDetail = queryClient.getQueryData<MeetingDetailApiData>([
     "meeting-detail",
     resolvedMeetingId,
   ]);
-
-  queryClient.prefetchQuery({
-    queryKey: ["meeting-participants", resolvedMeetingId],
-    queryFn: () => getMeetingParticipants(resolvedMeetingId),
-  });
-
-  queryClient.prefetchQuery({
-    queryKey: ["meeting-recommendation-candidates", resolvedMeetingId],
-    queryFn: () => getMeetingRecommendationCandidates(),
-  });
 
   const user = await getCurrentUserOnServer();
 
@@ -57,12 +52,46 @@ export default async function MeetingDetailPage({
 
   return (
     <main className="mx-auto flex w-full max-w-[375px] flex-col px-4 py-6 md:max-w-[744px] md:px-6 md:py-8 xl:max-w-[1280px] xl:px-0 xl:py-12">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <MeetingDetailContent
-          meetingId={resolvedMeetingId}
-          hasAttendedInitially={hasAttendedInitially}
-        />
-      </HydrationBoundary>
+      <Suspense fallback={<DetailSkeleton />}>
+        <PrefetchBoundary
+          prefetchFn={async (qc) => {
+            await Promise.all([
+              qc.prefetchQuery({
+                queryKey: ["meeting-detail", resolvedMeetingId],
+                queryFn: () => getMeetingDetail(resolvedMeetingId),
+              }),
+              qc.prefetchQuery({
+                queryKey: ["meeting-participants", resolvedMeetingId],
+                queryFn: () => getMeetingParticipants(resolvedMeetingId),
+              }),
+              qc.prefetchQuery({
+                queryKey: [
+                  "meeting-recommendation-candidates",
+                  resolvedMeetingId,
+                ],
+                queryFn: () => getMeetingRecommendationCandidates(),
+              }),
+              qc.prefetchInfiniteQuery<
+                GetPostsResponse,
+                Error,
+                InfiniteData<GetPostsResponse>,
+                readonly string[],
+                string | undefined
+              >({
+                queryKey: ["posts", "list", "my", "latest", ""],
+                queryFn: ({ pageParam }) => getLoungePosts(pageParam),
+                initialPageParam: undefined,
+                getNextPageParam,
+              }),
+            ]);
+          }}
+        >
+          <MeetingDetailContent
+            meetingId={resolvedMeetingId}
+            hasAttendedInitially={hasAttendedInitially}
+          />
+        </PrefetchBoundary>
+      </Suspense>
     </main>
   );
 }

@@ -12,7 +12,12 @@ export function useOptimisticMutation<TData, TVariables>(
   queryClient: QueryClient,
   config: OptimisticMutationConfig<TData, TVariables>,
 ) {
-  const { queryKey, updater, invalidateKeys, onErrorMessage } = config;
+  const {
+    queryKey,
+    updater,
+    invalidateKeys,
+    onErrorMessage,
+  } = config;
 
   return {
     onMutate: async (variables: TVariables) => {

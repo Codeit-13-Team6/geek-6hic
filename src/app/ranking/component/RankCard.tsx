@@ -16,7 +16,7 @@ export default function RankCard({
   return (
     <article className="group flex flex-row items-center justify-between border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:px-4">
       <div className="flex min-w-0 items-center gap-4 sm:gap-6">
-        <div className="w-8 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:text-2xl">
+        <div className="min-w-4 sm:min-w-8 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:text-2xl">
           {rank}
         </div>
 

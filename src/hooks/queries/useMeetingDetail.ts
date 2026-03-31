@@ -5,6 +5,7 @@ import type { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import {
   InfiniteData,
+  QueryKey,
   useMutation,
   useQuery,
   useQueryClient,
@@ -29,8 +30,14 @@ import {
   MeetingActionErrorResponse,
   MeetingDetailApiData,
   MeetingDetailData,
+  Post,
 } from "@/types";
-import { deleteFavorites, updateFavorites } from "@/api/client";
+import {
+  deleteFavorites,
+  likePost,
+  unlikePost,
+  updateFavorites,
+} from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 
 const getJoinErrorMessage = (code?: string) => {
@@ -250,7 +257,9 @@ export function useMeetingDetailMutations({
 }
 
 // 모임 좋아요 mutation 함수
-export function useMeetingFavoriteMutation() {
+export function useMeetingFavoriteMutation(
+  queryKey: QueryKey = ["meetings", "joined"],
+) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -259,49 +268,27 @@ export function useMeetingFavoriteMutation() {
         await deleteFavorites(meeting.id);
         return;
       }
-
       await updateFavorites(meeting.id);
     },
-    onMutate: async (meeting) => {
-      const queryKey = ["meetings", "joined"] as const;
-
-      await queryClient.cancelQueries({ queryKey });
-
-      const previousMeetings =
-        queryClient.getQueryData<InfiniteData<JoinedMeetingsResponse>>(
-          queryKey,
-        );
-
-      queryClient.setQueryData<InfiniteData<JoinedMeetingsResponse>>(
-        queryKey,
-        (oldData) => {
-          if (!oldData) return oldData;
-
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page) => ({
-              ...page,
-              data: page.data.map((item) =>
-                item.id === meeting.id
-                  ? { ...item, isFavorited: !item.isFavorited }
-                  : item,
-              ),
-            })),
-          };
-        },
-      );
-
-      return { previousMeetings, queryKey };
-    },
-    onError: (_error, _meeting, context) => {
-      if (!context?.previousMeetings) return;
-
-      queryClient.setQueryData(context.queryKey, context.previousMeetings);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["meetings"] });
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
-    },
+    ...useOptimisticMutation<
+      InfiniteData<JoinedMeetingsResponse>,
+      Pick<JoinedMeeting, "id" | "isFavorited">
+    >(queryClient, {
+      queryKey,
+      updater: (oldData, meeting) => ({
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          data: page.data.map((item) =>
+            item.id === meeting.id
+              ? { ...item, isFavorited: !item.isFavorited }
+              : item,
+          ),
+        })),
+      }),
+      invalidateKeys: [queryKey, ["meetings"], ["favorites"]],
+      onErrorMessage: "즐겨찾기 처리에 실패했습니다.",
+    }),
   });
 
   return {
@@ -311,4 +298,3 @@ export function useMeetingFavoriteMutation() {
     error: mutation.error,
   };
 }
-
