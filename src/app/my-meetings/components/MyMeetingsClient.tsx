@@ -19,7 +19,9 @@ export const meetingJoinedInfiniteQueryOptions =
     queryKey: ["meetings", "joined"],
     queryFn: ({ pageParam }) =>
       getJoinedMeetings(
-        pageParam ? { cursor: pageParam as string, size: 10 } : { size: 10 },
+        pageParam
+          ? { cursor: pageParam as string, size: 10, sortOrder: "desc" }
+          : { size: 10, sortOrder: "desc" },
       ),
     initialPageParam: undefined,
     getNextPageParam: getMeetingJoinedNextPageParam,
@@ -67,6 +69,7 @@ export default function MyMeetingsClient() {
           isLoading={isFetchingNextPage}
           onItemClick={(item) => router.push(`/meetings/${item.id}`)}
           onHeartClick={(item) => toggleFavorite(item)}
+          meetingStatusBadgeVisible={false}
         />
       </div>
 

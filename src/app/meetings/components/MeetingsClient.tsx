@@ -45,6 +45,7 @@ export default function MeetingsClient() {
 
   // 현재 선택된 정렬
   const [sortValue, setSortValue] = useState<SortValue>(null);
+  const [isSortDesc, setIsSortDesc] = useState<boolean>(true);
 
   // 실제 적용된 날짜 필터
   const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(
@@ -58,7 +59,7 @@ export default function MeetingsClient() {
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
-      queryKey: ["meetings", activeValue, sortValue],
+      queryKey: ["meetings", activeValue, sortValue, isSortDesc],
       queryFn: ({ pageParam }) => {
         const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
@@ -66,10 +67,10 @@ export default function MeetingsClient() {
         const params: GetMeetingListParams = {
           type: currentTab?.type,
           size: 10,
+          sortOrder: isSortDesc ? "desc" : "asc",
           ...(sortValue
             ? {
                 sortBy: sortByMap[sortValue],
-                sortOrder: sortOrderMap[sortValue],
               }
             : {}),
           ...(cursor ? { cursor } : {}),
@@ -116,10 +117,12 @@ export default function MeetingsClient() {
           // 현재 상태 (부모 → 자식)
           activeValue={activeValue}
           sortValue={sortValue}
+          sortDescValue={isSortDesc}
           appliedDate={appliedDate}
           // 상태 변경 핸들러 (자식 → 부모)
           onChangeTab={setActiveValue}
           onChangeSort={setSortValue}
+          onChangeSortDesc={setIsSortDesc}
           onApplyDate={setAppliedDate}
           onResetFilters={handleResetFilters}
         />

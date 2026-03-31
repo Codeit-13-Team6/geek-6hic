@@ -14,7 +14,7 @@ export async function getMeetingList(
   const res = await axiosInstance.get<JoinedMeetingsResponse>("/meetings", {
     params,
   });
-  console.log(res);
+  console.log(res, params);
 
   return res.data;
 }
@@ -30,6 +30,7 @@ export async function getMeeting(params?: {
 export async function getJoinedMeetings(params: {
   cursor?: string;
   size?: number;
+  sortOrder?: string;
   completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await axiosInstance.get("/meetings/joined", {
