@@ -101,7 +101,7 @@ export function Gnb() {
             </span>
           </Link>
 
-          <nav className="hidden items-center sm:flex sm:gap-6">
+          <nav className="hidden items-center md:flex md:gap-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -120,10 +120,10 @@ export function Gnb() {
         </div>
 
         {/* 오른쪽 영역 */}
-        <div className="flex h-full items-center gap-0 sm:gap-4">
+        <div className="flex h-full items-center gap-0 sm:gap-2 md:gap-4">
           {isLoggedIn ? (
             <div
-              className="flex items-center gap-0 sm:gap-2"
+              className="flex items-center gap-0 md:gap-2"
               ref={notificationRef}
             >
               <button
@@ -135,7 +135,7 @@ export function Gnb() {
               </button>
 
               <button
-                className="hidden h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-all hover:opacity-80 active:scale-95 sm:flex"
+                className="hidden h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-all hover:opacity-80 active:scale-95 md:flex"
                 onClick={() => router.push(`/users/${user.id}`)}
               >
                 {user?.image && !isBlobUrl ? (
@@ -157,11 +157,11 @@ export function Gnb() {
                 )}
               </button>
 
-              <div className="mx-1 hidden h-3 w-[1px] bg-slate-200 sm:block" />
+              <div className="mx-1 hidden h-3 w-[1px] bg-slate-200 md:block" />
 
               <button
                 onClick={handleLogout}
-                className="hidden cursor-pointer rounded-lg px-3 py-1.5 transition-all sm:block"
+                className="hidden cursor-pointer rounded-lg px-3 py-1.5 transition-all md:block"
               >
                 <span className="hover:text-main-purple text-sm font-bold text-slate-600">
                   로그아웃
@@ -188,7 +188,7 @@ export function Gnb() {
           )}
 
           {/* 모바일 햄버거 */}
-          <div className="flex items-center justify-center sm:hidden">
+          <div className="flex items-center justify-center md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="flex h-8 w-8 items-center justify-center rounded-xl transition-all hover:bg-slate-50 active:scale-95">
                 <Menu className="h-5 w-5 text-slate-800" />

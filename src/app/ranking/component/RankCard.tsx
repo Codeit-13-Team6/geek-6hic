@@ -1,60 +1,62 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-} from "@/components/shadcnOrigin/card";
+"use client";
+
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Image from "next/image";
-import profileImg from "@/assets/img/banner/banner-lg.jpg";
+import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankCardProps } from "@/types";
-
 
 export default function RankCard({
   title = "모임 이름이 없습니다.",
-  point = 123123,
+  point = 0,
   rank = 0,
   meetType = "스터디",
+  image,
   onDetailClick = () => {},
-}: RankCardProps) {
+}: RankCardProps & { image?: string }) {
   return (
-    <Card className="flex flex-row justify-evenly gap-2 bg-white px-3 py-2 ring-0! sm:h-[100px] sm:justify-between sm:gap-0 sm:px-[32px] sm:py-[10px]">
-      <CardContent className="flex min-w-0 shrink-0 flex-row items-center justify-center px-0">
-        <article className="flex shrink-0 flex-row items-center justify-center px-0">
-          <div className="text-main-green-500 pr-2 text-base font-semibold sm:pr-[32px] sm:text-xl">
-            {rank}
-          </div>
-          <div className="relative flex h-12 w-12 !shrink-0 items-center justify-center overflow-hidden rounded-xl bg-transparent sm:h-[71px] sm:w-[71px] sm:rounded-[24px]">
-            <Image
-              src={profileImg}
-              alt="프로필"
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        </article>
-        <section className="flex w-[110px] flex-col justify-center pl-2 sm:w-auto sm:max-w-[740px] sm:pr-[80px] sm:pl-[32px]">
-          <h3 className="text-md truncate font-semibold text-ellipsis whitespace-nowrap text-black sm:text-xl">
-            {title}
-          </h3>
-          <p className="text-sm font-bold text-gray-500 sm:text-lg">
+    <article className="group flex flex-row items-center justify-between border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:px-4">
+      <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+        <div className="w-8 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:text-2xl">
+          {rank}
+        </div>
+
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[14px] bg-slate-100 sm:h-[60px] sm:w-[60px]">
+          <Image
+            src={image || mainFallback}
+            alt="thumb"
+            fill
+            className="object-cover grayscale-[20%] transition-transform duration-500 group-hover:scale-110 group-hover:grayscale-0"
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-col justify-center gap-0.5">
+          <p className="text-main-purple text-[9px] font-black tracking-[0.2em] uppercase sm:text-[10px]">
             {meetType}
           </p>
-        </section>
-      </CardContent>
-      <CardAction className="flex flex-row items-center gap-2 py-[20px] sm:gap-[32px]">
-        <p className="text-main-green-600 flex items-end text-sm font-bold whitespace-nowrap sm:text-2xl">
-          {point}점
-        </p>
+          <h3 className="truncate text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+            {title}
+          </h3>
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-6 sm:gap-8">
+        <div className="text-right">
+          <p className="text-lg font-black tracking-tighter text-slate-900 sm:text-xl">
+            {point.toLocaleString()}
+            <span className="ml-1 text-[9px] font-bold tracking-widest text-slate-400 uppercase">
+              pts
+            </span>
+          </p>
+        </div>
+
         <BtnCommon
           onClick={onDetailClick}
           variant="outline"
-          size="sm"
-          className="w-20 rounded-lg sm:w-[125px]"
+          className="hover:border-main-purple hover:bg-main-purple hidden h-9 w-20 rounded-xl border border-slate-200 bg-transparent text-[10px] font-black tracking-widest text-slate-500 uppercase transition-all hover:text-white sm:flex"
         >
-          상세보기
+          View
         </BtnCommon>
-      </CardAction>
-    </Card>
+      </div>
+    </article>
   );
 }

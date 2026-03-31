@@ -11,6 +11,7 @@ interface MeetingRankData {
   meetName: string;
   meetType: string;
   linkPostId: number;
+  image?: string;
 }
 
 type MeetingRankMap = Record<number, MeetingRankData>;
@@ -22,6 +23,7 @@ interface MeetingItem {
   name: string;
   latitude: number;
   region: string;
+  image?: string;
 }
 
 interface CommentItem {
@@ -55,6 +57,7 @@ export async function GET() {
           commentingUserList: [],
           meetType: item.type,
           meetName: item.name,
+          image: item.image,
           rankScore: 0,
           linkPostId: Number(item.region),
         };

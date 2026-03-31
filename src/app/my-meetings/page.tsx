@@ -16,8 +16,9 @@ export function getMeetingJoinedNextPageParam(
 export default async function Page() {
   return (
     <div className="relative w-full">
-      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-20 lg:pb-12">
-        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
+      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:pb-12">
+        {" "}
+        <div className="grid grid-cols-1 gap-5 sm:items-end sm:gap-8 md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">

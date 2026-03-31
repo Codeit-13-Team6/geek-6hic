@@ -1,98 +1,108 @@
-import Image from "next/image";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from "@/components/shadcnOrigin/card";
-import { BtnCommon } from "@/components/ui/BtnCommon";
-import profileImg from "@/assets/img/banner/banner-lg.jpg";
-import { RankCardProps } from "@/types";
+"use client";
 
+import Image from "next/image";
+import mainFallback from "@/assets/img/fallback/mainFallback.png";
+import { Card, CardAction, CardContent } from "@/components/shadcnOrigin/card";
+import { BtnCommon } from "@/components/ui/BtnCommon";
+import { RankedItem } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function TopRankCard({
-  title = "모임 이름이 없습니다.",
-  point = 123123,
-  rank = 0,
-  meetType = "스터디",
-  onDetailClick = () => {},
-}: RankCardProps) {
-  const rankNumber = {
-    1: {
-      pointColor: "text-[#ffb900] ",
-      badgeColor: "bg-[#ffb900]",
-    },
-    2: {
-      pointColor: "text-white ",
-      badgeColor: "bg-[#e2e8f0]",
-    },
-    3: {
-      pointColor: "text-white ",
-      badgeColor: "bg-[#bb4d00]",
-    },
-    0: {
-      pointColor: "text-white ",
-      badgeColor: "bg-white",
-    },
-  };
-  const rankData = rankNumber[rank as keyof typeof rankNumber] ?? rankNumber[0];
+  rank,
+  item,
+  onDetailClick,
+}: {
+  rank: number;
+  item: RankedItem;
+  onDetailClick: () => void;
+}) {
+  const isFirst = rank === 1;
+  const suffix = ["ST", "ND", "RD"][rank - 1] || "TH";
 
   return (
-    <Card className="relative flex h-[141px] w-full flex-col justify-between overflow-hidden bg-gray-200 p-2 sm:h-[540px] sm:px-[22px] sm:py-[20px]">
+    <Card
+      className={cn(
+        "group relative w-full overflow-hidden !border-none transition-all duration-700",
+        isFirst
+          ? "aspect-[3/4.2] shadow-[0_40px_80px_-20px_rgba(255,185,0,0.3)] ring-1 ring-[#FFB900]/30"
+          : "aspect-[3/4.2] shadow-2xl shadow-black/10 grayscale-[40%] hover:-translate-y-2 hover:grayscale-0",
+      )}
+    >
       <Image
-        src={profileImg}
-        alt="프로필"
+        src={item?.image || mainFallback}
+        alt="rank-bg"
         fill
-        className="object-cover"
-        unoptimized
+        className="object-cover transition-transform duration-1000 select-none group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
-      <CardHeader className="relative z-10 flex justify-end px-0 pt-2 pb-[16px] sm:pt-5">
-        <div
-          className={`${rankData.badgeColor} flex h-[20px] w-[50px] items-center justify-center rounded-[24px] text-sm font-semibold text-black sm:h-[24px] sm:w-[108px]`}
-        >
-          {rank}ND
-          <span className="hidden sm:inline">&nbsp;PLACE</span>
-        </div>
-      </CardHeader>
-      <div className="relative z-10 flex flex-col">
-        <CardContent className="px-0 pb-1 sm:pb-[25px]">
-          <p className="hidden pb-[8px] text-lg font-bold text-white sm:block">
-            {meetType}
-          </p>
-          <h3 className="truncate text-3xl text-sm font-bold text-white sm:pb-[4px] sm:text-2xl">
-            {title}
-          </h3>
-          <div className={`${rankData.pointColor}flex items-end`}>
-            <p className="text-xs font-bold sm:text-3xl">{point}</p>
-            <p className="pb-[1px] pl-[4px] text-xs font-bold sm:text-3xl">
-              점
-            </p>
-          </div>
-        </CardContent>
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
-        <CardAction className="relative z-10 w-full">
-          {rank === 1 ? (
-            <BtnCommon
-              variant="orange"
-              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
-              onClick={onDetailClick}
-            >
-              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
-                상세보기
-              </p>
-            </BtnCommon>
-          ) : (
-            <BtnCommon
-              variant="teritary"
-              className="h-7 rounded-md sm:h-15 sm:rounded-2xl"
-            >
-              <p className="text-sm font-semibold text-gray-900 sm:text-xl">
-                상세보기
-              </p>
-            </BtnCommon>
+      <div className="absolute top-7 right-0 z-20">
+        <div
+          className={cn(
+            "px-4 py-1.5 text-[10px] font-black tracking-[0.3em] shadow-2xl",
+            isFirst ? "bg-[#FFB900] text-slate-950" : "bg-white text-slate-950",
           )}
-        </CardAction>
+        >
+          {rank}
+          {suffix}
+        </div>
+      </div>
+
+      <div className="relative z-10 flex h-full flex-col justify-end p-7 pb-4 lg:p-10">
+        <div className="space-y-3">
+          <div className="mb-1 flex items-center gap-2">
+            <span
+              className={cn(
+                "text-xs font-black tracking-[0.3em] uppercase drop-shadow-md",
+                isFirst ? "text-[#FFB900]" : "text-white",
+              )}
+            >
+              {item?.meetType || "Category"}
+            </span>
+            {isFirst && (
+              <span className="text-[9px] font-bold tracking-widest text-white/50 uppercase">
+                🏆 Champion
+              </span>
+            )}
+          </div>
+
+          <h3
+            className={cn(
+              "line-clamp-2 leading-none font-black text-white text-shadow-2xs",
+              isFirst ? "text-3xl lg:text-4xl" : "text-2xl lg:text-3xl",
+            )}
+          >
+            {item?.meetName || "No Name"}
+          </h3>
+
+          <div className="flex items-end gap-1 font-black">
+            <span
+              className={cn(
+                "text-3xl lg:text-4xl",
+                isFirst ? "text-[#FFB900]" : "text-white",
+              )}
+            >
+              {item?.rankScore?.toLocaleString()}
+            </span>
+            <span className="mb-1 text-[10px] tracking-widest text-white/50 uppercase">
+              Points
+            </span>
+          </div>
+
+          <BtnCommon
+            onClick={onDetailClick}
+            className={cn(
+              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95",
+              isFirst
+                ? "bg-[#FFB900] text-slate-950 hover:bg-[#e5a700]"
+                : "bg-slate-950/30 text-white hover:bg-slate-800",
+            )}
+          >
+            <span className="text-[11px] tracking-[0.2em] uppercase">
+              View Details
+            </span>
+          </BtnCommon>
+        </div>
       </div>
     </Card>
   );
