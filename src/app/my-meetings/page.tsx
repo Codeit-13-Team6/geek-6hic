@@ -59,8 +59,12 @@ export default async function Page() {
               queryFn: ({ pageParam }) =>
                 getJoinedMeetingsServer(
                   pageParam
-                    ? { cursor: pageParam as string, size: 10 }
-                    : { size: 10 },
+                    ? {
+                        cursor: pageParam as string,
+                        size: 10,
+                        sortOrder: "desc",
+                      }
+                    : { size: 10, sortOrder: "desc" },
                 ),
               initialPageParam: undefined,
               getNextPageParam: getMeetingJoinedNextPageParam,

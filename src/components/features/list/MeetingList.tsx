@@ -15,11 +15,13 @@ export default function MeetingList({
   onItemClick,
   sortValue,
   onHeartClick,
+  meetingStatusBadgeVisible = true,
 }: MeetingListProps) {
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
     const isToday = endDate.toDateString() === now.toDateString();
+
     if (!isToday) return null;
     return `오늘 ${String(endDate.getHours()).padStart(2, "0")}시 마감`;
   }
@@ -52,6 +54,7 @@ export default function MeetingList({
       {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
+
         const deadLine = getDeadlineLabel(item.registrationEnd);
 
         const isUserJoined =
@@ -94,6 +97,7 @@ export default function MeetingList({
                     isUserJoined
                       ? "bg-slate-900/80 text-slate-100"
                       : "bg-slate-100 text-slate-500",
+                    meetingStatusBadgeVisible ? '' : 'hidden',
                   )}
                 >
                   {isUserJoined && (
@@ -132,8 +136,8 @@ export default function MeetingList({
                 )}
               </div>
 
-              <div className="mt-5 flex w-full items-center justify-between border-t border-slate-50 pt-4">
-                <div className="flex items-center gap-3">
+              <div className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
+                <div className="flex w-full items-center gap-3">
                   <div className="flex items-center gap-1.5">
                     <div className="relative h-3.5 w-3.5 opacity-30">
                       <Image src={person} fill alt="인원" />
@@ -153,16 +157,17 @@ export default function MeetingList({
                     </p>
                   </div>
 
-                  {/* 프로그레스 게이지 안 차는 문제 해결 필요 */}
-                  <Progress
-                    className={cn(
-                      "block h-1 w-24 shrink-0 overflow-hidden rounded-full bg-slate-100",
-                      isFull || isClosed
-                        ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
-                        : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
-                    )}
-                    value={(item.participantCount / item.capacity) * 100}
-                  />
+                  <div className="w-full">
+                    <Progress
+                      className={cn(
+                        "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
+                        isFull || isClosed
+                          ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
+                          : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
+                      )}
+                      value={(item.participantCount / item.capacity) * 100}
+                    />
+                  </div>
                 </div>
 
                 <LoginModal

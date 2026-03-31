@@ -159,11 +159,13 @@ export type SortValue = "deadline" | "participants" | null;
 export interface MeetingFiltersProps {
   activeValue: TabValue;
   sortValue: SortValue;
+  sortDescValue: boolean;
   appliedDate: DateRange | undefined;
   onChangeTab: (value: TabValue) => void;
   onChangeSort: (value: SortValue) => void;
   onApplyDate: (value: DateRange | undefined) => void;
   onResetFilters: () => void;
+  onChangeSortDesc: (value: boolean) => void;
 }
 
 export interface MeetingListProps {
@@ -172,6 +174,7 @@ export interface MeetingListProps {
   sortValue?: "deadline" | "participants" | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
+  meetingStatusBadgeVisible?: boolean
 }
 
 

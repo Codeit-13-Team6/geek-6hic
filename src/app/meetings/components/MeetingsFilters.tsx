@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/SelectCommon";
 import { MeetingFiltersProps, TabValue } from "@/types";
+import Image from "next/image";
+import downIcon from "@/assets/icon/chevron/chevron-down.svg";
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
@@ -31,16 +33,19 @@ const SORT_OPTIONS = [
 export default function MeetingFilters({
   activeValue,
   sortValue,
+  sortDescValue,
   appliedDate,
   onChangeTab,
   onChangeSort,
   onApplyDate,
   onResetFilters,
+  onChangeSortDesc,
 }: MeetingFiltersProps) {
   const [draftDate, setDraftDate] = useState<DateRange | undefined>(
     appliedDate,
   );
   const [isOpen, setIsOpen] = useState(false);
+
 
   const currentSortLabel = SORT_OPTIONS.find(
     (opt) => opt.value === sortValue,
@@ -66,9 +71,14 @@ export default function MeetingFilters({
     setIsOpen(false);
   };
 
+  const handleClickDesc = () => {
+    onChangeSortDesc(!sortDescValue);
+  };
+
   return (
     <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
+        {currentSortLabel}
         {TAB_LIST.map(({ value, label }) => (
           <li key={value} className="relative shrink-0 pb-2">
             <button
@@ -136,7 +146,7 @@ export default function MeetingFilters({
         >
           <SelectTrigger
             suppressHydrationWarning
-            className="h-auto w-auto gap-2 border-none bg-transparent p-0 text-xs font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
+            className="h-auto w-auto cursor-pointer gap-2 border-none bg-transparent p-0 text-xs font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
           >
             {currentSortLabel ? (
               <span className="text-main-purple">{currentSortLabel}</span>
@@ -163,6 +173,20 @@ export default function MeetingFilters({
             </SelectGroup>
           </SelectContent>
         </Select>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            handleClickDesc();
+          }}
+        >
+          <Image
+            className={sortDescValue ? "" : "rotate-180"}
+            src={downIcon}
+            width="24"
+            height="24"
+            alt="구글 아이콘"
+          />
+        </div>
       </div>
     </div>
   );
