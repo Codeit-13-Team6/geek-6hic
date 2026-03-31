@@ -78,7 +78,7 @@ export default function MeetingFilters({
                 "text-sm font-black tracking-tight transition-all sm:text-base",
                 activeValue === value
                   ? "text-main-purple"
-                  : "text-slate-300 hover:text-slate-500",
+                  : "text-slate-400 hover:text-slate-500",
               )}
             >
               {label}

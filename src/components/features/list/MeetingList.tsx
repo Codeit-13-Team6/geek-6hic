@@ -4,7 +4,6 @@ import Image from "next/image";
 import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import alram from "@/assets/icon/alarm/alarm-blue.svg";
 import { Heart } from "lucide-react";
-
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
@@ -20,14 +19,9 @@ export default function MeetingList({
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
-    const isSameYear = endDate.getFullYear() === now.getFullYear();
-    const isSameMonth = endDate.getMonth() === now.getMonth();
-    const isSameDate = endDate.getDate() === now.getDate();
-    const isToday = isSameYear && isSameMonth && isSameDate;
-
+    const isToday = endDate.toDateString() === now.toDateString();
     if (!isToday) return null;
-    const hours = String(endDate.getHours()).padStart(2, "0");
-    return `오늘 ${hours}시 마감`;
+    return `오늘 ${String(endDate.getHours()).padStart(2, "0")}시 마감`;
   }
 
   function formatDate(dateTime: string) {
@@ -37,16 +31,15 @@ export default function MeetingList({
 
   function formatTime(dateTime: string) {
     const date = new Date(dateTime);
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
+    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   }
 
   function isMeetingClosed(item: JoinedMeeting) {
     const now = new Date();
-    const isRegistrationClosed = new Date(item.registrationEnd) < now;
-    const isFull = item.participantCount >= item.capacity;
-    return isRegistrationClosed || isFull;
+    return (
+      new Date(item.registrationEnd) < now ||
+      item.participantCount >= item.capacity
+    );
   }
 
   const visibleMeetingList =
@@ -61,22 +54,23 @@ export default function MeetingList({
         const isFull = item.participantCount >= item.capacity;
         const deadLine = getDeadlineLabel(item.registrationEnd);
         const statusLabel = item.isJoined
-          ? "참여 완료"
+          ? "참여중"
           : isClosed
             ? "모집 마감"
             : null;
+
         return (
           <div
             key={item.id}
             onClick={() => onItemClick(item)}
             className={cn(
-              "group focus:ring-main-purple/20 relative flex cursor-pointer flex-col overflow-hidden rounded-[28px] bg-white transition-all duration-300 hover:-translate-y-1.5 focus:ring-4 sm:flex-row sm:items-stretch sm:gap-0 sm:p-0",
-              "shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05),_0_20px_40px_-10px_rgba(38,6,86,0.05)]",
-              "hover:shadow-[0_25px_50px_-10px_rgba(38,6,86,0.1)]",
+              "group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0",
+              "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
+              "hover:shadow-[0_20px_45px_-10px_rgba(38,6,86,0.12)]",
               statusLabel ? "opacity-95" : "",
             )}
           >
-            <div className="relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[220px]">
+            <div className="relative h-44 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[200px]">
               <Image
                 src={item.image || defaultImage}
                 fill
@@ -84,84 +78,82 @@ export default function MeetingList({
                   "object-cover transition-transform duration-500 group-hover:scale-105",
                   statusLabel ? "grayscale-[40%]" : "",
                 )}
-                alt="게시물 이미지"
+                alt="이미지"
                 unoptimized
               />
               {statusLabel && (
                 <span
                   className={cn(
-                    "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold shadow-sm",
-                    item.isCompleted
+                    "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-bold shadow-sm backdrop-blur-md",
+                    item.isJoined
                       ? "bg-slate-900/80 text-slate-100"
-                      : "bg-slate-200 text-slate-500",
+                      : "bg-slate-100 text-slate-500",
                   )}
                 >
-                  {item.isCompleted && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                  {item.isJoined && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                   )}
                   {statusLabel}
                 </span>
               )}
             </div>
 
-            <div className="flex flex-1 flex-col justify-between p-6 sm:p-8">
-              <div className="flex flex-col gap-1.5">
-                <span className="text-light-purple text-sm font-black tracking-[0.2em] uppercase">
+            <div className="flex flex-1 flex-col justify-between p-5 sm:p-7">
+              <div className="flex flex-col gap-1">
+                <span className="text-main-purple/60 text-[10px] font-bold tracking-[0.15em] uppercase sm:text-[11px]">
                   {item.type}
                 </span>
-                <h3 className="line-clamp-2 text-xl leading-tight font-black tracking-tight text-slate-950 sm:text-2xl">
+                <h3 className="line-clamp-2 text-lg leading-snug font-extrabold tracking-tight text-slate-900 sm:text-xl">
                   {item.name}
                 </h3>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <span className="rounded-xl bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-600">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-500">
                   {formatDate(item.dateTime)}
                 </span>
-                <span className="rounded-xl bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-600">
+                <span className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-500">
                   {formatTime(item.dateTime)}
                 </span>
 
-                {deadLine && !statusLabel ? (
-                  <span className="bg-main-purple/10 flex items-center gap-1.5 rounded-xl px-3.5 py-1.5">
-                    <span className="relative h-4.5 w-4.5 opacity-70">
-                      <Image src={alram} fill alt="알람 아이콘" />
+                {deadLine && !statusLabel && (
+                  <span className="bg-main-purple-light text-main-purple flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold">
+                    <span className="relative h-4 w-4">
+                      <Image src={alram} fill alt="알림" />
                     </span>
-                    <span className="text-main-purple text-xs font-black">
-                      {deadLine}
-                    </span>
+                    {deadLine}
                   </span>
-                ) : null}
+                )}
               </div>
 
-              <div className="mt-6 flex w-full items-center justify-between border-t border-slate-100 pt-4">
+              <div className="mt-5 flex w-full items-center justify-between border-t border-slate-50 pt-4">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <div className="relative h-4 w-4 opacity-40">
+                    <div className="relative h-3.5 w-3.5 opacity-30">
                       <Image src={person} fill alt="인원" />
                     </div>
-                    <p>
+                    <p className="flex items-baseline gap-0.5">
                       <span
                         className={cn(
-                          "text-sm font-black",
+                          "text-sm font-bold",
                           isFull ? "text-slate-400" : "text-main-purple",
                         )}
                       >
                         {item.participantCount}
                       </span>
-                      <span className="text-xs font-bold text-slate-400">
+                      <span className="text-[11px] font-medium text-slate-400">
                         /{item.capacity}
                       </span>
                     </p>
                   </div>
+
+                  {/* 프로그레스 게이지 안 차는 문제 해결 필요 */}
                   <Progress
                     className={cn(
-                      // 고치기 - 프로그레스 게이지 안 나타남, w값 조절 안됨
-                      "mt-1 block h-1.5 w-[80px] overflow-hidden rounded-full bg-slate-100",
-
+                      "block h-1 w-24 shrink-0 overflow-hidden rounded-full bg-slate-100",
                       isFull || isClosed
-                        ? "[&_[data-slot=progress-indicator]]:bg-slate-300"
-                        : "[&_[data-slot=progress-indicator]]:bg-main-purple",
+                        ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
+                        : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
                     )}
                     value={(item.participantCount / item.capacity) * 100}
                   />
@@ -175,14 +167,14 @@ export default function MeetingList({
                         e.stopPropagation();
                         onHeartClick(item);
                       }}
-                      className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
+                      className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                     >
                       <Heart
                         className={cn(
                           "h-5 w-5 transition-all",
                           item.isFavorited
-                            ? "fill-indigo-400 text-indigo-400"
-                            : "fill-slate-200 text-slate-200",
+                            ? "fill-main-purple text-main-purple"
+                            : "text-slate-300",
                         )}
                       />
                     </button>
@@ -194,14 +186,14 @@ export default function MeetingList({
                       e.stopPropagation();
                       onHeartClick(item);
                     }}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white transition-all hover:scale-110 hover:bg-slate-100"
+                    className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                   >
                     <Heart
                       className={cn(
                         "h-5 w-5 transition-all",
                         item.isFavorited
-                          ? "fill-indigo-400 text-indigo-400"
-                          : "fill-slate-200 text-slate-200",
+                          ? "fill-main-purple text-main-purple"
+                          : "text-slate-300",
                       )}
                     />
                   </button>
