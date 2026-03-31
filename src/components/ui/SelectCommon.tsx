@@ -61,11 +61,11 @@ function SelectTrigger({
         />
       </span>
       {children}
-      <SelectPrimitive.Icon
-        render={
-          <ChevronDownIcon className="pointer-events-none size-4 text-gray-600" />
-        }
-      />
+      {/*<SelectPrimitive.Icon*/}
+      {/*  render={*/}
+      {/*    <ChevronDownIcon className="pointer-events-none size-4 text-gray-600" />*/}
+      {/*  }*/}
+      {/*/>*/}
     </SelectPrimitive.Trigger>
   )
 }

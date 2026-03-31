@@ -123,8 +123,11 @@ const refreshAccessToken = async (
       );
 
       const cachedTokenPair = await refreshMap.get(userId)!;
-      if (cachedTokenPair) await setTokenCookies(cachedTokenPair);
-
+      if (cachedTokenPair) {
+        try {
+          await setTokenCookies(cachedTokenPair);
+        } catch {}
+      }
       return cachedTokenPair;
     }
 
@@ -173,7 +176,11 @@ const refreshAccessToken = async (
           `[server-fetcher] 다른 forceRefresh가 이미 새 refresh 생성 → 재사용: ${requestUrl}`,
         );
         const result = await current;
-        if (result) await setTokenCookies(result);
+        if (result) {
+          try {
+            await setTokenCookies(result);
+          } catch {}
+        }
         return result;
       }
 
