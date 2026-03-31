@@ -6,7 +6,6 @@ import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,7 +37,7 @@ export default async function RootLayout({
             <Gnb />
 
             <ToasterProvider />
-            <main className="mx-auto w-full max-w-[1200px] px-6 sm:px-8">
+            <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20">
               {children}
             </main>
           </MemberProvider>

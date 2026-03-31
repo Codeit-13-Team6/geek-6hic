@@ -30,6 +30,7 @@ export async function getMeeting(params?: {
 export async function getJoinedMeetings(params: {
   cursor?: string;
   size?: number;
+  completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await axiosInstance.get("/meetings/joined", {
     params,
