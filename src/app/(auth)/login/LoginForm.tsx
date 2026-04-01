@@ -78,7 +78,7 @@ export default function LoginForm({
   const handleKakaoLogin = () => {
     setIsOAuthLoading("kakao");
     saveReturnUrl();
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao?redirect=${encodeURIComponent(window.location.origin + "/oauth/callback")}`;
   };
 
   const handleGoogleLogin = () => {
@@ -142,6 +142,9 @@ export default function LoginForm({
           size={"md"}
           type="submit"
           disabled={isLoading}
+          onClick={() => {
+            console.log('넌 눌리니 ? ')
+          }}
           className="mt-2 h-12 !rounded-xl font-black tracking-widest transition-transform active:scale-95"
         >
           로그인
