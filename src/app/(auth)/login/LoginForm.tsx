@@ -174,7 +174,7 @@ export default function LoginForm({
         >
           <Image src={googleIcon} width="20" height="20" alt="google" />
           {isOAuthLoading === "google" ? (
-            <span className="ml-2 animate-pulse text-[14px] font-bold text-slate-400">
+            <span className="animate-pulse text-[13px] font-bold text-slate-400">
               로그인 중...
             </span>
           ) : (
@@ -190,7 +190,7 @@ export default function LoginForm({
         >
           <Image src={kakaoIcon} width="20" height="20" alt="kakao" />
           {isOAuthLoading === "kakao" ? (
-            <span className="ml-2 animate-pulse text-[14px] font-bold text-slate-600">
+            <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-600">
               로그인 중...
             </span>
           ) : (

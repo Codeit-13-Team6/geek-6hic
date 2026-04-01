@@ -6,6 +6,7 @@ import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 import { Loader2, PlusCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function MyMeetingList() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function MyMeetingList() {
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-1">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         {allMeetings.map((item) => (
           <UserCard
             key={item.id}

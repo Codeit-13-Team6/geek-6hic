@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import profileImg from "@/assets/img/profile/female1-sm.jpg";
-import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
-import messageIcon from "@/assets/icon/message/message.svg";
+import { ThumbsUp, MessageSquare } from "lucide-react";
 import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
@@ -24,41 +23,42 @@ export default function PostCard({
   return (
     <article
       onClick={onDetailClick}
-      className="group flex cursor-pointer flex-col gap-6 rounded-2xl border-b border-slate-100 bg-transparent py-8 transition-all hover:bg-slate-100/50 sm:flex-row sm:gap-10 sm:px-4"
+      className="group flex cursor-pointer flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50"
     >
-      <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:aspect-square sm:h-40 sm:w-40 lg:h-48 lg:w-48">
+      {/* 💡 모바일에서 좌우/상단 여백 없이 꽉 차게 보이도록 설정 */}
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden sm:aspect-square sm:h-28 sm:w-28 sm:rounded-xl lg:h-32 lg:w-32">
         <FallbackImage
           src={thumbnailUrl || defaultImg.src}
           alt="thumb"
           fill
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-700 sm:group-hover:scale-105"
           onError={(e) => {
             (e.target as HTMLImageElement).src = defaultImg.src;
           }}
         />
-        <div className="absolute inset-0 bg-slate-950/5" />
       </div>
 
-      <div className="flex flex-1 flex-col justify-between py-1">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+      {/* 💡 텍스트 영역 패딩: 모바일에서만 좌우 px-5 적용하여 카드 안쪽으로 정렬 */}
+      <div className="flex flex-1 flex-col justify-between px-5 py-5 sm:px-0 sm:py-0">
+        <div className="space-y-2.5">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">
               {date}
             </span>
           </div>
 
-          <h3 className="group-hover:text-main-purple line-clamp-2 text-xl font-bold tracking-tighter text-slate-950 transition-colors sm:text-2xl lg:text-3xl">
+          <h3 className="sm:group-hover:text-main-purple line-clamp-2 text-lg font-extrabold tracking-tighter text-slate-950 transition-colors sm:text-xl lg:text-2xl">
             {title}
           </h3>
 
-          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500 sm:text-base">
+          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500">
             {pureContent || "내용이 없는 게시글입니다."}
           </p>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative size-8 overflow-hidden rounded-full shadow-sm ring-2 ring-white">
+        <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 text-xs font-medium text-slate-400">
+          <div className="flex items-center gap-2.5">
+            <div className="relative size-5 overflow-hidden rounded-full ring-2 ring-slate-50">
               <Image
                 src={profileImg}
                 alt="author"
@@ -67,35 +67,27 @@ export default function PostCard({
                 unoptimized
               />
             </div>
-            <span className="text-xs font-semibold tracking-tight text-slate-900 sm:text-sm">
-              {authorName}
-            </span>
+            <span className="text-slate-700">{authorName}</span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-400">
-            <div className="flex items-center gap-1.5 transition-colors group-hover:text-slate-600">
-              <Image
-                src={thumbsUpIcon}
-                alt="like"
-                width={14}
-                height={14}
-                className="opacity-60"
-                unoptimized
+          <div className="flex items-center gap-3.5 opacity-80 transition-opacity sm:group-hover:opacity-100">
+            <div className="flex items-center gap-1.5">
+              <ThumbsUp
+                size={13}
+                strokeWidth={2.5}
+                className="text-slate-300"
               />
-              <span className="text-[11px] font-black tracking-tighter sm:text-sm">
+              <span className="text-[13px] font-bold tracking-tight">
                 {likeCount}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 transition-colors group-hover:text-slate-600">
-              <Image
-                src={messageIcon}
-                alt="comment"
-                width={14}
-                height={14}
-                className="opacity-60"
-                unoptimized
+            <div className="flex items-center gap-1.5">
+              <MessageSquare
+                size={13}
+                strokeWidth={2.5}
+                className="text-slate-300"
               />
-              <span className="text-[11px] font-black tracking-tighter sm:text-sm">
+              <span className="text-[13px] font-bold tracking-tight">
                 {commentCount}
               </span>
             </div>

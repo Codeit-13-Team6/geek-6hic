@@ -62,22 +62,17 @@ export default function LoungeContent() {
             value={sortValue}
             onValueChange={(value) => value && setSortValue(value)}
           >
-            <SelectTrigger className="h-12 w-[120px] !rounded-xl border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-900 sm:h-14 sm:w-[140px]">
+            <SelectTrigger>
               <SelectValue>{currentSortLabel}</SelectValue>
             </SelectTrigger>
             <SelectContent
               alignItemWithTrigger={false}
               sideOffset={2}
               align="end"
-              className="z-50 min-w-[140px] overflow-hidden rounded-xl border-0 bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 outline-none"
             >
               <SelectGroup>
                 {sortOptions.map((item) => (
-                  <SelectItem
-                    key={item.value}
-                    value={item.value}
-                    className="focus:text-main-purple cursor-pointer rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-slate-50"
-                  >
+                  <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
                 ))}

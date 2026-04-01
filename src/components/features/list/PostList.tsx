@@ -5,7 +5,7 @@ import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/client/posts";
 import { Post } from "@/types";
 import { useRouter } from "next/navigation";
-import { SearchX, Loader2 } from "lucide-react"; // Loader2 추가로 간지 상승
+import { SearchX, Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { PostListProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -64,21 +64,29 @@ export default function PostList({
     >
       <div className="flex flex-col">
         {postList.length > 0 ? (
-          <div className="grid grid-cols-1 gap-1 sm:gap-2">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
             {postList.map((post: Post) => (
-              <PostCard
+              <div
                 key={post.id}
-                {...post}
-                authorName={post.author.name}
-                commentCount={post._count.comments}
-                date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
-                  month: "long",
-                  day: "numeric",
-                })}
-                timeAgo={post.createdAt}
-                thumbnailUrl={post.image}
-                onDetailClick={() => router.push(`/lounge/${post.id}`)}
-              />
+                className={cn(
+                  "group overflow-hidden rounded-[24px] bg-white transition-all duration-300",
+                  "border border-slate-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+                  "sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]",
+                )}
+              >
+                <PostCard
+                  {...post}
+                  authorName={post.author.name}
+                  commentCount={post._count.comments}
+                  date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
+                    month: "long",
+                    day: "numeric",
+                  })}
+                  timeAgo={post.createdAt}
+                  thumbnailUrl={post.image}
+                  onDetailClick={() => router.push(`/lounge/${post.id}`)}
+                />
+              </div>
             ))}
           </div>
         ) : (
@@ -104,6 +112,11 @@ export default function PostList({
               Updating Archive...
             </span>
           </div>
+        )}
+        {!hasNextPage && postList.length > 0 && (
+          <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
+            End of Archive.
+          </span>
         )}
       </div>
     </div>
