@@ -65,7 +65,7 @@ export default function SignUp() {
       className="flex min-h-[calc(100vh-80px)] items-center lg:-mt-12"
       aria-labelledby="sign-up-header"
     >
-      <div className="w-full px-6 sm:mx-auto sm:max-w-[540px] sm:px-0">
+      <div className="w-full sm:mx-auto sm:max-w-[540px]">
         <div className="rounded-[32px] border border-slate-100 bg-white px-8 py-12 shadow-2xl shadow-slate-200/40 sm:rounded-[48px] sm:px-16 sm:py-16">
           <div className="mb-12 flex flex-col items-center gap-1">
             <div className="bg-main-purple mb-2 h-1.5 w-8 rounded-full" />
