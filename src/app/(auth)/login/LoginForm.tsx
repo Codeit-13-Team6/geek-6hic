@@ -20,7 +20,7 @@ interface LoginFormProps {
 
 export default function LoginForm({
   onSuccess,
-  title = "로그인",
+  title = "Login",
 }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -67,7 +67,6 @@ export default function LoginForm({
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -89,21 +88,25 @@ export default function LoginForm({
   };
 
   return (
-    <div>
-      <h1 className="text-center text-base font-semibold text-gray-900 sm:text-2xl">
-        {title}
-      </h1>
+    <div className="w-full">
+      <div className="mb-8 flex flex-col items-center gap-1">
+        <div className="bg-main-purple mb-2 h-1.5 w-8 rounded-full" />
+        <h1 className="text-center text-3xl font-black tracking-tighter text-slate-950 uppercase">
+          {title}
+        </h1>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="flex flex-col gap-6 pt-10"
+        className="flex flex-col gap-4"
       >
         <InputCommon
-          label="이메일"
+          label="Email"
           type="email"
           isRequired
           placeholder="이메일을 입력해주세요."
-          inputSize={"sm"}
+          className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
           {...register("email", {
             required: "이메일을 입력해주세요.",
             pattern: {
@@ -117,16 +120,16 @@ export default function LoginForm({
         />
 
         <InputCommon
-          label="비밀번호"
+          label="Password"
           type="password"
           isRequired
           placeholder="비밀번호를 입력해주세요."
-          inputSize={"sm"}
+          className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
           {...register("password", {
             required: "비밀번호를 입력해주세요.",
             pattern: {
               value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-              message: "비밀번호는 영문과 숫자를 포함한 8자 이상이어야 합니다.",
+              message: "영문/숫자 포함 8자 이상",
             },
           })}
           isDestructive={!!errors.password}
@@ -134,54 +137,70 @@ export default function LoginForm({
           onClear={() => setValue("password", "")}
         />
 
-        <BtnCommon variant={"default"} size={"md"} type="submit">
-          {isLoading ? "로그인 중..." : "로그인"}
+        <BtnCommon
+          variant={"default"}
+          size={"md"}
+          type="submit"
+          disabled={isLoading}
+          className="mt-2 h-12 !rounded-xl font-black tracking-widest transition-transform active:scale-95"
+        >
+          로그인
         </BtnCommon>
       </form>
-      {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
 
-      <div className="mt-8 mb-6 flex items-center gap-4">
-        <div className="h-px flex-1 bg-gray-300"></div>
-        <p className="shrink text-[15px] font-medium text-gray-500">
-          SNS 계정으로 회원가입
+      {error && (
+        <p className="mt-4 text-center text-[11px] font-bold text-red-500">
+          {error}
         </p>
-        <div className="h-px flex-1 bg-gray-300"></div>
+      )}
+
+      <div className="mt-8 mb-6 flex items-center gap-3">
+        <div className="h-px flex-1 bg-slate-50"></div>
+        <span className="text-[9px] font-black tracking-widest text-slate-300 uppercase">
+          Connect
+        </span>
+        <div className="h-px flex-1 bg-slate-50"></div>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <BtnCommon
-          className="border border-gray-200 bg-white text-base text-gray-800 hover:bg-white sm:w-1/2"
-          size={"fixedSize"}
+      <div className="flex gap-3">
+        <button
+          type="button"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-slate-100 bg-white font-bold tracking-tight text-slate-700/80 transition-all hover:bg-slate-50 active:scale-95 disabled:opacity-50"
           onClick={handleGoogleLogin}
           disabled={!!isOAuthLoading}
         >
-          <Image src={googleIcon} width="24" height="24" alt="구글 아이콘" />
-          <p className="ml-3">
-            {isOAuthLoading === "google" ? "이동 중..." : "구글로 계속하기"}
-          </p>
-        </BtnCommon>
-        <BtnCommon
-          className="bg-[#FFEE01] text-base text-gray-800 hover:bg-[#FFEE01] sm:w-1/2"
-          size={"fixedSize"}
+          <Image src={googleIcon} width="20" height="20" alt="google" />
+          {isOAuthLoading === "google" && (
+            <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-400">
+              로그인 중...
+            </span>
+          )}
+          Google
+        </button>
+
+        <button
+          type="button"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#FEE500] font-bold tracking-tight text-black/80 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
           onClick={handleKakaoLogin}
           disabled={!!isOAuthLoading}
         >
-          <Image src={kakaoIcon} width="24" height="24" alt="카카오 아이콘" />
-          <p className="ml-3">
-            {isOAuthLoading === "kakao" ? "이동 중..." : "카카오로 계속하기"}
-          </p>
-        </BtnCommon>
+          <Image src={kakaoIcon} width="20" height="20" alt="kakao" />
+          {isOAuthLoading === "kakao" && (
+            <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-600">
+              ...
+            </span>
+          )}
+          Kakao
+        </button>
       </div>
 
-      <div className="mt-8 flex items-center justify-center gap-1">
-        <p className="font-regular text-sm text-gray-800">
-          같이달램이 처음이신가요?
-        </p>
+      <div className="mt-8 flex items-center justify-center gap-2">
+        <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase"></p>
         <Link
           href="/signup"
-          className="text-sm font-semibold text-green-600 underline"
+          className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900"
         >
-          회원가입
+          Create Account
         </Link>
       </div>
     </div>

@@ -1,21 +1,19 @@
 "use client";
+
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
-import googleIcon from "@/assets/icon/google/google-logo.svg";
 import { signupUser } from "@/api/client/auth";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-
-// 유효성검사
 import { useForm } from "react-hook-form";
 import type { SignUpFormValues } from "@/types";
+import { useState } from "react";
 
 export default function SignUp() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -24,7 +22,7 @@ export default function SignUp() {
     getValues,
     formState: { errors },
   } = useForm<SignUpFormValues>({
-    mode: "onSubmit", // 제출시에, 검증
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       email: "",
@@ -34,164 +32,162 @@ export default function SignUp() {
     },
   });
 
-  // RHF 내장된 기능으로 제출 시, 유효성검사 통과하면 로직 탐
   const onSubmit = async (data: SignUpFormValues) => {
+    setIsLoading(true);
+
     try {
       const result = await signupUser(data);
 
-      // 회원가입 성공 후 로그인 페이지 이동용 로직.
       if (result.ok) {
         ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
         router.push("/login");
+      } else {
+        setIsLoading(false);
       }
     } catch (error) {
-      // 회원가입 실패 분기용 로직.
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         ToastCommon({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
           size: "sm",
         });
-        return;
+      } else {
+        ToastCommon({
+          message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
+          size: "sm",
+        });
       }
-
-      ToastCommon({
-        message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
-        size: "sm",
-      });
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <section
-        className="flex min-h-[calc(100vh-48px)] items-center bg-[#F6F7F9] py-6 sm:min-h-[calc(100vh-88px)] sm:py-25"
-        aria-labelledby="sing-up-header"
-      >
-        <div className="w-full px-4 sm:mx-auto sm:max-w-142 sm:px-0">
-          <div className="rounded-xl border bg-white px-4 py-6 sm:rounded-[40px] sm:px-16 sm:py-10">
+    <section
+      className="flex min-h-[calc(100vh-80px)] items-center lg:-mt-12"
+      aria-labelledby="sign-up-header"
+    >
+      <div className="w-full sm:mx-auto sm:max-w-[540px]">
+        <div className="rounded-[32px] border border-slate-100 bg-white px-8 py-12 shadow-2xl shadow-slate-200/40 sm:rounded-[48px] sm:px-16 sm:py-16">
+          <div className="mb-12 flex flex-col items-center gap-1">
+            <div className="bg-main-purple mb-2 h-1.5 w-8 rounded-full" />
             <h1
               id="sign-up-header"
-              className="text-center text-base font-semibold text-gray-900 sm:text-2xl"
+              className="text-center text-3xl font-black tracking-tighter text-slate-950 uppercase"
             >
-              회원가입
+              Join Us
             </h1>
+          </div>
 
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
-              className="flex flex-col gap-6 pt-10"
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="flex flex-col gap-5"
+          >
+            <InputCommon
+              label="Name"
+              type="text"
+              isRequired
+              placeholder="이름을 입력해주세요."
+              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              {...register("name", { required: "이름을 입력해주세요." })}
+              isDestructive={!!errors.name}
+              hintText={errors.name?.message}
+            />
+
+            <InputCommon
+              label="Email"
+              type="email"
+              isRequired
+              placeholder="이메일을 입력해주세요."
+              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              {...register("email", {
+                required: "이메일을 입력해주세요.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "이메일 형식이 올바르지 않습니다.",
+                },
+              })}
+              isDestructive={!!errors.email}
+              hintText={errors.email?.message}
+            />
+
+            <InputCommon
+              label="Password"
+              type="password"
+              isRequired
+              placeholder="비밀번호를 입력해주세요."
+              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              {...register("password", {
+                required: "비밀번호를 입력해주세요.",
+                pattern: {
+                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                  message: "영문/숫자 포함 8자 이상",
+                },
+              })}
+              isDestructive={!!errors.password}
+              hintText={errors.password?.message}
+              onClear={() => setValue("password", "")}
+            />
+
+            <InputCommon
+              label="Confirm Password"
+              type="password"
+              isRequired
+              placeholder="비밀번호 확인"
+              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              {...register("passwordConfirm", {
+                required: "비밀번호 확인을 입력해주세요.",
+                validate: (value) => {
+                  const passwordValue = getValues("password");
+                  return (
+                    value === passwordValue || "비밀번호가 일치하지 않습니다."
+                  );
+                },
+              })}
+              isDestructive={!!errors.passwordConfirm}
+              hintText={errors.passwordConfirm?.message}
+              onClear={() => setValue("passwordConfirm", "")}
+            />
+
+            <InputCommon
+              label="Introduction"
+              type="text"
+              placeholder="한줄소개 (20자 이내)"
+              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              {...register("introduce", {
+                validate: (value) => {
+                  if (!value) return true;
+                  return value.length <= 20 || "20자 이하로 입력해주세요.";
+                },
+              })}
+              isDestructive={!!errors.introduce}
+              hintText={errors.introduce?.message}
+              onClear={() => setValue("introduce", "")}
+            />
+
+            <BtnCommon
+              variant={"default"}
+              size={"md"}
+              type="submit"
+              disabled={isLoading}
+              className="mt-4 h-12 !rounded-xl font-black tracking-widest transition-all"
             >
-              {/* 인풋 : 이름 */}
-              <InputCommon
-                label="이름"
-                type="text"
-                isRequired
-                placeholder="이름을 입력해주세요."
-                inputSize={"sm"}
-                {...register("name", {
-                  required: "이름을 입력해주세요.",
-                })}
-                isDestructive={!!errors.name}
-                hintText={errors.name?.message}
-              />
+              {isLoading ? "가입 중..." : "회원가입"}
+            </BtnCommon>
+          </form>
 
-              {/* 인풋 : 이메일 */}
-              <InputCommon
-                label="이메일"
-                type="email"
-                isRequired
-                placeholder="이메일을 입력해주세요."
-                inputSize={"sm"}
-                {...register("email", {
-                  required: "이메일을 입력해주세요.",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "이메일 형식이 올바르지 않습니다.",
-                  },
-                })}
-                isDestructive={!!errors.email}
-                hintText={errors.email?.message}
-              />
-
-              {/* 인풋 : 비밀번호 */}
-              <InputCommon
-                label="비밀번호"
-                type="password"
-                isRequired
-                placeholder="비밀번호를 입력해주세요."
-                inputSize={"sm"}
-                {...register("password", {
-                  required: "비밀번호를 입력해주세요.",
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                    message:
-                      "비밀번호는 영문과 숫자를 포함한 8자 이상이어야 합니다.",
-                  },
-                })}
-                isDestructive={!!errors.password}
-                hintText={errors.password?.message}
-                onClear={() => setValue("password", "")}
-              />
-
-              {/* 인풋 : 비밀번호 확인 */}
-              <InputCommon
-                label="비밀번호 확인"
-                type="password"
-                isRequired
-                placeholder="비밀번호를 한 번 더 입력해주세요"
-                inputSize={"sm"}
-                {...register("passwordConfirm", {
-                  required: "비밀번호 확인을 입력해주세요.",
-                  validate: (value) => {
-                    const passwordValue = getValues("password");
-                    return (
-                      value === passwordValue || "비밀번호가 일치하지 않습니다."
-                    );
-                  },
-                })}
-                isDestructive={!!errors.passwordConfirm}
-                hintText={errors.passwordConfirm?.message}
-                onClear={() => setValue("passwordConfirm", "")}
-              />
-
-              {/* 인풋 : 한줄소개 */}
-              <InputCommon
-                label="한줄소개"
-                type="text"
-                placeholder="한줄소개를 입력해주세요."
-                inputSize={"sm"}
-                {...register("introduce", {
-                  validate: (value) => {
-                    if (!value) return true; // optional
-                    return value.length <= 20 || "20자 이하로 입력해주세요.";
-                  },
-                })}
-                isDestructive={!!errors.introduce}
-                hintText={errors.introduce?.message}
-                onClear={() => setValue("introduce", "")}
-              />
-              <BtnCommon
-                variant={"default"}
-                size={"md"}
-                type="submit"
-                children="회원가입"
-              />
-            </form>
-
-            <div className="mt-8 flex items-center justify-center gap-1">
-              <p className="font-regular text-sm text-gray-800">
-                이미 회원이신가요?
-              </p>
-              <Link
-                href="/login"
-                className="text-sm font-semibold text-green-600 underline"
-              >
-                로그인
-              </Link>
-            </div>
+          <div className="mt-12 flex flex-col items-center justify-center gap-2">
+            <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">
+              이미 계정이 있으신가요?
+            </p>
+            <Link
+              href="/login"
+              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900"
+            >
+              Back to Sign In
+            </Link>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
