@@ -19,7 +19,7 @@ export default async function LoungePage() {
         <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center  sm:h-16 sm:w-16">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <MessageSquareText className="text-white" size={24} />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
@@ -38,7 +38,7 @@ export default async function LoungePage() {
             <div className="max-w-[420px]">
               <LoginModal
                 fallback={
-                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                  <BtnCommon className="bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                     <span className="text-xs tracking-widest uppercase">
                       + Create Post
                     </span>
@@ -46,7 +46,7 @@ export default async function LoungePage() {
                 }
               >
                 <Link href="/lounge/create" className="hidden sm:block">
-                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                  <BtnCommon className="bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                     <span className="text-xs tracking-widest uppercase">
                       + Create Post
                     </span>

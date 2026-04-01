@@ -53,11 +53,12 @@
   --primary: #260656;
   --border: #f1f5f9;
   --ring: #260656;
+  --error-color: #96a3b4;
 }
 
 /* 💡 모달 오버레이가 GNB를 덮도록 강제 설정 */
 .fixed {
-  z-index: 9999;
+  z-index: 30;
 }
 
 body {
@@ -95,6 +96,9 @@ body {
 @layer utilities {
   .shadow-mag {
     box-shadow: var(--shadow-mag);
+  }
+  .text-error {
+    color: var(--error-color) !important;
   }
 }
 
