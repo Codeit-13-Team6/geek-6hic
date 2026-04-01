@@ -3,10 +3,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import LoungeEditor from "@/app/lounge/component/editor/LoungeEditor";
+import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
-import LinkCard from "@/app/lounge/component/LinkCard";
+import LinkCard from "@/app/lounge/_component/LinkCard";
 import { stitchPostData } from "@/lib/contentLinkUtils";
 import { PostPayload, LoungePostFormProps } from "@/types";
 

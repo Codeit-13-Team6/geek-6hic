@@ -5,6 +5,7 @@ import { Heart, Users, Calendar } from "lucide-react";
 import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export function UserCard({
   title = "제목이 없습니다.",
@@ -37,9 +38,10 @@ export function UserCard({
       onClick={onDetailClick}
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-50 sm:h-32 sm:w-32 sm:rounded-2xl">
-        <img
+        <FallbackImage
           src={imageSrc}
           alt={title}
+          fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {showLikeBtn && (

@@ -47,6 +47,7 @@ export default function LoginForm({
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log(data, returnUrl, 'gg ');
     setIsLoading(true);
     setError(null);
 
@@ -55,17 +56,14 @@ export default function LoginForm({
         email: data.email,
         password: data.password,
       });
-
       if (res?.ok && res.user) {
+        console.log(returnUrl);
         setUser(res.user);
         if (onSuccess) {
           onSuccess();
-          setIsLoading(false);
-        } else {
-          router.push(returnUrl);
         }
-      } else {
-        setIsLoading(false);
+        console.log(returnUrl);
+        router.push(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");

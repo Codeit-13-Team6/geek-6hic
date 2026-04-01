@@ -4,6 +4,7 @@ import Image from "next/image";
 import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function TopRankMobileCard({
   rank,
@@ -30,7 +31,7 @@ export default function TopRankMobileCard({
         isThird && "w-[94%]",
       )}
     >
-      <Image
+      <FallbackImage
         src={item?.image || mainFallback}
         alt="mob"
         fill

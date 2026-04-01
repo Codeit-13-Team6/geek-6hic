@@ -4,6 +4,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import Image from "next/image";
 import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankCardProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function RankCard({
   title = "모임 이름이 없습니다.",
@@ -21,7 +22,7 @@ export default function RankCard({
         </div>
 
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[14px] bg-slate-100 sm:h-[60px] sm:w-[60px]">
-          <Image
+          <FallbackImage
             src={image || mainFallback}
             alt="thumb"
             fill
