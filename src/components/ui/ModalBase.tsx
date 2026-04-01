@@ -39,15 +39,17 @@ export default function ModalBase({
             <DialogTitle className={cn("text-slate-950", titleClassName)}>
               {title}
             </DialogTitle>
-            <DialogClose>
-              <Button
-                variant="ghost"
-                size="icon-lg"
-                className="fixed top-5 right-4 rounded-full bg-slate-100 hover:bg-slate-200"
-              >
-                <XIcon size={20} />
-                <span className="sr-only">Close</span>
-              </Button>
+            <DialogClose
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  className="fixed top-5 right-4 rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer"
+                />
+              }
+            >
+              <XIcon size={20} />
+              <span className="sr-only">Close</span>
             </DialogClose>
           </div>
 

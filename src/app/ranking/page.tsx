@@ -1,13 +1,13 @@
-"use client";
 
-import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+// import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import { Trophy } from "lucide-react";
-import dynamic from "next/dynamic";
-
-const RankingList = dynamic(() => import("./_component/RankingList"), {
-  ssr: false,
-  loading: () => <RankingListSkeleton />,
-});
+import RankingList from "@/app/ranking/_component/RankingList";
+// import dynamic from "next/dynamic";
+//
+// const RankingList = dynamic(() => import("./_component/RankingList"), {
+//   ssr: false,
+//   loading: () => <RankingListSkeleton />,
+// });
 
 export default function Page() {
   return (
