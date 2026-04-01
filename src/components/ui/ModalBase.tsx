@@ -3,32 +3,12 @@ import {
   DialogClose,
   DialogContent,
   DialogTitle,
+  DialogPortal,
 } from "@/components/shadcnOrigin/dialog";
 import { Button } from "@/components/shadcnOrigin/button";
 import { XIcon } from "lucide-react";
 import { ModalCommonProps } from "@/types";
-
-/**
- * 예시)
- * const [isOpen, setIsOpen] = useState(false);
- *
- * return (
- *   <>
- *     <Button type="button" onClick={() => setIsOpen(true)}>
- *       모달 열기
- *     </Button>
- *
- *     <ModalBase
- *       isOpen={isOpen}
- *       onOpenChange={setIsOpen}
- *       title="모임 만들기"
- *       disablePointerDismissal
- *     >
- *       <div>모달 본문 내용</div>
- *     </ModalBase>
- *   </>
- * );
- */
+import { cn } from "@/lib/utils";
 
 export default function ModalBase({
   isOpen,
@@ -37,7 +17,6 @@ export default function ModalBase({
   title,
   contentClassName,
   titleClassName,
-  // 바깥 영역 클릭으로 닫히지 않게 하려면 disablePointerDismissal 사용
   disablePointerDismissal = false,
 }: ModalCommonProps) {
   return (
@@ -46,25 +25,35 @@ export default function ModalBase({
       onOpenChange={onOpenChange}
       disablePointerDismissal={disablePointerDismissal}
     >
-      <DialogContent
-        className={`${contentClassName} gap-0!`}
-        showCloseButton={false}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+      <DialogPortal>
+        <DialogContent
+          className={cn(
+            "fixed top-[50%] left-[50%] z-[101] w-full max-w-[90%] translate-x-[-50%] translate-y-[-50%]",
+            "overflow-y-auto border border-slate-100 bg-white px-6 py-10 shadow-2xl outline-none",
+            contentClassName,
+            "gap-0!",
+          )}
+          showCloseButton={false}
         >
-          <DialogTitle className={titleClassName}>{title}</DialogTitle>
-          <DialogClose render={<Button variant="ghost" size="icon-sm" />}>
-            <XIcon />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-        </div>
-        {children}
-      </DialogContent>
+          <div className="flex items-center justify-between px-8 py-4 sm:px-12">
+            <DialogTitle className={cn("text-slate-950", titleClassName)}>
+              {title}
+            </DialogTitle>
+            <DialogClose>
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="fixed top-5 right-4 rounded-full bg-slate-100 hover:bg-slate-200"
+              >
+                <XIcon size={20} />
+                <span className="sr-only">Close</span>
+              </Button>
+            </DialogClose>
+          </div>
+
+          <div className="px-8 sm:px-12">{children}</div>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   );
 }

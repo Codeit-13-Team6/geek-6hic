@@ -1,20 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import personIcon from "@/assets/icon/person/person.svg";
-import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
-import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcnOrigin/card";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { Heart, Users, Calendar } from "lucide-react";
+import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
+import { cn } from "@/lib/utils";
 
 export function UserCard({
   title = "제목이 없습니다.",
@@ -32,98 +22,90 @@ export function UserCard({
 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const isNext = !isLiked;
-    setIsLiked(isNext);
-    onHeartClick?.(isNext);
-  };
-
-  const handleDetailClick = () => {
-    onDetailClick?.();
+    const isNextLiked = !isLiked;
+    setIsLiked(isNextLiked);
+    onHeartClick?.(isNextLiked);
   };
 
   return (
     <Card
-      className="mb-[24px] h-[280px] h-fit w-full cursor-pointer gap-0! rounded-[24px] pt-0! pb-0! ring-0! sm:h-[236px] sm:flex-row"
-      onClick={handleDetailClick}
+      className={cn(
+        "group relative mb-4 flex w-full cursor-pointer flex-col overflow-hidden transition-all duration-300",
+        "border border-slate-100 bg-white p-0 shadow-none hover:border-slate-200 hover:bg-slate-50/30",
+        "sm:h-[180px] sm:flex-row sm:items-center sm:gap-8 sm:rounded-3xl sm:px-6",
+      )}
+      onClick={onDetailClick}
     >
-      <section className="relative h-[158px] w-full shrink-0 overflow-hidden rounded-t-[24px] rounded-b-none sm:m-6 sm:h-[188px] sm:w-[188px] sm:rounded-[32px]">
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-50 sm:h-32 sm:w-32 sm:rounded-2xl">
         <img
           src={imageSrc}
-          alt="Event cover"
-          className="h-full w-full object-cover brightness-60 grayscale dark:brightness-40"
+          alt={title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {showLikeBtn && (
-          <BtnCommon
-            size="icon-md"
-            variant="teritary"
-            className="absolute top-[16px] right-[16px] sm:hidden"
+          <button
+            className="absolute top-3 right-3 sm:hidden"
             onClick={handleHeartClick}
           >
-            <Image
-              src={isLiked ? heartsTrue : heartsFalse}
-              alt="heart"
-              width={24}
-              height={24}
+            <Heart
+              size={20}
+              className={cn(
+                "transition-all",
+                isLiked
+                  ? "fill-main-purple text-main-purple"
+                  : "text-white drop-shadow-md",
+              )}
             />
-          </BtnCommon>
+          </button>
         )}
-      </section>
-      <div className="flex flex-1 flex-col justify-between">
-        <CardHeader className="gap-0 p-[16px] pb-[16px] sm:py-[24px]">
-          <CardAction>
-            <BtnCommon
-              size="icon-md"
-              variant="teritary"
-              className={`hidden sm:mx-[24px] sm:my-[10px] sm:inline-flex ${!showLikeBtn && "invisible"}`}
+      </div>
+
+      <div className="flex flex-1 flex-col justify-center p-6 sm:p-0">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-main-purple text-[11px] font-black tracking-widest uppercase">
+            {type}
+          </span>
+          {showLikeBtn && (
+            <button
+              className="hidden transition-transform active:scale-90 sm:block"
               onClick={handleHeartClick}
             >
-              <Image
-                src={isLiked ? heartsTrue : heartsFalse}
-                alt="heart"
-                width={24}
-                height={24}
+              <Heart
+                size={22}
+                strokeWidth={2}
+                className={cn(
+                  "transition-all",
+                  isLiked
+                    ? "fill-main-purple text-main-purple"
+                    : "text-slate-200 hover:text-slate-400",
+                )}
               />
-            </BtnCommon>
-          </CardAction>
-          <CardTitle className="text-xl font-semibold sm:mt-[13px]">
-            {title}
-          </CardTitle>
-          <CardDescription className="text-sm font-bold text-gray-500">
-            {type}
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="flex-col items-start border-0! bg-white! px-[16px] pt-0 pb-[20px] text-sm font-medium sm:py-[34px]">
-          <div className="flex items-center pb-[6px] sm:pb-[10px]">
-            <Image
-              src={personIcon}
-              alt="person"
-              width={16}
-              height={16}
-              className="mr-[2px]"
-            />
-            <p className="text-sm text-black">
-              {participantCount}/{capacity}
-            </p>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <p className="pr-[6px] text-gray-500">날짜</p>
-            <p className="pr-[10px] text-gray-600">
+            </button>
+          )}
+        </div>
+
+        <h3 className="mb-4 line-clamp-1 text-lg font-bold tracking-tighter text-slate-950 sm:text-xl">
+          {title}
+        </h3>
+
+        <div className="flex items-center gap-6 text-[13px] font-bold tracking-tight text-slate-500 uppercase">
+          <div className="flex items-center gap-2">
+            <Calendar size={14} className="text-slate-300" />
+            <span className="text-slate-600">
               {date.toLocaleDateString("ko-KR", {
                 month: "long",
                 day: "numeric",
               })}
-            </p>
-            <p className="pr-[10px] text-gray-300"> | </p>
-            <p className="pr-[6px] text-gray-500">시간</p>
-            <p className="text-gray-600">
-              {date.toLocaleTimeString("ko-KR", {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              })}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Users size={14} className="text-slate-300" />
+            <p className="text-slate-900">
+              {participantCount} <span className="text-slate-200">/</span>{" "}
+              {capacity}
             </p>
           </div>
-        </CardFooter>
+        </div>
       </div>
     </Card>
   );

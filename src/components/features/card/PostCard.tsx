@@ -24,7 +24,7 @@ export default function PostCard({
   return (
     <article
       onClick={onDetailClick}
-      className="group flex cursor-pointer flex-col gap-6 border-b border-slate-100 bg-transparent py-8 transition-all hover:bg-slate-100/50 sm:flex-row sm:gap-10 sm:px-4"
+      className="group flex cursor-pointer flex-col gap-6 rounded-2xl border-b border-slate-100 bg-transparent py-8 transition-all hover:bg-slate-100/50 sm:flex-row sm:gap-10 sm:px-4"
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:aspect-square sm:h-40 sm:w-40 lg:h-48 lg:w-48">
         <img

@@ -5,7 +5,6 @@ import { useForm, Controller } from "react-hook-form";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
-import editImg from "@/assets/icon/edit/edit-sm.svg";
 import { updateUserProfile } from "@/api/client/user";
 import { User, UserProfileUpdateProps } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -13,6 +12,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
+import { Settings2 } from "lucide-react";
 
 export default function ProfileSection() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function ProfileSection() {
         image: user.image ?? null,
       });
     }
-  }, [user]);
+  }, [user, profileForm]);
 
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
@@ -44,56 +44,57 @@ export default function ProfileSection() {
 
   const onSubmitProfile = profileForm.handleSubmit(
     ({ email, image, ...data }) => {
-      updateProfile({
-        ...data,
-        ...(image && { image }),
-      });
+      updateProfile({ ...data, ...(image && { image }) });
     },
   );
 
   return (
     <>
-      <article className="border-main-green-400 bg-main-green-100 flex h-[100px] w-full shrink-0 items-center rounded-[24px] border px-4 md:h-[124px] md:px-6 lg:h-[370px] lg:w-[282px] lg:flex-col lg:justify-center lg:py-10">
-        <div className="flex shrink-0 items-center gap-2 lg:flex-col lg:gap-6">
-          <div className="relative size-[30px] overflow-hidden rounded-full sm:size-[36px] lg:size-[114px]">
-            <Image
-              src={user?.image ?? profileImg}
-              alt="프로필 이미지"
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="flex items-center gap-1 lg:mb-2">
-            <span className="text-sm font-bold text-gray-800 sm:text-lg lg:text-xl">
-              {user?.name}
-            </span>
-            <Image
-              src={editImg}
-              alt="수정 이미지"
-              className="size-5 cursor-pointer sm:size-7"
-              onClick={() => setIsEditModalOpen(true)}
-            />
-          </div>
+      <article className="flex w-full flex-col items-center gap-8 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/40 sm:flex-row sm:items-center sm:justify-start lg:flex-col lg:items-center lg:p-10">
+        <div className="relative size-24 shrink-0 overflow-hidden rounded-full shadow-inner ring-4 ring-slate-200 lg:size-32">
+          <Image
+            src={user?.image ?? profileImg}
+            alt="profile"
+            fill
+            className="object-cover"
+          />
         </div>
 
-        <div className="bg-main-green-400/50 mx-4 h-12 w-[1px] shrink-0 md:mx-6 lg:hidden" />
-
-        <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 lg:items-center lg:gap-6">
-          <div className="lg:bg-gradient-200 flex items-center lg:rounded-[24px] lg:px-4 lg:py-1.5">
-            <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:hidden">
-              이메일
-            </span>
-            <span className="sm:text-md ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm lg:ml-0 lg:text-gray-600">
-              {user?.email}
-            </span>
+        <div className="flex w-full flex-1 flex-col items-center gap-5 sm:items-start lg:items-center">
+          <div className="flex flex-col items-center gap-2 sm:items-start lg:items-center">
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-bold tracking-tight break-all text-slate-950 sm:text-3xl">
+                {user?.name || "Sprinter"}
+              </h2>
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="hover:text-main-purple text-slate-300 transition-colors"
+              >
+                <Settings2 size={20} />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center lg:flex-col lg:gap-1">
-            <span className="w-[52px] shrink-0 text-xs font-medium text-gray-500 sm:text-sm lg:w-auto lg:text-base">
-              한줄소개
-            </span>
-            <span className="ml-3 truncate text-xs font-medium text-gray-800 sm:text-sm lg:ml-0 lg:text-gray-800">
-              {user?.companyName}
-            </span>
+
+          <div className="h-[1px] w-60 bg-slate-100 sm:w-full lg:w-40" />
+
+          <div className="flex w-full flex-col items-center gap-5 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
+            <div className="space-y-1">
+              <p className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
+                Contact
+              </p>
+              <p className="text-sm font-semibold break-all text-slate-600 sm:text-base">
+                {user?.email}
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
+                Introduction
+              </p>
+              <p className="text-sm leading-relaxed font-semibold break-words whitespace-pre-wrap text-slate-600 sm:text-base">
+                {user?.companyName || "자기소개가 없습니다."}
+              </p>
+            </div>
           </div>
         </div>
       </article>
@@ -101,30 +102,30 @@ export default function ProfileSection() {
       <ModalBase
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        title="프로필수정하기"
-        disablePointerDismissal
-        contentClassName={"py-[32px] px-[24px] sm:p-[48px] sm:max-w-[544px]"}
-        titleClassName="text-2xl text-gray-900 font-semibold"
+        title="프로필 수정"
+        contentClassName=" sm:max-w-[520px] rounded-[32px]"
+        titleClassName="text-2xl font-black tracking-tighter text-slate-950 uppercase"
       >
-        <form onSubmit={onSubmitProfile}>
-          <section className="mt-[32px] flex flex-col gap-4 sm:mt-[48px]">
-            <Controller
-              name="image"
-              control={profileForm.control}
-              render={({ field }) => (
-                <ImageUploadInput
-                  type="profile"
-                  size="sm"
-                  className="mx-auto"
-                  imageSrc={field.value ?? undefined}
-                  onFileSelect={(file) => {
-                    const url = URL.createObjectURL(file);
-                    field.onChange(url);
-                  }}
-                  onRemove={() => field.onChange(null)}
-                />
-              )}
-            />
+        <form onSubmit={onSubmitProfile} className="mt-8 flex flex-col gap-6">
+          <Controller
+            name="image"
+            control={profileForm.control}
+            render={({ field }) => (
+              <ImageUploadInput
+                type="profile"
+                size="sm"
+                className="mx-auto"
+                imageSrc={field.value ?? undefined}
+                onFileSelect={(file) => {
+                  const url = URL.createObjectURL(file);
+                  field.onChange(url);
+                }}
+                onRemove={() => field.onChange(null)}
+              />
+            )}
+          />
+
+          <div className="space-y-5">
             <Controller
               name="name"
               control={profileForm.control}
@@ -132,9 +133,9 @@ export default function ProfileSection() {
               render={({ field, fieldState }) => (
                 <InputCommon
                   {...field}
-                  label="이름"
+                  label="Display Name"
+                  className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
                   isRequired
-                  placeholder="이름을 입력해주세요."
                   onClear={() => field.onChange("")}
                   isDestructive={!!fieldState.error}
                   hintText={fieldState.error?.message}
@@ -144,22 +145,12 @@ export default function ProfileSection() {
             <Controller
               name="email"
               control={profileForm.control}
-              rules={{
-                required: "이메일을 입력해주세요.",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "올바른 이메일 형식이 아닙니다.",
-                },
-              }}
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <InputCommon
                   {...field}
-                  label="이메일"
-                  isRequired
-                  placeholder="이메일을 입력해주세요."
-                  onClear={() => field.onChange("")}
-                  isDestructive={!!fieldState.error}
-                  hintText={fieldState.error?.message}
+                  label="Email Address"
+                  className="!rounded-xl !border-slate-100 !bg-slate-100 opacity-60"
+                  readOnly
                 />
               )}
             />
@@ -169,7 +160,8 @@ export default function ProfileSection() {
               render={({ field, fieldState }) => (
                 <InputCommon
                   {...field}
-                  label="한줄소개"
+                  label="Introduction"
+                  className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
                   placeholder="한줄소개를 입력해주세요."
                   onClear={() => field.onChange("")}
                   isDestructive={!!fieldState.error}
@@ -177,25 +169,25 @@ export default function ProfileSection() {
                 />
               )}
             />
-            <div className="flex flex-row gap-[16px] pt-[40px] sm:pt-[56px]">
-              <BtnCommon
-                variant={"outline"}
-                size={"md"}
-                className="flex-1"
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                취소
-              </BtnCommon>
-              <BtnCommon
-                size={"md"}
-                className="flex-1"
-                type="submit"
-                disabled={isPending}
-              >
-                수정하기
-              </BtnCommon>
-            </div>
-          </section>
+          </div>
+
+          <div className="flex gap-4 pt-8">
+            <BtnCommon
+              variant="teritary"
+              className="flex-1 rounded-2xl border-slate-200 font-black"
+              onClick={() => setIsEditModalOpen(false)}
+            >
+              CANCEL
+            </BtnCommon>
+            <BtnCommon
+              variant="default"
+              className="flex-1 rounded-2xl font-black"
+              type="submit"
+              disabled={isPending}
+            >
+              SAVE
+            </BtnCommon>
+          </div>
         </form>
       </ModalBase>
     </>
