@@ -76,7 +76,7 @@ export default function LoungePostForm({
     const trimmedTitle = title.trim();
     const trimmedContentText = plainText.trim();
 
-    if (!trimmedTitle ) {
+    if (!trimmedTitle) {
       return ToastCommon({
         message: "제목을 입력해주세요.",
         size: "sm",
@@ -105,7 +105,7 @@ export default function LoungePostForm({
   };
 
   return (
-    <div className="min-h-screen w-full pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
+    <div className="w-full pb-20 sm:pt-5 md:-mt-5 lg:-mt-12">
       <div className="mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-8">
         {/* 헤더 (제목 입력 & 등록 버튼) */}
         <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
@@ -128,7 +128,7 @@ export default function LoungePostForm({
           <BtnCommon
             onClick={handleLocalSubmit}
             disabled={isSubmitting}
-            className="!h-[40px]  flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
+            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
           >
             {submitButtonText}
           </BtnCommon>
