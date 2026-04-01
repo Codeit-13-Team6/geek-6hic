@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Users, Calendar } from "lucide-react";
+import { Users, Calendar } from "lucide-react";
 import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
+import { HeartIcon } from "@/components/icon/HeartIcon";
 
 export function UserCard({
   title = "제목이 없습니다.",
@@ -21,7 +22,7 @@ export function UserCard({
 }: UserCardProps) {
   const [isLiked, setIsLiked] = useState(defaultLiked);
 
-  const handleHeartClick = (e: React.MouseEvent) => {
+  const handleHeartClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     const isNextLiked = !isLiked;
     setIsLiked(isNextLiked);
@@ -31,9 +32,10 @@ export function UserCard({
   return (
     <Card
       className={cn(
-        "group relative mb-4 flex w-full cursor-pointer flex-col overflow-hidden transition-all duration-300",
-        "border border-slate-100 bg-white p-0 shadow-none hover:border-slate-200 hover:bg-slate-50/30",
-        "sm:h-[180px] sm:flex-row sm:items-center sm:gap-8 sm:rounded-3xl sm:px-6",
+        "group relative flex w-full cursor-pointer flex-col overflow-hidden transition-all duration-300",
+        "border border-slate-100/50 bg-white p-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+        "hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]",
+        "sm:h-[180px] sm:flex-row sm:items-center sm:gap-8 sm:rounded-[24px] sm:px-8 sm:hover:bg-slate-50",
       )}
       onClick={onDetailClick}
     >
@@ -44,56 +46,31 @@ export function UserCard({
           fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {showLikeBtn && (
-          <button
-            className="absolute top-3 right-3 sm:hidden"
-            onClick={handleHeartClick}
-          >
-            <Heart
-              size={20}
-              className={cn(
-                "transition-all",
-                isLiked
-                  ? "fill-main-purple text-main-purple"
-                  : "text-white drop-shadow-md",
-              )}
-            />
-          </button>
-        )}
       </div>
 
-      <div className="flex flex-1 flex-col justify-center p-6 sm:p-0">
-        <div className="mb-2 flex items-center justify-between min-h-[22px]">
-          <span className="text-main-purple text-[11px] font-black tracking-widest uppercase">
+      <div className="flex flex-1 flex-col justify-center p-6 pt-0 sm:p-0">
+        <div className="mb-1 flex items-center justify-between">
+          <span className="text-main-purple text-xs font-bold tracking-[0.2em] uppercase">
             {type}
           </span>
           {showLikeBtn && (
-            <button
-              className="hidden transition-transform active:scale-90 sm:block"
+            <HeartIcon
+              liked={isLiked}
               onClick={handleHeartClick}
-            >
-              <Heart
-                size={22}
-                strokeWidth={2}
-                className={cn(
-                  "transition-all",
-                  isLiked
-                    ? "fill-main-purple text-main-purple"
-                    : "text-slate-200 hover:text-slate-400",
-                )}
-              />
-            </button>
+              size={22}
+              className="-mr-2"
+            />
           )}
         </div>
 
-        <h3 className="mb-4 line-clamp-1 text-lg font-bold tracking-tighter text-slate-950 sm:text-xl">
+        <h3 className="mb-4 line-clamp-1 text-lg font-extrabold tracking-tighter text-slate-950 sm:text-xl lg:text-2xl">
           {title}
         </h3>
 
-        <div className="flex items-center gap-6 text-[13px] font-bold tracking-tight text-slate-500 uppercase">
-          <div className="flex items-center gap-2 ">
-            <Calendar size={14} className="text-slate-300" />
-            <span className="text-slate-600 min-w-[56px]">
+        <div className="flex items-center gap-6 text-[13px] font-bold tracking-tight text-slate-400 uppercase">
+          <div className="flex items-center gap-2">
+            <Calendar size={14} className="text-slate-200" />
+            <span className="min-w-[56px] text-slate-500">
               {date.toLocaleDateString("ko-KR", {
                 month: "long",
                 day: "numeric",
@@ -101,9 +78,10 @@ export function UserCard({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Users size={14} className="text-slate-300" />
-            <p className="text-slate-900">
-              {participantCount} <span className="text-slate-200">/</span>{" "}
+            <Users size={14} className="text-slate-200" />
+            <p className="text-slate-500">
+              <span className="text-main-purple">{participantCount}</span>
+              <span className="mx-0.5 opacity-30">/</span>
               {capacity}
             </p>
           </div>

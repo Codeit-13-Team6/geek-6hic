@@ -76,7 +76,7 @@ export default function LoungePostForm({
     const trimmedTitle = title.trim();
     const trimmedContentText = plainText.trim();
 
-    if (!trimmedTitle ) {
+    if (!trimmedTitle) {
       return ToastCommon({
         message: "제목을 입력해주세요.",
         size: "sm",
@@ -105,7 +105,7 @@ export default function LoungePostForm({
   };
 
   return (
-    <div className="min-h-screen w-full pt-6 pb-20 sm:pt-10 lg:pt-[48px]">
+    <div className="w-full pb-20 sm:pt-5 md:-mt-5 lg:-mt-12">
       <div className="mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-8">
         {/* 헤더 (제목 입력 & 등록 버튼) */}
         <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
@@ -116,10 +116,10 @@ export default function LoungePostForm({
               onChange={(e) => setTitle(e.target.value)}
               maxLength={TITLE_MAX_LENGTH}
               placeholder="제목을 입력해주세요"
-              className="w-full border-b-2 border-gray-300 bg-transparent pt-2 pr-11 pb-1 text-lg font-bold text-gray-900 transition-colors placeholder:text-gray-300 focus:border-green-500 focus:outline-none sm:pb-3 sm:text-2xl lg:text-3xl"
+              className="focus:border-main-purple w-full border-b-2 border-gray-300 bg-transparent pt-2 pr-11 pb-1 text-lg font-bold text-gray-900 transition-colors placeholder:text-gray-300 focus:outline-none sm:pb-3 sm:text-2xl lg:text-3xl"
             />
             <span className="absolute right-0 bottom-2 text-sm text-gray-400 sm:bottom-4">
-              <span className={title.length > 0 ? "text-green-500" : ""}>
+              <span className={title.length > 0 ? "text-main-purple" : ""}>
                 {title.length}
               </span>
               /{TITLE_MAX_LENGTH}
@@ -128,7 +128,7 @@ export default function LoungePostForm({
           <BtnCommon
             onClick={handleLocalSubmit}
             disabled={isSubmitting}
-            className="!h-[40px]  flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
+            className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
           >
             {submitButtonText}
           </BtnCommon>
@@ -155,7 +155,7 @@ export default function LoungePostForm({
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="공유할 링크를 붙여넣으세요"
-                  className="w-full rounded-[12px] border border-gray-200 bg-gray-50 py-2.5 pr-4 pl-9 text-sm focus:border-green-500 focus:outline-none sm:py-3 sm:pl-11"
+                  className="focus:border-main-purple w-full rounded-[12px] border border-gray-200 bg-gray-50 py-2.5 pr-4 pl-9 text-sm focus:outline-none sm:py-3 sm:pl-11"
                 />
               </div>
               <button

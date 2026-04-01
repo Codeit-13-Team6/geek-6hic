@@ -46,60 +46,64 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
     }
   };
 
-  if (isLoading) {
-    return <DetailSkeleton />;
-  }
+  if (isLoading) return <DetailSkeleton />;
 
   if (isError || !post) {
-    return <div >게시글을 찾을 수 없습니다.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <h2 className="text-xl font-black tracking-tighter text-slate-900">
+          게시글을 찾을 수 없습니다.
+        </h2>
+      </div>
+    );
   }
 
   return (
     <>
-      <section className="mb-10">
+      <section className="w-full sm:px-6 lg:-mt-7 lg:px-22">
         <PostDetailCard
           title={post.title}
           name={post.author.name}
           date={new Date(post.createdAt)}
-          content={mainContent} // 링크를 제외한 원래 본문 내용만
+          content={mainContent}
           linkObjects={linkObjects}
           thumbsUp={post.likeCount}
           comment={post.comments.length || 0}
           isOwner={isPostOwner}
-          liked={post.isLiked}
+          isLiked={post.isLiked}
           onEdit={handlePostEdit}
           onDelete={handlePostDelete}
           onLike={handleLikeClick}
-          // img={post.image || ""} 대표 썸네일 (일단 쓰지는 않음)
         />
       </section>
 
       <ModalBase
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="게시글 삭제"
+        title="DELETE"
+        titleClassName="text-xl font-black tracking-tighter text-slate-950 uppercase"
       >
         <div className="flex flex-col gap-6 pt-4">
-          <p className="leading-relaxed text-gray-700">
+          <p className="text-base leading-relaxed font-bold text-slate-500">
             게시글을 삭제하시겠습니까? <br />
-            삭제된 게시글은 복구할 수 없습니다.
+            <span className="text-sm font-medium text-slate-300">
+              삭제된 데이터는 복구할 수 없습니다.
+            </span>
           </p>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-3">
             <BtnCommon
               variant="teritary"
               onClick={() => setIsDeleteModalOpen(false)}
-              size="sm"
-              className="w-[60px]"
+              className="!h-11 !rounded-xl px-5 font-black tracking-widest"
             >
-              취소
+              CANCEL
             </BtnCommon>
             <BtnCommon
               onClick={handleConfirmDelete}
-              size="sm"
-              className="w-[60px]"
+              className="!h-11 !rounded-xl bg-red-500 px-5 font-black tracking-widest text-white transition-all hover:bg-red-600 active:scale-95"
             >
-              삭제
+              DELETE
             </BtnCommon>
           </div>
         </div>

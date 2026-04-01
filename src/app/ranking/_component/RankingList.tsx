@@ -27,7 +27,7 @@ export default function RankingList() {
       <div className="mb-12 flex items-center gap-3">
         <div className="bg-main-purple h-[6px] w-8 rounded-full" />
         <span className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
-          Weekly Top 3
+          TOP 3
         </span>
       </div>
 

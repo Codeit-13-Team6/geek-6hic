@@ -19,7 +19,7 @@ import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
   { value: "created", label: "내가 만든 모임" },
-  { value: "lounge", label: "라운지 게시물" },
+  { value: "lounge", label: "내가 쓴 게시물" },
 ];
 
 export default async function Page() {
