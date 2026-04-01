@@ -24,8 +24,8 @@ import {
 
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   {
-    value: "친목/여가",
-    label: "친목/여가",
+    value: "팀미팅",
+    label: "팀미팅",
     imageSrc: teamBulb,
   },
   {
@@ -34,13 +34,13 @@ export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
     imageSrc: studyImage,
   },
   {
-    value: "워케이션",
-    label: "워케이션",
+    value: "취준생",
+    label: "취준생",
     imageSrc: towerWork,
   },
   {
-    value: "취미/운동",
-    label: "취미/운동",
+    value: "위워크",
+    label: "위워크",
     imageSrc: JobIShoes,
   },
   {
