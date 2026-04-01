@@ -5,8 +5,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
-import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
-import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
@@ -28,6 +26,8 @@ import { TagCommon } from "@/components/ui/TagCommon";
 import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { BellOff, Calendar, Clock, Users2 } from "lucide-react";
+import { HeartIcon } from "@/components/icon/HeartIcon";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -51,6 +51,8 @@ const hasUsableProfileImage = (
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
+
+// ... (formatMonthDay, formatHourMinute, hasUsableProfileImage 함수 유지)
 
 export function MeetingHeaderSection({
   data,
@@ -88,52 +90,29 @@ export function MeetingHeaderSection({
   );
 
   const handleActionClick = async () => {
-    if (isAuthLoading) {
-      return;
-    }
-
+    if (isAuthLoading) return;
     if (!data.isLoggedIn) {
       setIsLoginConfirmOpen(true);
       return;
     }
-
-    if (isJoinPending || isActionDisabled) {
-      return;
-    }
-
+    if (isJoinPending || isActionDisabled) return;
     if (actionLabel === "출석하기") {
-      console.log(4);
       await onAttend();
       return;
     }
-
     if (data.isHost) {
       await onShare();
       return;
     }
-
     if (data.isJoined) {
       await onCancelJoin();
       return;
     }
-
     await onJoin();
   };
 
   const handleFavoriteClick = () => {
-    if (isAuthLoading) {
-      return;
-    }
-
-    // if (!data.isLoggedIn) {
-    //   setIsLoginConfirmOpen(true);
-    //   return;
-    // }
-
-    if (isFavoritePending) {
-      return;
-    }
-
+    if (isAuthLoading || isFavoritePending) return;
     onToggleFavorite();
   };
 
@@ -153,151 +132,175 @@ export function MeetingHeaderSection({
         alt={displayName}
         width={36}
         height={36}
-        className="size-7 rounded-full border-2 border-white object-cover xl:size-9"
+        className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
       />
     );
   };
 
   return (
     <>
-      <section className="grid gap-3 md:grid-cols-[333px_343px] md:gap-5 xl:grid-cols-[630px_630px] xl:gap-5">
-        <div className="overflow-hidden rounded-[12px] bg-gray-100 md:h-[332px] md:w-[333px] md:rounded-[20px] xl:h-[443px] xl:w-[630px] xl:rounded-[32px]">
+      <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
+        <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           {data.image ? (
             <Image
               src={data.image}
               alt={data.name}
-              width={760}
-              height={520}
-              className="h-[241px] w-full object-cover md:h-full"
+              fill
+              className="object-cover transition-transform duration-700 hover:scale-105"
+              priority
             />
           ) : (
-            <div className="h-[241px] w-full bg-gray-100 md:h-full" />
+            <div className="flex h-full w-full items-center justify-center bg-slate-100 text-xs font-bold tracking-widest text-slate-300 uppercase">
+              No Archive Image
+            </div>
           )}
         </div>
 
-        <div className="space-y-3 md:space-y-5">
-          <div className="rounded-[20px] border border-gray-100 bg-white px-6 pt-5 pb-6 shadow-sm md:h-[200px] md:w-[343px] md:px-6 md:pt-5 md:pb-6 xl:h-[282px] xl:w-[630px] xl:rounded-[28px] xl:px-10 xl:pt-[34px] xl:pb-8">
-            <div className="flex items-start justify-between gap-2 md:gap-3 xl:gap-4">
-              <div className="min-w-0 space-y-3 md:space-y-3 xl:space-y-4">
-                <div className="flex flex-wrap gap-1.5 md:gap-2">
-                  <TagCommon variant="blue">모임 일정</TagCommon>
-                  <TagCommon variant="white">
-                    {formatMonthDay(data.dateTime)}
-                  </TagCommon>
-                  <TagCommon variant="white">
-                    {formatHourMinute(data.dateTime)}
-                  </TagCommon>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <h1 className="text-[16px] leading-[24px] font-semibold text-gray-900 xl:text-[34px] xl:leading-[42px]">
+        <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">
+          <div className="space-y-6">
+            <div className="flex items-start justify-between">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <div className="flex items-start gap-3">
+                  <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-5xl">
                     {data.name}
                   </h1>
-                  {data.isHost ? (
-                    <Image src={crownLgIcon} alt="" width={24} height={24} />
-                  ) : null}
+                  {data.isHost && (
+                    <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
+                      <Image
+                        src={crownLgIcon}
+                        alt="Host"
+                        width={20}
+                        height={20}
+                        className="xl:size-6"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* 💡 2. 일시 & 메타 정보: 제목 바로 아래에 밀도 있게 배치 */}
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {/* 날짜 태그 */}
+                  <div className="bg-main-purple/10 text-main-purple flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black tracking-tight shadow-sm">
+                    <Calendar size={12} strokeWidth={3} />
+                    <span>{formatMonthDay(data.dateTime)}</span>
+                  </div>
+
+                  {/* 시간 태그 */}
+                  <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-black tracking-tight text-slate-600 shadow-sm">
+                    <Clock
+                      size={12}
+                      strokeWidth={3}
+                      className="text-main-purple"
+                    />
+                    <span>{formatHourMinute(data.dateTime)}</span>
+                  </div>
                 </div>
               </div>
 
-              {shouldShowHostMenu ? (
+              {/* 💡 호스트 전용 메뉴 (버튼 크기 살짝 조정) */}
+              {shouldShowHostMenu && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     render={
                       <button
                         type="button"
-                        className="rounded-full border border-transparent p-1 transition hover:bg-gray-50"
+                        className="group rounded-full p-2 transition hover:bg-slate-50"
                       >
                         <Image
                           src={meatballsLgIcon}
-                          alt="모임 메뉴 열기"
-                          width={32}
-                          height={32}
+                          alt="Menu"
+                          width={28}
+                          height={28}
+                          className="opacity-40 group-hover:opacity-100"
                         />
                       </button>
                     }
                   />
-
-                  <DropdownMenuContent align="end" size="md">
+                  <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
                       수정하기
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => setIsDeleteModalOpen(true)}
+                      className="font-bold text-red-500"
                     >
                       삭제하기
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : null}
+              )}
             </div>
+            {/* 💡 세련된 참여 현황 통합 박스 */}
+            <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-main-purple flex size-10 items-center justify-center rounded-2xl bg-white shadow-sm">
+                    <Users2 size={20} strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                      Participants
+                    </p>
+                    <p className="text-xl font-black text-slate-950">
+                      {data.participantCount}{" "}
+                      <span className="text-sm font-bold text-slate-400">
+                        / {data.capacity}명
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex -space-x-2.5">
+                  {visibleParticipants.map(renderParticipantAvatar)}
+                  {hiddenParticipantCount > 0 && (
+                    <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">
+                      +{hiddenParticipantCount}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            <div className="mt-5 flex gap-2 md:mt-5 md:gap-2 xl:mt-8 xl:gap-3">
-              <BtnCommon
-                type="button"
-                variant="teritary"
-                size="icon-md"
-                disabled={isFavoritePending}
-                onClick={() => loginGuardAction(handleFavoriteClick)}
-                className="size-11 shrink-0 rounded-full xl:size-16"
-              >
-                <Image
-                  src={data.isFavorited ? heartsTrue : heartsFalse}
-                  alt="좋아요"
-                  width={24}
-                  height={24}
+              {/* 에메랄드 글로우 프로그레스 바 */}
+              <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+                <div
+                  className="h-full rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
+                  style={{ width: `${progressValue}%` }}
                 />
-              </BtnCommon>
-
-              <div className="flex-1">
-                <BtnCommon
-                  type="button"
-                  size="md"
-                  disabled={isActionDisabled || isJoinPending || isAuthLoading}
-                  onClick={() => loginGuardAction(handleActionClick)}
-                  className="h-11 min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
-                >
-                  {isJoinPending ? "처리 중.." : actionLabel}
-                </BtnCommon>
               </div>
             </div>
-
-            {shouldShowClosedGuide ? (
-              <p className="mt-3 text-[12px] text-gray-500 xl:text-sm">
-                모집이 마감되어 더 이상 참여할 수 없습니다.
-              </p>
-            ) : null}
           </div>
 
-          <div className="rounded-[20px] border border-[#c7f5e8] bg-[#e6fbf5] px-6 pt-5 pb-[22px] md:h-[113px] md:w-[343px] md:px-6 md:pt-5 md:pb-[22px] xl:h-[141px] xl:w-[630px] xl:rounded-[28px] xl:px-10 xl:pt-7 xl:pb-[34px]">
-            <div className="mb-3 flex items-center gap-2 md:mb-3 md:gap-2 xl:mb-4 xl:gap-3">
-              <p className="text-main-green-700 text-[16px] font-semibold xl:text-[28px]">
-                {data.participantCount}명 참여
-              </p>
-              <div className="flex -space-x-2">
-                {visibleParticipants.map(renderParticipantAvatar)}
-                {hiddenParticipantCount > 0 ? (
-                  <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-semibold text-gray-600 xl:size-9 xl:text-sm">
-                    +{hiddenParticipantCount}
-                  </span>
-                ) : null}
-              </div>
-            </div>
+          {/* 하단 액션 버튼 영역 */}
+          <div className="mt-5 flex items-center gap-4 sm:mt-10">
+            <HeartIcon
+              liked={data.isFavorited}
+              onClick={() => loginGuardAction(handleFavoriteClick)}
+              size={28}
+              disabled={isFavoritePending}
+            />
 
-            <Progress value={progressValue} className="gap-2">
-              <ProgressLabel className="sr-only">참여 진행률</ProgressLabel>
-              <ProgressValue className="sr-only">
-                {(formattedValue) =>
-                  formattedValue ?? `${data.participantCount}/${data.capacity}`
-                }
-              </ProgressValue>
-            </Progress>
-            <div className="mt-2 flex justify-end text-[12px] text-gray-500 xl:text-sm">
-              최대 {data.capacity}명
-            </div>
+            <BtnCommon
+              type="button"
+              size="md"
+              disabled={isActionDisabled || isJoinPending || isAuthLoading}
+              onClick={() => loginGuardAction(handleActionClick)}
+              className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
+            >
+              <span className="tracking-widest sm:text-sm">
+                {isJoinPending ? "PROCESSING..." : actionLabel}
+              </span>
+            </BtnCommon>
           </div>
+
+          {shouldShowClosedGuide && (
+            <div className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-red-50/50 py-3 text-[11px] font-bold text-red-400">
+              <BellOff size={14} />
+              모집 마감되어 참여할 수 없습니다.
+            </div>
+          )}
         </div>
       </section>
 
+      {/* 모달 로직들 유지 */}
       <EditMeetingModal
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
@@ -308,48 +311,46 @@ export function MeetingHeaderSection({
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE MEETING"
+        title="DELETE ARCHIVE"
         description="모임을 정말 삭제하시겠어요?"
-        subDescription="삭제 후에는 되돌릴 수 없습니다."
         onConfirm={() => {
           onDelete();
           setIsDeleteModalOpen(false);
         }}
-        onCancel={() => setIsDeleteModalOpen(false)}
       />
 
       <ModalBase
-        disablePointerDismissal
         isOpen={isLoginConfirmOpen}
         onOpenChange={setIsLoginConfirmOpen}
-        contentClassName="w-[343px] max-w-[calc(100vw-24px)] rounded-[24px] border-none px-6 py-6 shadow-2xl md:w-[560px] md:rounded-[40px] md:px-10 md:pt-12 md:pb-10"
-        title=""
+        contentClassName="w-full sm:w-[400px] rounded-[32px] p-8 text-center"
       >
-        <div className="pt-2 text-center md:pt-4">
-          <p className="text-[20px] font-semibold text-gray-900 md:text-[24px]">
-            로그인이 필요한 서비스입니다.
+        <div className="flex flex-col items-center py-4">
+          <p className="text-2xl font-black tracking-tighter text-slate-950">
+            로그인이 필요합니다
           </p>
-        </div>
-
-        <div className="mt-6 grid grid-cols-2 gap-2.5 md:mt-10 md:gap-3">
-          <BtnCommon
-            type="button"
-            variant="teritary"
-            size="md"
-            onClick={() => setIsLoginConfirmOpen(false)}
-          >
-            취소
-          </BtnCommon>
-          <BtnCommon
-            type="button"
-            size="md"
-            onClick={() => {
-              setIsLoginConfirmOpen(false);
-              router.push("/login");
-            }}
-          >
-            로그인
-          </BtnCommon>
+          <p className="mt-2 text-sm font-medium text-slate-400">
+            서비스를 이용하시려면 먼저 로그인해 주세요.
+          </p>
+          <div className="mt-8 flex w-full flex-col gap-3">
+            <BtnCommon
+              size="md"
+              className="!rounded-2xl bg-slate-950 text-white"
+              onClick={() => {
+                setIsLoginConfirmOpen(false);
+                router.push("/login");
+              }}
+            >
+              로그인 하기
+            </BtnCommon>
+            <BtnCommon
+              variant="teritary"
+              size="md"
+              className="!rounded-2xl"
+              onClick={() => setIsLoginConfirmOpen(false)}
+            >
+              취소
+            </BtnCommon>
+          </div>
         </div>
       </ModalBase>
     </>

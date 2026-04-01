@@ -25,10 +25,10 @@ import { getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 
-type Props = {
+interface Props {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -63,7 +63,6 @@ export default async function MeetingDetailPage({
 
   const getAttendancePostId = (region: string) => {
     const postId = Number(region);
-
     return Number.isFinite(postId) && postId > 0 ? postId : null;
   };
 
@@ -73,7 +72,7 @@ export default async function MeetingDetailPage({
   });
 
   return (
-    <main className="mx-auto flex w-full max-w-[375px] flex-col px-4 py-6 md:max-w-[744px] md:px-6 md:py-8 xl:max-w-[1280px] xl:px-0 xl:py-12">
+    <main className="mx-auto flex w-full flex-col">
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {

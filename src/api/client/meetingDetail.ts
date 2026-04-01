@@ -44,7 +44,7 @@ export async function getMeetingRecommendationCandidates() {
   const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
     params: {
       sortBy: "dateTime",
-      sortOrder: "asc",
+      sortOrder: "desc",
       size: RECOMMENDED_MEETINGS_PAGE_SIZE,
     },
   });
@@ -130,8 +130,6 @@ export async function uploadMeetingImage(file: File) {
     },
   );
 
-  // S3 presigned URL로 직접 업로드할 때는 baseURL이나 withCredentials가 설정된 axiosInstance 대신
-  // 순수 axios를 사용하여 CORS 이슈를 방지합니다.
   await axios.put(issueResponse.data.presignedUrl, file, {
     headers: {
       "Content-Type": contentType,

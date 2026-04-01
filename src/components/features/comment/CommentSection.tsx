@@ -128,24 +128,26 @@ export default function CommentSection({
   };
 
   return (
-    <section className="mt-4 flex flex-col gap-6 px-2 sm:px-6 lg:px-22">
+    <section
+      className={`mt-4 flex flex-col gap-6 ${isThread ? "" : "px-2 sm:px-6 lg:px-22"}`}
+    >
       <div className="flex items-center gap-2">
         <h3 className="text-lg font-bold tracking-tighter text-slate-900 sm:text-xl">
-          {isThread ? "OUR THREAD" : "COMMENTS"}
+          {isThread ? null : "COMMENTS"}
         </h3>
         <span className="text-main-purple rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold">
-          {commentsList.length || 0}
+          {isThread ? null : commentsList.length || 0}
         </span>
       </div>
 
       {isThread ? (
-        <div className="flex flex-col gap-4">
+        <div className="-mt-10 flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             <TextareaCommon
               value={threadContent}
               placeholder="메시지나 공유할 링크를 자유롭게 입력해주세요."
               onChange={(event) => setThreadContent(event.target.value)}
-              className="min-h-[120px] !rounded-2xl border-slate-100 bg-slate-50/50 p-4 focus:bg-white"
+              className="focus:!border-main-purple/80 !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
               disabled={isPosting}
             />
             <div className="flex justify-end">
@@ -159,9 +161,14 @@ export default function CommentSection({
             </div>
           </div>
           {linkObjects.length > 0 && (
-            <div className="rounded-2xl border border-slate-50 bg-white p-2">
-              <CompactLinkList links={linkObjects} isPreview={true} />
-            </div>
+            <>
+              <span className="block text-xs font-bold text-slate-300 uppercase">
+                링크 미리보기
+              </span>
+              <div className="rounded-2xl border border-slate-200 bg-white p-2">
+                <CompactLinkList links={linkObjects} isPreview={true} />
+              </div>
+            </>
           )}
         </div>
       ) : (

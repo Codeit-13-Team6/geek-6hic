@@ -13,6 +13,7 @@ import {
   RecommendedMeetingItem,
   MeetingDetailContentProps,
 } from "@/types";
+import { AlertCircle } from "lucide-react";
 
 const hasRecruitmentOpen = (
   meeting: Pick<
@@ -326,18 +327,33 @@ export function MeetingDetailContent({
   const recommendationCandidates =
     recommendationCandidatesQuery.data?.data ?? [];
 
+  /* 💡 로딩 상태: 아카이브 테마의 부드러운 UI */
   if (detailQuery.isLoading || !detail) {
     return (
-      <div className="rounded-[24px] border border-gray-100 bg-white px-6 py-10 text-center text-sm text-gray-500 shadow-sm">
-        모임 정보를 불러오는 중입니다.
+      <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-[32px] border border-slate-50 bg-white p-12 shadow-sm">
+        <div className="bg-main-purple/10 flex size-12 animate-pulse items-center justify-center rounded-full">
+          <div className="bg-main-purple size-3 rounded-full" />
+        </div>
+        <p className="mt-4 text-sm font-bold tracking-tight text-slate-400">
+          ARCHIVE LOADING...
+        </p>
       </div>
     );
   }
 
   if (detailQuery.isError) {
     return (
-      <div className="rounded-[24px] border border-red-100 bg-red-50 px-6 py-10 text-center text-sm text-red-600 shadow-sm">
-        모임 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+      <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-[32px] border border-red-50 bg-red-50/30 p-12 text-center shadow-sm">
+        <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-red-100/50 text-red-500">
+          {/* 💡 Lucide 아이콘은 size 프롭을 지원합니다 */}
+          <AlertCircle size={32} strokeWidth={2.5} />
+        </div>
+        <p className="text-lg font-black tracking-tighter text-slate-950">
+          정보를 불러올 수 없습니다.
+        </p>
+        <p className="mt-2 text-sm font-medium text-slate-400">
+          잠시 후 다시 시도해 주세요.
+        </p>
       </div>
     );
   }
@@ -351,6 +367,7 @@ export function MeetingDetailContent({
     isAuthLoading,
     hasAttended,
   });
+  console.log(viewModel.data, "뷰모델");
 
   return (
     <>
