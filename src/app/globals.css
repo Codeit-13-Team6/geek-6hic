@@ -58,7 +58,7 @@
 
 /* 💡 모달 오버레이가 GNB를 덮도록 강제 설정 */
 .fixed {
-  z-index: 30;
+  z-index: 500;
 }
 
 body {
