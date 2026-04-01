@@ -1,6 +1,6 @@
 "use client";
 
-import LoungePostForm from "@/app/lounge/component/LoungePostForm";
+import LoungePostForm from "@/app/lounge/_component/LoungePostForm";
 import { useCreatePost } from "@/hooks";
 
 export default function LoungeCreatePage() {

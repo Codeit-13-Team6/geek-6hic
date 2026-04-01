@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import HotPostList from "./component/HotPostList";
-import LoungeContent from "./component/LoungeSection";
+import HotPostList from "@/app/lounge/_component/HotPostList";
+import LoungeContent from "@/app/lounge/_component/LoungeSection";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import { GetPostsResponse } from "@/types";
@@ -18,11 +18,11 @@ export default async function LoungePage() {
       <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-20 sm:pb-12 lg:pb-12">
         <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
           <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center  sm:h-16 sm:w-16">
                 <MessageSquareText className="text-white" size={24} />
               </div>
-              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase">
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
                 Community / Lounge
               </span>
             </div>

@@ -9,7 +9,7 @@ import heartsFalse from "@/assets/icon/hearts/hearts-false.svg";
 import heartsTrue from "@/assets/icon/hearts/hearts-true.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
-import { EditMeetingModal } from "@/app/meetings/modal/EditMeetingModal";
+import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {

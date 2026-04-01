@@ -1,6 +1,6 @@
 "use client";
 
-import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSection";
+import { MeetingBasicInfoSection } from "@/app/meetings/_components/modal/MeetingBasicInfoSection";
 import { MeetingBasicInfoStepProps } from "@/types";
 
 export function MeetingBasicInfoStep({

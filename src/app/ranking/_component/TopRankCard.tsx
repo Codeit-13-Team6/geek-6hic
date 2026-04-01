@@ -6,6 +6,7 @@ import { Card, CardAction, CardContent } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function TopRankCard({
   rank,
@@ -28,7 +29,7 @@ export default function TopRankCard({
           : "aspect-[3/4.2] shadow-2xl shadow-black/10 grayscale-[40%] hover:-translate-y-2 hover:grayscale-0",
       )}
     >
-      <Image
+      <FallbackImage
         src={item?.image || mainFallback}
         alt="rank-bg"
         fill

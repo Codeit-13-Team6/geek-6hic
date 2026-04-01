@@ -3,13 +3,13 @@
 import plusIcon from "@/assets/icon/plus/plus.svg";
 import Image from "next/image";
 import { useState } from "react";
-import { MeetingCategoryStep } from "@/app/meetings/modal/MeetingCategoryStep";
-import { MeetingBasicInfoStep } from "@/app/meetings/modal/MeetingBasicInfoStep";
-import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
+import { MeetingCategoryStep } from "@/app/meetings/_components/modal/MeetingCategoryStep";
+import { MeetingBasicInfoStep } from "@/app/meetings/_components/modal/MeetingBasicInfoStep";
+import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
-import MeetingFilters from "@/app/meetings/components/MeetingsFilters";
+import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
 import MeetingList from "@/components/features/list/MeetingList";
 import LoginModal from "@/components/modal/LoginModal";
 

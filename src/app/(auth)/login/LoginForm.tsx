@@ -18,12 +18,17 @@ interface LoginFormProps {
   title?: string;
 }
 
-export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormProps) {
+export default function LoginForm({
+  onSuccess,
+  title = "로그인",
+}: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
-  const [isOAuthLoading, setIsOAuthLoading] = useState<"google" | "kakao" | null>(null);
+  const [isOAuthLoading, setIsOAuthLoading] = useState<
+    "google" | "kakao" | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -42,7 +47,7 @@ export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormP
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data)
+    console.log(data, returnUrl, 'gg ');
     setIsLoading(true);
     setError(null);
 
@@ -52,12 +57,13 @@ export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormP
         password: data.password,
       });
       if (res?.ok && res.user) {
+        console.log(returnUrl);
         setUser(res.user);
         if (onSuccess) {
           onSuccess();
-        } else {
-          router.push(returnUrl);
         }
+        console.log(returnUrl);
+        router.push(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");
@@ -86,7 +92,6 @@ export default function LoginForm({ onSuccess, title = '로그인' }: LoginFormP
     <div>
       <h1 className="text-center text-base font-semibold text-gray-900 sm:text-2xl">
         {title}
-
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}

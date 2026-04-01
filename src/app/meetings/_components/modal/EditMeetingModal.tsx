@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MeetingBasicInfoSection } from "@/app/meetings/modal/MeetingBasicInfoSection";
-import { MeetingScheduleStep } from "@/app/meetings/modal/MeetingScheduleStep";
+import { MeetingBasicInfoSection } from "@/app/meetings/_components/modal/MeetingBasicInfoSection";
+import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingScheduleStep";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useEditMeetingForm } from "@/hooks/useEditMeetingForm";
