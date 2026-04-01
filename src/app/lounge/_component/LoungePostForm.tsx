@@ -116,10 +116,10 @@ export default function LoungePostForm({
               onChange={(e) => setTitle(e.target.value)}
               maxLength={TITLE_MAX_LENGTH}
               placeholder="제목을 입력해주세요"
-              className="w-full border-b-2 border-gray-300 bg-transparent pt-2 pr-11 pb-1 text-lg font-bold text-gray-900 transition-colors placeholder:text-gray-300 focus:border-green-500 focus:outline-none sm:pb-3 sm:text-2xl lg:text-3xl"
+              className="focus:border-main-purple w-full border-b-2 border-gray-300 bg-transparent pt-2 pr-11 pb-1 text-lg font-bold text-gray-900 transition-colors placeholder:text-gray-300 focus:outline-none sm:pb-3 sm:text-2xl lg:text-3xl"
             />
             <span className="absolute right-0 bottom-2 text-sm text-gray-400 sm:bottom-4">
-              <span className={title.length > 0 ? "text-green-500" : ""}>
+              <span className={title.length > 0 ? "text-main-purple" : ""}>
                 {title.length}
               </span>
               /{TITLE_MAX_LENGTH}
@@ -155,7 +155,7 @@ export default function LoungePostForm({
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="공유할 링크를 붙여넣으세요"
-                  className="w-full rounded-[12px] border border-gray-200 bg-gray-50 py-2.5 pr-4 pl-9 text-sm focus:border-green-500 focus:outline-none sm:py-3 sm:pl-11"
+                  className="focus:border-main-purple w-full rounded-[12px] border border-gray-200 bg-gray-50 py-2.5 pr-4 pl-9 text-sm focus:outline-none sm:py-3 sm:pl-11"
                 />
               </div>
               <button
