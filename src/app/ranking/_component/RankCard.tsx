@@ -15,9 +15,14 @@ export default function RankCard({
   onDetailClick = () => {},
 }: RankCardProps & { image?: string }) {
   return (
-    <article className="group flex flex-row items-center justify-between border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:px-4">
+    <article
+      onClick={() => {
+        if (window.innerWidth < 640) onDetailClick();
+      }}
+      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4"
+    >
       <div className="flex min-w-0 items-center gap-4 sm:gap-6">
-        <div className="min-w-4 sm:min-w-8 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:text-2xl">
+        <div className="min-w-4 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:min-w-8 sm:text-2xl">
           {rank}
         </div>
 
@@ -51,7 +56,10 @@ export default function RankCard({
         </div>
 
         <BtnCommon
-          onClick={onDetailClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDetailClick();
+          }}
           variant="outline"
           className="hover:border-main-purple hover:bg-main-purple hidden h-9 w-20 rounded-xl border border-slate-200 bg-transparent text-[10px] font-black tracking-widest text-slate-500 uppercase transition-all hover:text-white sm:flex"
         >

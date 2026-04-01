@@ -88,7 +88,7 @@ export function Gnb() {
   }, [isNotificationOpen]);
 
   return (
-    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 px-2 backdrop-blur-xl transition-all sm:h-20 sm:px-6">
+    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 px-2 backdrop-blur-xl transition-all sm:px-6 md:h-18">
       <div className="flex h-full w-full max-w-[1350px] items-center justify-between">
         {/* 왼쪽 영역 */}
         <div className="flex items-center gap-10 lg:gap-14">

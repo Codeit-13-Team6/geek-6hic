@@ -31,7 +31,7 @@ export function PostDetailCard({
   avatar = "https://avatar.vercel.sh/shadcn1",
   thumbsUp = 0,
   comment = 0,
-  liked = false,
+  isLiked = false,
   isOwner = false,
   onEdit,
   onDelete,
@@ -120,7 +120,7 @@ export function PostDetailCard({
           {!isOwner && (
             <BtnCommon onClick={onLike} size="icon-sm" variant="teritary">
               <Image
-                src={liked ? heartsTrue : heartsFalse}
+                src={isLiked ? heartsTrue : heartsFalse}
                 alt="heart"
                 width={20}
                 height={20}
