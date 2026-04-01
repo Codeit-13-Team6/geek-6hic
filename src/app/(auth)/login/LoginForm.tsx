@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import {  useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,6 @@ export default function LoginForm({
   onSuccess,
   title = "Login",
 }: LoginFormProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
@@ -56,14 +55,15 @@ export default function LoginForm({
         email: data.email,
         password: data.password,
       });
+
+      console.log(res, res?.ok, res.user);
       if (res?.ok && res.user) {
         console.log(returnUrl);
         setUser(res.user);
         if (onSuccess) {
           onSuccess();
         }
-        console.log(returnUrl);
-        router.push(returnUrl);
+        window.location.assign(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");
