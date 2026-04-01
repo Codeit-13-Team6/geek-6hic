@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,7 +48,7 @@
 /* --- 3. Base Variables --- */
 :root {
   /* 배경은 여기서 한 번만 등록 (미팅페이지 포함 전체 적용) */
-  --background: #fcfdfe;
+  --background: #f8f9fa;
   --foreground: #0f172a;
   --primary: #260656;
   --border: #f1f5f9;
@@ -94,5 +95,37 @@ body {
 @layer utilities {
   .shadow-mag {
     box-shadow: var(--shadow-mag);
+  }
+}
+
+/* 커스텀 스크롤 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 8px;
+}
+/* globals.css */
+
+@layer components {
+  /* 💡 prose 클래스가 적용된 영역 내의 Quill 에디터 스타일 지원 */
+  .prose {
+    @apply max-w-none;
+  }
+  /* Quill 정렬 클래스 */
+  .prose .ql-align-center {
+    text-align: center;
+  }
+  .prose .ql-align-right {
+    text-align: right;
+  }
+  .prose .ql-align-justify {
+    text-align: justify;
   }
 }

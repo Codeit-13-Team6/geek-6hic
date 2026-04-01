@@ -14,7 +14,6 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
-import { ToastCommon } from "@/components/ui/ToastCommon";
 
 export default function Comment({
   id,
@@ -46,7 +45,7 @@ export default function Comment({
   const linkObjects = extractUrlsFromText(content);
 
   const handleSave = () => {
-    if (!editValue.trim()) return ;
+    if (!editValue.trim()) return;
     onEdit(id, editValue);
     setIsEditing(false);
   };
@@ -57,54 +56,54 @@ export default function Comment({
   };
 
   return (
-    <article className="flex flex-col border-b border-gray-100 py-5 last:border-none sm:py-6">
-      {/* 프로필 정보 + 메뉴 버튼 */}
+    <article className="group flex flex-col py-8 transition-colors first:pt-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-gray-500 sm:text-sm">
-          <Image
-            className="shrink-0 rounded-full"
-            src={img ?? profileImg}
-            alt="프로필 이미지"
-            width={24}
-            height={24}
-          />
-          <span className="font-medium text-gray-700">{name}</span>
-          <span className="mx-0.5 text-gray-300">•</span>
-          <span>
-            {date
-              .toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })
-              .slice(0, -1)}
-          </span>
+        <div className="flex items-center gap-2.5">
+          <div className="relative size-6 overflow-hidden rounded-full bg-slate-100">
+            <Image
+              src={img ?? profileImg}
+              alt="profile"
+              fill
+              className="object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = profileImg.src;
+              }}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+            <span className="text-[14px] font-bold text-slate-700">{name}</span>
+            <div className="flex items-center gap-2">
+              <span className="hidden opacity-20 sm:inline">•</span>
+              <time className="text-[12px] font-medium text-slate-400">
+                {date
+                  .toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                  .replace(/\. /g, ".")
+                  .slice(0, -1)}
+              </time>
+            </div>
+          </div>
         </div>
 
-        {/* 메뉴 버튼 (수정 중이 아닐 때만 노출) */}
         {isOwner && !isEditing && (
-          <div className="shrink-0">
+          <div className="">
             <DropdownMenu>
-              <DropdownMenuTrigger className="focus:outline-none">
-                <div className="cursor-pointer p-1">
-                  <Image
-                    src={meatballsIcon}
-                    alt="상세보기 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </div>
+              <DropdownMenuTrigger className="cursor-pointer rounded-full p-1 hover:bg-slate-200/80 focus:outline-none">
+                <Image src={meatballsIcon} alt="menu" width={20} height={20} />
               </DropdownMenuTrigger>
-
               <DropdownMenuContent size="sm" align="end">
                 <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                  수정하기
+                  수정
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => onDelete(id)}
                 >
-                  삭제하기
+                  삭제
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -112,29 +111,28 @@ export default function Comment({
         )}
       </div>
 
-      {/* 내용 영역 (일반 모드 vs 수정 모드) */}
       {isEditing ? (
-        <div className="mt-3 pl-[32px]">
+        <div className="mt-4 pl-8">
           <textarea
             ref={textareaRef}
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
-            className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm text-gray-700 focus:outline-none sm:text-base"
+            className="focus:border-main-purple focus:ring-main-purple/10 w-full resize-none rounded-xl border border-slate-200 bg-white p-4 text-[14px] leading-relaxed text-slate-700 focus:ring-1 focus:outline-none"
             rows={3}
           />
-          <div className="mt-2 flex justify-end gap-2 text-sm font-medium">
+          <div className="mt-3 flex justify-end gap-2">
             <BtnCommon
               onClick={handleCancel}
               size="sm"
               variant="teritary"
-              className="w-[50px] sm:w-[60px]"
+              className="h-9 w-16 !rounded-lg text-xs font-bold"
             >
               취소
             </BtnCommon>
             <BtnCommon
               onClick={handleSave}
               size="sm"
-              className="w-[50px] sm:w-[60px]"
+              className="h-9 w-16 !rounded-lg text-xs font-bold"
               disabled={!editValue.trim() || editValue === content}
             >
               저장
@@ -142,13 +140,17 @@ export default function Comment({
           </div>
         </div>
       ) : (
-        <div className="pl-[32px]">
+        <div className="mt-2.5 pl-8.5">
           {displayContent && (
-            <div className="pt-1.5 text-sm leading-relaxed whitespace-pre-wrap text-gray-700 sm:text-base">
+            <p className="text-[15px] leading-relaxed font-medium whitespace-pre-wrap text-slate-600">
               {displayContent}
+            </p>
+          )}
+          {linkObjects.length > 0 && (
+            <div className="mt-3 opacity-90">
+              <CompactLinkList links={linkObjects} />
             </div>
           )}
-          {linkObjects.length > 0 && <CompactLinkList links={linkObjects} />}
         </div>
       )}
     </article>

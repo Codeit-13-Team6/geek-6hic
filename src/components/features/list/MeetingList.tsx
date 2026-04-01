@@ -3,12 +3,12 @@
 import Image from "next/image";
 import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import alram from "@/assets/icon/alarm/alarm-blue.svg";
-import { Heart } from "lucide-react";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
 import { cn } from "@/lib/utils";
 import LoginModal from "@/components/modal/LoginModal";
+import { HeartIcon } from "../icon/HeartIcon";
 
 export default function MeetingList({
   meetingList,
@@ -97,7 +97,7 @@ export default function MeetingList({
                     isUserJoined
                       ? "bg-slate-900/80 text-slate-100"
                       : "bg-slate-100 text-slate-500",
-                    meetingStatusBadgeVisible ? '' : 'hidden',
+                    meetingStatusBadgeVisible ? "" : "hidden",
                   )}
                 >
                   {isUserJoined && (
@@ -177,13 +177,11 @@ export default function MeetingList({
                       onClick={() => {}}
                       className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                     >
-                      <Heart
-                        className={cn(
-                          "h-5 w-5 transition-all",
-                          item.isFavorited
-                            ? "fill-main-purple text-main-purple"
-                            : "text-slate-300",
-                        )}
+                      <HeartIcon
+                        liked={item.isFavorited}
+                        onClick={() => {}}
+                        size={22}
+                        className="-mr-2"
                       />
                     </button>
                   }
@@ -196,13 +194,14 @@ export default function MeetingList({
                     }}
                     className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
                   >
-                    <Heart
-                      className={cn(
-                        "h-5 w-5 transition-all",
-                        item.isFavorited
-                          ? "fill-main-purple text-main-purple"
-                          : "text-slate-300",
-                      )}
+                    <HeartIcon
+                      liked={item.isFavorited}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onHeartClick(item);
+                      }}
+                      size={22}
+                      className="-mr-2"
                     />
                   </button>
                 </LoginModal>

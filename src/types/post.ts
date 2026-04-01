@@ -66,7 +66,7 @@ export interface PostDetailCardProps {
   avatar?: string;
   thumbsUp?: number;
   comment?: number;
-  liked?: boolean;
+  isLiked?: boolean;
   isOwner?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
