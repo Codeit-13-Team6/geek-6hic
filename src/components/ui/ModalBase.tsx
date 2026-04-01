@@ -39,7 +39,7 @@ export default function ModalBase({
           )}
           showCloseButton={false}
         >
-          <div className="flex items-center justify-between px-8 py-4 sm:px-12">
+          <div className="flex items-center justify-between px-4 py-4">
             <DialogTitle className={cn("text-slate-950", titleClassName)}>
               {title}
             </DialogTitle>
@@ -57,7 +57,7 @@ export default function ModalBase({
             </DialogClose>
           </div>
 
-          <div className="px-8 sm:px-12">{children}</div>
+          <div className="px-4">{children}</div>
         </DialogContent>
       </DialogPortal>
     </Dialog>

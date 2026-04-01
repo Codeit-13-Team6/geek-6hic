@@ -18,6 +18,7 @@ import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CommentSectionProps, GetCommentsResponse } from "@/types";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 
 export default function CommentSection({
   postId,
@@ -203,36 +204,13 @@ export default function CommentSection({
         )}
       </div>
 
-      <ModalBase
+      <ConfirmDeleteModal
         isOpen={deleteTargetId !== null}
         onOpenChange={(isOpen) => !isOpen && setDeleteTargetId(null)}
         title="DELETE COMMENT"
-        titleClassName="text-xl font-black tracking-tighter text-slate-950 uppercase"
-      >
-        <div className="flex flex-col gap-8 pt-4">
-          <p className="text-base leading-relaxed font-bold text-slate-500">
-            댓글을 삭제하시겠습니까? <br />
-            <span className="text-sm font-medium text-slate-300">
-              이 작업은 되돌릴 수 없습니다.
-            </span>
-          </p>
-          <div className="flex justify-end gap-3">
-            <BtnCommon
-              variant="teritary"
-              onClick={() => setDeleteTargetId(null)}
-              className="!h-11 !rounded-xl px-5 font-bold"
-            >
-              CANCEL
-            </BtnCommon>
-            <BtnCommon
-              onClick={handleConfirmDelete}
-              className="!h-11 !rounded-xl bg-red-500 px-5 font-bold text-white"
-            >
-              DELETE
-            </BtnCommon>
-          </div>
-        </div>
-      </ModalBase>
+        description="댓글을 삭제하시겠습니까?"
+        onConfirm={handleConfirmDelete}
+      />
     </section>
   );
 }
