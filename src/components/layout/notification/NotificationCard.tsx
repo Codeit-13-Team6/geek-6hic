@@ -55,9 +55,9 @@ export default function NotificationCard({
   return (
     <article
       className={cn(
-        "flex w-full gap-4 px-4 py-3 transition-colors",
-        notification.isRead ? "bg-white" : "bg-gray-50",
-        "cursor-pointer",
+        "flex w-full gap-4 px-5 py-4 transition-colors",
+        notification.isRead ? "bg-white" : "bg-slate-50",
+        "cursor-pointer hover:bg-slate-50",
         className,
       )}
       onClick={() => onClick?.(notification)}
@@ -69,7 +69,7 @@ export default function NotificationCard({
             alt={title}
             width={40}
             height={40}
-            className="size-10 rounded-lg object-cover"
+            className="size-10 rounded-xl object-cover shadow-sm"
             unoptimized
           />
         ) : (
@@ -78,32 +78,42 @@ export default function NotificationCard({
             alt="프로필"
             width={40}
             height={40}
-            className="size-10 rounded-full object-cover"
+            className="size-10 rounded-full object-cover shadow-sm"
             unoptimized
           />
         )}
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <h3 className="truncate text-base font-semibold text-gray-900">
-              {title}ss
-            </h3>
-          </div>
+        <div className="flex items-start justify-between gap-2">
+          <h3
+            className={cn(
+              "truncate text-sm tracking-tight",
+              notification.isRead
+                ? "font-semibold text-slate-500"
+                : "font-bold text-slate-900",
+            )}
+          >
+            {title}
+          </h3>
 
-          <span className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-gray-300">
+          <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-slate-300">
             {!notification.isRead && (
               <span
                 aria-label="읽지 않은 알림"
-                className="size-1.5 rounded-full bg-emerald-400"
+                className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
               />
             )}
             {relativeTime}
           </span>
         </div>
 
-        <p className="mt-2 text-sm break-words text-gray-500">
+        <p
+          className={cn(
+            "mt-1 text-[13px] leading-snug break-words",
+            notification.isRead ? "text-slate-400" : "text-slate-600",
+          )}
+        >
           {notification.message}
         </p>
       </div>

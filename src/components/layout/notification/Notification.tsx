@@ -10,6 +10,7 @@ import {
 import NotificationCard from "@/components/layout/notification/NotificationCard";
 import type { NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
+import { Trash2, CheckCheck } from "lucide-react";
 
 export default function Notification({
   isOpen,
@@ -91,40 +92,41 @@ export default function Notification({
   if (!isOpen) return null;
 
   return (
-    <div className="flex h-[100dvh] w-[314px] flex-col overflow-hidden rounded-l-3xl bg-white shadow-none sm:h-auto sm:rounded-3xl sm:shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
-      <div className="flex justify-between gap-2 px-6 pt-6">
-        <h2 className="font-pretendard text-lg font-semibold text-gray-900">
-          알림 내역
-        </h2>
+    <div className="fixed top-20 right-4 z-[100] flex w-[320px] flex-col overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] sm:w-[360px]">
+      <div className="flex items-center justify-between border-b border-slate-50 px-6 py-5">
+        <h2 className="text-base font-bold text-slate-900">알림 내역</h2>
         <button
           type="button"
           onClick={isAllRead ? handleDeleteAll : handleMarkAllAsRead}
-          className="cursor-pointer text-sm font-medium text-gray-400 transition-opacity hover:text-gray-600"
+          className="flex items-center gap-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase hover:text-slate-600"
         >
+          {isAllRead ? <Trash2 size={12} /> : <CheckCheck size={12} />}
           {isAllRead ? "전체 삭제" : "모두 읽기"}
         </button>
       </div>
 
-      <div className="mt-6 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain sm:max-h-[280px] sm:flex-none">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain sm:max-h-[420px]">
         {isLoading ? (
-          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
-            알림을 불러오는 중이에요...
+          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300">
+            알림을 불러오는 중...
           </div>
         ) : notifications.length > 0 ? (
-          notifications.map((notification) =>
-            notification?.message?.split("_")[0] !== '"isThread' ? (
-              <NotificationCard
-                key={notification.id}
-                notification={notification}
-                onClick={() => handleNotificationClick(notification)}
-              />
-            ) : (
-              <></>
-            ),
-          )
+          <div className="flex flex-col divide-y divide-slate-50">
+            {notifications.map((notification) =>
+              notification?.message?.split("_")[0] !== '"isThread' ? (
+                <NotificationCard
+                  key={notification.id}
+                  notification={notification}
+                  onClick={() => handleNotificationClick(notification)}
+                />
+              ) : (
+                <></>
+              ),
+            )}
+          </div>
         ) : (
-          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-gray-400">
-            아직 알림이 없어요.
+          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300">
+            아직 도착한 알림이 없어요.
           </div>
         )}
       </div>
