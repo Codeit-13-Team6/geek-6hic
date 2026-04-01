@@ -63,7 +63,7 @@ export function UserCard({
       </div>
 
       <div className="flex flex-1 flex-col justify-center p-6 sm:p-0">
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between min-h-[22px]">
           <span className="text-main-purple text-[11px] font-black tracking-widest uppercase">
             {type}
           </span>
@@ -91,9 +91,9 @@ export function UserCard({
         </h3>
 
         <div className="flex items-center gap-6 text-[13px] font-bold tracking-tight text-slate-500 uppercase">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ">
             <Calendar size={14} className="text-slate-300" />
-            <span className="text-slate-600">
+            <span className="text-slate-600 min-w-[56px]">
               {date.toLocaleDateString("ko-KR", {
                 month: "long",
                 day: "numeric",
