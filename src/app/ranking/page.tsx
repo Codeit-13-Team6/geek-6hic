@@ -1,5 +1,5 @@
-
 // import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+import { Metadata } from "next";
 import { Trophy } from "lucide-react";
 import RankingList from "@/app/ranking/_component/RankingList";
 // import dynamic from "next/dynamic";
@@ -9,6 +9,18 @@ import RankingList from "@/app/ranking/_component/RankingList";
 //   loading: () => <RankingListSkeleton />,
 // });
 
+export const metadata: Metadata = {
+  title: "랭킹 보드",
+  description:
+    "스프린터 파트너들이 가장 활발하게 활동 중인 모임 리스트를 확인해보세요.",
+  openGraph: {
+    title: "랭킹 보드 | co-Git",
+    description:
+      "스프린터 파트너들이 가장 활발하게 활동 중인 모임 리스트를 확인해보세요.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
+
 export default function Page() {
   return (
     <div className="relative w-full">
@@ -17,7 +29,7 @@ export default function Page() {
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               {" "}
-              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center  sm:h-16 sm:w-16">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <Trophy className="text-white" size={24} />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
@@ -45,7 +57,7 @@ export default function Page() {
       </header>
 
       <section className="mt-3 sm:mt-9">
-          <RankingList />
+        <RankingList />
       </section>
     </div>
   );

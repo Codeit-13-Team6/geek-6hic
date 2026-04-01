@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "@/app/lounge/_component/HotPostList";
@@ -12,6 +13,17 @@ import { getNextPageParam } from "@/lib/pagination";
 import LoginModal from "@/components/modal/LoginModal";
 import { MessageSquareText } from "lucide-react";
 
+export const metadata: Metadata = {
+  title: "스프린트 라운지",
+  description: "스프린터 파트너들이 모여 정보를 공유하고 소통하는 공간입니다.",
+  openGraph: {
+    title: "스프린트 라운지 | co-Git",
+    description:
+      "스프린터 파트너들이 모여 정보를 공유하고 소통하는 공간입니다.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
+
 export default async function LoungePage() {
   return (
     <div className="relative w-full">
@@ -19,7 +31,7 @@ export default async function LoungePage() {
         <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center  sm:h-16 sm:w-16">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <MessageSquareText className="text-white" size={24} />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">

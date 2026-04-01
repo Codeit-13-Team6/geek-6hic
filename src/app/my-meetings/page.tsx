@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { InfiniteData } from "@tanstack/react-query";
 import { getJoinedMeetingsServer } from "@/api/server/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
@@ -6,6 +7,16 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { GitCommitIcon } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "나의 모임",
+  description: "참여한 모임의 상세 정보를 다시 확인할 수 있습니다.",
+  openGraph: {
+    title: "나의 모임 | co-Git",
+    description: "참여한 모임의 상세 정보를 다시 확인할 수 있습니다.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
 
 export function getMeetingJoinedNextPageParam(
   lastPage: JoinedMeetingsResponse,

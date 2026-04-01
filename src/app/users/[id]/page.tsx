@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ProfileSection from "@/app/users/[id]/_components/ProfileSection";
@@ -22,6 +23,18 @@ const defaultTabs = [
   { value: "lounge", label: "내가 쓴 게시물" },
 ];
 
+export const metadata: Metadata = {
+  title: "마이 페이지",
+  description:
+    "내 정보를 확인하고, 내가 찜한 모임, 참여한 모임, 작성한 게시물을 한눈에 확인하세요.",
+  openGraph: {
+    title: "마이 페이지 | co-Git",
+    description:
+      "내 정보를 확인하고, 내가 찜한 모임, 참여한 모임, 작성한 게시물을 한눈에 확인하세요.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
+
 export default async function Page() {
   return (
     <div className="w-full">
@@ -29,7 +42,7 @@ export default async function Page() {
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
           <h1 className="text-3xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-5xl">
-            User <span className="text-main-purple">Archive.</span>
+            MY <span className="text-main-purple">PAGE.</span>
           </h1>
         </div>
       </header>
