@@ -8,6 +8,7 @@ import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
 import { cn } from "@/lib/utils";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function PostCard({
   title,
@@ -27,9 +28,10 @@ export default function PostCard({
       className="group flex cursor-pointer flex-col gap-6 rounded-2xl border-b border-slate-100 bg-transparent py-8 transition-all hover:bg-slate-100/50 sm:flex-row sm:gap-10 sm:px-4"
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:aspect-square sm:h-40 sm:w-40 lg:h-48 lg:w-48">
-        <img
+        <FallbackImage
           src={thumbnailUrl || defaultImg.src}
           alt="thumb"
+          fill
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {
             (e.target as HTMLImageElement).src = defaultImg.src;

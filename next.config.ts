@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       "source.unsplash.com",
       "picsum.photos",
       "via.placeholder.com",
+      "avatar.vercel.sh",
     ],
     remotePatterns: [
       {

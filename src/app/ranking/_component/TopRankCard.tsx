@@ -7,6 +7,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
+import { inherits } from "node:util";
 
 export default function TopRankCard({
   rank,
