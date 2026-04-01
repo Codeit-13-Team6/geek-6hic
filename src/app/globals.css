@@ -53,7 +53,7 @@
   --primary: #260656;
   --border: #f1f5f9;
   --ring: #260656;
-  --error-color: #96a3b4;
+  --error-color: #ff0101;
 }
 
 /* 💡 모달 오버레이가 GNB를 덮도록 강제 설정 */
@@ -90,6 +90,10 @@ body {
     color: var(--foreground);
     font-family: var(--font-pretendard);
     -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    cursor: pointer;
   }
 }
 
