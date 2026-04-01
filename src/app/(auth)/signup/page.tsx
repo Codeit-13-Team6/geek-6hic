@@ -87,7 +87,7 @@ export default function SignUp() {
               type="text"
               isRequired
               placeholder="이름을 입력해주세요."
-              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              className="!h-12"
               {...register("name", { required: "이름을 입력해주세요." })}
               isDestructive={!!errors.name}
               hintText={errors.name?.message}
@@ -98,7 +98,7 @@ export default function SignUp() {
               type="email"
               isRequired
               placeholder="이메일을 입력해주세요."
-              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              className="!h-12"
               {...register("email", {
                 required: "이메일을 입력해주세요.",
                 pattern: {
@@ -115,7 +115,7 @@ export default function SignUp() {
               type="password"
               isRequired
               placeholder="비밀번호를 입력해주세요."
-              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              className="!h-12"
               {...register("password", {
                 required: "비밀번호를 입력해주세요.",
                 pattern: {
@@ -133,7 +133,7 @@ export default function SignUp() {
               type="password"
               isRequired
               placeholder="비밀번호 확인"
-              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              className="!h-12"
               {...register("passwordConfirm", {
                 required: "비밀번호 확인을 입력해주세요.",
                 validate: (value) => {
@@ -152,7 +152,7 @@ export default function SignUp() {
               label="Introduction"
               type="text"
               placeholder="한줄소개 (20자 이내)"
-              className="focus:!border-main-purple !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+              className="!h-12"
               {...register("introduce", {
                 validate: (value) => {
                   if (!value) return true;

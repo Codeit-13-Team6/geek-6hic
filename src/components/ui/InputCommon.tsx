@@ -33,9 +33,8 @@ const inputVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-error focus-visible:border-error focus-visible:ring-[4px] focus-visible:ring-error/20",
-        false:
-          "border-gray-300 focus-visible:border-main-green-500 focus-visible:ring-[4px] focus-visible:ring-main-green-100",
+        true: "border-red-500 focus:border-error focus:ring-[4px] focus:ring-error/20",
+        false: "border-gray-300 focus:border-main-purple focus:ring-[4px] focus:ring-main-purple",
       },
       inputSize: {
         sm: "h-10 px-3 py-2 text-sm sm:text-base sm:h-12 sm:p-3",
@@ -48,7 +47,6 @@ const inputVariants = cva(
     },
   },
 );
-
 export interface InputCommonProps
   extends ComponentProps<"input">, VariantProps<typeof inputVariants> {
   label?: string;
@@ -104,7 +102,7 @@ export function InputCommon({
             <span
               className={cn(
                 "ml-1",
-                isDestructive ? "text-error" : "text-green-500",
+                isDestructive ? "text-error" : "text-purple-500",
               )}
             >
               *
@@ -152,8 +150,8 @@ export function InputCommon({
       {hintText && (
         <p
           className={cn(
-            "text-[12px] leading-[16px]",
-            isDestructive ? "text-error" : "text-gray-500",
+            "mt-1 text-[12px] leading-[16px]",
+            isDestructive ? "text-error" : "text-purple-500",
           )}
         >
           {hintText}
