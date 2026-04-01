@@ -1,6 +1,6 @@
 "use client";
 
-import {  useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -46,7 +46,7 @@ export default function LoginForm({
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data, returnUrl, 'gg ');
+    console.log(data, returnUrl, "gg ");
     setIsLoading(true);
     setError(null);
 
@@ -143,7 +143,7 @@ export default function LoginForm({
           type="submit"
           disabled={isLoading}
           onClick={() => {
-            console.log('넌 눌리니 ? ')
+            console.log("넌 눌리니 ? ");
           }}
           className="mt-2 h-12 !rounded-xl font-black tracking-widest transition-transform active:scale-95"
         >
@@ -173,12 +173,13 @@ export default function LoginForm({
           disabled={!!isOAuthLoading}
         >
           <Image src={googleIcon} width="20" height="20" alt="google" />
-          {isOAuthLoading === "google" && (
-            <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-400">
+          {isOAuthLoading === "google" ? (
+            <span className="ml-2 animate-pulse text-[14px] font-bold text-slate-400">
               로그인 중...
             </span>
+          ) : (
+            "Google"
           )}
-          Google
         </button>
 
         <button
@@ -188,12 +189,13 @@ export default function LoginForm({
           disabled={!!isOAuthLoading}
         >
           <Image src={kakaoIcon} width="20" height="20" alt="kakao" />
-          {isOAuthLoading === "kakao" && (
-            <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-600">
-              ...
+          {isOAuthLoading === "kakao" ? (
+            <span className="ml-2 animate-pulse text-[14px] font-bold text-slate-600">
+              로그인 중...
             </span>
+          ) : (
+            "Kakao"
           )}
-          Kakao
         </button>
       </div>
 

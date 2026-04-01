@@ -68,7 +68,7 @@ export default function ProfileSection() {
               </h2>
               <button
                 onClick={() => setIsEditModalOpen(true)}
-                className="hover:text-main-purple text-slate-300 transition-colors"
+                className="hover:text-main-purple text-slate-300 transition-colors cursor-pointer"
               >
                 <Settings2 size={20} />
               </button>

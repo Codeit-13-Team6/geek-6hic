@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { SearchX } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks";
+import { filterThreadPosts } from "@/lib/postUtils";
 
 export default function MyPostList() {
   const router = useRouter();
@@ -27,6 +28,15 @@ export default function MyPostList() {
       initialPageParam: undefined as string | undefined,
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      select: (data) => ({
+        ...data,
+        pages: data.pages.map((page) =>
+          filterThreadPosts({
+            ...page,
+            data: page.data.filter((post: Post) => post.author.id === user?.id),
+          }),
+        ),
+      }),
     });
 
   const bottomRef = useIntersectionObserver(
@@ -35,10 +45,7 @@ export default function MyPostList() {
     isFetchingNextPage,
   );
 
-  const allPosts =
-    data?.pages
-      .flatMap((page) => page.data)
-      .filter((post: Post) => post.author.id === user?.id) ?? [];
+  const allPosts = data?.pages.flatMap((page) => page.data) ?? [];
 
   if (allPosts.length === 0) {
     return (

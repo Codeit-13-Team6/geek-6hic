@@ -7,7 +7,6 @@ import messageIcon from "@/assets/icon/message/message.svg";
 import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
-import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
 
 export default function PostCard({
