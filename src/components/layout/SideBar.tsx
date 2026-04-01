@@ -32,12 +32,10 @@ export default function SideBar({
   return (
     <SheetContent
       side="right"
-      // 💡 Glassmorphism: bg-white/70 + backdrop-blur-2xl + subtle border
       className="z-[999999] flex h-full w-[290px] flex-col border-l border-white/20 bg-white/50 px-6 pt-10 pb-12 shadow-[-20px_0_80px_rgba(0,0,0,0.05)] backdrop-blur-3xl [&>button.absolute]:hidden"
     >
       <SheetTitle className="sr-only">모바일 네비게이션 메뉴</SheetTitle>
 
-      {/* 상단: 메뉴 텍스트 및 닫기 */}
       <div className="flex items-center justify-between px-3">
         <span className="text-[11px] font-black tracking-[0.25em] text-slate-400 uppercase">
           Menu
@@ -47,7 +45,6 @@ export default function SideBar({
         </SheetClose>
       </div>
 
-      {/* 메인 내비게이션: 마이페이지가 상단 리스트로 통합됨 */}
       <nav className="mt-0 flex flex-col gap-1">
         {NAV_LINKS.map((link) => {
           const isActive = pathname === link.href;
@@ -71,7 +68,6 @@ export default function SideBar({
           );
         })}
 
-        {/* 💡 마이페이지 위치 조정: 내비게이션 하단에 바로 붙임 */}
         {isLoggedIn && (
           <Link
             href={`/users/${user?.id}`}
