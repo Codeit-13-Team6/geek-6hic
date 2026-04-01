@@ -51,7 +51,7 @@ export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
 
-export async function getThreadPost(meetingId: number) {
+export async function getThreadPost(meetingId: number): Promise<Post> {
   const { data } = await axiosInstance.get("/posts", {
     params: { keyword: `isThread_${meetingId}` },
   });

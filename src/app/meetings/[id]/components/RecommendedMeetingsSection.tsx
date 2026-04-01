@@ -1,78 +1,111 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-import { TagCommon } from "@/components/ui/TagCommon";
 import { RecommendedMeetingsSectionProps } from "@/types";
+import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
-
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
-
-const formatHourMinute = (value: string) => {
-  const date = new Date(value);
-
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
 };
 
 export function RecommendedMeetingsSection({
   data,
 }: RecommendedMeetingsSectionProps) {
-  if (data.recommendedMeetings.length === 0) {
-    return null;
-  }
+  const meetings = data.recommendedMeetings || [];
 
   return (
-    <section className="w-full space-y-5 md:space-y-6">
-      <h2 className="text-[24px] font-semibold text-gray-900">
-        이런 모임은 어때요?
-      </h2>
+    <section className="w-full space-y-6">
+      <div className="flex flex-col gap-1 px-2">
+        <div className="text-main-purple flex items-center gap-2">
+          <Sparkles size={18} strokeWidth={3} />
 
-      <div className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4">
-        {data.recommendedMeetings.map((meeting) => (
-          <Link
-            key={meeting.id}
-            href={`/meetings/${meeting.id}`}
-            className="group overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:rounded-[24px]"
-          >
-            {meeting.image ? (
-              <Image
-                src={meeting.image}
-                alt={meeting.name}
-                width={320}
-                height={168}
-                className="h-[168px] w-full object-cover"
-              />
-            ) : (
-              <div className="h-[168px] w-full bg-gray-100" />
-            )}
+          <h2 className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
+            이런 모임은 어때요?
+          </h2>
+        </div>
 
-            <div className="space-y-3 p-5">
-              <div className="flex flex-wrap gap-2">
-                <TagCommon variant="blue">
-                  {formatMonthDay(meeting.registrationEnd)} 마감
-                </TagCommon>
-                <TagCommon variant="white">
-                  {formatHourMinute(meeting.dateTime)}
-                </TagCommon>
-              </div>
-
-              <h3 className="line-clamp-2 text-[18px] font-semibold text-gray-900">
-                {meeting.name}
-              </h3>
-
-              <p className="text-sm text-gray-500">
-                {meeting.participantCount}/{meeting.capacity}
-              </p>
-            </div>
-          </Link>
-        ))}
+        <p className="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">
+          Recommended Meetings
+        </p>
       </div>
+
+      {meetings.length === 0 ? (
+        <div className="flex min-h-[240px] w-full flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
+          <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-white text-slate-200 shadow-sm">
+            <Sparkles size={28} />
+          </div>
+          <div className="space-y-1">
+            <p className="text-lg font-black tracking-tighter text-slate-900">
+              새로운 모임을 찾는 중이에요
+            </p>
+            <p className="text-sm font-bold text-slate-400">
+              아직 추천해 드릴 수 있는 모임이 없습니다.
+            </p>
+          </div>
+
+          <Link
+            href="/meetings"
+            className="hover:bg-main-purple mt-8 flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-3 text-xs font-black tracking-widest text-white transition-all active:scale-95"
+          >
+            전체 목록 보기
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      ) : (
+        <div className="relative -mx-4 overflow-hidden sm:-mx-6 lg:-mx-8">
+          <div className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 sm:px-6 lg:px-8">
+            {meetings.slice(0, 5).map((meeting) => (
+              <Link
+                key={meeting.id}
+                href={`/meetings/${meeting.id}`}
+                className="group relative flex w-[260px] shrink-0 snap-start flex-col overflow-hidden transition-all duration-300 sm:w-[300px]"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] bg-slate-100 shadow-sm transition-shadow group-hover:shadow-md">
+                  {meeting.image ? (
+                    <Image
+                      src={meeting.image}
+                      alt={meeting.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-xs font-black tracking-widest text-slate-200 uppercase">
+                      No Image
+                    </div>
+                  )}
+
+                  <div className="group-hover:blur-0 absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/20 opacity-0 blur-sm backdrop-blur-md transition-all group-hover:opacity-100">
+                    <ArrowUpRight
+                      className="text-white"
+                      size={22}
+                      strokeWidth={3}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col px-2 pt-4 pb-2">
+                  <div className="flex items-center gap-2 text-xs font-bold tracking-tight text-slate-400 sm:text-[13px]">
+                    <span className="text-main-purple/70">
+                      {formatMonthDay(meeting.dateTime)}
+                    </span>
+                    <span className="size-1 rounded-full bg-slate-200" />
+                    <span>{meeting.participantCount}명 참여 중</span>
+                  </div>
+
+                  <h3 className="group-hover:text-main-purple mt-2 line-clamp-1 text-base font-black tracking-tighter text-slate-900 transition-colors sm:text-lg">
+                    {meeting.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+
+            <div className="w-1 shrink-0 sm:w-2 lg:w-4" />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

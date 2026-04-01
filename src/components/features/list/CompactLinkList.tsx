@@ -11,7 +11,7 @@ export function CompactLinkList({
   if (!links || links.length === 0) return null;
 
   return (
-    <div className="mt-4">
+    <div className={`${isPreview ? "" : "mt-4"}`}>
       <ul className="flex flex-col gap-2.5">
         {links.map((link) => {
           // 1. 도메인 추출
@@ -47,7 +47,9 @@ export function CompactLinkList({
                           );
                         }}
                       />
-                    ) : null}
+                    ) : (
+                      <Link2 className="hidden size-4 text-gray-400" />
+                    )}
                     <Link2 className="hidden size-4 text-gray-400" />
                   </div>
 
