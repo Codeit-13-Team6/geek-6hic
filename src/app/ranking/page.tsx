@@ -1,11 +1,10 @@
 "use client";
 
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import { Trophy } from "lucide-react";
+import dynamic from "next/dynamic";
 
-const RankingList = dynamic(() => import("./component/RankingList"), {
+const RankingList = dynamic(() => import("./_component/RankingList"), {
   ssr: false,
   loading: () => <RankingListSkeleton />,
 });
@@ -14,14 +13,14 @@ export default function Page() {
   return (
     <div className="relative w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-20 sm:pb-12 lg:pb-12">
-        <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
+        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 sm:gap-5">
               {" "}
-              <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center  sm:h-16 sm:w-16">
                 <Trophy className="text-white" size={24} />
               </div>
-              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase">
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
                 Meetings / Ranking
               </span>
             </div>
@@ -46,9 +45,7 @@ export default function Page() {
       </header>
 
       <section className="mt-3 sm:mt-9">
-        <Suspense fallback={<RankingListSkeleton />}>
           <RankingList />
-        </Suspense>
       </section>
     </div>
   );

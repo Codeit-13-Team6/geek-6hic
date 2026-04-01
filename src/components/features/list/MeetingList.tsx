@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
 import { cn } from "@/lib/utils";
 import LoginModal from "@/components/modal/LoginModal";
-import { HeartIcon } from "../icon/HeartIcon";
+import { HeartIcon } from "../../icon/HeartIcon";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function MeetingList({
   meetingList,
@@ -80,7 +81,7 @@ export default function MeetingList({
             )}
           >
             <div className="relative h-44 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[200px]">
-              <Image
+              <FallbackImage
                 src={item.image || defaultImage}
                 fill
                 className={cn(

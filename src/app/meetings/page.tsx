@@ -1,4 +1,4 @@
-import MeetingsClient from "./components/MeetingsClient";
+import MeetingsClient from "@/app/meetings/_components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
 import type { JoinedMeetingsResponse } from "@/types";
@@ -6,6 +6,8 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
+import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
+
 
 function MeetingFilterSkeleton() {
   return (
@@ -32,24 +34,6 @@ function MeetingFilterSkeleton() {
   );
 }
 
-const GitBranchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="square"
-    className="text-white"
-  >
-    <line x1="6" x2="6" y1="3" y2="15" />
-    <circle cx="18" cy="6" r="3" />
-    <circle cx="6" cy="18" r="3" />
-    <path d="M18 9a9 9 0 0 1-9 9" />
-  </svg>
-);
 
 export default async function Page() {
   return (
@@ -58,7 +42,7 @@ export default async function Page() {
         <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="bg-main-purple shadow-mag flex h-12 w-12 items-center justify-center sm:h-16 sm:w-16">
+              <div className="bg-main-purple shadow-mag flex min-h-12 min-w-12 h-12 w-12 items-center justify-center sm:h-16 sm:w-16">
                 <GitBranchIcon />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">

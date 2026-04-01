@@ -1,7 +1,7 @@
 import { InfiniteData } from "@tanstack/react-query";
 import { getJoinedMeetingsServer } from "@/api/server/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
-import MyMeetingsClient from "./components/MyMeetingsClient";
+import MyMeetingsClient from "@/app/my-meetings/_components/MyMeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
@@ -17,13 +17,13 @@ export default async function Page() {
   return (
     <div className="relative w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-20 sm:pb-12 lg:pb-12">
-        <div className="grid grid-cols-2 items-center gap-5 sm:gap-8">
+        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-main-purple shadow-main-purple/20 flex h-12 w-12 items-center justify-center shadow-lg sm:h-14 sm:w-14">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <GitCommitIcon className="text-white" />
               </div>
-              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase">
+              <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
                 Meetings / Joined
               </span>
             </div>

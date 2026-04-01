@@ -1,11 +1,11 @@
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
-import ProfileSection from "./components/ProfileSection";
+import ProfileSection from "@/app/users/[id]/_components/ProfileSection";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import MyMeetingList from "./components/MyMeetingList";
-import MyPostList from "./components/MyPostList";
+import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
+import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
-import FavoriteList from "@/app/users/[id]/components/FavoriteList";
+import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type {
   FavoritesResponse,
   MyMeetingsResponse,

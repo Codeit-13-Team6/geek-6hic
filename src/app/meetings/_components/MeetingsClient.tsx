@@ -15,7 +15,7 @@ import type {
 } from "@/types";
 import MeetingList from "../../../components/features/list/MeetingList";
 import MeetingFilters from "./MeetingsFilters";
-import { CreateMeetingModal } from "@/app/meetings/modal/CreateMeetingModal";
+import { CreateMeetingModal } from "@/app/meetings/_components/modal/CreateMeetingModal";
 import { useMeetingFavoriteMutation } from "@/hooks";
 
 const TAB_LIST = [

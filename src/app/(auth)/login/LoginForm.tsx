@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import {  useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,6 @@ export default function LoginForm({
   onSuccess,
   title = "Login",
 }: LoginFormProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +46,7 @@ export default function LoginForm({
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log(data, returnUrl, 'gg ');
     setIsLoading(true);
     setError(null);
 
@@ -56,16 +56,14 @@ export default function LoginForm({
         password: data.password,
       });
 
+      console.log(res, res?.ok, res.user);
       if (res?.ok && res.user) {
+        console.log(returnUrl);
         setUser(res.user);
         if (onSuccess) {
           onSuccess();
-          setIsLoading(false);
-        } else {
-          router.push(returnUrl);
         }
-      } else {
-        setIsLoading(false);
+        window.location.assign(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");
@@ -80,7 +78,7 @@ export default function LoginForm({
   const handleKakaoLogin = () => {
     setIsOAuthLoading("kakao");
     saveReturnUrl();
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao?redirect=${encodeURIComponent(window.location.origin + "/oauth/callback")}`;
   };
 
   const handleGoogleLogin = () => {
@@ -144,6 +142,9 @@ export default function LoginForm({
           size={"md"}
           type="submit"
           disabled={isLoading}
+          onClick={() => {
+            console.log('넌 눌리니 ? ')
+          }}
           className="mt-2 h-12 !rounded-xl font-black tracking-widest transition-transform active:scale-95"
         >
           로그인
