@@ -30,7 +30,7 @@ export default function ModalBase({
           className={cn(
             "fixed left-[50%] z-30 w-full max-w-[90%] translate-x-[-50%]",
             "top-[calc(50%+40px)]",
-            "max-h-[calc(100vh-200px)]",
+            "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
             "overflow-y-auto border border-slate-100 bg-white px-6 py-10 shadow-2xl outline-none",

@@ -27,6 +27,7 @@ import {
 import { TagCommon } from "@/components/ui/TagCommon";
 import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -76,7 +77,6 @@ export function MeetingHeaderSection({
 
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
-
   const progressValue = (data.participantCount / data.capacity) * 100;
   const visibleParticipants =
     participantAvatars.length > 0
@@ -102,7 +102,7 @@ export function MeetingHeaderSection({
     }
 
     if (actionLabel === "출석하기") {
-      console.log(4)
+      console.log(4);
       await onAttend();
       return;
     }
@@ -252,9 +252,7 @@ export function MeetingHeaderSection({
                 <BtnCommon
                   type="button"
                   size="md"
-                  disabled={
-                    isActionDisabled || isJoinPending || isAuthLoading
-                  }
+                  disabled={isActionDisabled || isJoinPending || isAuthLoading}
                   onClick={() => loginGuardAction(handleActionClick)}
                   className="h-11 min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
                 >
@@ -307,43 +305,18 @@ export function MeetingHeaderSection({
         onSubmit={onEdit}
       />
 
-      <ModalBase
-        disablePointerDismissal
+      <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        contentClassName="w-[343px] max-w-[calc(100vw-24px)] rounded-[24px] border-none px-6 py-6 shadow-2xl md:w-[560px] md:rounded-[40px] md:px-10 md:pt-12 md:pb-10"
-        title=""
-      >
-        <div className="pt-2 text-center md:pt-4">
-          <p className="text-[20px] font-semibold text-gray-900 md:text-[24px]">
-            모임을 정말 삭제하시겠어요?
-          </p>
-          <p className="mt-3 text-[14px] text-gray-500 md:text-[16px]">
-            삭제 후에는 되돌릴 수 없습니다.
-          </p>
-        </div>
-
-        <div className="mt-6 grid grid-cols-2 gap-2.5 md:mt-10 md:gap-3">
-          <BtnCommon
-            type="button"
-            variant="teritary"
-            size="md"
-            onClick={() => setIsDeleteModalOpen(false)}
-          >
-            취소
-          </BtnCommon>
-          <BtnCommon
-            type="button"
-            size="md"
-            onClick={() => {
-              onDelete();
-              setIsDeleteModalOpen(false);
-            }}
-          >
-            확인
-          </BtnCommon>
-        </div>
-      </ModalBase>
+        title="DELETE MEETING"
+        description="모임을 정말 삭제하시겠어요?"
+        subDescription="삭제 후에는 되돌릴 수 없습니다."
+        onConfirm={() => {
+          onDelete();
+          setIsDeleteModalOpen(false);
+        }}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
 
       <ModalBase
         disablePointerDismissal

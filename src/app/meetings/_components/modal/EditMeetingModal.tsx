@@ -58,7 +58,7 @@ export function EditMeetingModal({
           }
           onOpenChange(nextIsOpen);
         }}
-        contentClassName="w-full sm:max-w-[540px] lg:max-w-[840px] rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full -mt-10 sm:max-w-[540px]  rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="px-6 py-4 sm:px-16">

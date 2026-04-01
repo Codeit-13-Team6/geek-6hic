@@ -81,9 +81,9 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE ARCHIVE"
+        title="DELETE POST"
         description="게시글을 삭제하시겠습니까?"
-        subDescription="삭제된 데이터는 복구할 수 없습니다. 신중하게 선택해 주세요."
+        subDescription="삭제된 데이터는 복구할 수 없습니다."
         onConfirm={handleConfirmDelete}
       />
     </>

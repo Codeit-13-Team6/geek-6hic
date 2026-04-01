@@ -81,7 +81,7 @@ export function CreateMeetingModal() {
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={handleOpenChangeModal}
-        contentClassName="w-full sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="px-6 py-10 sm:px-8 sm:py-10">

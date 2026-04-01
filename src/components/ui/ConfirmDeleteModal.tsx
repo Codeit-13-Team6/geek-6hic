@@ -35,7 +35,8 @@ export function ConfirmDeleteModal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       title={title}
-      titleClassName="text-xl font-black tracking-tighter text-red-500 uppercase"
+      contentClassName="-mt-10"
+      titleClassName="text-xl font-black tracking-tighter text-slate-900 uppercase"
     >
       <div className="flex flex-col gap-8 pt-4">
         <div className="space-y-2 text-center sm:text-left">
