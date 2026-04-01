@@ -5,6 +5,7 @@ import { Gnb } from "@/components/layout/Gnb";
 import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
+import LoginModalProvider from "@/providers/LoginModalProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default async function RootLayout({
             <Gnb />
 
             <ToasterProvider />
+            <LoginModalProvider />
             <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20">
               {children}
             </main>

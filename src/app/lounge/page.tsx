@@ -10,8 +10,8 @@ import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
-import LoginModal from "@/components/modal/LoginModal";
 import { MessageSquareText } from "lucide-react";
+import LoginGuard from "@/components/modal/LoginGuard";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",
@@ -48,7 +48,7 @@ export default async function LoungePage() {
 
           <div className="hidden items-end self-end text-right sm:flex sm:flex-col">
             <div className="max-w-[420px]">
-              <LoginModal
+              <LoginGuard
                 fallback={
                   <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
                     <span className="text-xs tracking-widest uppercase">
@@ -64,7 +64,7 @@ export default async function LoungePage() {
                     </span>
                   </BtnCommon>
                 </Link>
-              </LoginModal>
+              </LoginGuard>
             </div>
           </div>
         </div>
