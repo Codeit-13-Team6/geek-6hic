@@ -3,14 +3,17 @@ import LoginForm from "./LoginForm";
 
 export default function Login() {
   return (
-    <section
-      className="flex min-h-[calc(100vh-48px)] items-center bg-[#F6F7F9] py-6 sm:min-h-[calc(100vh-88px)] sm:py-25"
-      aria-labelledby="login-header"
-    >
-      <div className="w-full px-4 sm:mx-auto sm:max-w-142 sm:px-0">
-        <div className="rounded-xl border bg-white px-4 py-6 sm:rounded-[40px] sm:px-16 sm:py-10">
-          <Suspense fallback={<div>로그인 화면 불러오는 중...</div>}>
-          <LoginForm  />
+    <section className="flex flex-col items-center justify-center sm:px-6">
+      <div className="w-full sm:mx-auto sm:max-w-[480px] sm:px-0">
+        <div className="rounded-[32px] border border-slate-100 bg-white px-8 py-10 shadow-xl shadow-slate-200/40 sm:px-12 sm:py-12">
+          <Suspense
+            fallback={
+              <div className="py-20 text-center text-xs font-black tracking-widest text-slate-300">
+                LOADING...
+              </div>
+            }
+          >
+            <LoginForm />
           </Suspense>
         </div>
       </div>
