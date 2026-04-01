@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "@/app/lounge/_component/HotPostList";
@@ -9,8 +10,19 @@ import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
-import LoginModal from "@/components/modal/LoginModal";
 import { MessageSquareText } from "lucide-react";
+import LoginGuard from "@/components/modal/LoginGuard";
+
+export const metadata: Metadata = {
+  title: "스프린트 라운지",
+  description: "스프린터 파트너들이 모여 정보를 공유하고 소통하는 공간입니다.",
+  openGraph: {
+    title: "스프린트 라운지 | co-Git",
+    description:
+      "스프린터 파트너들이 모여 정보를 공유하고 소통하는 공간입니다.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
 
 export default async function LoungePage() {
   return (
@@ -36,7 +48,7 @@ export default async function LoungePage() {
 
           <div className="hidden items-end self-end text-right sm:flex sm:flex-col">
             <div className="max-w-[420px]">
-              <LoginModal
+              <LoginGuard
                 fallback={
                   <BtnCommon className="bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                     <span className="text-xs tracking-widest uppercase">
@@ -52,7 +64,7 @@ export default async function LoungePage() {
                     </span>
                   </BtnCommon>
                 </Link>
-              </LoginModal>
+              </LoginGuard>
             </div>
           </div>
         </div>

@@ -12,13 +12,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import ModalBase from "@/components/ui/ModalBase";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CommentSectionProps, GetCommentsResponse } from "@/types";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export default function CommentSection({
   postId,
@@ -26,6 +26,7 @@ export default function CommentSection({
 }: CommentSectionProps) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const [threadContent, setThreadContent] = useState("");
@@ -150,7 +151,7 @@ export default function CommentSection({
             <div className="flex justify-end">
               <BtnCommon
                 className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
-                onClick={handlePostComment}
+                onClick={() => loginGuardAction(handlePostComment)}
                 disabled={!threadContent.trim() || isPosting}
               >
                 {isPosting ? "..." : "작성하기"}
@@ -174,7 +175,7 @@ export default function CommentSection({
           />
           <div className="flex justify-end">
             <BtnCommon
-              onClick={handlePostComment}
+              onClick={() => loginGuardAction(handlePostComment)}
               disabled={isPosting}
               className="h-10 w-20 !rounded-xl text-sm font-bold"
             >

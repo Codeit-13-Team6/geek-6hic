@@ -7,11 +7,13 @@ import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingSch
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
-import LoginModal from "@/components/modal/LoginModal";
 import { AlertCircle, Plus, StepForwardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export function CreateMeetingModal() {
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
   const {
@@ -64,37 +66,22 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <LoginModal
-        fallback={
-          <BtnCommon
-            className={floatingBtnStyle}
-            type="button"
-            onClick={() => {}}
-          >
-            <Plus size={20} strokeWidth={3} />
-            <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
-              Create Meeting
-            </span>
-          </BtnCommon>
-        }
+      <BtnCommon
+        className={cn(floatingBtnStyle, "!p-0 sm:!p-6")}
+        type="button"
+        onClick={() => loginGuardAction(handleOpenModal)}
       >
-        <BtnCommon
-          className={cn(floatingBtnStyle, "!p-0 sm:!p-6")}
-          type="button"
-          onClick={handleOpenModal}
-        >
-          <Plus size={20} strokeWidth={3} />
-          <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
-            Create Meeting
-          </span>
-        </BtnCommon>
-      </LoginModal>
+        <Plus size={20} strokeWidth={3} />
+        <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
+          Create Meeting
+        </span>
+      </BtnCommon>
 
       <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={handleOpenChangeModal}
-        contentClassName="w-full sm:max-w-[540px] rounded-[32px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="px-6 py-10 sm:px-8 sm:py-10">
