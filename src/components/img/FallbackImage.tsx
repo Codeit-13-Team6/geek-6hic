@@ -11,6 +11,6 @@ export default function FallbackImage({
   const [imgSrc, setImgSrc] = useState(src);
 
   return (
-    <Image {...props} src={imgSrc} onError={() => setImgSrc(fallbackSrc)} />
+    <Image {...props} src={imgSrc} onError={() => setImgSrc(fallbackSrc)} unoptimized />
   );
 }
