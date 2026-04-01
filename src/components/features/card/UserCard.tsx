@@ -12,7 +12,7 @@ export function UserCard({
   title = "제목이 없습니다.",
   type = "유형이 없습니다.",
   date = new Date(),
-  imageSrc = "https://avatar.vercel.sh/shadcn1",
+  imageSrc = "https://example.com/image.jpg",
   defaultLiked = false,
   participantCount = 0,
   capacity = 20,

@@ -147,6 +147,7 @@ export default function CommentSection({
               onChange={(event) => setThreadContent(event.target.value)}
               className="min-h-[120px] !rounded-2xl border-slate-100 bg-slate-50/50 p-4 focus:bg-white"
               disabled={isPosting}
+              maxLength={999}
             />
             <div className="flex justify-end">
               <BtnCommon
@@ -172,6 +173,7 @@ export default function CommentSection({
             disabled={isPosting}
             placeholder="여기에 댓글을 남겨보세요."
             className="w-full resize-none border-none bg-transparent px-2 pt-2 text-[15px] leading-relaxed text-slate-700 placeholder:text-slate-300 focus:ring-0 focus:outline-none"
+            maxLength={999}
           />
           <div className="flex justify-end">
             <BtnCommon

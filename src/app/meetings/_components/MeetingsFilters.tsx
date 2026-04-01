@@ -119,19 +119,20 @@ export default function MeetingFilters({
           {isOpen ? (
             <>
               {/* 캘린더 팝업 */}
-              <div className="shadow-mag absolute top-8 right-0 z-50 rounded-2xl bg-white">
+              <div
+                onClick={() => setIsOpen(false)}
+                className="absolute inset-0 z-40 bg-transparent"
+              ></div>
+              <div className="shadow-mag absolute top-auto right-auto z-50 mt-2 rounded-2xl bg-white">
                 <Calendar
                   mode="range"
                   selected={draftDate}
                   onSelect={setDraftDate}
                   onReset={handleCalendarReset}
                   onApply={handleCalendarApply}
+
                 />
               </div>
-              <div
-                onClick={() => setIsOpen(false)}
-                className="fixed inset-0 z-40 bg-transparent"
-              ></div>
             </>
           ) : null}
         </div>
@@ -158,7 +159,7 @@ export default function MeetingFilters({
             alignItemWithTrigger={false}
             sideOffset={2}
             align="end"
-            className="z-50 min-w-[140px] overflow-hidden rounded-xl border-0 bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 outline-none"
+            className="z-50 min-w-[120px] overflow-hidden rounded-xl border-0 bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 outline-none"
           >
             <SelectGroup className="p-1">
               {SORT_OPTIONS.map((item) => (
