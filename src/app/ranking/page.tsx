@@ -1,8 +1,13 @@
-import { Suspense } from "react";
+"use client";
+
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import { Trophy } from "lucide-react";
-import RankingList from "@/app/ranking/_component/RankingList";
+import dynamic from "next/dynamic";
 
+const RankingList = dynamic(() => import("./_component/RankingList"), {
+  ssr: false,
+  loading: () => <RankingListSkeleton />,
+});
 
 export default function Page() {
   return (
@@ -40,9 +45,7 @@ export default function Page() {
       </header>
 
       <section className="mt-3 sm:mt-9">
-        <Suspense fallback={<RankingListSkeleton />}>
           <RankingList />
-        </Suspense>
       </section>
     </div>
   );
