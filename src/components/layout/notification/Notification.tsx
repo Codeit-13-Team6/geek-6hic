@@ -92,7 +92,7 @@ export default function Notification({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-20 right-4 z-[100] flex w-[320px] flex-col overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] sm:w-[360px]">
+    <div className="absolute top-10 right-[-70px] z-[100] flex w-[320px] flex-col overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] sm:w-[360px]">
       <div className="flex items-center justify-between border-b border-slate-50 px-6 py-5">
         <h2 className="text-base font-bold text-slate-900">알림 내역</h2>
         <button

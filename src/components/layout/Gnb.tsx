@@ -39,7 +39,8 @@ export function Gnb() {
   const user = useAuthStore((s) => s.user);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  const isLoggedIn = !!user;
+  const [hasMounted, setHasMounted] = useState(false);
+  const isLoggedIn = hasMounted && !!user;
   const isBlobUrl = user?.image?.startsWith("blob:");
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -57,6 +58,10 @@ export function Gnb() {
   };
 
   const handleLogin = async () => router.push("/login");
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isAuthReady || !isLoggedIn) {
@@ -179,7 +184,7 @@ export function Gnb() {
                 </span>
               </button>
 
-              <div className="fixed top-0 right-0 z-50 sm:absolute sm:top-[calc(100%+16px)] sm:right-0">
+              <div className="absolute z-50 sm:absolute">
                 <Notification
                   isOpen={isNotificationOpen}
                   onClose={() => setIsNotificationOpen(false)}

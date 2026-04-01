@@ -63,7 +63,7 @@ export default function LoginForm({
         if (onSuccess) {
           onSuccess();
         }
-        window.location.assign(returnUrl);
+        window.location.replace(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");

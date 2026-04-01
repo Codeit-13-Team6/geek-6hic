@@ -58,15 +58,19 @@ export const useGetPostForEdit = (postId: number) => {
   // 1. 포스트 원본 데이터 가져오기
   const { data: post, isLoading: isPostLoading } = useGetPostDetail(postId);
 
+
   // 2. 포스트가 도착하면 실행되는 종속 쿼리
   const { data: initialData, isLoading: isOgLoading } = useQuery({
     queryKey: ["post", "edit-og", postId],
     queryFn: async () => {
+      console.log('dgdgd')
       if (!post) return null;
 
       const { content: parsedContent, links: parsedLinks } = parsePostData(
         post.content,
       );
+
+      console.log(parsedContent, "parsedContent", parsedLinks, "parsedLinks");
 
       if (parsedLinks.length === 0) {
         return {

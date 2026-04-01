@@ -10,8 +10,6 @@ import {
   useToggleLike,
 } from "@/hooks/queries/usePosts";
 import { useState } from "react";
-import ModalBase from "@/components/ui/ModalBase";
-import { BtnCommon } from "@/components/ui/BtnCommon";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 
