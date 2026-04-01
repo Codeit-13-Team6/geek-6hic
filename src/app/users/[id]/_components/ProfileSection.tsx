@@ -68,7 +68,7 @@ export default function ProfileSection() {
               </h2>
               <button
                 onClick={() => setIsEditModalOpen(true)}
-                className="hover:text-main-purple text-slate-300 transition-colors cursor-pointer"
+                className="hover:text-main-purple cursor-pointer text-slate-300 transition-colors"
               >
                 <Settings2 size={20} />
               </button>
@@ -103,7 +103,7 @@ export default function ProfileSection() {
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         title="프로필 수정"
-        contentClassName=" sm:max-w-[520px] rounded-[32px]"
+        contentClassName="-mt-10 sm:max-w-[520px] rounded-[32px]"
         titleClassName="text-2xl font-black tracking-tighter text-slate-950 uppercase"
       >
         <form onSubmit={onSubmitProfile} className="mt-8 flex flex-col gap-6">
@@ -177,7 +177,7 @@ export default function ProfileSection() {
               className="flex-1 rounded-2xl border-slate-200 font-black"
               onClick={() => setIsEditModalOpen(false)}
             >
-              CANCEL
+              취소
             </BtnCommon>
             <BtnCommon
               variant="default"
@@ -185,7 +185,7 @@ export default function ProfileSection() {
               type="submit"
               disabled={isPending}
             >
-              SAVE
+              저장
             </BtnCommon>
           </div>
         </form>

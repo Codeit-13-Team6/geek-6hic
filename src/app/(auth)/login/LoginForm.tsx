@@ -201,7 +201,9 @@ export default function LoginForm({
       </div>
 
       <div className="mt-8 flex items-center justify-center gap-2">
-        <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase"></p>
+        <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">
+          계정이 아직 없으신가요?
+        </p>
         <Link
           href="/signup"
           className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900"

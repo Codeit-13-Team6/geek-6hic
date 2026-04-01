@@ -50,7 +50,7 @@ export default async function LoungePage() {
             <div className="max-w-[420px]">
               <LoginGuard
                 fallback={
-                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                  <BtnCommon className="bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                     <span className="text-xs tracking-widest uppercase">
                       + Create Post
                     </span>
@@ -58,7 +58,7 @@ export default async function LoungePage() {
                 }
               >
                 <Link href="/lounge/create" className="hidden sm:block">
-                  <BtnCommon className="h-12 w-[90%] rounded-2xl border-none bg-slate-950 px-10 font-black text-white transition-all hover:bg-slate-800">
+                  <BtnCommon className="bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                     <span className="text-xs tracking-widest uppercase">
                       + Create Post
                     </span>

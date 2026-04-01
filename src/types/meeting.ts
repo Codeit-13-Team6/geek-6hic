@@ -2,7 +2,7 @@ import type { DateRange } from "react-day-picker";
 import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
-
+import { LucideIcon, LucideProps } from "lucide-react";
 
 export interface MeetingMember {
   id: number;
@@ -29,7 +29,6 @@ export interface Meeting extends CreateMeeting {
   participantCount: number;
 }
 
-
 export interface MeetingThreadItem {
   id: number;
   author: string;
@@ -46,7 +45,6 @@ export interface RecommendedMeetingItem {
   registrationEnd: string;
   dateTime: string;
 }
-
 
 export interface MeetingResponseBase {
   id: number;
@@ -89,7 +87,6 @@ export interface MeetingDetailData extends MeetingResponseBase {
   recommendedMeetings: RecommendedMeetingItem[];
 }
 
-
 //내가 참여한 모임에 대한 추가 정보
 export interface JoinedMeeting extends Meeting {
   isFavorited: boolean;
@@ -123,7 +120,6 @@ export interface MeetingAttendanceComment {
   createdAt: string;
 }
 
-
 export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
 export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
 export type MyMeetingsResponse = CursorResponse<Meeting>;
@@ -140,7 +136,6 @@ export interface MeetingActionErrorResponse {
   code: string;
   message: string;
 }
-
 
 export interface GetMeetingListParams {
   type?: string;
@@ -174,9 +169,8 @@ export interface MeetingListProps {
   sortValue?: "deadline" | "participants" | null;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
-  meetingStatusBadgeVisible?: boolean
+  meetingStatusBadgeVisible?: boolean;
 }
-
 
 export interface UserCardProps {
   title?: string;
@@ -190,7 +184,6 @@ export interface UserCardProps {
   onHeartClick?: (liked: boolean) => void;
   onDetailClick?: () => void;
 }
-
 
 export interface RemoveMeetingImageParams {
   previewImageUrlRef: { current: string };
@@ -274,8 +267,9 @@ export interface EditMeetingModalProps {
 export interface MeetingCategoryItem {
   value: string;
   label: string;
-  imageSrc: StaticImageData;
+  imageSrc?: StaticImageData;
   className?: string;
+  icon?: LucideIcon | React.ComponentType<LucideProps>;
 }
 
 export interface ScheduleDatePickerProps {
@@ -332,14 +326,12 @@ export interface MeetingScheduleStepValues {
 }
 
 export interface MeetingFormValues
-  extends MeetingBasicInfoValues,
-    MeetingScheduleStepValues {
+  extends MeetingBasicInfoValues, MeetingScheduleStepValues {
   category: string;
 }
 
 export interface MeetingFormErrors
-  extends MeetingBasicInfoErrors,
-    MeetingScheduleStepValues {
+  extends MeetingBasicInfoErrors, MeetingScheduleStepValues {
   category: string;
 }
 

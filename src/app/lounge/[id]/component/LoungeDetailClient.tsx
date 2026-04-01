@@ -13,6 +13,7 @@ import { useState } from "react";
 import ModalBase from "@/components/ui/ModalBase";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
@@ -77,37 +78,14 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
         />
       </section>
 
-      <ModalBase
+      <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE"
-        titleClassName="text-xl font-black tracking-tighter text-slate-950 uppercase"
-      >
-        <div className="flex flex-col gap-6 pt-4">
-          <p className="text-base leading-relaxed font-bold text-slate-500">
-            게시글을 삭제하시겠습니까? <br />
-            <span className="text-sm font-medium text-slate-300">
-              삭제된 데이터는 복구할 수 없습니다.
-            </span>
-          </p>
-
-          <div className="flex justify-end gap-3">
-            <BtnCommon
-              variant="teritary"
-              onClick={() => setIsDeleteModalOpen(false)}
-              className="!h-11 !rounded-xl px-5 font-black tracking-widest"
-            >
-              CANCEL
-            </BtnCommon>
-            <BtnCommon
-              onClick={handleConfirmDelete}
-              className="!h-11 !rounded-xl bg-red-500 px-5 font-black tracking-widest text-white transition-all hover:bg-red-600 active:scale-95"
-            >
-              DELETE
-            </BtnCommon>
-          </div>
-        </div>
-      </ModalBase>
+        title="DELETE POST"
+        description="게시글을 삭제하시겠습니까?"
+        subDescription="삭제된 데이터는 복구할 수 없습니다."
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }

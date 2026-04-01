@@ -1,7 +1,5 @@
 "use client";
 
-import plusIcon from "@/assets/icon/plus/plus.svg";
-import Image from "next/image";
 import { useState } from "react";
 import { MeetingCategoryStep } from "@/app/meetings/_components/modal/MeetingCategoryStep";
 import { MeetingBasicInfoStep } from "@/app/meetings/_components/modal/MeetingBasicInfoStep";
@@ -9,6 +7,8 @@ import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingSch
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
+import { AlertCircle, Plus, StepForwardIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export function CreateMeetingModal() {
@@ -56,156 +56,153 @@ export function CreateMeetingModal() {
       requestCloseModal();
       return;
     }
-
     setIsOpen(true);
   };
+
+  const floatingBtnStyle =
+    "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95 " +
+    "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2 " +
+    "lg:right-16 lg:bottom-16";
 
   return (
     <>
       <BtnCommon
-        className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
+        className={cn(floatingBtnStyle, "!p-0 sm:!p-6")}
         type="button"
         onClick={() => loginGuardAction(handleOpenModal)}
       >
-        <Image src={plusIcon} alt="모임 만들기 추가" />
-        <span className="hidden sm:block">모임 만들기</span>
+        <Plus size={20} strokeWidth={3} />
+        <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
+          Create Meeting
+        </span>
       </BtnCommon>
 
       <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={handleOpenChangeModal}
-        contentClassName="w-[544px] max-w-[calc(100vw-24px)] rounded-[40px] border-none px-12 py-12 shadow-2xl"
-        title={`모임 만들기 ${currentStep}/${totalSteps}`}
+        contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        title=""
       >
-        {currentStep === 1 ? (
-          <MeetingCategoryStep
-            value={formValues.category}
-            onChange={handleChangeCategory}
-          />
-        ) : null}
+        <div className="px-6 py-10 sm:px-8 sm:py-10">
+          <div className="-mt-4 mb-8 flex flex-col items-center">
+            <div className="text-main-purple flex items-center gap-2 text-sm font-black tracking-[0.2em] uppercase">
+              <StepForwardIcon size={14} strokeWidth={3} />
+              <span>
+                Step {currentStep} / {totalSteps}
+              </span>
+            </div>
+          </div>
 
-        {currentStep === 2 ? (
-          <MeetingBasicInfoStep
-            values={{
-              name: formValues.name,
-              description: formValues.description,
-              link: formValues.link,
-              imageFile: formValues.imageFile,
-              previewImageUrl: formValues.previewImageUrl,
-              imageUrl: formValues.imageUrl,
-            }}
-            errors={{
-              name: isTouchedStep(2) ? basicInfoErrors.name : "",
-              description: isTouchedStep(2) ? basicInfoErrors.description : "",
-              link: isTouchedStep(2) ? basicInfoErrors.link : "",
-              imageUrl: imageErrorMessage,
-            }}
-            isImageUploading={isImageUploading}
-            onChange={handleChangeBasicInfo}
-            onChangeImage={handleChangeMeetingImage}
-            onRemoveImage={handleRemoveMeetingImage}
-          />
-        ) : null}
+          <div className="min-h-[380px]">
+            {currentStep === 1 && (
+              <MeetingCategoryStep
+                value={formValues.category}
+                onChange={handleChangeCategory}
+              />
+            )}
+            {currentStep === 2 && (
+              <MeetingBasicInfoStep
+                values={{
+                  name: formValues.name,
+                  description: formValues.description,
+                  link: formValues.link,
+                  imageFile: formValues.imageFile,
+                  previewImageUrl: formValues.previewImageUrl,
+                  imageUrl: formValues.imageUrl,
+                }}
+                errors={{
+                  name: isTouchedStep(2) ? basicInfoErrors.name : "",
+                  description: isTouchedStep(2)
+                    ? basicInfoErrors.description
+                    : "",
+                  link: isTouchedStep(2) ? basicInfoErrors.link : "",
+                  imageUrl: imageErrorMessage,
+                }}
+                isImageUploading={isImageUploading}
+                onChange={handleChangeBasicInfo}
+                onChangeImage={handleChangeMeetingImage}
+                onRemoveImage={handleRemoveMeetingImage}
+              />
+            )}
+            {currentStep === 3 && (
+              <MeetingScheduleStep
+                values={{
+                  startDate: formValues.startDate,
+                  startTime: formValues.startTime,
+                  endDate: formValues.endDate,
+                  endTime: formValues.endTime,
+                  capacity: formValues.capacity,
+                }}
+                errors={{
+                  startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
+                  startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
+                  endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
+                  endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
+                  capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
+                }}
+                onChange={handleChangeSchedule}
+              />
+            )}
+          </div>
 
-        {currentStep === 3 ? (
-          <MeetingScheduleStep
-            values={{
-              startDate: formValues.startDate,
-              startTime: formValues.startTime,
-              endDate: formValues.endDate,
-              endTime: formValues.endTime,
-              capacity: formValues.capacity,
-            }}
-            errors={{
-              startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
-              startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
-              endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
-              endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
-              capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
-            }}
-            onChange={handleChangeSchedule}
-          />
-        ) : null}
-
-        <div className="mt-8 flex gap-3">
-          {currentStep === 1 ? (
+          <div className="mt-8 flex gap-3">
             <BtnCommon
               type="button"
-              variant="outline"
-              size="md"
-              className="flex-1"
-              onClick={requestCloseModal}
+              className="h-12 flex-1 rounded-xl bg-slate-50 text-base font-bold text-slate-400 transition-all hover:bg-slate-100 sm:h-14 sm:rounded-2xl"
+              onClick={currentStep === 1 ? requestCloseModal : handlePrevStep}
             >
-              취소
+              {currentStep === 1 ? "취소" : "이전"}
             </BtnCommon>
-          ) : (
             <BtnCommon
               type="button"
-              variant="outline"
-              size="md"
-              className="flex-1"
-              onClick={handlePrevStep}
+              className="bg-main-purple h-12 flex-1 rounded-xl text-base font-bold text-white shadow-[0_10px_20px_rgba(38,6,86,0.15)] transition-all hover:bg-slate-950 sm:h-14 sm:rounded-2xl"
+              onClick={
+                currentStep < totalSteps ? handleNextStep : handleSubmitMeeting
+              }
             >
-              이전
+              {currentStep < totalSteps ? "다음" : "생성"}
             </BtnCommon>
-          )}
-
-          {currentStep < totalSteps ? (
-            <BtnCommon
-              type="button"
-              size="md"
-              className="flex-1"
-              onClick={handleNextStep}
-            >
-              다음
-            </BtnCommon>
-          ) : (
-            <BtnCommon
-              type="button"
-              size="md"
-              className="flex-1"
-              onClick={handleSubmitMeeting}
-            >
-              모임 만들기
-            </BtnCommon>
-          )}
+          </div>
         </div>
       </ModalBase>
+
       <ModalBase
         disablePointerDismissal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
-        contentClassName="w-[400px] max-w-[calc(100vw-24px)] rounded-[32px] border-none px-8 py-8 shadow-2xl"
+        contentClassName="w-full sm:w-[400px] max-w-[calc(100vw-32px)] rounded-[32px] border-none p-8 shadow-2xl"
         title=""
       >
-        <div className="pt-4 text-center">
-          <p className="text-[24px] font-semibold text-gray-900">
+        <div className="flex flex-col items-center pt-4 text-center">
+          <div className="mb-6 flex size-14 items-center justify-center rounded-full bg-red-50 text-red-500">
+            <AlertCircle size={28} />
+          </div>
+          <p className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
             취소하시겠습니까?
           </p>
-          <p className="mt-3 text-[16px] text-gray-500">
+          <p className="mt-2 text-sm font-medium text-slate-400">
             저장하지 않은 내용은 사라집니다.
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3">
+        <div className="mt-10 flex flex-col gap-2 sm:gap-3">
           <BtnCommon
             type="button"
-            variant="teritary"
-            size="md"
+            className="bg-main-purple h-14 w-full rounded-2xl font-black text-white transition-all hover:bg-slate-950"
             onClick={() => setIsCloseConfirmOpen(false)}
           >
-            계속 작성하기
+            <span className="text-base">계속 작성</span>
           </BtnCommon>
           <BtnCommon
             type="button"
-            size="md"
+            className="h-14 w-full rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
             onClick={() => {
               setIsCloseConfirmOpen(false);
               handleCloseModal();
             }}
           >
-            나가기
+            <span className="text-base">나가기</span>
           </BtnCommon>
         </div>
       </ModalBase>

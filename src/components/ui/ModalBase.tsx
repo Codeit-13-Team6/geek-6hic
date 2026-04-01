@@ -28,14 +28,18 @@ export default function ModalBase({
       <DialogPortal>
         <DialogContent
           className={cn(
-            "fixed top-[50%] left-[50%] z-[101] w-full max-w-[90%] translate-x-[-50%] translate-y-[-50%]",
+            "fixed left-[50%] z-30 w-full max-w-[90%] translate-x-[-50%]",
+            "top-[calc(50%+40px)]",
+            "max-h-[calc(100vh-100px)]",
+            "translate-y-[-50%]",
+
             "overflow-y-auto border border-slate-100 bg-white px-6 py-10 shadow-2xl outline-none",
             contentClassName,
             "gap-0!",
           )}
           showCloseButton={false}
         >
-          <div className="flex items-center justify-between px-8 py-4 sm:px-12">
+          <div className="flex items-center justify-between px-4 py-4">
             <DialogTitle className={cn("text-slate-950", titleClassName)}>
               {title}
             </DialogTitle>
@@ -44,7 +48,7 @@ export default function ModalBase({
                 <Button
                   variant="ghost"
                   size="icon-lg"
-                  className="fixed top-5 right-4 rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer"
+                  className="fixed top-5 right-4 cursor-pointer rounded-full bg-slate-100 hover:bg-slate-200"
                 />
               }
             >
@@ -53,7 +57,7 @@ export default function ModalBase({
             </DialogClose>
           </div>
 
-          <div className="px-8 sm:px-12">{children}</div>
+          <div className="px-4">{children}</div>
         </DialogContent>
       </DialogPortal>
     </Dialog>
