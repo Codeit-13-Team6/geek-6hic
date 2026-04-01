@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import MeetingsClient from "@/app/meetings/_components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
@@ -8,6 +9,17 @@ import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
 import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
 
+export const metadata: Metadata = {
+  title: "모임 찾기",
+  description:
+    "스프린터 파트너들과 공유하고, 협업하고, 성장하는 공간 - 모임을 생성하여 아지트를 만들어보세요.",
+  openGraph: {
+    title: "모임 찾기 | co-Git",
+    description:
+      "스프린터 파트너들과 공유하고, 협업하고, 성장하는 공간 - 모임을 생성하여 아지트를 만들어보세요.",
+    images: ["/img/logo/cogit.png"],
+  },
+};
 
 function MeetingFilterSkeleton() {
   return (
@@ -34,7 +46,6 @@ function MeetingFilterSkeleton() {
   );
 }
 
-
 export default async function Page() {
   return (
     <div className="relative w-full">
@@ -42,7 +53,7 @@ export default async function Page() {
         <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="bg-main-purple shadow-mag flex min-h-12 min-w-12 h-12 w-12 items-center justify-center sm:h-16 sm:w-16">
+              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <GitBranchIcon />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
