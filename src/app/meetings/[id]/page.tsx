@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import {
   dehydrate,
   HydrationBoundary,
@@ -23,6 +24,27 @@ import { Suspense } from "react";
 import { getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const meetingId = Number(id);
+  const meetingDetail = await getMeetingDetail(meetingId);
+
+  return {
+    title: meetingDetail.name,
+    description: meetingDetail.description,
+    openGraph: {
+      title: `${meetingDetail.name} | co-git`,
+      description: meetingDetail.description.slice(0, 100),
+      images: meetingDetail.image ? [meetingDetail.image] : undefined,
+    },
+  };
+}
 
 export default async function MeetingDetailPage({
   params,
