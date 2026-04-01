@@ -1,7 +1,6 @@
 "use client";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import Image from "next/image";
 import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";

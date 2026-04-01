@@ -9,11 +9,11 @@ import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingSch
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
-import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
-import MeetingList from "@/components/features/list/MeetingList";
-import LoginModal from "@/components/modal/LoginModal";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export function CreateMeetingModal() {
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
   const {
@@ -62,27 +62,14 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <LoginModal
-        fallback={
-          <BtnCommon
-            className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
-            type="button"
-            onClick={()=> {}}
-          >
-            <Image src={plusIcon} alt="모임 만들기 추가" />
-            <span className="hidden sm:block">모임 만들기</span>
-          </BtnCommon>
-        }
+      <BtnCommon
+        className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
+        type="button"
+        onClick={() => loginGuardAction(handleOpenModal)}
       >
-        <BtnCommon
-          className="fixed right-4 bottom-6 z-99 max-h-12 max-w-12 gap-[4px] rounded-full sm:max-h-full sm:max-w-47 sm:rounded-3xl sm:py-4 lg:right-[86px] lg:bottom-14"
-          type="button"
-          onClick={handleOpenModal}
-        >
-          <Image src={plusIcon} alt="모임 만들기 추가" />
-          <span className="hidden sm:block">모임 만들기</span>
-        </BtnCommon>
-      </LoginModal>
+        <Image src={plusIcon} alt="모임 만들기 추가" />
+        <span className="hidden sm:block">모임 만들기</span>
+      </BtnCommon>
 
       <ModalBase
         disablePointerDismissal

@@ -7,9 +7,10 @@ import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
 import { cn } from "@/lib/utils";
-import LoginModal from "@/components/modal/LoginModal";
 import { HeartIcon } from "../../icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
+
 
 export default function MeetingList({
   meetingList,
@@ -18,10 +19,14 @@ export default function MeetingList({
   onHeartClick,
   meetingStatusBadgeVisible = true,
 }: MeetingListProps) {
+
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+
   function getDeadlineLabel(registrationEnd: string) {
     const endDate = new Date(registrationEnd);
     const now = new Date();
     const isToday = endDate.toDateString() === now.toDateString();
+
 
     if (!isToday) return null;
     return `오늘 ${String(endDate.getHours()).padStart(2, "0")}시 마감`;
@@ -171,41 +176,16 @@ export default function MeetingList({
                   </div>
                 </div>
 
-                <LoginModal
-                  fallback={
-                    <button
-                      type="button"
-                      onClick={() => {}}
-                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
-                    >
-                      <HeartIcon
-                        liked={item.isFavorited}
-                        onClick={() => {}}
-                        size={22}
-                        className="-mr-2"
-                      />
-                    </button>
-                  }
-                >
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onHeartClick(item);
-                    }}
-                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-slate-50"
-                  >
-                    <HeartIcon
-                      liked={item.isFavorited}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onHeartClick(item);
-                      }}
-                      size={22}
-                      className="-mr-2"
-                    />
-                  </button>
-                </LoginModal>
+                <HeartIcon
+                  liked={item.isFavorited}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    loginGuardAction(() => onHeartClick(item));
+                  }}
+                  size={22}
+                  className="-mr-2"
+                />
+
               </div>
             </div>
           </div>

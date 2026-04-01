@@ -1,13 +1,6 @@
-// import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import { Metadata } from "next";
 import { Trophy } from "lucide-react";
 import RankingList from "@/app/ranking/_component/RankingList";
-// import dynamic from "next/dynamic";
-//
-// const RankingList = dynamic(() => import("./_component/RankingList"), {
-//   ssr: false,
-//   loading: () => <RankingListSkeleton />,
-// });
 
 export const metadata: Metadata = {
   title: "랭킹 보드",
@@ -57,7 +50,7 @@ export default function Page() {
       </header>
 
       <section className="mt-3 sm:mt-9">
-        <RankingList />
+          <RankingList />
       </section>
     </div>
   );

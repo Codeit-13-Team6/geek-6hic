@@ -62,8 +62,9 @@ export default function LoginForm({
         setUser(res.user);
         if (onSuccess) {
           onSuccess();
+        } else {
+          window.location.assign(returnUrl);
         }
-        window.location.assign(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");

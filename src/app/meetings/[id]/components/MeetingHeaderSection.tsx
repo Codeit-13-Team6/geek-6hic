@@ -26,8 +26,7 @@ import {
 } from "@/components/ui/ProgressCommon";
 import { TagCommon } from "@/components/ui/TagCommon";
 import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
-import LoginModal from "@/components/modal/LoginModal";
-import Link from "next/link";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -74,6 +73,9 @@ export function MeetingHeaderSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoginConfirmOpen, setIsLoginConfirmOpen] = useState(false);
+
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+
 
   const progressValue = (data.participantCount / data.capacity) * 100;
   const visibleParticipants =
@@ -230,70 +232,34 @@ export function MeetingHeaderSection({
             </div>
 
             <div className="mt-5 flex gap-2 md:mt-5 md:gap-2 xl:mt-8 xl:gap-3">
-              <LoginModal
-                fallback={
-                  <BtnCommon
-                    type="button"
-                    variant="teritary"
-                    size="icon-md"
-                    disabled={isFavoritePending}
-                    onClick={() => {}}
-                    className="size-11 shrink-0 rounded-full xl:size-16"
-                  >
-                    <Image
-                      src={data.isFavorited ? heartsTrue : heartsFalse}
-                      alt="좋아요"
-                      width={24}
-                      height={24}
-                    />
-                  </BtnCommon>
-                }
+              <BtnCommon
+                type="button"
+                variant="teritary"
+                size="icon-md"
+                disabled={isFavoritePending}
+                onClick={() => loginGuardAction(handleFavoriteClick)}
+                className="size-11 shrink-0 rounded-full xl:size-16"
               >
+                <Image
+                  src={data.isFavorited ? heartsTrue : heartsFalse}
+                  alt="좋아요"
+                  width={24}
+                  height={24}
+                />
+              </BtnCommon>
+
+              <div className="flex-1">
                 <BtnCommon
                   type="button"
-                  variant="teritary"
-                  size="icon-md"
-                  disabled={isFavoritePending}
-                  onClick={handleFavoriteClick}
-                  className="size-11 shrink-0 rounded-full xl:size-16"
-                >
-                  <Image
-                    src={data.isFavorited ? heartsTrue : heartsFalse}
-                    alt="좋아요"
-                    width={24}
-                    height={24}
-                  />
-                </BtnCommon>
-              </LoginModal>
-
-              <div className=" flex-1 ">
-                <LoginModal
-                  fallback={
-                    <BtnCommon
-                      type="button"
-                      size="md"
-                      disabled={
-                        isActionDisabled || isJoinPending || isAuthLoading
-                      }
-                      onClick={() => {}}
-                      className="h-11 min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
-                    >
-                      {isJoinPending ? "처리 중.." : actionLabel}
-                    </BtnCommon>
+                  size="md"
+                  disabled={
+                    isActionDisabled || isJoinPending || isAuthLoading
                   }
+                  onClick={() => loginGuardAction(handleActionClick)}
+                  className="h-11 min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
                 >
-                  <BtnCommon
-                    type="button"
-                    size="md"
-                    disabled={
-                      isActionDisabled || isJoinPending || isAuthLoading
-                    }
-                    onClick={handleActionClick}
-                    className="h-11  min-w-0 flex-1 rounded-[14px] text-[14px] xl:h-16 xl:rounded-[18px]"
-                  >
-                    {isJoinPending ? "처리 중.." : actionLabel}
-                  </BtnCommon>
-                </LoginModal>
+                  {isJoinPending ? "처리 중.." : actionLabel}
+                </BtnCommon>
               </div>
             </div>
 
