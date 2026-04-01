@@ -60,7 +60,7 @@ export default function FavoriteList() {
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-1">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         {allFavorites.map((item) => (
           <UserCard
             key={item.id}
