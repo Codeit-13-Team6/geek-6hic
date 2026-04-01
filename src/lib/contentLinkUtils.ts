@@ -3,6 +3,7 @@ import { LinkItem } from "@/types";
  * 서버에서 받은 혼합된 html을 콘텐츠와 링크로 분리하는 함수
  */
 export const parsePostData = (rawContent: string) => {
+  console.log(rawContent, "rawContent");
   if (!rawContent) return { content: "", links: [] };
 
   // 1. <p><a href= 기준으로 본문과 링크 영역 분리
@@ -10,6 +11,8 @@ export const parsePostData = (rawContent: string) => {
   const mainContent = parts[0];
   const links: LinkItem[] = [];
 
+
+  console.log(parts, "parts", mainContent, "mainContent", links, "links");
   // 2. 잘려나간 링크 영역 파싱
   if (parts.length > 1) {
     parts.slice(1).forEach((str, index) => {
@@ -19,6 +22,8 @@ export const parsePostData = (rawContent: string) => {
       const urlMatch = restoredString.match(/href="([^"]+)"/);
       const titleMatch = restoredString.match(/>\s*(.*?)\s*<\/a>/);
 
+
+      console.log(urlMatch, "urlMatch", titleMatch, "titleMatch");
       if (urlMatch) {
         links.push({
           id: `link-${Date.now()}-${index}`, // 드래그 앤 드롭을 위한 고유 ID
@@ -30,6 +35,7 @@ export const parsePostData = (rawContent: string) => {
     });
   }
 
+  console.log(mainContent, "mainContent",links,  "links");
   return { content: mainContent, links };
 };
 

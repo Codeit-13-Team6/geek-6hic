@@ -22,6 +22,7 @@ export default function LoungeEditPage() {
     }
   }, [post, userId, router, postId]);
 
+
   if (isLoading || !initialData) {
     return (
       <div className="flex min-h-screen items-center justify-center text-gray-500">

@@ -7,8 +7,9 @@ import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_component/LinkCard";
-import { stitchPostData } from "@/lib/contentLinkUtils";
+import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
 import { PostPayload, LoungePostFormProps } from "@/types";
+import { useGetPostForEdit } from "@/hooks";
 
 export default function LoungePostForm({
   initialData,
@@ -38,14 +39,10 @@ export default function LoungePostForm({
     setThumbnailImage,
   } = useLoungeLink();
 
-  useEffect(() => {
-    if (initialData?.links && initialData.links.length > 0) {
-      setLinkList(initialData.links);
-    }
-    if (initialData?.image) {
-      setThumbnailImage(initialData.image);
-    }
-  }, [initialData, setLinkList, setThumbnailImage]);
+  const { content: parsedContent, links: parsedLinks } = useMemo(
+    () => parsePostData(String(initialData?.content)),
+    [initialData?.content],
+  );
 
   // 글자 수 계산
   const plainText = useMemo(() => {
@@ -103,6 +100,19 @@ export default function LoungePostForm({
 
     onSubmit(payload);
   };
+
+
+  useEffect(() => {
+    if (!initialData) return;
+
+    setContent(parsedContent);
+    setLinkList(initialData.links?.length ? initialData.links : parsedLinks ?? []);
+
+    if (initialData.image) {
+      setThumbnailImage(initialData.image);
+    }
+  }, [initialData, parsedContent, parsedLinks, setLinkList, setThumbnailImage]);
+
 
   return (
     <div className="w-full pb-20 sm:pt-5 md:-mt-5 lg:-mt-12">
