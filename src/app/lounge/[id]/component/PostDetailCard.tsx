@@ -20,7 +20,7 @@ import { CompactLinkList } from "../../../../components/features/list/CompactLin
 import { PostDetailCardProps } from "@/types";
 
 import { cn } from "@/lib/utils";
-import { HeartIcon } from "@/components/features/icon/HeartIcon";
+import { HeartIcon } from "@/components/icon/HeartIcon";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
