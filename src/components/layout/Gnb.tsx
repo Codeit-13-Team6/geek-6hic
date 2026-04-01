@@ -47,6 +47,7 @@ export function Gnb() {
   const notificationRef = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const isNavigating = useRef(false);
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
@@ -106,6 +107,16 @@ export function Gnb() {
               <Link
                 key={link.name}
                 href={link.href}
+                onClick={(e) => {
+                  if (pathname.startsWith(link.href) || isNavigating.current) {
+                    e.preventDefault();
+                    return;
+                  }
+                  isNavigating.current = true;
+                  setTimeout(() => {
+                    isNavigating.current = false;
+                  }, 100);
+                }}
                 className={cn(
                   "relative py-2 text-sm font-bold tracking-tight transition-all",
                   pathname.startsWith(link.href)

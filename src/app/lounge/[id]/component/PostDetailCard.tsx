@@ -45,15 +45,13 @@ export function PostDetailCard({
         {isOwner && (
           <div className="absolute top-4 right-4 sm:top-5 sm:right-6 lg:top-6 lg:right-7">
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <button className="rounded-full p-2 transition-colors hover:bg-slate-50">
+              <DropdownMenuTrigger className="rounded-full p-2 transition-colors hover:bg-slate-50">
                   <Image
                     src={meatballsIcon}
                     alt="menu"
                     width={24}
                     height={24}
                   />
-                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent size="sm">
                 <DropdownMenuItem onClick={onEdit}>수정하기</DropdownMenuItem>
