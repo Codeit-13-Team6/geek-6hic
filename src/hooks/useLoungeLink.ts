@@ -25,7 +25,6 @@ export const useLoungeLink = () => {
         url: result.url || linkUrl,
         image: result.image || "",
       };
-
       setLinkList((prev) => {
         const newList = [...prev, newLink];
         // 현재 썸네일이 없을 때 이미지가 있는 링크가 들어오면 무조건 첫 썸네일로 등록
@@ -34,10 +33,12 @@ export const useLoungeLink = () => {
         }
         return newList;
       });
+      console.log("✅ OG API 성공!", result); // <--- 이거 찍히는지 확인!
 
       return true; // 성공 시 입력창 비우기 용도
     } catch (error) {
       console.error("OG Fetch Error:", error);
+      console.log("✅ OG API 실패!", error); // <--- 이거 찍히는지 확인!
 
       // 일단은 axios error 아니면 바로 자르긴하는데 문제되면 그냥 error any 로 하고 받기
       if (!axios.isAxiosError(error)) return false;

@@ -17,11 +17,9 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
   const userId = useAuthStore((state) => state.user?.id);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
   const { data: post, isLoading, isError } = useGetPostDetail(postId);
   const { mutate: removePost } = useDeletePost(postId);
   const { mutate: toggleLike } = useToggleLike(postId);
-
   const isPostOwner = userId !== null && userId === post?.author.id;
   const { content: mainContent, links: linkObjects } = parsePostData(
     post?.content || "",
