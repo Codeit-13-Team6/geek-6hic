@@ -67,10 +67,3 @@ export async function getFavorites(params?: {
   const { data } = await axiosInstance.get("/favorites", { params });
   return data;
 }
-
-export async function postMeetType(): Promise<void> {
-  await axiosInstance.post("/meeting-types", {
-    name: "스터디",
-    description: "스터디 모임입니다.",
-  });
-}
