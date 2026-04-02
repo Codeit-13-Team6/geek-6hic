@@ -67,11 +67,11 @@ export function CreateMeetingModal() {
   return (
     <>
       <BtnCommon
-        className={cn(floatingBtnStyle, "!p-0 sm:!p-6")}
+        className={cn(floatingBtnStyle, "!p-0 sm:!p-6 group")}
         type="button"
         onClick={() => loginGuardAction(handleOpenModal)}
       >
-        <Plus size={20} strokeWidth={3} />
+        <Plus size={20} strokeWidth={3} className="group-hover:rotate-180 transition-transform duration-300" />
         <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
           Create Meeting
         </span>
