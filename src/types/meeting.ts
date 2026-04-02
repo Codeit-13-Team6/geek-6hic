@@ -3,6 +3,7 @@ import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
 import { LucideIcon, LucideProps } from "lucide-react";
+import type { TabItem } from "./common";
 
 export interface MeetingMember {
   id: number;
