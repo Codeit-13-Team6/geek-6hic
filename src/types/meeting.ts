@@ -345,6 +345,7 @@ export interface MeetingFormErrors
 }
 
 export interface MeetingBasicInfoStepProps {
+  meetingTypeOptions?: TabItem[];
   values: MeetingBasicInfoValues;
   isImageUploading: boolean;
   errors: MeetingBasicInfoErrors;
@@ -364,8 +365,13 @@ export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps 
 }
 
 export interface MeetingCategoryStepProps {
+  meetingTypeOptions?: TabItem[];
   value: string;
   onChange: (value: string) => void;
+}
+
+export interface CreateMeetingModalProps {
+  meetingTypeOptions?: TabItem[];
 }
 
 export interface MeetingScheduleStepProps {

@@ -4,6 +4,7 @@ import { MeetingBasicInfoSection } from "@/app/meetings/_components/modal/Meetin
 import { MeetingBasicInfoStepProps } from "@/types";
 
 export function MeetingBasicInfoStep({
+  meetingTypeOptions,
   values,
   errors,
   isImageUploading,
@@ -14,6 +15,7 @@ export function MeetingBasicInfoStep({
   return (
     <div className="pt-6">
       <MeetingBasicInfoSection
+        meetingTypeOptions={meetingTypeOptions}
         values={values}
         errors={errors}
         isImageUploading={isImageUploading}

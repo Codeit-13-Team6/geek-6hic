@@ -1,7 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getMeetingTypes } from "@/api/client/meetings";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import {
   Select,
@@ -14,11 +12,10 @@ import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import {
   MeetingBasicInfoSectionProps,
-  MeetingType,
-  TabItem,
 } from "@/types";
 
 export function MeetingBasicInfoSection({
+  meetingTypeOptions: defaultMeetingTypeOptions = [],
   values,
   errors,
   isImageUploading,
@@ -28,17 +25,6 @@ export function MeetingBasicInfoSection({
   showCategoryField = false,
   showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
-  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: ["meeting-types"],
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const defaultMeetingTypeOptions: TabItem[] = meetingTypes.map(({ name }) => ({
-    value: name,
-    label: name,
-  }));
-
   const meetingTypeOptions = (() => {
     if (!values.category) {
       return defaultMeetingTypeOptions;

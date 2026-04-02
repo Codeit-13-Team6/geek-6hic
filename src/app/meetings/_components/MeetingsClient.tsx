@@ -118,7 +118,11 @@ export default function MeetingsClient() {
 
   return (
     <div className="w-full">
-      <CreateMeetingModal />
+      <CreateMeetingModal
+        meetingTypeOptions={tabList
+          .filter((item) => item.value !== "all")
+          .map(({ value, label }) => ({ value, label }))}
+      />
 
       <div className="mb-10 sm:mb-14">
         <MeetingFilters

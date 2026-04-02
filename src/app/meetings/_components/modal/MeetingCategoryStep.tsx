@@ -1,12 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getMeetingTypes } from "@/api/client/meetings";
 import { cn } from "@/lib/utils";
 import {
   MeetingCategoryStepProps,
   MeetingCategoryItem,
-  MeetingType,
 } from "@/types";
 import {
   Sparkles,
@@ -36,21 +33,16 @@ function getMeetingCategoryIcon(name: string) {
 }
 
 export function MeetingCategoryStep({
+  meetingTypeOptions = [],
   value,
   onChange,
 }: MeetingCategoryStepProps) {
-  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: ["meeting-types"],
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const meetingCategoryList: MeetingCategoryItem[] = meetingTypes.map(
-    ({ name }) => ({
-      value: name,
-      label: name,
-      icon: getMeetingCategoryIcon(name),
-      className: name === "기타" ? "col-span-2" : undefined,
+  const meetingCategoryList: MeetingCategoryItem[] = meetingTypeOptions.map(
+    ({ value, label }) => ({
+      value,
+      label,
+      icon: getMeetingCategoryIcon(label),
+      className: label === "기타" ? "col-span-2" : undefined,
     }),
   );
 
