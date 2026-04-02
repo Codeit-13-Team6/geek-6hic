@@ -57,7 +57,7 @@ export default function MeetingList({
 
   return (
     <>
-      {visibleMeetingList.map((item) => {
+      {visibleMeetingList.map((item, index) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
 
@@ -79,11 +79,12 @@ export default function MeetingList({
             key={item.id}
             onClick={() => onItemClick(item)}
             className={cn(
-              "group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0",
+              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0",
               "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
               "hover:shadow-[0_20px_45px_-10px_rgba(38,6,86,0.12)]",
               statusLabel ? "opacity-95" : "",
             )}
+            // style={{ animationDelay: `${index * 50}ms` }}
           >
             <div className="relative h-44 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[200px]">
               <FallbackImage

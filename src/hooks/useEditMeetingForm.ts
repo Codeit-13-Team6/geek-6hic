@@ -102,7 +102,7 @@ export const toEditMeetingPayload = (formValues: MeetingFormValues) => {
 type EditMeetingTab = "basic" | "schedule";
 
 export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
-  category: "친목/여가",
+  category: "팀미팅",
   name: "",
   description: "",
   link: "",

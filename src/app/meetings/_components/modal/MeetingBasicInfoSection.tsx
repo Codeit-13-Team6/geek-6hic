@@ -113,7 +113,13 @@ export function MeetingBasicInfoSection({
                 )?.label ?? "모임 종류를 선택해 주세요"}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="w-[--anchor-width]">
+            <SelectContent
+              side="bottom"
+              sideOffset={8}
+              align="start"
+              alignItemWithTrigger={false}
+              className="bg-gray-50 ring-gray-300"
+            >
               {meetingTypeOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
@@ -174,7 +180,7 @@ export function MeetingBasicInfoSection({
       <div className="space-y-2">
         <p className="text-[14px] font-medium text-gray-800">
           이미지
-          <span className="ml-1 text-green-500">*</span>
+          <span className="ml-1 text-purple-500">*</span>
         </p>
 
         <ImageUploadInput
