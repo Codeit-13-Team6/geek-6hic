@@ -66,8 +66,8 @@ export function MeetingScheduleStep({
       {/*</div>*/}
 
       <div className="space-y-[6px]">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
+        <div className="flex flex-col items-start gap-3 sm:flex-row">
+          <div className="min-w-0 flex-1 w-full">
             <ScheduleDatePicker
               id="endDate"
               label="모임 시작 날짜"
@@ -83,7 +83,7 @@ export function MeetingScheduleStep({
             />
           </div>
 
-          <div className="min-w-0 flex-1 pt-[27px]">
+          <div className="min-w-0 flex-1 sm:pt-[27px] w-full">
             <ScheduleTimePicker
               id="endTime"
               value={values.endTime}

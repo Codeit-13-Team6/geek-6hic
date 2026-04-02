@@ -97,7 +97,7 @@ export function CreateMeetingModal({
             </div>
           </div>
 
-          <div className="min-h-[380px]">
+          <div>
             {currentStep === 1 && (
               <MeetingCategoryStep
                 meetingTypeOptions={meetingTypeOptions}

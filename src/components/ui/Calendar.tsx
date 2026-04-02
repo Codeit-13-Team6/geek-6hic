@@ -128,7 +128,7 @@ function Calendar({
             defaultClassNames.range_end,
           ),
           today: cn(
-            "rounded-(--cell-radius) font-semibold text-green-600 data-[selected=true]:rounded-none",
+            "rounded-(--cell-radius) font-semibold text-gray-800 data-[selected=true]:rounded-none",
             defaultClassNames.today,
           ),
           outside: cn(
@@ -257,7 +257,7 @@ function CalendarDayButton({
         "data-[range-end=true]:text-main-purple data-[range-start=true]:bg-main-purple-light " +
         "data-[range-start=true]:text-main-purple relative isolate z-10 flex size-auto w-9 min-w-(--cell-size) cursor-pointer flex-col gap-1 rounded-l-(--cell-radius) border-0 py-[9px] leading-none data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) " +
         "data-[range-middle=true]:rounded-(--cell-radius) " +
-        "data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-green-600 [&>span]:text-xs [&>span]:opacity-70",
+        "data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-gray-800 [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className,
       )}

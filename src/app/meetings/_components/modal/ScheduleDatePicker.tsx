@@ -113,7 +113,7 @@ export function ScheduleDatePicker({
           classNames={{
             today: "text-gray-900 font-normal",
             selected:
-              "rounded-(--cell-radius) bg-green-100 text-green-600 font-semibold",
+              "rounded-(--cell-radius) bg-main-purple-light text-purple-600 font-semibold",
           }}
           onSelect={(date) => {
             setDraftDate(date);

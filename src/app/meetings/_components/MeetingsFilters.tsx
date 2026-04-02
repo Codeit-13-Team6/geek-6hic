@@ -42,6 +42,9 @@ export default function MeetingFilters({
     appliedDate,
   );
 
+  const [isOpen, setIsOpen] = useState(false);
+
+
   const currentSortLabel = SORT_OPTIONS.find(
     (opt) => opt.value === sortValue,
   )?.label;
@@ -62,6 +65,7 @@ export default function MeetingFilters({
   // 캘린더 적용
   const handleCalendarApply = () => {
     onApplyDate(draftDate);
+    setIsOpen(false);
   };
 
   const handleClickDesc = () => {
@@ -95,7 +99,7 @@ export default function MeetingFilters({
       <div className="flex shrink-0 items-center justify-end gap-6 sm:gap-8">
         {/* 날짜 선택 */}
 
-        <Popover>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger>
             <div
               className={cn(
