@@ -111,7 +111,7 @@ export function InputCommon({
         </label>
       )}
 
-      <div className="relative flex items-center">
+      <div className="relative flex items-center w-full">
         <Input
           id={inputId}
           type={type}

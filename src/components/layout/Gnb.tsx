@@ -15,7 +15,7 @@ import axiosInstance from "@/lib/clientFetcher";
 import SideBar from "./SideBar";
 
 const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
-  <div className="relative flex items-center justify-center p-1">
+  <div className="relative flex items-center justify-center p-1 bell-hover">
     <Bell
       className="group-hover:text-main-purple h-5 w-5 text-slate-600 transition-colors"
       strokeWidth={2.2}

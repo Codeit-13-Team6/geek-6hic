@@ -21,7 +21,6 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              {" "}
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
                 <Trophy className="text-white" size={24} />
               </div>
