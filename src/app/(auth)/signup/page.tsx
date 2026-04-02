@@ -62,7 +62,7 @@ export default function SignUp() {
 
   return (
     <section
-      className="flex min-h-[calc(100vh-80px)] items-center lg:-mt-12"
+      className="flex items-center lg:-mt-12 min-h-[calc(100dvh-64px-64px)] lg:min-h-[calc(100dvh-72px-160px)]"
       aria-labelledby="sign-up-header"
     >
       <div className="w-full sm:mx-auto sm:max-w-[540px]">

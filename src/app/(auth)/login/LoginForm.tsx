@@ -79,7 +79,7 @@ export default function LoginForm({
     setIsOAuthLoading("kakao");
     saveReturnUrl();
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao?redirect=${encodeURIComponent(window.location.origin + "/oauth/callback")}`;
-  };
+  }
 
   const handleGoogleLogin = () => {
     setIsOAuthLoading("google");
