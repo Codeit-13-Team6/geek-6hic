@@ -14,8 +14,8 @@ import {
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   { value: "팀미팅", label: "팀미팅", icon: Sparkles },
   { value: "스터디", label: "스터디", icon: BookOpen },
-  { value: "취준생", label: "취준생", icon: Coffee },
-  { value: "위워크", label: "위워크", icon: Dumbbell },
+  { value: "프로젝트", label: "프로젝트", icon: Coffee },
+  { value: "취준생", label: "취준생", icon: Dumbbell },
   {
     value: "기타",
     label: "기타",
