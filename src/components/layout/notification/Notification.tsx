@@ -120,7 +120,7 @@ export default function Notification({
                   onClick={() => handleNotificationClick(notification)}
                 />
               ) : (
-                <></>
+                <div key={notification.id}></div>
               ),
             )}
           </div>

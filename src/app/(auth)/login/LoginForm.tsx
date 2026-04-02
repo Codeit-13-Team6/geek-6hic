@@ -131,7 +131,7 @@ export default function LoginForm({
           {...register("password", {
             required: "비밀번호를 입력해주세요.",
             pattern: {
-              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+              value: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
               message: "영문/숫자 포함 8자 이상",
             },
           })}
@@ -146,7 +146,6 @@ export default function LoginForm({
           type="submit"
           disabled={isLoading}
           onClick={() => {
-            console.log("넌 눌리니 ? ");
           }}
           className="mt-2 h-12 rounded-xl! font-black tracking-widest transition-transform active:scale-95"
         >

@@ -286,7 +286,7 @@ export function useMeetingFavoriteMutation(
           ),
         })),
       }),
-      invalidateKeys: [queryKey, ["meetings"], ["favorites"]],
+      invalidateKeys: [["meetings"], ["favorites"]],
       onErrorMessage: "즐겨찾기 처리에 실패했습니다.",
     }),
   });
