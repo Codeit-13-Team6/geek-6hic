@@ -5,13 +5,12 @@ import HotPostList from "@/app/lounge/_component/HotPostList";
 import LoungeContent from "@/app/lounge/_component/LoungeSection";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import { GetPostsResponse } from "@/types";
-import { InfiniteData } from "@tanstack/react-query";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import { MessageSquareText } from "lucide-react";
 import LoginGuard from "@/components/modal/LoginGuard";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",
@@ -22,6 +21,12 @@ export const metadata: Metadata = {
       "스프린터 파트너들이 모여 정보를 공유하고 소통하는 공간입니다.",
     images: ["/img/logo/cogit.png"],
   },
+};
+
+const LOUNGE_DEFAULT_PARAMS = {
+  keyword: '',
+  sortBy: "createdAt" as const,
+  sortOrder: "desc" as const,
 };
 
 export default async function LoungePage() {
@@ -83,17 +88,12 @@ export default async function LoungePage() {
       <Suspense fallback={<LoungeSkeleton />}>
         <PrefetchBoundary
           prefetchFn={(qc) =>
-            qc.prefetchInfiniteQuery<
-              GetPostsResponse,
-              Error,
-              InfiniteData<GetPostsResponse>,
-              readonly string[],
-              string | undefined
-            >({
-              queryKey: ["posts", "list", "latest", ""],
+            qc.prefetchInfiniteQuery({
+              queryKey: QUERY_KEYS.posts.listParams(LOUNGE_DEFAULT_PARAMS),
               queryFn: ({ pageParam }) => getPosts(pageParam),
-              initialPageParam: undefined,
+              initialPageParam: undefined as string | undefined,
               getNextPageParam,
+              staleTime: 1000 * 60,
             })
           }
         >

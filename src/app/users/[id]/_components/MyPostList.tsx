@@ -8,8 +8,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks";
-import { cn } from "@/lib/utils";
 import { filterThreadPosts } from "@/lib/postUtils";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export default function MyPostList() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function MyPostList() {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["posts", "list", "my", "latest"],
+      queryKey: QUERY_KEYS.posts.my,
       queryFn: ({ pageParam }) =>
         getPosts({
           keyword: "",

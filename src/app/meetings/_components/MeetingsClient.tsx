@@ -18,7 +18,8 @@ import MeetingList from "../../../components/features/list/MeetingList";
 import MeetingFilters from "./MeetingsFilters";
 import { CreateMeetingModal } from "@/app/meetings/_components/modal/CreateMeetingModal";
 import { useMeetingFavoriteMutation } from "@/hooks";
-
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { getNextPageParam } from "@/lib/pagination";
 const sortByMap = {
   deadline: "registrationEnd",
   participants: "participantCount",
@@ -44,7 +45,7 @@ export default function MeetingsClient() {
   );
 
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: ["meeting-types"],
+    queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
     staleTime: 1000 * 60 * 5,
   });
@@ -67,7 +68,11 @@ export default function MeetingsClient() {
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
-      queryKey: ["meetings", activeValue, sortValue, isSortDesc],
+      queryKey: QUERY_KEYS.meetings.listParams({
+        type: activeValue,
+        sortBy: sortValue ?? "",
+        sortOrder: isSortDesc ? "desc" : "asc",
+      }),
       queryFn: ({ pageParam }) => {
         const currentTab = tabList.find((tab) => tab.value === activeValue);
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
@@ -87,8 +92,8 @@ export default function MeetingsClient() {
         return getMeetingList(params);
       },
       initialPageParam: undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      getNextPageParam: getNextPageParam,
+      staleTime: 1000 * 60,
     });
 
   const bottomRef = useIntersectionObserver(

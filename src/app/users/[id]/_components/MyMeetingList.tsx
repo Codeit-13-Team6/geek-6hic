@@ -6,13 +6,14 @@ import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 import { Loader2, PlusCircle } from "lucide-react";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export default function MyMeetingList() {
   const router = useRouter();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["meetings", "my"],
+      queryKey: QUERY_KEYS.meetings.my,
       queryFn: ({ pageParam }) =>
         getMeeting(pageParam ? { cursor: pageParam, size: 10 } : { size: 10 }),
       initialPageParam: undefined as string | undefined,

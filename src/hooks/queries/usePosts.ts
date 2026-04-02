@@ -9,13 +9,14 @@ import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { GetPostsParams, Post, PostPayload } from "@/types";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
  */
 export const useGetHotPosts = () => {
   return useQuery({
-    queryKey: ["posts", "hot"],
+    queryKey: QUERY_KEYS.posts.hot,
     queryFn: () => getHotPosts(),
     staleTime: 1000 * 60 * 5,
   });
@@ -44,7 +45,7 @@ export const useGetPostsList = (
  */
 export const useGetPostDetail = (postId: number) => {
   return useQuery({
-    queryKey: ["post", postId],
+    queryKey: QUERY_KEYS.posts.detail(postId),
     queryFn: () => getPostDetail(postId),
     enabled: !!postId,
     staleTime: 1000 * 60 * 5,
@@ -58,12 +59,11 @@ export const useGetPostForEdit = (postId: number) => {
   // 1. 포스트 원본 데이터 가져오기
   const { data: post, isLoading: isPostLoading } = useGetPostDetail(postId);
 
-
   // 2. 포스트가 도착하면 실행되는 종속 쿼리
   const { data: initialData, isLoading: isOgLoading } = useQuery({
-    queryKey: ["post", "edit-og", postId],
+    queryKey: QUERY_KEYS.posts.detail(postId),
     queryFn: async () => {
-      console.log('dgdgd')
+      console.log("dgdgd");
       if (!post) return null;
 
       const { content: parsedContent, links: parsedLinks } = parsePostData(
@@ -121,7 +121,7 @@ export const useCreatePost = () => {
   return useMutation({
     mutationFn: (payload: PostPayload) => createPost(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
       ToastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
       router.push("/lounge");
     },
@@ -141,8 +141,7 @@ export const useUpdatePost = (postId: number) => {
   return useMutation({
     mutationFn: (payload: PostPayload) => updatePost(postId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
 
       ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
       router.push(`/lounge/${postId}`);
@@ -163,7 +162,7 @@ export const useDeletePost = (postId: number) => {
   return useMutation({
     mutationFn: () => deletePost(postId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
       ToastCommon({ message: "게시글이 삭제되었습니다.", size: "sm" });
       router.push("/lounge");
     },
@@ -179,24 +178,20 @@ export const useDeletePost = (postId: number) => {
 export const useToggleLike = (postId: number) => {
   const queryClient = useQueryClient();
 
-
-
   return useMutation({
     mutationFn: (isLiked: boolean) =>
       isLiked ? unlikePost(postId) : likePost(postId),
     ...useOptimisticMutation<Post, boolean>(queryClient, {
-      queryKey: ["post", postId],
+      queryKey: QUERY_KEYS.posts.detail(postId),
       updater: (old) => ({
         ...old,
         isLiked: !old.isLiked,
         likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
       }),
-      invalidateKeys: [["post", postId], ["post"]],
+      invalidateKeys: ["post"],
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });
-
-
 
   // return useMutation({
   //   mutationFn: (isLiked: boolean) =>

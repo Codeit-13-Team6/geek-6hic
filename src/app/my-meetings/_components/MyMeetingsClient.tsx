@@ -8,11 +8,12 @@ import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 import { getJoinedMeetings } from "@/api/client/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 
 export const meetingJoinedInfiniteQueryOptions =
   infiniteQueryOptions<JoinedMeetingsResponse>({
-    queryKey: ["meetings", "joined"],
+    queryKey: QUERY_KEYS.meetings.joined,
     queryFn: ({ pageParam }) =>
       getJoinedMeetings(
         pageParam

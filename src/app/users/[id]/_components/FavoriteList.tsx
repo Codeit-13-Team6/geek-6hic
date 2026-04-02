@@ -10,6 +10,7 @@ import { deleteFavorites, getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 import { Loader2, HeartOff } from "lucide-react";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export default function FavoriteList() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function FavoriteList() {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["favorites"],
+      queryKey: QUERY_KEYS.favorites.root,
       queryFn: ({ pageParam }) =>
         getFavorites(
           pageParam ? { cursor: pageParam, size: 10 } : { size: 10 },
@@ -37,7 +38,7 @@ export default function FavoriteList() {
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.favorites });
     },
   });
 

@@ -9,9 +9,9 @@ import { SearchX, Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { PostListProps } from "@/types";
 import { cn } from "@/lib/utils";
-import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
-import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import PostCardListSkeleton from "@/components/skeleton/PostCardListSkeleton";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { getNextPageParam } from "@/lib/pagination";
 
 export default function PostList({
   searchValue = "",
@@ -36,7 +36,11 @@ export default function PostList({
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["posts", "list", sortValue, searchValue],
+      queryKey: QUERY_KEYS.posts.listParams({
+        keyword: searchValue,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+      }),
       queryFn: ({ pageParam }) =>
         getPosts({
           keyword: searchValue,
@@ -46,8 +50,8 @@ export default function PostList({
           ...(pageParam ? { cursor: pageParam } : {}),
         }),
       initialPageParam: undefined as string | undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      getNextPageParam,
+      staleTime: 1000 * 60,
     });
 
   const bottomRef = useIntersectionObserver(
@@ -58,9 +62,7 @@ export default function PostList({
 
   const postList = data?.pages.flatMap((page) => page.data) || [];
 
-
   if (isLoading) return <PostCardListSkeleton />;
-
 
   return (
     <div

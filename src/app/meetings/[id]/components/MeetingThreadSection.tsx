@@ -7,6 +7,7 @@ import CommentSection from "@/components/features/comment/CommentSection";
 import { MessagesSquare, LockKeyhole, Loader2 } from "lucide-react";
 import { getComments } from "@/api/client";
 import { cn } from "@/lib/utils";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export function MeetingThreadSection({
   meetingId,
@@ -19,7 +20,7 @@ export function MeetingThreadSection({
   });
 
   const { data: commentsData } = useQuery({
-    queryKey: ["comments", threadPost?.id],
+    queryKey: QUERY_KEYS.comments.detail(threadPost?.id || 0),
     queryFn: () => getComments(threadPost!.id),
     enabled: !!threadPost?.id,
   });

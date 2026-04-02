@@ -6,6 +6,7 @@ import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
 import { getPostDetail, getPostCommentsServer } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -42,7 +43,7 @@ export default async function LoungeDetailPageServer({
         <PrefetchBoundary
           prefetchFn={async (qc) => {
             await qc.prefetchQuery({
-              queryKey: ["post", "edit-og", postId],
+              queryKey: QUERY_KEYS.posts.detail(postId),
               queryFn: () => getPostDetail(postId),
             });
           }}
@@ -55,7 +56,7 @@ export default async function LoungeDetailPageServer({
         <PrefetchBoundary
           prefetchFn={async (qc) => {
             await qc.prefetchQuery({
-              queryKey: ["comments", postId],
+              queryKey: QUERY_KEYS.comments.detail(postId),
               queryFn: () => getPostCommentsServer(postId),
             });
           }}

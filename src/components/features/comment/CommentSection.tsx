@@ -19,6 +19,7 @@ import { CommentSectionProps, GetCommentsResponse } from "@/types";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export default function CommentSection({
   postId,
@@ -34,7 +35,7 @@ export default function CommentSection({
   const linkObjects = extractUrlsFromText(threadContent);
 
   const { data: comments } = useQuery({
-    queryKey: ["comments", postId],
+    queryKey: QUERY_KEYS.comments.detail(postId),
     queryFn: () => getComments(postId),
     enabled: !!postId,
   });
@@ -44,9 +45,8 @@ export default function CommentSection({
   const { mutate: postComment, isPending: isPosting } = useMutation({
     mutationFn: (newContent: string) => createComment(postId, newContent),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.comments.detail(postId) });
+
 
       if (isThread) {
         setThreadContent(""); // 스레드 입력창(state) 초기화
@@ -62,12 +62,12 @@ export default function CommentSection({
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     ...useOptimisticMutation<GetCommentsResponse, number>(queryClient, {
-      queryKey: ["comments", postId],
+      queryKey: QUERY_KEYS.comments.detail(postId),
       updater: (old, commentId) => ({
         ...old,
         data: old.data.filter((c) => c.id !== commentId),
       }),
-      invalidateKeys: [["comments", postId], ["post", postId], ["posts"]],
+      invalidateKeys: [QUERY_KEYS.comments.detail(postId)],
       onErrorMessage: "댓글 삭제에 실패했습니다.",
     }),
     onSuccess: () => {
@@ -87,7 +87,7 @@ export default function CommentSection({
       GetCommentsResponse,
       { commentId: number; content: string }
     >(queryClient, {
-      queryKey: ["comments", postId],
+      queryKey: QUERY_KEYS.comments.detail(postId),
       updater: (old, { commentId, content }) => ({
         ...old,
         data: old.data.map((c) => (c.id === commentId ? { ...c, content } : c)),
