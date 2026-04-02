@@ -67,8 +67,8 @@ const PROXY_ROUTE_RULES: RouteRule[] = [
   },
   {
     pattern: /^\/meeting-types$/,
-    methods: ["POST"],
-    requiresAuth: true,
+    methods: ["GET"],
+    requiresAuth: false,
   },
   {
     pattern: /^\/notifications$/,

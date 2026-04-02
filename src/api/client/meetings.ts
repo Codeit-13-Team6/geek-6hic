@@ -6,6 +6,7 @@ import {
   CreateMeeting,
   MyMeetingsResponse,
   FavoritesResponse,
+  MeetingType,
 } from "@/types";
 
 export async function getMeetingList(
@@ -17,6 +18,11 @@ export async function getMeetingList(
   console.log(res, params);
 
   return res.data;
+}
+
+export async function getMeetingTypes(): Promise<MeetingType[]> {
+  const { data } = await axiosInstance.get<MeetingType[]>("/meeting-types");
+  return data;
 }
 
 export async function getMeeting(params?: {
@@ -66,11 +72,4 @@ export async function getFavorites(params?: {
 }): Promise<FavoritesResponse> {
   const { data } = await axiosInstance.get("/favorites", { params });
   return data;
-}
-
-export async function postMeetType(): Promise<void> {
-  await axiosInstance.post("/meeting-types", {
-    name: "스터디",
-    description: "스터디 모임입니다.",
-  });
 }
