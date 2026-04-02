@@ -7,6 +7,7 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { GitCommitIcon } from "lucide-react";
+import { getNextPageParam } from "@/lib/pagination";
 
 export const metadata: Metadata = {
   title: "나의 모임",
@@ -18,11 +19,6 @@ export const metadata: Metadata = {
   },
 };
 
-export function getMeetingJoinedNextPageParam(
-  lastPage: JoinedMeetingsResponse,
-) {
-  return lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined;
-}
 
 export default async function Page() {
   return (
@@ -78,7 +74,8 @@ export default async function Page() {
                     : { size: 10, sortOrder: "desc" },
                 ),
               initialPageParam: undefined,
-              getNextPageParam: getMeetingJoinedNextPageParam,
+              getNextPageParam: getNextPageParam<JoinedMeetingsResponse>,
+
             })
           }
         >

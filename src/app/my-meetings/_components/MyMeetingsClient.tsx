@@ -7,12 +7,8 @@ import { useMeetingFavoriteMutation } from "@/hooks";
 import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 import { getJoinedMeetings } from "@/api/client/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
+import { getNextPageParam } from "@/lib/pagination";
 
-export function getMeetingJoinedNextPageParam(
-  lastPage: JoinedMeetingsResponse,
-) {
-  return lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined;
-}
 
 export const meetingJoinedInfiniteQueryOptions =
   infiniteQueryOptions<JoinedMeetingsResponse>({
@@ -24,7 +20,8 @@ export const meetingJoinedInfiniteQueryOptions =
           : { size: 10, sortOrder: "desc" },
       ),
     initialPageParam: undefined,
-    getNextPageParam: getMeetingJoinedNextPageParam,
+    getNextPageParam: getNextPageParam<JoinedMeetingsResponse>,
+
   });
 
 export function useMeetingQuery() {

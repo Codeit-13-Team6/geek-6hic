@@ -118,6 +118,7 @@ export function MeetingBasicInfoSection({
         }}
         isDestructive={Boolean(errors.description)}
         hintText={errors.description}
+        maxLength={999}
       />
 
       <InputCommon

@@ -97,7 +97,7 @@ export default function SideBar({
             <p className="text-[15px] font-bold text-slate-900">
               안녕하세요,{" "}
               <span className="text-main-purple">
-                {user?.name || "dbwlsyyy"}
+                {user?.name || ""}
               </span>
               님
             </p>
