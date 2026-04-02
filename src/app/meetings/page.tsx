@@ -26,7 +26,7 @@ function MeetingFilterSkeleton() {
     <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
       <div className="mt-6 mb-4 flex flex-col">
         <div className="flex gap-2">
-          {["전체", "팀미팅", "스터디", "취준생", "위워크", "기타"].map(
+          {["전체", "팀미팅", "스터디", "프로젝트", "취준생", "기타"].map(
             (label) => (
               <div
                 key={label}

@@ -25,8 +25,8 @@ const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
   { value: "team", label: "팀미팅", type: "팀미팅" },
   { value: "study", label: "스터디", type: "스터디" },
+  { value: "project", label: "프로젝트", type: "프로젝트" },
   { value: "job", label: "취준생", type: "취준생" },
-  { value: "wework", label: "위워크", type: "위워크" },
   { value: "etc", label: "기타", type: "기타" },
 ] as const;
 

@@ -22,7 +22,7 @@ const textareaVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-error focus-visible:border-error focus-visible:ring-[4px] focus-visible:ring-error/20",
+        true: "border-red-500 focus:border-error focus:ring-[4px] focus:ring-error/20",
         false:
           "border-gray-300 focus-visible:border-main-green-500 focus-visible:ring-[4px] focus-visible:ring-main-green-100",
       },
@@ -77,7 +77,7 @@ export function TextareaCommon({
             <span
               className={cn(
                 "ml-1",
-                isDestructive ? "text-error" : "text-green-500",
+                isDestructive ? "text-error" : "text-purple-500",
               )}
             >
               *

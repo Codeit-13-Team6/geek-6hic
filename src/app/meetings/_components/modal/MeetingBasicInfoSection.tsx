@@ -34,14 +34,14 @@ export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
     imageSrc: studyImage,
   },
   {
+    value: "프로젝트",
+    label: "프로젝트",
+    imageSrc: JobIShoes,
+  },
+  {
     value: "취준생",
     label: "취준생",
     imageSrc: towerWork,
-  },
-  {
-    value: "위워크",
-    label: "위워크",
-    imageSrc: JobIShoes,
   },
   {
     value: "기타",
@@ -113,7 +113,13 @@ export function MeetingBasicInfoSection({
                 )?.label ?? "모임 종류를 선택해 주세요"}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="w-[--anchor-width]">
+            <SelectContent
+              side="bottom"
+              sideOffset={8}
+              align="start"
+              alignItemWithTrigger={false}
+              className="bg-gray-50 ring-gray-300"
+            >
               {meetingTypeOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
@@ -174,7 +180,7 @@ export function MeetingBasicInfoSection({
       <div className="space-y-2">
         <p className="text-[14px] font-medium text-gray-800">
           이미지
-          <span className="ml-1 text-green-500">*</span>
+          <span className="ml-1 text-purple-500">*</span>
         </p>
 
         <ImageUploadInput
