@@ -21,21 +21,13 @@ import {
   PopoverTrigger,
 } from "@/components/shadcnOrigin/popover";
 
-const TAB_LIST = [
-  { value: "all", label: "전체", type: undefined },
-  { value: "team", label: "팀미팅", type: "팀미팅" },
-  { value: "study", label: "스터디", type: "스터디" },
-  { value: "project", label: "프로젝트", type: "프로젝트" },
-  { value: "job", label: "취준생", type: "취준생" },
-  { value: "etc", label: "기타", type: "기타" },
-] as const;
-
 const SORT_OPTIONS = [
   { value: "deadline", label: "마감임박 순" },
   { value: "participants", label: "참여인원 순" },
 ] as const;
 
 export default function MeetingFilters({
+  tabList,
   activeValue,
   sortValue,
   sortDescValue,
@@ -49,7 +41,6 @@ export default function MeetingFilters({
   const [draftDate, setDraftDate] = useState<DateRange | undefined>(
     appliedDate,
   );
-  const [isOpen, setIsOpen] = useState(false);
 
   const currentSortLabel = SORT_OPTIONS.find(
     (opt) => opt.value === sortValue,
@@ -58,7 +49,6 @@ export default function MeetingFilters({
   // 탭클릭
   const handleTabClick = (value: TabValue) => {
     setDraftDate(undefined); //캘린더 선택 중이던 값 초기화 (UI 상태 리셋)
-    setIsOpen(false); //캘린더 닫기
     onChangeTab(value);
     onResetFilters();
   };
@@ -72,7 +62,6 @@ export default function MeetingFilters({
   // 캘린더 적용
   const handleCalendarApply = () => {
     onApplyDate(draftDate);
-    setIsOpen(false);
   };
 
   const handleClickDesc = () => {
@@ -82,7 +71,7 @@ export default function MeetingFilters({
   return (
     <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
-        {TAB_LIST.map(({ value, label }) => (
+        {tabList.map(({ value, label }) => (
           <li key={value} className="relative shrink-0 pb-2">
             <button
               type="button"

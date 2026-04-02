@@ -10,8 +10,11 @@ import { useCreateMeetingForm } from "@/hooks";
 import { AlertCircle, Plus, StepForwardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { CreateMeetingModalProps } from "@/types";
 
-export function CreateMeetingModal() {
+export function CreateMeetingModal({
+  meetingTypeOptions = [],
+}: CreateMeetingModalProps) {
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -97,12 +100,14 @@ export function CreateMeetingModal() {
           <div className="min-h-[380px]">
             {currentStep === 1 && (
               <MeetingCategoryStep
+                meetingTypeOptions={meetingTypeOptions}
                 value={formValues.category}
                 onChange={handleChangeCategory}
               />
             )}
             {currentStep === 2 && (
               <MeetingBasicInfoStep
+                meetingTypeOptions={meetingTypeOptions}
                 values={{
                   name: formValues.name,
                   description: formValues.description,

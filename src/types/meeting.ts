@@ -147,11 +147,20 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-export type TabValue = "all" | "team" | "study" | "project" | "job" | "etc";
+export type TabValue = string;
+
+export interface MeetingType {
+  id: number;
+  teamId: string;
+  name: string;
+  description: string;
+  createdAt: string;
+}
 
 export type SortValue = "deadline" | "participants" | null;
 
 export interface MeetingFiltersProps {
+  tabList: { value: string; label: string }[];
   activeValue: TabValue;
   sortValue: SortValue;
   sortDescValue: boolean;
@@ -336,6 +345,7 @@ export interface MeetingFormErrors
 }
 
 export interface MeetingBasicInfoStepProps {
+  meetingTypeOptions?: TabItem[];
   values: MeetingBasicInfoValues;
   isImageUploading: boolean;
   errors: MeetingBasicInfoErrors;
@@ -355,8 +365,13 @@ export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps 
 }
 
 export interface MeetingCategoryStepProps {
+  meetingTypeOptions?: TabItem[];
   value: string;
   onChange: (value: string) => void;
+}
+
+export interface CreateMeetingModalProps {
+  meetingTypeOptions?: TabItem[];
 }
 
 export interface MeetingScheduleStepProps {
