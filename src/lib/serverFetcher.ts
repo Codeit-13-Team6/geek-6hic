@@ -90,7 +90,6 @@ async function setTokenCookies(tokens: TokenPair) {
     maxAge: ACCESS_TOKEN_MAX_AGE,
   });
 
-
   // 백엔드에서 rotaion token 적용중, 유예기간동안 허용된 요청들엔 리프레쉬 토큰이 null 이 떨어지게 해둬서 null 은 가드
   if (tokens.refreshToken !== null) {
     cookieStore.set("refreshToken", tokens.refreshToken, {
@@ -98,7 +97,6 @@ async function setTokenCookies(tokens: TokenPair) {
       maxAge: REFRESH_TOKEN_MAX_AGE,
     });
   }
-
 }
 
 // 리프레시 토큰으로 새 액세스 토큰을 발급받는 함수
@@ -263,6 +261,7 @@ const PUBLIC_PATH_PATTERNS = [
   /\/meetings\/\d+\?/, // /meetings/132?...
   /\/meetings\/\d+\/participants/, // /meetings/132/participants
   /\/api\/hot/, // /api/hot
+  /\/meeting-types$/, // /meeting-types
 ];
 
 const isPublicPath = (url?: string) => {
