@@ -9,13 +9,14 @@ import {
   Dumbbell,
   MoreHorizontal,
   Check,
+  FolderKanban,
 } from "lucide-react";
 
 export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
   { value: "팀미팅", label: "팀미팅", icon: Sparkles },
   { value: "스터디", label: "스터디", icon: BookOpen },
-  { value: "프로젝트", label: "프로젝트", icon: Coffee },
-  { value: "취준생", label: "취준생", icon: Dumbbell },
+  { value: "프로젝트", label: "프로젝트", icon: FolderKanban },
+  { value: "취준생", label: "취준생", icon: Coffee },
   {
     value: "기타",
     label: "기타",

@@ -34,14 +34,14 @@ export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
     imageSrc: studyImage,
   },
   {
+    value: "프로젝트",
+    label: "프로젝트",
+    imageSrc: JobIShoes,
+  },
+  {
     value: "취준생",
     label: "취준생",
     imageSrc: towerWork,
-  },
-  {
-    value: "위워크",
-    label: "위워크",
-    imageSrc: JobIShoes,
   },
   {
     value: "기타",
