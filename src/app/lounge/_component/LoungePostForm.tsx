@@ -9,7 +9,6 @@ import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_component/LinkCard";
 import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
 import { PostPayload, LoungePostFormProps } from "@/types";
-import { useGetPostForEdit } from "@/hooks";
 
 export default function LoungePostForm({
   initialData,
@@ -18,7 +17,6 @@ export default function LoungePostForm({
   submitButtonText = "등록",
 }: LoungePostFormProps) {
   const TITLE_MAX_LENGTH = 30;
-
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [linkUrl, setLinkUrl] = useState("");
@@ -101,18 +99,18 @@ export default function LoungePostForm({
     onSubmit(payload);
   };
 
-
   useEffect(() => {
     if (!initialData) return;
-
+    console.log("🛠️ 폼에 세팅할 링크 데이터:", initialData);
     setContent(parsedContent);
-    setLinkList(initialData.links?.length ? initialData.links : parsedLinks ?? []);
+    setLinkList(
+      initialData.links?.length ? initialData.links : (parsedLinks ?? []),
+    );
 
     if (initialData.image) {
       setThumbnailImage(initialData.image);
     }
   }, [initialData, parsedContent, parsedLinks, setLinkList, setThumbnailImage]);
-
 
   return (
     <div className="w-full pb-20 sm:pt-5 md:-mt-5 lg:-mt-12">
