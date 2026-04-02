@@ -1,34 +1,59 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { getMeetingTypes } from "@/api/client/meetings";
 import { cn } from "@/lib/utils";
-import { MeetingCategoryStepProps, MeetingCategoryItem } from "@/types";
+import {
+  MeetingCategoryStepProps,
+  MeetingCategoryItem,
+  MeetingType,
+} from "@/types";
 import {
   Sparkles,
   BookOpen,
   Coffee,
-  Dumbbell,
   MoreHorizontal,
   Check,
   FolderKanban,
+  Briefcase,
 } from "lucide-react";
 
-export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
-  { value: "팀미팅", label: "팀미팅", icon: Sparkles },
-  { value: "스터디", label: "스터디", icon: BookOpen },
-  { value: "프로젝트", label: "프로젝트", icon: FolderKanban },
-  { value: "취준생", label: "취준생", icon: Coffee },
-  {
-    value: "기타",
-    label: "기타",
-    icon: MoreHorizontal,
-    className: "col-span-2",
-  },
-];
+function getMeetingCategoryIcon(name: string) {
+  switch (name) {
+    case "팀미팅":
+      return Sparkles;
+    case "스터디":
+      return BookOpen;
+    case "프로젝트":
+      return FolderKanban;
+    case "취준생":
+      return Briefcase;
+    case "기타":
+      return MoreHorizontal;
+    default:
+      return Coffee;
+  }
+}
 
 export function MeetingCategoryStep({
   value,
   onChange,
 }: MeetingCategoryStepProps) {
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: ["meeting-types"],
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const meetingCategoryList: MeetingCategoryItem[] = meetingTypes.map(
+    ({ name }) => ({
+      value: name,
+      label: name,
+      icon: getMeetingCategoryIcon(name),
+      className: name === "기타" ? "col-span-2" : undefined,
+    }),
+  );
+
   return (
     <div className="w-full">
       <div className="mb-8 text-center sm:text-left">
@@ -42,7 +67,7 @@ export function MeetingCategoryStep({
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {MEETING_CATEGORY_LIST.map((categoryItem) => {
+        {meetingCategoryList.map((categoryItem) => {
           const isSelected = value === categoryItem.value;
           const Icon = categoryItem.icon;
 

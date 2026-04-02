@@ -2,30 +2,22 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import type { DateRange } from "react-day-picker";
 
-import { getMeetingList } from "@/api/client/meetings";
+import { getMeetingList, getMeetingTypes } from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
   TabValue,
   SortValue,
+  MeetingType,
 } from "@/types";
 import MeetingList from "../../../components/features/list/MeetingList";
 import MeetingFilters from "./MeetingsFilters";
 import { CreateMeetingModal } from "@/app/meetings/_components/modal/CreateMeetingModal";
 import { useMeetingFavoriteMutation } from "@/hooks";
-
-const TAB_LIST = [
-  { value: "all", label: "전체", type: undefined },
-  { value: "team", label: "팀미팅", type: "팀미팅" },
-  { value: "study", label: "스터디", type: "스터디" },
-  { value: "project", label: "프로젝트", type: "프로젝트" },
-  { value: "job", label: "취준생", type: "취준생" },
-  { value: "etc", label: "기타", type: "기타" },
-] as const;
 
 const sortByMap = {
   deadline: "registrationEnd",
@@ -51,6 +43,21 @@ export default function MeetingsClient() {
     undefined,
   );
 
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: ["meeting-types"],
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const tabList = [
+    { value: "all", label: "전체", type: undefined },
+    ...meetingTypes.map(({ name }) => ({
+      value: name,
+      label: name,
+      type: name,
+    })),
+  ];
+
   const { toggleFavorite } = useMeetingFavoriteMutation([
     "meetings",
     activeValue,
@@ -58,14 +65,11 @@ export default function MeetingsClient() {
     isSortDesc,
   ]);
 
-  // 현재 탭에 맞는 API type 찾기
-  const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
-
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: ["meetings", activeValue, sortValue, isSortDesc],
       queryFn: ({ pageParam }) => {
-        const currentTab = TAB_LIST.find((tab) => tab.value === activeValue);
+        const currentTab = tabList.find((tab) => tab.value === activeValue);
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
 
         const params: GetMeetingListParams = {
@@ -118,6 +122,7 @@ export default function MeetingsClient() {
 
       <div className="mb-10 sm:mb-14">
         <MeetingFilters
+          tabList={tabList.map(({ value, label }) => ({ value, label }))}
           // 현재 상태 (부모 → 자식)
           activeValue={activeValue}
           sortValue={sortValue}

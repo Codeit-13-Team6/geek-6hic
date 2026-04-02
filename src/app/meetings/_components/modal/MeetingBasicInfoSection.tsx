@@ -1,5 +1,7 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { getMeetingTypes } from "@/api/client/meetings";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import {
   Select,
@@ -10,52 +12,11 @@ import {
 } from "@/components/shadcnOrigin/select";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
-
-import teamBulb from "@/assets/img/bulb/elec-bulb.jpg";
-import studyImage from "@/assets/img/category/study.jpg";
-import towerWork from "@/assets/img/category/business.jpg";
-import JobIShoes from "@/assets/img/category/fitness-health.jpg";
-import etcImage from "@/assets/img/category/etc.jpg";
 import {
   MeetingBasicInfoSectionProps,
-  MeetingCategoryItem,
+  MeetingType,
   TabItem,
 } from "@/types";
-
-export const MEETING_CATEGORY_LIST: MeetingCategoryItem[] = [
-  {
-    value: "팀미팅",
-    label: "팀미팅",
-    imageSrc: teamBulb,
-  },
-  {
-    value: "스터디",
-    label: "스터디",
-    imageSrc: studyImage,
-  },
-  {
-    value: "프로젝트",
-    label: "프로젝트",
-    imageSrc: JobIShoes,
-  },
-  {
-    value: "취준생",
-    label: "취준생",
-    imageSrc: towerWork,
-  },
-  {
-    value: "기타",
-    label: "기타",
-    imageSrc: etcImage,
-    className: "col-span-2",
-  },
-];
-
-export const DEFAULT_MEETING_TYPE_OPTIONS: TabItem[] =
-  MEETING_CATEGORY_LIST.map(({ value, label }) => ({
-    value,
-    label,
-  }));
 
 export function MeetingBasicInfoSection({
   values,
@@ -67,17 +28,28 @@ export function MeetingBasicInfoSection({
   showCategoryField = false,
   showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: ["meeting-types"],
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const defaultMeetingTypeOptions: TabItem[] = meetingTypes.map(({ name }) => ({
+    value: name,
+    label: name,
+  }));
+
   const meetingTypeOptions = (() => {
     if (!values.category) {
-      return DEFAULT_MEETING_TYPE_OPTIONS;
+      return defaultMeetingTypeOptions;
     }
 
-    const hasCurrentType = DEFAULT_MEETING_TYPE_OPTIONS.some(
+    const hasCurrentType = defaultMeetingTypeOptions.some(
       (option) => option.value === values.category,
     );
 
     if (hasCurrentType) {
-      return DEFAULT_MEETING_TYPE_OPTIONS;
+      return defaultMeetingTypeOptions;
     }
 
     return [
@@ -85,7 +57,7 @@ export function MeetingBasicInfoSection({
         value: values.category,
         label: values.category || "현재 모임 종류",
       },
-      ...DEFAULT_MEETING_TYPE_OPTIONS,
+      ...defaultMeetingTypeOptions,
     ];
   })();
 

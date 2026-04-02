@@ -147,11 +147,20 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-export type TabValue = "all" | "team" | "study" | "project" | "job" | "etc";
+export type TabValue = string;
+
+export interface MeetingType {
+  id: number;
+  teamId: string;
+  name: string;
+  description: string;
+  createdAt: string;
+}
 
 export type SortValue = "deadline" | "participants" | null;
 
 export interface MeetingFiltersProps {
+  tabList: { value: string; label: string }[];
   activeValue: TabValue;
   sortValue: SortValue;
   sortDescValue: boolean;

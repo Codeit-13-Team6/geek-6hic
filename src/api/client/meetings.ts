@@ -6,6 +6,7 @@ import {
   CreateMeeting,
   MyMeetingsResponse,
   FavoritesResponse,
+  MeetingType,
 } from "@/types";
 
 export async function getMeetingList(
@@ -17,6 +18,11 @@ export async function getMeetingList(
   console.log(res, params);
 
   return res.data;
+}
+
+export async function getMeetingTypes(): Promise<MeetingType[]> {
+  const { data } = await axiosInstance.get<MeetingType[]>("/meeting-types");
+  return data;
 }
 
 export async function getMeeting(params?: {
