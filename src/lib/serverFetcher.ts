@@ -89,10 +89,16 @@ async function setTokenCookies(tokens: TokenPair) {
     ...COOKIE_OPTIONS,
     maxAge: ACCESS_TOKEN_MAX_AGE,
   });
-  cookieStore.set("refreshToken", tokens.refreshToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: REFRESH_TOKEN_MAX_AGE,
-  });
+
+
+  // 백엔드에서 rotaion token 적용중, 유예기간동안 허용된 요청들엔 리프레쉬 토큰이 null 이 떨어지게 해둬서 null 은 가드
+  if (tokens.refreshToken !== null) {
+    cookieStore.set("refreshToken", tokens.refreshToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    });
+  }
+
 }
 
 // 리프레시 토큰으로 새 액세스 토큰을 발급받는 함수

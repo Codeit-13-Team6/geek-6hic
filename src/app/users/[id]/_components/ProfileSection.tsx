@@ -54,7 +54,7 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
   });
 
   const onSubmitProfile = profileForm.handleSubmit(
-    ({ email, image, ...data }) => {
+    ({  image, ...data }) => {
       updateProfile({ ...data, ...(image && { image }) });
     },
   );
@@ -156,12 +156,17 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
             <Controller
               name="email"
               control={profileForm.control}
-              render={({ field }) => (
+              rules={{ required: "이메일을 입력해주세요." }}
+              render={({ field, fieldState }) => (
                 <InputCommon
                   {...field}
                   label="Email Address"
-                  className="!rounded-xl !border-slate-100 !bg-slate-100 opacity-60"
-                  readOnly
+                  className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
+                  isRequired
+                  placeholder="이메일을 입력해주세요."
+                  onClear={() => field.onChange("")}
+                  isDestructive={!!fieldState.error}
+                  hintText={fieldState.error?.message}
                 />
               )}
             />
