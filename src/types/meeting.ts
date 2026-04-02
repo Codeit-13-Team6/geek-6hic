@@ -147,7 +147,7 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-export type TabValue = "all" | "team" | "study" | "job" | "wework" | "etc";
+export type TabValue = "all" | "team" | "study" | "project" | "job" | "etc";
 
 export type SortValue = "deadline" | "participants" | null;
 
