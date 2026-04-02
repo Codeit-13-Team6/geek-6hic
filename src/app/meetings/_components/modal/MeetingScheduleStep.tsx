@@ -30,53 +30,55 @@ export function MeetingScheduleStep({
 
   return (
     <div className="space-y-6 pt-6">
-      <div className="space-y-[6px]">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <ScheduleDatePicker
-              id="startDate"
-              label="모임 시작 날짜"
-              value={values.startDate}
-              min={todayDate}
-              isRequired
-              isDestructive={Boolean(startRowHintText)}
-              onChange={(value) => {
-                onChange({ startDate: value });
-              }}
-            />
-          </div>
+      {/*<div className="space-y-[6px]">*/}
+      {/*  <div className="flex items-start gap-3">*/}
+      {/*    <div className="min-w-0 flex-1">*/}
+      {/*      <ScheduleDatePicker*/}
+      {/*        id="startDate"*/}
+      {/*        label="모임 시작 날짜"*/}
+      {/*        value={values.startDate}*/}
+      {/*        min={todayDate}*/}
+      {/*        isRequired*/}
+      {/*        isDestructive={Boolean(startRowHintText)}*/}
+      {/*        onChange={(value) => {*/}
+      {/*          onChange({ startDate: value });*/}
+      {/*        }}*/}
+      {/*      />*/}
+      {/*    </div>*/}
 
-          <div className="min-w-0 flex-1 pt-[27px]">
-            <ScheduleTimePicker
-              id="startTime"
-              value={values.startTime}
-              isDestructive={Boolean(errors.startTime)}
-              onChange={(value) => {
-                onChange({ startTime: value });
-              }}
-            />
-          </div>
-        </div>
+      {/*    <div className="min-w-0 flex-1 pt-[27px]">*/}
+      {/*      <ScheduleTimePicker*/}
+      {/*        id="startTime"*/}
+      {/*        value={values.startTime}*/}
+      {/*        isDestructive={Boolean(errors.startTime)}*/}
+      {/*        onChange={(value) => {*/}
+      {/*          onChange({ startTime: value });*/}
+      {/*        }}*/}
+      {/*      />*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
 
-        {startRowHintText ? (
-          <p className="text-error text-[12px] leading-[16px]">
-            {startRowHintText}
-          </p>
-        ) : null}
-      </div>
+      {/*  {startRowHintText ? (*/}
+      {/*    <p className="text-error text-[12px] leading-[16px]">*/}
+      {/*      {startRowHintText}*/}
+      {/*    </p>*/}
+      {/*  ) : null}*/}
+      {/*</div>*/}
 
       <div className="space-y-[6px]">
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <ScheduleDatePicker
               id="endDate"
-              label="모집 마감 날짜"
+              label="모집 시작 날짜"
               value={values.endDate}
               min={todayDate}
               isRequired
               isDestructive={Boolean(endRowHintText)}
               onChange={(value) => {
                 onChange({ endDate: value });
+                onChange({ startDate: value });
+                console.log(values);
               }}
             />
           </div>
@@ -88,6 +90,10 @@ export function MeetingScheduleStep({
               isDestructive={Boolean(errors.endTime)}
               onChange={(value) => {
                 onChange({ endTime: value });
+                const [h, m] = value.split(":").map(Number);
+                const date = new Date(0, 0, 0, h, m + 1);
+                const result = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+                onChange({ startTime: result });
               }}
             />
           </div>
