@@ -181,7 +181,9 @@ export default function MeetingList({
                   liked={item.isFavorited}
                   onClick={(e) => {
                     e.stopPropagation();
-                    loginGuardAction(() => onHeartClick(item));
+                    loginGuardAction(() => {
+                      onHeartClick(item);
+                    });
                   }}
                   size={22}
                   className="-mr-2"

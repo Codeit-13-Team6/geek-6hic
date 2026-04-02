@@ -27,20 +27,29 @@ const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
 );
 
 const NAV_LINKS = [
-  { name: "모임 찾기", href: "/meetings" },
+  { name: "모임 찾기", href: "/meetings", exact: true },
   { name: "나의 모임", href: "/my-meetings" },
   { name: "랭킹 보드", href: "/ranking" },
-  { name: "스프린트 라운지", href: "/lounge" },
+  { name: "스프린트 라운지", href: "/lounge", exact: true },
 ];
 
-export function Gnb() {
+const isNavActive = (pathname: string, href: string, exact?: boolean) => {
+  if (exact) return pathname === href;
+  return pathname.startsWith(href);
+};
+
+interface GnbProps {
+  initialUser?: { id: number; name: string; image: string | null } | null;
+}
+
+export function Gnb({ initialUser }: GnbProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const user = useAuthStore((s) => s.user);
+  const storeUser = useAuthStore((s) => s.user);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  const [hasMounted, setHasMounted] = useState(false);
-  const isLoggedIn = hasMounted && !!user;
+  const user = storeUser ?? initialUser;
+  const isLoggedIn = !!user;
   const isBlobUrl = user?.image?.startsWith("blob:");
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -54,20 +63,14 @@ export function Gnb() {
   const handleLogout = async () => {
     await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
     clearAuth();
-    router.push("/login");
+    window.location.replace("/login");
   };
 
   const handleLogin = async () => router.push("/login");
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
+    if (!isAuthReady || !isLoggedIn) return;
 
-  useEffect(() => {
-    if (!isAuthReady || !isLoggedIn) {
-      setHasUnreadNotifications(false);
-      return;
-    }
     const syncUnreadNotifications = async () => {
       try {
         const notifications = await getNotifications();
@@ -113,18 +116,18 @@ export function Gnb() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => {
-                  if (pathname.startsWith(link.href) || isNavigating.current) {
+                  if (isNavigating.current) {
                     e.preventDefault();
                     return;
                   }
                   isNavigating.current = true;
                   setTimeout(() => {
                     isNavigating.current = false;
-                  }, 100);
+                  }, isNavActive(pathname, link.href, link.exact) ? 500 : 100);
                 }}
                 className={cn(
                   "relative py-2 text-sm font-bold tracking-tight transition-all",
-                  pathname.startsWith(link.href)
+                  isNavActive(pathname, link.href, link.exact)
                     ? "text-main-purple after:bg-main-purple after:absolute after:-bottom-1 after:left-1/2 after:h-[3px] after:w-5 after:-translate-x-1/2 after:rounded-full"
                     : "text-slate-400 hover:text-slate-900",
                 )}

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { Metadata } from "next";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
@@ -16,6 +17,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { getFavorites, getMyMeetings, getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
@@ -36,6 +38,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("user_display")?.value;
+  const initialUser = raw ? JSON.parse(raw) : null;
+
   return (
     <div className="w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
@@ -49,7 +55,7 @@ export default async function Page() {
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="w-full shrink-0 lg:w-[282px]">
-          <ProfileSection />
+          <ProfileSection initialUser={initialUser} />
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">
@@ -65,7 +71,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["favorites"],
+                      queryKey: QUERY_KEYS.favorites,
                       queryFn: ({ pageParam }) => getFavorites(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,
@@ -88,7 +94,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["meetings", "my"],
+                      queryKey: QUERY_KEYS.meetings.my,
                       queryFn: ({ pageParam }) => getMyMeetings(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,
@@ -111,7 +117,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["posts", "list", "my", "latest", ""],
+                      queryKey: QUERY_KEYS.posts.my,
                       queryFn: ({ pageParam }) => getLoungePosts(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,

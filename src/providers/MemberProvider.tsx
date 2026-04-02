@@ -1,31 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
-import { getUserData } from "@/api/client/auth";
+import { useRef } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { MemberProviderProps } from "@/types";
+import type { User } from "@/types";
 
-export function MemberProvider({ children }: MemberProviderProps) {
-  const setUser = useAuthStore((s) => s.setUser);
-  const clearAuth = useAuthStore((s) => s.clearAuth);
+interface Props extends MemberProviderProps {
+  initialUser?: Pick<User, "id" | "name" | "image"> | null;
+}
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const user = await getUserData();
-
-        if (user) {
-          setUser(user);
-        } else {
-          clearAuth();
-        }
-      } catch {
-        clearAuth();
-      }
-    };
-
-    init();
-  }, [setUser, clearAuth]);
+export function MemberProvider({ children, initialUser }: Props) {
+  const initialized = useRef(false);
+  if (!initialized.current && initialUser) {
+    useAuthStore.setState({ user: initialUser as User, isAuthLoading: false });
+    initialized.current = true;
+  }
 
   return <>{children}</>;
 }

@@ -70,7 +70,7 @@ export function MeetingScheduleStep({
           <div className="min-w-0 flex-1">
             <ScheduleDatePicker
               id="endDate"
-              label="모집 시작 날짜"
+              label="모임 시작 날짜"
               value={values.endDate}
               min={todayDate}
               isRequired

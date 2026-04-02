@@ -6,7 +6,6 @@ import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 import { Loader2, PlusCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function MyMeetingList() {
   const router = useRouter();
@@ -19,6 +18,7 @@ export default function MyMeetingList() {
       initialPageParam: undefined as string | undefined,
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      staleTime: 1000 * 60 * 5,
     });
 
   const bottomRef = useIntersectionObserver(

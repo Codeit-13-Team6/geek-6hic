@@ -5,6 +5,7 @@ import Link from "next/link";
 import { RecommendedMeetingsSectionProps } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import FallbackImage from "@/components/img/FallbackImage";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -64,18 +65,12 @@ export function RecommendedMeetingsSection({
                 className="group relative flex w-[260px] shrink-0 snap-start flex-col overflow-hidden transition-all duration-300 sm:w-[300px]"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] bg-slate-100 shadow-sm transition-shadow group-hover:shadow-md">
-                  {meeting.image ? (
-                    <Image
-                      src={meeting.image}
-                      alt={meeting.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs font-black tracking-widest text-slate-200 uppercase">
-                      No Image
-                    </div>
-                  )}
+                  <FallbackImage
+                    src={meeting.image ?? ""}
+                    alt={meeting.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
 
                   <div className="group-hover:blur-0 absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/20 opacity-0 blur-sm backdrop-blur-md transition-all group-hover:opacity-100">
                     <ArrowUpRight
