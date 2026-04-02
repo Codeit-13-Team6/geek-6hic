@@ -8,13 +8,14 @@ import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
 import { RankedItem } from "@/types";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export default function RankingList() {
   const router = useRouter();
 
 
   const { data: rankedList, isLoading } = useQuery<RankedItem[]>({
-    queryKey: ["ranking"],
+    queryKey: QUERY_KEYS.ranking.root,
     queryFn: async () => {
       const { data } = await axiosInstance.get("/ranking");
       return data;

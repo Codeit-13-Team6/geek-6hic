@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { GitCommitIcon } from "lucide-react";
 import { getNextPageParam } from "@/lib/pagination";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export const metadata: Metadata = {
   title: "나의 모임",
@@ -62,7 +63,7 @@ export default async function Page() {
               readonly string[],
               string | undefined
             >({
-              queryKey: ["meetings", "joined"],
+              queryKey: QUERY_KEYS.meetings.joined,
               queryFn: ({ pageParam }) =>
                 getJoinedMeetingsServer(
                   pageParam
@@ -75,7 +76,6 @@ export default async function Page() {
                 ),
               initialPageParam: undefined,
               getNextPageParam: getNextPageParam<JoinedMeetingsResponse>,
-
             })
           }
         >

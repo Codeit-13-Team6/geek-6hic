@@ -8,6 +8,7 @@ import { getNextPageParam } from "@/lib/pagination";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
 import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -99,10 +100,10 @@ export default async function Page() {
               JoinedMeetingsResponse,
               Error,
               InfiniteData<JoinedMeetingsResponse>,
-              readonly [string, string, null],
+              readonly unknown[],
               string | undefined
             >({
-              queryKey: ["meetings", "all", null],
+              queryKey: QUERY_KEYS.meetings.list,
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
@@ -113,6 +114,7 @@ export default async function Page() {
               },
               initialPageParam: undefined,
               getNextPageParam,
+              staleTime: 1000 * 60
             })
           }
         >

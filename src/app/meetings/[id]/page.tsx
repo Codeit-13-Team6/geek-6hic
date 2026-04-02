@@ -24,6 +24,7 @@ import { Suspense } from "react";
 import { getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -78,18 +79,15 @@ export default async function MeetingDetailPage({
           prefetchFn={async (qc) => {
             await Promise.all([
               qc.prefetchQuery({
-                queryKey: ["meeting-detail", resolvedMeetingId],
+                queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
                 queryFn: () => getMeetingDetail(resolvedMeetingId),
               }),
               qc.prefetchQuery({
-                queryKey: ["meeting-participants", resolvedMeetingId],
+                queryKey: QUERY_KEYS.meetings.participants(resolvedMeetingId),
                 queryFn: () => getMeetingParticipants(resolvedMeetingId),
               }),
               qc.prefetchQuery({
-                queryKey: [
-                  "meeting-recommendation-candidates",
-                  resolvedMeetingId,
-                ],
+                queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
                 queryFn: () => getMeetingRecommendationCandidates(),
               }),
               qc.prefetchInfiniteQuery<
@@ -99,7 +97,7 @@ export default async function MeetingDetailPage({
                 readonly string[],
                 string | undefined
               >({
-                queryKey: ["posts", "list", "my", "latest", ""],
+                queryKey: QUERY_KEYS.posts.root,
                 queryFn: ({ pageParam }) => getLoungePosts(pageParam),
                 initialPageParam: undefined,
                 getNextPageParam,

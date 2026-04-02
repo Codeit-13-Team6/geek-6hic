@@ -39,6 +39,7 @@ import {
   updateFavorites,
 } from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 const getJoinErrorMessage = (code?: string) => {
   switch (code) {
@@ -73,17 +74,17 @@ const getCancelJoinErrorMessage = (code?: string) => {
 // 모임 상세 조회 함수 모음
 export function useMeetingDetailQueries(meetingId: number) {
   const detailQuery = useQuery({
-    queryKey: ["meeting-detail", meetingId],
+    queryKey: QUERY_KEYS.meetings.detail(meetingId),
     queryFn: () => getMeetingDetail(meetingId),
   });
 
   const participantsQuery = useQuery({
-    queryKey: ["meeting-participants", meetingId],
+    queryKey: QUERY_KEYS.meetings.participants(meetingId),
     queryFn: () => getMeetingParticipants(meetingId),
   });
 
   const recommendationCandidatesQuery = useQuery({
-    queryKey: ["meeting-recommendation-candidates", meetingId],
+    queryKey: QUERY_KEYS.meetings.detail(meetingId),
     queryFn: () => getMeetingRecommendationCandidates(),
   });
 
@@ -113,10 +114,10 @@ export function useMeetingDetailMutations({
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: ["meeting-detail", meetingId],
+          queryKey: QUERY_KEYS.meetings.detail(meetingId),
         }),
         queryClient.invalidateQueries({
-          queryKey: ["meeting-participants", meetingId],
+          queryKey: QUERY_KEYS.meetings.participants(meetingId),
         }),
       ]);
 
@@ -135,10 +136,10 @@ export function useMeetingDetailMutations({
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: ["meeting-detail", meetingId],
+          queryKey: QUERY_KEYS.meetings.detail(meetingId),
         }),
         queryClient.invalidateQueries({
-          queryKey: ["meeting-participants", meetingId],
+          queryKey: QUERY_KEYS.meetings.participants(meetingId),
         }),
       ]);
 
@@ -158,7 +159,7 @@ export function useMeetingDetailMutations({
         ? removeMeetingFavorite(meetingId)
         : addMeetingFavorite(meetingId),
     ...useOptimisticMutation<MeetingDetailApiData, boolean>(queryClient, {
-      queryKey: ["meeting-detail", meetingId],
+      queryKey: QUERY_KEYS.meetings.detail(meetingId),
       updater: (old, isFavorited) => ({ ...old, isFavorited: !isFavorited }),
       invalidateKeys: [["meeting-detail", meetingId]],
       onErrorMessage: "찜하기 처리 중 문제가 발생했어요.",
@@ -170,7 +171,7 @@ export function useMeetingDetailMutations({
       updateMeeting(meetingId, nextValues),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["meeting-detail", meetingId],
+        queryKey: QUERY_KEYS.meetings.detail(meetingId),
       });
 
       ToastCommon({ message: "모임 수정이 반영되었어요.", size: "sm" });
@@ -258,7 +259,7 @@ export function useMeetingDetailMutations({
 
 // 모임 좋아요 mutation 함수
 export function useMeetingFavoriteMutation(
-  queryKey: QueryKey = ["meetings", "joined"],
+  queryKey: QueryKey = QUERY_KEYS.meetings.joined,
 ) {
   const queryClient = useQueryClient();
 

@@ -71,7 +71,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: QUERY_KEYS.favorites,
+                      queryKey: QUERY_KEYS.favorites.root,
                       queryFn: ({ pageParam }) => getFavorites(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,
