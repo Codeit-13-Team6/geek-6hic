@@ -16,6 +16,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { getFavorites, getMyMeetings, getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
+import { QUERY_KEYS } from "@/constans/queryKey";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
@@ -65,7 +66,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["favorites"],
+                      queryKey: QUERY_KEYS.favorites,
                       queryFn: ({ pageParam }) => getFavorites(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,
@@ -88,7 +89,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["meetings", "my"],
+                      queryKey: QUERY_KEYS.meetings.my,
                       queryFn: ({ pageParam }) => getMyMeetings(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,
@@ -111,7 +112,7 @@ export default async function Page() {
                       readonly string[],
                       string | undefined
                     >({
-                      queryKey: ["posts", "list", "my", "latest", ""],
+                      queryKey: QUERY_KEYS.posts.my,
                       queryFn: ({ pageParam }) => getLoungePosts(pageParam),
                       initialPageParam: undefined,
                       getNextPageParam,

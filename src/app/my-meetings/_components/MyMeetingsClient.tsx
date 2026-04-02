@@ -68,7 +68,9 @@ export default function MyMeetingsClient() {
           meetingList={allMeetings}
           isLoading={isFetchingNextPage}
           onItemClick={(item) => router.push(`/meetings/${item.id}`)}
-          onHeartClick={(item) => toggleFavorite(item)}
+          onHeartClick={(item) => {
+            toggleFavorite(item);
+          }}
           meetingStatusBadgeVisible={false}
         />
       </div>

@@ -17,7 +17,7 @@ export default function MyPostList() {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["posts", "list", "my", "latest", ""],
+      queryKey: ["posts", "list", "my", "latest"],
       queryFn: ({ pageParam }) =>
         getPosts({
           keyword: "",
@@ -38,6 +38,7 @@ export default function MyPostList() {
           }),
         ),
       }),
+      staleTime: 1000 * 60 * 5,
     });
 
   const bottomRef = useIntersectionObserver(

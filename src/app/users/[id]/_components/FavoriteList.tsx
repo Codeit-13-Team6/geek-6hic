@@ -25,6 +25,7 @@ export default function FavoriteList() {
       initialPageParam: undefined as string | undefined,
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      staleTime: 1000 * 60 * 5,
     });
 
   const bottomRef = useIntersectionObserver(

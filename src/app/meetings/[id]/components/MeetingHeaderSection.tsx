@@ -28,6 +28,7 @@ import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { BellOff, Calendar, Clock, Users2 } from "lucide-react";
 import { HeartIcon } from "@/components/icon/HeartIcon";
+import FallbackImage from "@/components/img/FallbackImage";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
@@ -141,19 +142,12 @@ export function MeetingHeaderSection({
     <>
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
-          {data.image ? (
-            <Image
-              src={data.image}
-              alt={data.name}
-              fill
-              className="object-cover transition-transform duration-700 hover:scale-105"
-              priority
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-slate-100 text-xs font-bold tracking-widest text-slate-300 uppercase">
-              No Archive Image
-            </div>
-          )}
+          <FallbackImage
+            src={data.image ?? ''}
+            alt={data.name}
+            fill
+            className="object-cover transition-transform duration-700 hover:scale-105"
+          />
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">

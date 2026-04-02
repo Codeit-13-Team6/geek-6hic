@@ -15,6 +15,11 @@ import {
 import { MeetingFiltersProps, TabValue } from "@/types";
 import Image from "next/image";
 import downIcon from "@/assets/icon/chevron/chevron-down.svg";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcnOrigin/popover";
 
 const TAB_LIST = [
   { value: "all", label: "전체", type: undefined },
@@ -45,7 +50,6 @@ export default function MeetingFilters({
     appliedDate,
   );
   const [isOpen, setIsOpen] = useState(false);
-
 
   const currentSortLabel = SORT_OPTIONS.find(
     (opt) => opt.value === sortValue,
@@ -78,7 +82,6 @@ export default function MeetingFilters({
   return (
     <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
-        {currentSortLabel}
         {TAB_LIST.map(({ value, label }) => (
           <li key={value} className="relative shrink-0 pb-2">
             <button
@@ -102,40 +105,63 @@ export default function MeetingFilters({
 
       <div className="flex shrink-0 items-center justify-end gap-6 sm:gap-8">
         {/* 날짜 선택 */}
-        <div className="relative">
-          <button
-            type="button"
-            className={cn(
-              "cursor-pointer pb-0.5 text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",
-              appliedDate
-                ? "text-main-purple"
-                : "hover:text-main-purple text-slate-900",
-            )}
-            onClick={() => setIsOpen(true)}
-          >
-            Select Date
-          </button>
 
-          {isOpen ? (
-            <>
-              {/* 캘린더 팝업 */}
-              <div
-                onClick={() => setIsOpen(false)}
-                className="absolute inset-0 z-40 bg-transparent"
-              ></div>
-              <div className="shadow-mag absolute top-auto right-auto z-50 mt-2 rounded-2xl bg-white">
-                <Calendar
-                  mode="range"
-                  selected={draftDate}
-                  onSelect={setDraftDate}
-                  onReset={handleCalendarReset}
-                  onApply={handleCalendarApply}
+        <Popover>
+          <PopoverTrigger>
+            <div
+              className={cn(
+                "flex cursor-pointer align-bottom  text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",
+                appliedDate
+                  ? "text-main-purple"
+                  : "hover:text-main-purple text-slate-900",
+              )}
+            >
+              Select Date
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 absolute left-[-90]">
+            <Calendar
+              mode="range"
+              selected={draftDate}
+              onSelect={setDraftDate}
+              onReset={handleCalendarReset}
+              onApply={handleCalendarApply}
+            />
+          </PopoverContent>
+        </Popover>
 
-                />
-              </div>
-            </>
-          ) : null}
-        </div>
+        {/*<div className="relative">*/}
+        {/*  <button*/}
+        {/*    type="button"*/}
+        {/*    className={cn(*/}
+        {/*      "cursor-pointer pb-0.5 text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",*/}
+        {/*      appliedDate*/}
+        {/*        ? "text-main-purple"*/}
+        {/*        : "hover:text-main-purple text-slate-900",*/}
+        {/*    )}*/}
+        {/*    onClick={() => setIsOpen(true)}*/}
+        {/*  >*/}
+        {/*    Select Date*/}
+        {/*  </button>*/}
+        {/*  {isOpen ? (*/}
+        {/*    <>*/}
+        {/*      /!* 캘린더 팝업 *!/*/}
+        {/*      <div*/}
+        {/*        onClick={() => setIsOpen(false)}*/}
+        {/*        className="absolute inset-0 z-40 bg-transparent"*/}
+        {/*      ></div>*/}
+        {/*      <div className="shadow-mag absolute top-auto right-auto z-50 mt-2 rounded-2xl bg-white">*/}
+        {/*        <Calendar*/}
+        {/*          mode="range"*/}
+        {/*          selected={draftDate}*/}
+        {/*          onSelect={setDraftDate}*/}
+        {/*          onReset={handleCalendarReset}*/}
+        {/*          onApply={handleCalendarApply}*/}
+        {/*        />*/}
+        {/*      </div>*/}
+        {/*    </>*/}
+        {/*  ) : null}*/}
+        {/*</div>*/}
 
         <Select
           value={sortValue ?? ""}
