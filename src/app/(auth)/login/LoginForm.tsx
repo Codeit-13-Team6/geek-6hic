@@ -22,6 +22,7 @@ export default function LoginForm({
   onSuccess,
   title = "Login",
 }: LoginFormProps) {
+
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
@@ -57,13 +58,15 @@ export default function LoginForm({
       });
 
       console.log(res, res?.ok, res.user);
-      if (res?.ok && res.user) {
-        console.log(returnUrl);
-        setUser(res.user);
+      if (res?.ok) {
+        if (res.user) {
+          setUser(res.user);
+        }
         if (onSuccess) {
           onSuccess();
+        } else {
+          window.location.replace(returnUrl);
         }
-        window.location.replace(returnUrl);
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");

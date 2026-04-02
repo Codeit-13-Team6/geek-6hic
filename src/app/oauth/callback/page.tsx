@@ -3,11 +3,13 @@
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 
 function OAuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setUser = useAuthStore((s) => s.setUser);
 
   useEffect(() => {
     const accessToken = searchParams.get("accessToken");
@@ -27,15 +29,17 @@ function OAuthCallbackContent() {
         );
 
         if (data.ok) {
+          if (data.user) {
+            setUser(data.user);
+          }
+
           const returnUrl = document.cookie
             .split("; ")
             .find((c) => c.startsWith("oauthReturnUrl="))
             ?.split("=")
             .slice(1)
             .join("=");
-          // 쿠키 삭제
           document.cookie = "oauthReturnUrl=;path=/;max-age=0";
-          router.refresh();
           const decoded = returnUrl ? decodeURIComponent(returnUrl) : "/";
           const isLoginPage = new URL(decoded, window.location.origin).pathname.startsWith("/login");
           window.location.replace(isLoginPage ? "/" : decoded);

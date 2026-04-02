@@ -14,10 +14,21 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
 
-export default function ProfileSection() {
+interface ProfileSectionProps {
+  initialUser?: {
+    id: number;
+    name: string;
+    image: string | null;
+    email: string;
+    companyName: string;
+  } | null;
+}
+
+export default function ProfileSection({ initialUser }: ProfileSectionProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const user = useAuthStore((state) => state.user);
+  const storeUser = useAuthStore((state) => state.user);
   const setUser = useAuthStore((s) => s.setUser);
+  const user = storeUser ?? initialUser;
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },

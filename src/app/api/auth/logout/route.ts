@@ -20,5 +20,13 @@ export async function POST() {
     secure: process.env.NODE_ENV === "production",
   });
 
+  cookieStore.set("user_display", "", {
+    expires: new Date(0),
+    path: "/",
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+
   return NextResponse.json({ ok: true });
 }

@@ -50,7 +50,7 @@ export default async function Page() {
   return (
     <div className="relative w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15">
-        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
+        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center ">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { Metadata } from "next";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
@@ -37,6 +38,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("user_display")?.value;
+  const initialUser = raw ? JSON.parse(raw) : null;
+
   return (
     <div className="w-full">
       <header className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
@@ -50,7 +55,7 @@ export default async function Page() {
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="w-full shrink-0 lg:w-[282px]">
-          <ProfileSection />
+          <ProfileSection initialUser={initialUser} />
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">

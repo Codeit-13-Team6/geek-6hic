@@ -23,8 +23,11 @@ axiosInstance.interceptors.response.use(
       error.response?.status === 401 &&
       error.response?.data?.code === "REFRESH_FAILED"
     ) {
-      window.location.href = "/login";
-      return new Promise(() => {});
+      // 이미 로그인 페이지에 있으면 리다이렉트하지 않음 (무한 루프 방지)
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+        return new Promise(() => {});
+      }
     }
 
     return Promise.reject(error);

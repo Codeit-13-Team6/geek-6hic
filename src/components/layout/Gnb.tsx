@@ -38,12 +38,17 @@ const isNavActive = (pathname: string, href: string, exact?: boolean) => {
   return pathname.startsWith(href);
 };
 
-export function Gnb() {
+interface GnbProps {
+  initialUser?: { id: number; name: string; image: string | null } | null;
+}
+
+export function Gnb({ initialUser }: GnbProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const user = useAuthStore((s) => s.user);
+  const storeUser = useAuthStore((s) => s.user);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const user = storeUser ?? initialUser;
   const isLoggedIn = !!user;
   const isBlobUrl = user?.image?.startsWith("blob:");
 
@@ -58,12 +63,13 @@ export function Gnb() {
   const handleLogout = async () => {
     await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
     clearAuth();
-    router.push("/login");
+    window.location.replace("/login");
   };
 
   const handleLogin = async () => router.push("/login");
 
   useEffect(() => {
+    if (!isAuthReady || !isLoggedIn) return;
 
     const syncUnreadNotifications = async () => {
       try {
