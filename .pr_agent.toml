@@ -1,0 +1,19 @@
+[config]
+model = "llama3-70b-8192"
+# 전역 언어 설정을 한국어로 고정
+language = "Korean"
+
+[pr_description]
+# 요약 내용도 한국어로 강제
+language = "Korean"
+# 템플릿의 특정 섹션에 내용을 채우도록 지시
+extra_instructions = """
+반드시 모든 응답을 '한국어'로 작성하세요. 
+영어는 절대 사용하지 마세요.
+사용자의 PR 템플릿 형식을 유지하며, 'Change Log' 섹션에 변경 사항을 요약해서 채워 넣으세요.
+"""
+
+[pr_reviewer]
+# 리뷰 댓글도 한국어로 강제
+language = "Korean"
+extra_instructions = "모든 리뷰 의견과 제안은 반드시 한국어로 작성하세요."
