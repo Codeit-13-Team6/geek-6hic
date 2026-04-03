@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import { InfiniteData } from "@tanstack/react-query";
 import { getJoinedMeetingsServer } from "@/api/server/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
-import MyMeetingsClient from "@/app/my-meetings/_components/MyMeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { GitCommitIcon } from "lucide-react";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import MeetingList from "@/components/features/list/MeetingList";
 
 export const metadata: Metadata = {
   title: "나의 모임",
@@ -52,7 +52,12 @@ export default async function Page() {
           </div>
         </div>
       </header>
-
+      <div className="mb-12 flex items-center gap-3">
+        <div className="bg-main-purple h-[6px] w-8 rounded-full" />
+        <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+          Joined List
+        </span>
+      </div>
       <Suspense fallback={<MeetingCardSkeleton />}>
         <PrefetchBoundary
           prefetchFn={(queryClient) =>
@@ -76,10 +81,11 @@ export default async function Page() {
                 ),
               initialPageParam: undefined,
               getNextPageParam: getNextPageParam<JoinedMeetingsResponse>,
+
             })
           }
         >
-          <MyMeetingsClient />
+          <MeetingList variant="joined" meetingStatusBadgeVisible={false} />
         </PrefetchBoundary>
       </Suspense>
     </div>

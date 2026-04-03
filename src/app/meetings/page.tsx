@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import MeetingsClient from "@/app/meetings/_components/MeetingsClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
 import type { JoinedMeetingsResponse } from "@/types";
@@ -9,6 +8,9 @@ import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
 import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
+import MeetingList from "@/components/features/list/MeetingList";
+
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -47,10 +49,19 @@ function MeetingFilterSkeleton() {
   );
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    type?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }>;
+}) {
+  const params = await searchParams;
   return (
     <div className="relative w-full">
-      <div className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15 animate-fade-up">
+      <div className="animate-fade-up mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15">
         <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
@@ -86,6 +97,9 @@ export default async function Page() {
         </div>
       </div>
 
+      <div className="mb-10 sm:mb-14">
+        <MeetingFilters />
+      </div>
       <Suspense
         fallback={
           <div className="mx-auto max-w-[1280px]">
@@ -103,22 +117,32 @@ export default async function Page() {
               readonly unknown[],
               string | undefined
             >({
-              queryKey: QUERY_KEYS.meetings.list,
+              queryKey: QUERY_KEYS.meetings.listParams({
+                type: params.type ?? "",
+                sortBy: params.sortBy ?? "dateTime",
+                sortOrder: params.sortOrder ?? "desc",
+              }),
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
                 return getMeetingList({
+                  type: params.type ?? "",
+                  sortBy: (params.sortBy ?? "dateTime") as
+                    | "dateTime"
+                    | "registrationEnd"
+                    | "participantCount",
+                  sortOrder: (params.sortOrder ?? "desc") as "asc" | "desc",
                   size: 10,
                   ...(cursor ? { cursor } : {}),
                 });
               },
               initialPageParam: undefined,
               getNextPageParam,
-              staleTime: 1000 * 60
+              staleTime: 1000 * 60,
             })
           }
         >
-          <MeetingsClient />
+          <MeetingList variant="all" />
         </PrefetchBoundary>
       </Suspense>
     </div>

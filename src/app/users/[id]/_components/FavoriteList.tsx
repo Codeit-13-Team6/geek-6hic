@@ -38,7 +38,7 @@ export default function FavoriteList() {
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.favorites });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.favorites.root });
     },
   });
 
