@@ -1,7 +1,7 @@
 ---
 name: "🚀 Feature: 기능 구현"
 about: 새로운 기능 추가 및 로직 개발
-title: "[Feat]: "
+title: "[FEAT] "
 labels: "feat"
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: "🐛 Bug: 버그 수정"
 about: 잘못된 동작이나 에러 수정
-title: "[Fix]: "
+title: "[FIX] "
 labels: "bug"
 ---
 
