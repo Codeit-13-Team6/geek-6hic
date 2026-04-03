@@ -73,7 +73,7 @@ export default async function MeetingDetailPage({
   });
 
   return (
-    <main className="mx-auto flex w-full flex-col">
+    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
@@ -111,6 +111,6 @@ export default async function MeetingDetailPage({
           />
         </PrefetchBoundary>
       </Suspense>
-    </main>
+    </div>
   );
 }

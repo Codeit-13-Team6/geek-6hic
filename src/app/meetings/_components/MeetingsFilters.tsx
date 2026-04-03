@@ -88,7 +88,7 @@ export default function MeetingFilters() {
           .filter((item) => item.value !== "")
           .map(({ value, label }) => ({ value, label }))}
       />
-      <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="animate-fade-up flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
           {tabList.map(({ value, label }) => (
             <li key={value} className="relative shrink-0 pb-2">

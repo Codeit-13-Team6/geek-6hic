@@ -60,9 +60,9 @@ export default async function Page({
 }) {
   const params = await searchParams;
   return (
-    <div className="relative w-full">
-      <div className="animate-fade-up mb-10 border-b-2 border-slate-950 pb-8 sm:mb-15 sm:pb-10 lg:mb-24 lg:pb-15">
-        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
+    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+      <div className="animate-fade-up">
+        <div className="flex flex-col gap-10 xl:flex-row xl:justify-between xl:items-center">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
@@ -80,20 +80,22 @@ export default async function Page({
             </h1>
           </div>
 
-          <div className="flex flex-col items-end gap-4 text-right">
-            <div className="flex max-w-[470px] md:block">
-              <div className="space-y-1">
-                <div className="bg-main-purple mb-2 hidden h-1.5 w-20 md:ml-auto md:block"></div>
-                <p className="text-lg font-medium tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
-                  스프린터 파트너들과 <br className="sm:hidden md:block" />
-                  공유하고, 협업하고, 성장하는 공간
-                </p>
-                <p className="text-sm font-light tracking-tight text-slate-400 md:text-base">
-                  모임을 생성하여 아지트를 만들어보세요.
-                </p>
-              </div>
+          <div className="flex flex-col items-start xl:items-end gap-4 text-left xl:text-right shrink-0">
+            <div className="w-full">
+              <div className="bg-main-purple hidden h-1.5 w-20 xl:ml-auto lg:block"></div>
+              <p className="lg:mt-4 text-lg font-medium tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
+                스프린터 파트너들과 <br className="xl:hidden sm:block" />
+                공유하고, 협업하고, 성장하는 공간
+              </p>
+              <p className="mt-2 text-sm font-light tracking-tight text-slate-400 sm:text-base">
+                모임을 생성하여 아지트를 만들어보세요.
+              </p>
             </div>
           </div>
+
+        </div>
+        <div className="line-spread w-full flex justify-center mb-10 mt-8 sm:mb-15 sm:mt-10 lg:mb-24 lg:mt-15">
+          <div className="h-[2px] bg-gray-950 w-full origin-center" />
         </div>
       </div>
 

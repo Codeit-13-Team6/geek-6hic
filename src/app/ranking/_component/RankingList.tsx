@@ -29,8 +29,9 @@ export default function RankingList() {
   const top10List = rankedList.slice(3, 10);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-      <div className="mb-12 flex items-center gap-3">
+    <div className="animate-fade-up">
+    {/* <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000"> */}
+      <div className="animate-fade-up mb-12 flex items-center gap-3">
         <div className="bg-main-purple h-[6px] w-8 rounded-full" />
         <span className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
           TOP 3

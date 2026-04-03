@@ -5,10 +5,12 @@ import { Post } from "@/types";
 import { HotPostCard } from "./HotPostCard";
 import { useGetHotPosts } from "@/hooks/queries/usePosts";
 import { Loader2, Flame } from "lucide-react";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function HotPostList() {
   const router = useRouter();
   const { data: hotList = [], isLoading } = useGetHotPosts();
+  const { dragProps } = useDragScroll();
 
   if (isLoading) {
     return (
@@ -33,7 +35,10 @@ export default function HotPostList() {
   }
 
   return (
-    <div className="scrollbar-hide -mx-4 flex gap-5 overflow-x-auto px-4 pb-8 sm:-mx-6 sm:gap-8 sm:px-6 lg:-mx-8 lg:px-8">
+    <div
+      {...dragProps}
+      className="custom-scrollbar -mx-4 flex gap-5 overflow-x-auto px-4 pb-8 sm:-mx-6 sm:gap-8 sm:px-6 lg:-mx-8 lg:px-8"
+    >
       {hotList.map((post: Post) => (
         <HotPostCard
           key={post.id}

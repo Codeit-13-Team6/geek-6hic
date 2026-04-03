@@ -1,6 +1,6 @@
 export default function DetailSkeleton() {
   return (
-    <div className="w-full sm:px-6 lg:-mt-7 lg:px-22">
+    <div className="w-full sm:px-6  lg:px-22">
       <div className="relative w-full animate-pulse rounded-[32px] bg-white shadow-md shadow-slate-200/30">
         <div className="px-8 pt-10 sm:px-14 lg:px-18 lg:pt-12">
           <div className="absolute top-4 right-4 size-9 rounded-full bg-slate-50 sm:top-5 sm:right-6 lg:top-6 lg:right-7"></div>

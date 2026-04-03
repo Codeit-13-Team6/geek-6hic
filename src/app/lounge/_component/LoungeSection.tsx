@@ -36,7 +36,7 @@ export default function LoungeContent() {
 
   return (
     <>
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <section className="animate-fade-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex w-full items-center gap-0 sm:max-w-[480px]">
           <div className="flex-1">
             <InputCommon
@@ -44,7 +44,7 @@ export default function LoungeContent() {
               onChange={(e) => setSearchValue(e.target.value)}
               onClear={() => setSearchValue("")}
               placeholder="검색어를 입력하세요."
-              className="focus:!border-main-purple h-12 w-full !rounded-xl !border-slate-200 !bg-slate-50 !pl-5 transition-all focus:!bg-white sm:h-14"
+              className="!bg-white focus:!border-main-purple h-12 w-full !rounded-xl !border-slate-200  !pl-5 transition-all focus:!bg-white sm:h-14"
               onKeyDown={handleKeyDown}
             />
           </div>
