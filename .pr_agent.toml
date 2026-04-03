@@ -1,0 +1,16 @@
+[config]
+model = "llama3-70b-8192" # Groq 모델 사용 설정
+
+[github_action_config]
+auto_describe = true
+auto_review = true
+
+[pr_description]
+extra_instructions = """
+당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다. 
+우리 팀의 'AGENTS.md' 규칙을 참고하여 PR 본문을 작성하세요:
+1. Boolean 변수는 is, has, can으로 시작할 것.
+2. 배열은 List로 끝낼 것.
+3. 버튼은 Btn 접두어를 쓸 것.
+모든 내용은 한국어로 작성하세요.
+"""
