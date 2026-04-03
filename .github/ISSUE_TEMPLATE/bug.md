@@ -9,9 +9,13 @@ labels: "bug"
 
 > 어떤 상황에서 버그가 발생하는지 설명해주세요.
 
+-
+
 ## 🛠️ Proposed Solution
 
 > 어떻게 수정할 계획인지 적어주세요.
+
+-
 
 ## 🧪 Verification Steps
 

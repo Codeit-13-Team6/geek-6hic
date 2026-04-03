@@ -7,7 +7,9 @@ labels: "refactor"
 
 ## 🔍 Refactor Details
 
-> 어떤 부분을 왜 개선하려는지 설명해주세요. (예: 컴포넌트 200라인 초과 분리)
+> 어떤 부분을 왜 개선하려는지 설명해주세요.
+
+-
 
 ## ✅ Refactoring Rules (Geek Chic)
 

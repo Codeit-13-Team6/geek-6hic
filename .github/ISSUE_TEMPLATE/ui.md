@@ -9,6 +9,8 @@ labels: "design"
 
 > 작업할 UI 영역과 스타일 변경 사항을 적어주세요.
 
+-
+
 ## 📏 Styling Rules (Geek Chic)
 
 - [ ] **Semantic Tags**: div 대신 section, nav 등 적절한 태그 사용 여부
