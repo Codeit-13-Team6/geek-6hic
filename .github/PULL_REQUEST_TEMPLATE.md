@@ -12,7 +12,7 @@
 
 - [ ] **Architecture**: Function Declaration & Named Export 준수
 - [ ] **Naming**: camelCase, Btn- prefix, artistList 형식 준수
-- [ ] **Styling**: Tailwind (px/4) 단위 및 Semantic Tag 사용
+- [ ] **Styling**: Semantic Tag 사용
 - [ ] **URL**: RESTful 구조 및 Lowercase 경로 확인
 
 ## 💬 Reviewer's Guide
