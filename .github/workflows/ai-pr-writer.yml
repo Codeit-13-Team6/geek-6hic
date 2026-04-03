@@ -19,7 +19,9 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.GROQ_KEY }}
           OPENAI_API_BASE: "https://api.groq.com/openai/v1"
-          CONFIG.MODEL: "llama-3.3-70b-specdec"
+          CONFIG.MODEL: "llama3-70b-8192"
+          CONFIG.CUSTOM_MODEL_MAX_TOKENS: 8192
+          CONFIG.FALLBACK_MODELS: "[]"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
