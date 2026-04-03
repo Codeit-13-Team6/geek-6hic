@@ -3,9 +3,14 @@ name: GeekChic AI PR Assistant
 on:
   pull_request:
     types: [opened, synchronize]
+  issue_comment:
+    types: [created]
 
 jobs:
   ai-support:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/'))
     runs-on: ubuntu-latest
     permissions:
       contents: read
