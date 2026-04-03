@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/SelectCommon";
-import type { MeetingType, SortBy } from "@/types";
+import type { MeetingType } from "@/types";
 import Image from "next/image";
 import downIcon from "@/assets/icon/chevron/chevron-down.svg";
 import {
