@@ -189,6 +189,7 @@ export function useMeetingDetailMutations({
     mutationFn: () => deleteMeeting(meetingId),
     onSuccess: () => {
       ToastCommon({ message: "모임을 삭제했어요.", size: "sm" });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root, });
       router.push("/meetings");
       router.refresh();
     },

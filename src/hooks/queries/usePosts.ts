@@ -63,6 +63,7 @@ export const useGetPostForEdit = (postId: number) => {
   const { data: initialData, isLoading: isOgLoading } = useQuery({
     queryKey: [...QUERY_KEYS.posts.detail(postId), "edit-og", post?.content],
     queryFn: async () => {
+      console.log("dgdgd");
       if (!post) return null;
 
       const { content: parsedContent, links: parsedLinks } = parsePostData(
@@ -198,10 +199,12 @@ export const useToggleLike = (postId: number) => {
         isLiked: !old.isLiked,
         likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
       }),
-      invalidateKeys: ["post"],
+      invalidateKeys: [["post"]],
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });
+
+
 
   // return useMutation({
   //   mutationFn: (isLiked: boolean) =>
