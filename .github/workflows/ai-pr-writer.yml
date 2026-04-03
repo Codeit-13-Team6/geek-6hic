@@ -29,6 +29,9 @@ jobs:
           CONFIG.CUSTOM_MODEL_MAX_TOKENS: 8192
           CONFIG.FALLBACK_MODELS: "[]"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_DESCRIPTION.AUTO_DESCRIBE: true
+          PR_REVIEWER.AUTO_REVIEW: true
+          PR_REVIEWER.AUTO_IMPROVE: true
 
           PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
             당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다. 
