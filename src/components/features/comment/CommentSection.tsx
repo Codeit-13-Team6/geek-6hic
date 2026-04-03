@@ -129,7 +129,7 @@ export default function CommentSection({
 
   return (
     <section
-      className={`mt-4 flex flex-col gap-6 ${isThread ? "" : "px-2 sm:px-6 lg:px-22"}`}
+      className={`mt-10 flex flex-col gap-6 ${isThread ? "" : ""}`}
     >
       <div className="flex items-center gap-2">
         <h3 className="text-lg font-bold tracking-tighter text-slate-900 sm:text-xl">

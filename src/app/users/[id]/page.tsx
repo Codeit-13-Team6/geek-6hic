@@ -43,15 +43,15 @@ export default async function Page() {
   const initialUser = raw ? JSON.parse(raw) : null;
 
   return (
-    <div className="w-full">
-      <header className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
+    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+      <div className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
           <h1 className="text-3xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-5xl">
             MY <span className="text-main-purple">PAGE.</span>
           </h1>
         </div>
-      </header>
+      </div>
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="w-full shrink-0 lg:w-[282px]">

@@ -108,7 +108,7 @@ body {
 
 /* 커스텀 스크롤 */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 3px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -171,18 +171,13 @@ body {
   transform-origin: top center;
 }
 
-/* favoright hover */
-@keyframes bottom-shaking {
-  0%, 100% { transform: rotate(0deg); }
-  15% { transform: rotate(15deg); }
-  30% { transform: rotate(-15deg); }
-  45% { transform: rotate(10deg); }
-  60% { transform: rotate(-10deg); }
-  75% { transform: rotate(5deg); }
-  90% { transform: rotate(-5deg); }
+/* 페이지 hr 애니메이션 */
+@keyframes line-spread {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 
-.bottom-shaking:hover {
-  animation: bell-ring 0.6s ease;
-  transform-origin: bottom center;
+.line-spread {
+  animation: line-spread 0.6s ease-out forwards;
+  transform-origin: center;
 }

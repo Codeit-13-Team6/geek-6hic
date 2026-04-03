@@ -57,7 +57,7 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
 
   return (
     <>
-      <section className="w-full sm:px-6 lg:-mt-7 lg:px-22">
+      <section>
         <PostDetailCard
           title={post.title}
           name={post.author.name}

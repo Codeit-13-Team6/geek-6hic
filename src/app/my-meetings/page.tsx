@@ -23,9 +23,9 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div className="relative w-full">
-      <header className="mb-10 border-b-2 border-slate-950 pb-8 sm:mb-20 sm:pb-12 lg:pb-12">
-        <div className="grid grid-cols-1 gap-10 sm:items-end md:grid-cols-2 md:items-center">
+    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+      <div className="animate-fade-up">
+        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:items-center">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
@@ -35,23 +35,24 @@ export default async function Page() {
                 Meetings / Joined
               </span>
             </div>
-            <div className="space-y-2">
-              <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
-                MY <span className="text-main-purple">MEETINGS.</span>
-              </h1>
-            </div>
+            <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
+              MY <span className="text-main-purple">MEETINGS.</span>
+            </h1>
           </div>
 
-          <div className="flex flex-col items-end self-end text-right">
+          <div className="flex flex-col lg:items-end lg:self-end lg:text-right">
             <div className="max-w-[420px]">
-              <div className="bg-main-purple mb-2 hidden h-1.5 w-16 md:ml-auto md:block" />
-              <p className="text-sm font-medium tracking-tight text-slate-400 sm:text-base">
+              <div className="bg-main-purple hidden h-1.5 w-16 sm:ml-auto lg:block" />
+              <p className="lg:mt-4 text-sm font-light tracking-tight text-slate-400 sm:text-base">
                 참여한 모임의 상세 정보를 다시 확인할 수 있습니다.
               </p>
             </div>
           </div>
         </div>
-      </header>
+        <div className="line-spread w-full flex justify-center mb-10 mt-8 sm:mb-15 sm:mt-10 lg:mb-24 lg:mt-15">
+          <div className="h-[2px] bg-gray-950 w-full origin-center" />
+        </div>
+      </div>
       <div className="mb-12 flex items-center gap-3">
         <div className="bg-main-purple h-[6px] w-8 rounded-full" />
         <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
@@ -73,10 +74,10 @@ export default async function Page() {
                 getJoinedMeetingsServer(
                   pageParam
                     ? {
-                        cursor: pageParam as string,
-                        size: 10,
-                        sortOrder: "desc",
-                      }
+                      cursor: pageParam as string,
+                      size: 10,
+                      sortOrder: "desc",
+                    }
                     : { size: 10, sortOrder: "desc" },
                 ),
               initialPageParam: undefined,

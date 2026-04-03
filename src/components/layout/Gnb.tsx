@@ -21,7 +21,7 @@ const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
       strokeWidth={2.2}
     />
     {hasUnread && (
-      <span className="absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+      <span className="absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full bg-main-purple ring-2 ring-white" />
     )}
   </div>
 );
@@ -98,7 +98,7 @@ export function Gnb({ initialUser }: GnbProps) {
 
   return (
     <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 px-2 backdrop-blur-xl transition-all sm:px-6 md:h-18">
-      <div className="flex h-full w-full max-w-[1350px] items-center justify-between">
+      <div className="flex h-full w-full max-w-[1280px] items-center justify-between">
         {/* 왼쪽 영역 */}
         <div className="flex items-center gap-10 lg:gap-14">
           <Link

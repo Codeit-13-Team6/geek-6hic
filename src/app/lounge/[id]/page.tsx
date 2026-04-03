@@ -38,7 +38,7 @@ export default async function LoungeDetailPageServer({
   const postId = Number(id);
 
   return (
-    <div className="flex flex-col gap-10 py-0 sm:gap-12 lg:gap-16 lg:px-24">
+    <div className="relative w-full mx-auto max-w-[900px] px-6 2xl:px-0 py-10 sm:py-20">
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {

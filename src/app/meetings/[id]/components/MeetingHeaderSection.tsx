@@ -155,7 +155,7 @@ export function MeetingHeaderSection({
             <div className="flex items-start justify-between">
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start gap-3">
-                  <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-5xl">
+                  <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
                     {data.name}
                   </h1>
                   {data.isHost && (
@@ -256,7 +256,7 @@ export function MeetingHeaderSection({
               {/* 에메랄드 글로우 프로그레스 바 */}
               <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
+                  className="h-full rounded-full bg-purple-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
                   style={{ width: `${progressValue}%` }}
                 />
               </div>
