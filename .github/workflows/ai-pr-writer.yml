@@ -23,6 +23,7 @@ jobs:
       - name: AI PR Description & Review
         uses: Codium-ai/pr-agent@main
         env:
+<<<<<<< Updated upstream
           OPENAI_API_KEY: ${{ secrets.GROQ_KEY }}
           OPENAI_API_BASE: "https://api.groq.com/openai/v1"
           CONFIG.MODEL: "llama3-70b-8192"
@@ -33,11 +34,19 @@ jobs:
           PR_REVIEWER.AUTO_REVIEW: true
           PR_REVIEWER.AUTO_IMPROVE: true
 
+=======
+          OPENAI.KEY: ${{ secrets.GROQ_KEY }}
+          OPENAI.API_BASE: "https://api.groq.com/openai/v1"
+          CONFIG.MODEL: "llama-3.3-70b-versatile"
+          CONFIG.MODEL_TURBO: "llama-3.3-70b-versatile"
+          CONFIG.FALLBACK_MODELS: '["llama-3.3-70b-versatile"]'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+>>>>>>> Stashed changes
           PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
-            당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다. 
+            당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다.
             우리 팀의 'AGENTS.md' 규칙을 참고하여 PR 본문을 작성하세요:
 
-            1. **Naming & Syntax**: 
+            1. **Naming & Syntax**:
               - 변수/함수는 camelCase를 사용하고, `const` 사용을 지향하세요.
               - **Boolean 타입 변수는 반드시 `is`, `has`, `can`으로 시작하는지 확인하세요.**
               - 배열(Array)은 `List`로 끝나는지(예: artistList) 체크하세요.
