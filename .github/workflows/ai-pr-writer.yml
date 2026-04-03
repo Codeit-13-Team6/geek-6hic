@@ -8,9 +8,6 @@ on:
 
 jobs:
   ai-support:
-    if: |
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
