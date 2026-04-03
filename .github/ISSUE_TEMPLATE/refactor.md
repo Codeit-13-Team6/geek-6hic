@@ -1,7 +1,7 @@
 ---
 name: "♻️ Refactor: 코드 개선"
 about: 기능 변경 없이 코드 구조 및 성능 개선
-title: "[Refactor]: "
+title: "[REFACTOR] "
 labels: "refactor"
 ---
 

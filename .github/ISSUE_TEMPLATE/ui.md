@@ -1,7 +1,7 @@
 ---
 name: "🎨 UI: 스타일 및 디자인"
 about: UI 컴포넌트 개발 및 스타일 수정
-title: "[UI]: "
+title: "[UI] "
 labels: "design"
 ---
 
