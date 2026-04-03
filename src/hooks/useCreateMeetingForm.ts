@@ -22,6 +22,8 @@ import {
 import { MeetingFormValues } from "@/types";
 import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TOTAL_MEETING_FORM_STEPS = 3;
 
@@ -34,6 +36,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState("");
 
+  const queryClient = useQueryClient();
   const previewImageUrlRef = useRef("");
   const router = useRouter();
 
@@ -191,6 +194,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
         region: String(createdPostId),
       });
 
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root, })
       ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
       onSuccess?.();
       router.push(`/meetings/${newMeetingId}`);

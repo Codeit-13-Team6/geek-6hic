@@ -18,8 +18,10 @@ export async function getJoinedMeetingsServer(params: {
 }
 
 export async function getMeetingList(params: {
-  cursor?: string;
-  size?: number;
+  type: string;
+  sortBy: "dateTime" | "registrationEnd" | "participantCount" | "createdAt";
+  sortOrder: "asc" | "desc";
+  size: number;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await serverFetch<JoinedMeetingsResponse>({
     method: "GET",

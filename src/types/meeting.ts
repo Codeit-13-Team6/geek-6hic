@@ -158,10 +158,11 @@ export interface MeetingType {
   createdAt: string;
 }
 
-export type SortValue = "deadline" | "participants" | null;
+export type SortValue = "" | "dateTime" | "registrationEnd" | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
+export type SortBy = SortValue;
 
 export interface MeetingFiltersProps {
-  tabList: { value: string; label: string }[];
+  // tabList?: { value: string; label: string }[];
   activeValue: TabValue;
   sortValue: SortValue;
   sortDescValue: boolean;
@@ -176,7 +177,7 @@ export interface MeetingFiltersProps {
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];
   isLoading: boolean;
-  sortValue?: "deadline" | "participants" | null;
+  sortValue?: SortValue;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
   meetingStatusBadgeVisible?: boolean;
