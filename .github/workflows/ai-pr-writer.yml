@@ -1,0 +1,37 @@
+name: GeekChic AI PR Assistant
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  ai-support:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: AI PR Description & Review
+        uses: Codium-ai/pr-agent@main
+        env:
+          OPENAI_API_KEY: ${{ secrets.GROQ_KEY }}
+          OPENAI_API_BASE: "https://api.groq.com/openai/v1"
+          CONFIG.MODEL: "llama-3.3-70b-specdec"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
+            당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다. 
+            우리 팀의 'AGENTS.md' 규칙을 참고하여 PR 본문을 작성하세요:
+
+            1. **Naming & Syntax**: 
+              - 변수/함수는 camelCase를 사용하고, `const` 사용을 지향하세요.
+              - **Boolean 타입 변수는 반드시 `is`, `has`, `can`으로 시작하는지 확인하세요.**
+              - 배열(Array)은 `List`로 끝나는지(예: artistList) 체크하세요.
+              - 버튼 컴포넌트는 `Btn` 접두어를 사용했는지 확인하세요.
+            2. **Structure**: 모든 컴포넌트가 'Function Declaration' 형태인지 확인하여 요약에 포함하세요.
+            3. 모든 내용은 한국어로 작성하고, 개발자가 읽기 편하도록 명확한 기술 용어를 사용하세요.
+            4. 'Change Log' 섹션은 변경된 로직 위주로 3~5개 불렛 포인트로 요약하세요.
+            5. 연관된 이슈(Linked Issue) 내용을 분석하여 작업 목표가 코드에 어떻게 반영되었는지 요약에 포함하세요.
