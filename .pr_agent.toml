@@ -1,16 +1,24 @@
 [config]
-model = "llama3-70b-8192" # Groq 모델 사용 설정
-
-[github_action_config]
-auto_describe = true
-auto_review = true
+model = "llama3-70b-8192"
 
 [pr_description]
+# 핵심: 반드시 한국어로 답변하도록 전역 설정
+language = "Korean"
+
+# 템플릿 내용을 지우지 않고 해당 섹션에 내용을 채우도록 지시
 extra_instructions = """
-당신은 '긱시크(Geek Chic)' 팀의 테크 리드입니다. 
-우리 팀의 'AGENTS.md' 규칙을 참고하여 PR 본문을 작성하세요:
-1. Boolean 변수는 is, has, can으로 시작할 것.
-2. 배열은 List로 끝낼 것.
-3. 버튼은 Btn 접두어를 쓸 것.
-모든 내용은 한국어로 작성하세요.
+반드시 다음 지시사항을 엄격히 준수하여 한국어로 작성하세요:
+
+1. **언어**: 모든 설명과 텍스트는 반드시 '한국어'로만 작성하세요.
+2. **템플릿 준수**: 사용자가 작성한 PR 템플릿의 구조(Issue Number, Change Log 등)를 유지하세요.
+3. **내용 매핑**:
+   - 'Change Log' 섹션 아래에 변경 사항을 요약하여 불렛 포인트로 적으세요.
+   - 'Tech Stack' 섹션에 사용된 기술을 체크( [x] )하세요.
+4. **긱시크 컨벤션 체크**:
+   - 변수명(is/has/can), 배열명(List), 버튼명(Btn) 규칙 위반 사례가 있다면 요약에 포함하세요.
+5. **기존 내용 유지**: 사용자가 이미 작성한 내용이 있다면 지우지 말고 그 아래에 보충하세요.
 """
+
+[pr_reviewer]
+# 리뷰 댓글도 한국어로 나오게 설정
+extra_instructions = "모든 리뷰 의견은 한국어로 작성하세요."
