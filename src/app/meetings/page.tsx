@@ -60,9 +60,9 @@ export default async function Page({
 }) {
   const params = await searchParams;
   return (
-    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up">
-        <div className="flex flex-col gap-10 xl:flex-row xl:justify-between xl:items-center">
+        <div className="flex flex-col gap-10 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
@@ -80,11 +80,11 @@ export default async function Page({
             </h1>
           </div>
 
-          <div className="flex flex-col items-start xl:items-end gap-4 text-left xl:text-right shrink-0">
+          <div className="flex shrink-0 flex-col items-start gap-4 text-left xl:items-end xl:text-right">
             <div className="w-full">
-              <div className="bg-main-purple hidden h-1.5 w-20 xl:ml-auto lg:block"></div>
-              <p className="lg:mt-4 text-lg font-medium tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
-                스프린터 파트너들과 <br className="xl:hidden sm:block" />
+              <div className="bg-main-purple hidden h-1.5 w-20 lg:block xl:ml-auto"></div>
+              <p className="text-lg font-medium tracking-tight text-slate-900 sm:text-xl lg:mt-4 lg:text-2xl">
+                스프린터 파트너들과 <br className="sm:block xl:hidden" />
                 공유하고, 협업하고, 성장하는 공간
               </p>
               <p className="mt-2 text-sm font-light tracking-tight text-slate-400 sm:text-base">
@@ -92,16 +92,12 @@ export default async function Page({
               </p>
             </div>
           </div>
-
         </div>
-        <div className="line-spread w-full flex justify-center mb-10 mt-8 sm:mb-15 sm:mt-10 lg:mb-24 lg:mt-15">
-          <div className="h-[2px] bg-gray-950 w-full origin-center" />
+        <div className="line-spread mt-8 mb-10 flex w-full justify-center sm:mt-10 sm:mb-15 lg:mt-15 lg:mb-24">
+          <div className="h-[2px] w-full origin-center bg-gray-950" />
         </div>
       </div>
 
-      <div className="mb-10 sm:mb-14">
-        <MeetingFilters />
-      </div>
       <Suspense
         fallback={
           <div className="mx-auto max-w-[1280px]">
@@ -144,6 +140,9 @@ export default async function Page({
             })
           }
         >
+          <div className="mb-10 sm:mb-14">
+            <MeetingFilters />
+          </div>
           <MeetingList variant="all" />
         </PrefetchBoundary>
       </Suspense>
