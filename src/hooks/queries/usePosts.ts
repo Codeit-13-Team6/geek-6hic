@@ -61,7 +61,7 @@ export const useGetPostForEdit = (postId: number) => {
 
   // 2. 포스트가 도착하면 실행되는 종속 쿼리
   const { data: initialData, isLoading: isOgLoading } = useQuery({
-    queryKey: QUERY_KEYS.posts.detail(postId),
+    queryKey: [...QUERY_KEYS.posts.detail(postId), "edit-og", post?.content],
     queryFn: async () => {
       console.log("dgdgd");
       if (!post) return null;
@@ -70,7 +70,7 @@ export const useGetPostForEdit = (postId: number) => {
         post.content,
       );
 
-      console.log(parsedContent, "parsedContent", parsedLinks, "parsedLinks");
+      // console.log(parsedContent, "parsedContent", parsedLinks, "parsedLinks");
 
       if (parsedLinks.length === 0) {
         return {
@@ -86,14 +86,25 @@ export const useGetPostForEdit = (postId: number) => {
         parsedLinks.map(async (link) => {
           try {
             const ogResult = await getOgData(link.url);
+            console.log("OG API 성공!", { url: link.url, ogResult }); // <--- 이거 찍히는지 확인!
             return { ...link, image: ogResult.image || "" };
           } catch (error) {
+            console.log("OG API 실패!", { url: link.url, error }); // <--- 이거 찍히는지 확인!
+
             return link;
           }
         }),
       );
+      console.log("폼 초기 데이터:", {
+        ...post,
+        title: post.title,
+        content: parsedContent,
+        links: restoredLinks,
+        image: post.image || "",
+      }); // <--- 이거 찍히는지 확인!
 
       return {
+        ...post,
         title: post.title,
         content: parsedContent,
         links: restoredLinks,
@@ -141,7 +152,7 @@ export const useUpdatePost = (postId: number) => {
   return useMutation({
     mutationFn: (payload: PostPayload) => updatePost(postId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.list });
 
       ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
       router.push(`/lounge/${postId}`);
@@ -192,6 +203,8 @@ export const useToggleLike = (postId: number) => {
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });
+
+
 
   // return useMutation({
   //   mutationFn: (isLiked: boolean) =>

@@ -17,7 +17,7 @@ export const getPosts = async (
   return filterThreadPosts(res);
 };
 
-export const getPostDetail = async (postId: number) => {
+export const getPostDetail = async (postId: number): Promise<Post> => {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 };

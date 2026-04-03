@@ -13,15 +13,14 @@ export default function LoungeEditPage() {
   const userId = useAuthStore((state) => state.user?.id);
 
   const { initialData, post, isLoading } = useGetPostForEdit(postId);
-  const { mutate: handleUpdate, isPending } = useUpdatePost(postId);
 
+  const { mutate: handleUpdate, isPending } = useUpdatePost(postId);
   useEffect(() => {
     if (post && userId && post.author.id !== userId) {
       alert("수정 권한이 없습니다.");
       router.replace(`/lounge/${postId}`);
     }
   }, [post, userId, router, postId]);
-
 
   if (isLoading || !initialData) {
     return (

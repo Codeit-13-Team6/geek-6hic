@@ -81,6 +81,7 @@ export default async function Page() {
                 ),
               initialPageParam: undefined,
               getNextPageParam: getNextPageParam<JoinedMeetingsResponse>,
+
             })
           }
         >
