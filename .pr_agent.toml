@@ -1,6 +1,6 @@
 [config]
 model = "llama3-70b-8192"
-language = "Korean"
+language = "ko-KR"
 
 [pr_description]
 publish_description_as_comment = false
@@ -24,9 +24,11 @@ extra_instructions = """
 
 [pr_reviewer]
 extra_instructions = """
-반드시 '한국어'로 작성하세요.
-1. [위험도: 높음/중간/낮음] 머릿말 사용.
-2. 'Description'은 한두 문장으로 짧게 요약.
-3. 'Suggested fix'는 코드 블록(```)으로 제공.
-4. 긱시크 팀 컨벤션 위반은 '🎨 컨벤션 위반' 카테고리로 묶기.
+[VERY IMPORTANT / 최우선 지시사항]
+1. ALL RESPONSES MUST BE IN KOREAN. (모든 리뷰는 무조건 '한국어'로만 작성하세요. 절대 영어를 쓰지 마세요.)
+2. 발견된 문제점의 제목 앞에는 반드시 [위험도: 높음], [위험도: 중간], [위험도: 낮음] 중 하나를 붙이세요.
+3. 'Description' 내용은 개발자가 바로 이해할 수 있도록 1~2문장으로 아주 짧고 명확하게 요약하세요.
+4. 'Suggested fix' (수정 제안) 파트에서는 반드시 마크다운 코드 블록(```)을 사용하여 복붙 가능한 코드를 제공하세요.
+5. 변수명(Naming), 폴더 구조, 태그 등 '긱시크 팀 컨벤션'을 위반한 사항은 무조건 '🎨 컨벤션 위반' 이라는 카테고리로 묶어서 따로 보여주세요.
+이 지시사항을 어길 시 리뷰는 실패한 것으로 간주합니다.
 """
