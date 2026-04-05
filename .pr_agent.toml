@@ -1,6 +1,6 @@
 [config]
 model = "llama3-70b-8192"
-language = "Korean"
+language = "ko-KR"
 
 [pr_description]
 publish_description_as_comment = false
@@ -24,9 +24,10 @@ extra_instructions = """
 
 [pr_reviewer]
 extra_instructions = """
-반드시 '한국어'로 작성하세요.
-1. [위험도: 높음/중간/낮음] 머릿말 사용.
-2. 'Description'은 한두 문장으로 짧게 요약.
-3. 'Suggested fix'는 코드 블록(```)으로 제공.
-4. 긱시크 팀 컨벤션 위반은 '🎨 컨벤션 위반' 카테고리로 묶기.
+CRITICAL REQUIREMENTS (You MUST follow these strictly):
+1. OUTPUT LANGUAGE: The ENTIRE review MUST be written in Korean (한국어로 작성). Do NOT output in English.
+2. RISK LEVEL: You MUST prefix EVERY issue title with exactly one of these: [위험도: 높음], [위험도: 중간], or [위험도: 낮음].
+3. CONVENTION CATEGORY: Any issue related to Naming conventions, folder structures, or HTML tags MUST be categorized strictly under "🎨 컨벤션 위반".
+4. DESCRIPTION: Keep the description extremely short (1-2 sentences).
+5. SUGGESTED FIX: You MUST provide a markdown code block (```) for all suggested fixes.
 """

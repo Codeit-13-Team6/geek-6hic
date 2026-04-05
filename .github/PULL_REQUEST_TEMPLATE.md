@@ -4,7 +4,7 @@
 
 ## 📝 Change Log
 
-- pr_agent:summary
+pr_agent:summary
 
 ## 💬 Reviewer's Guide
 
