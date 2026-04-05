@@ -4,9 +4,7 @@
 
 ## 📝 Change Log
 
-> 핵심 변경 사항입니다. (Naming, Structure 등 컨벤션 체크 포함)
-
--
+- pr_agent:summary
 
 ## ⚡ Tech Stack & Patterns
 
