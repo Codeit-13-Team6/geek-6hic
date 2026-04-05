@@ -24,10 +24,10 @@ extra_instructions = """
 
 [pr_reviewer]
 extra_instructions = """
-CRITICAL REQUIREMENTS (You MUST follow these strictly):
-1. OUTPUT LANGUAGE: The ENTIRE review MUST be written in Korean (한국어로 작성). Do NOT output in English.
-2. RISK LEVEL: You MUST prefix EVERY issue title with exactly one of these: [위험도: 높음], [위험도: 중간], or [위험도: 낮음].
-3. CONVENTION CATEGORY: Any issue related to Naming conventions, folder structures, or HTML tags MUST be categorized strictly under "🎨 컨벤션 위반".
-4. DESCRIPTION: Keep the description extremely short (1-2 sentences).
-5. SUGGESTED FIX: You MUST provide a markdown code block (```) for all suggested fixes.
+리뷰 내용을 작성할 때 가독성을 위해 다음 형식을 지키세요:
+1. 반드시 '한국어'로 작성하세요.
+2. 발견된 문제점은 [위험도: 높음/중간/낮음] 식으로 머릿말을 붙이세요.
+3. 'Description' 부분은 한두 문장으로 짧고 명확하게 요약하세요.
+4. 'Suggested fix'는 코드 블록(```)을 사용하여 복사 붙여넣기가 가능하게 제공하세요.
+5. 긱시크 팀 컨벤션(is/has/can, List 접미사, Btn- 접두사) 위반은 '🎨 컨벤션 위반' 카테고리로 묶어서 보여주세요.
 """
