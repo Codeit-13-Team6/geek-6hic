@@ -2,8 +2,7 @@
 name: "🧹 Chore"
 about: "잡무, 설정 변경, 라이브러리 업데이트 등을 기록합니다."
 title: "[CHORE] "
-labels: ["chore"]
-assignees: ""
+labels: "chore"
 ---
 
 ## 🧹 Chore Details
