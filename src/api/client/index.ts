@@ -4,6 +4,4 @@ export * from "./meetings";
 export * from "./notifications";
 export * from "./og";
 export * from "./meetings";
-export * from "./notifications";
-export * from "./og";
 export * from "./posts";
