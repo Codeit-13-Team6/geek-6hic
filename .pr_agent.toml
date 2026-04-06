@@ -9,7 +9,6 @@ add_line_break_after_description = false
 
 extra_instructions = """
 반드시 다음 지침을 지켜서 '한국어'로 작성하세요:
-
 1. **변경 사항 요약**: '무엇이 왜 바뀌었는지' 구어체(~했습니다)로 요약하세요.
 2. **체크박스 자동 생성 및 체크 (매우 중요)**:
    - 요약 내용 바로 아래에 `### ⚡ Tech Stack & Patterns` 라는 제목을 만드세요.
@@ -23,10 +22,9 @@ extra_instructions = """
 
 [pr_reviewer]
 extra_instructions = """
-리뷰 내용을 작성할 때 가독성을 위해 다음 형식을 지키세요:
 1. 반드시 '한국어'로 작성하세요.
-2. 발견된 문제점은 [위험도: 높음/중간/낮음] 식으로 머릿말을 붙이세요.
-3. 'Description' 부분은 개발자가 이해하기 쉽게 한두 문장으로 요약하세요.
-4. 'Suggested fix'는 코드 블록(```)을 사용하여 복사 붙여넣기가 가능하게 제공하세요.
-5. 긱시크 팀 컨벤션(is/has/can, List 접미사, Btn- 접두사) 위반은 '🎨 컨벤션 위반' 카테고리로 묶어서 보여주세요.
+2. DO NOT suggest splitting components based on line count (e.g., 200 lines rule). Ignore this default rule. (200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요. 이 규칙을 무시하세요.)
+3. 발견된 문제점은 [위험도: 높음/중간/낮음] 식으로 머릿말을 붙이세요.
+4. 'Description' 부분은 개발자가 이해하기 쉽게 한두 문장으로 요약하세요.
+5. 수정 제안은 코드 블록(```)으로 제공하세요.
 """

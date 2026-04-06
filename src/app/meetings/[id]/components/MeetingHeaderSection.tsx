@@ -2,13 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
-
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
   DropdownMenu,
@@ -16,23 +13,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownCommon";
-import ModalBase from "@/components/ui/ModalBase";
-import {
-  Progress,
-  ProgressLabel,
-  ProgressValue,
-} from "@/components/ui/ProgressCommon";
-import { TagCommon } from "@/components/ui/TagCommon";
-import { MeetingMember, MeetingHeaderSectionProps } from "@/types";
-import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
-import { BellOff, Calendar, Clock, Users2 } from "lucide-react";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { Calendar, Clock, Users2 } from "lucide-react";
+import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
 
 const formatMonthDay = (value: string) => {
   const date = new Date(value);
-
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 };
 
@@ -53,18 +42,18 @@ const hasUsableProfileImage = (
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
 
-// ... (formatMonthDay, formatHourMinute, hasUsableProfileImage 함수 유지)
-
 export function MeetingHeaderSection({
   data,
   participantAvatars,
   isFavoritePending,
   isJoinPending,
   isAuthLoading,
+  actionState,
   actionLabel,
   isActionDisabled,
+  shouldShowShareButton,
   shouldShowHostMenu,
-  shouldShowClosedGuide,
+  shouldShowParticipantMenu,
   onJoin,
   onCancelJoin,
   onAttend,
@@ -73,10 +62,8 @@ export function MeetingHeaderSection({
   onDelete,
   onToggleFavorite,
 }: MeetingHeaderSectionProps) {
-  const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLoginConfirmOpen, setIsLoginConfirmOpen] = useState(false);
 
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
@@ -91,25 +78,21 @@ export function MeetingHeaderSection({
   );
 
   const handleActionClick = async () => {
-    if (isAuthLoading) return;
-    if (!data.isLoggedIn) {
-      setIsLoginConfirmOpen(true);
-      return;
+    if (isAuthLoading || isJoinPending || isActionDisabled) return;
+
+    switch (actionState) {
+      case "guest_join":
+        return;
+      case "joinable":
+        await onJoin();
+        return;
+      case "attendance_ready":
+        await onAttend();
+        return;
+      case "attendance_checking":
+      case "attendance_done":
+        return;
     }
-    if (isJoinPending || isActionDisabled) return;
-    if (actionLabel === "출석하기") {
-      await onAttend();
-      return;
-    }
-    if (data.isHost) {
-      await onShare();
-      return;
-    }
-    if (data.isJoined) {
-      await onCancelJoin();
-      return;
-    }
-    await onJoin();
   };
 
   const handleFavoriteClick = () => {
@@ -170,61 +153,70 @@ export function MeetingHeaderSection({
                     </div>
                   )}
                 </div>
-
-                {/* 💡 2. 일시 & 메타 정보: 제목 바로 아래에 밀도 있게 배치 */}
-                {/* <div className="mt-4 flex flex-wrap items-center gap-2"> */}
-                {/* 날짜 태그 */}
-                {/* <div className="bg-main-purple/10 text-main-purple flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black tracking-tight shadow-sm">
-                    <Calendar size={12} strokeWidth={3} />
-                    <span>{formatMonthDay(data.dateTime)}</span>
-                  </div> */}
-
-                {/* 시간 태그 */}
-                {/* <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-black tracking-tight text-slate-600 shadow-sm">
-                    <Clock
-                      size={12}
-                      strokeWidth={3}
-                      className="text-main-purple"
-                    />
-                    <span>{formatHourMinute(data.dateTime)}</span>
-                  </div>
-                </div> */}
               </div>
 
-              {/* 💡 호스트 전용 메뉴 (버튼 크기 살짝 조정) */}
-              {shouldShowHostMenu && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={
-                      <button
-                        type="button"
-                        className="group rounded-full p-2 transition hover:bg-slate-50"
-                      >
-                        <Image
-                          src={meatballsLgIcon}
-                          alt="Menu"
-                          width={28}
-                          height={28}
-                          className="opacity-40 group-hover:opacity-100"
-                        />
-                      </button>
-                    }
-                  />
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
-                      수정하기
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setIsDeleteModalOpen(true)}
-                      className="font-bold text-red-500"
-                    >
-                      삭제하기
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <div className="flex shrink-0 items-center gap-2">
+                {shouldShowShareButton && (
+                  <BtnCommon
+                    type="button"
+                    size="sm"
+                    variant="teritary"
+                    onClick={() => loginGuardAction(onShare)}
+                    className="!rounded-2xl"
+                  >
+                    공유
+                  </BtnCommon>
+                )}
+
+                {(shouldShowHostMenu || shouldShowParticipantMenu) && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="group rounded-full p-2 transition hover:bg-slate-50"
+                        >
+                          <Image
+                            src={meatballsLgIcon}
+                            alt="Menu"
+                            width={28}
+                            height={28}
+                            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white"
+                          />
+                        </button>
+                      }
+                    />
+                    <DropdownMenuContent align="end">
+                      {shouldShowHostMenu ? (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => setIsEditModalOpen(true)}
+                          >
+                            모임 수정하기
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setIsDeleteModalOpen(true)}
+                            className="font-bold text-red-500"
+                          >
+                            모임 삭제하기
+                          </DropdownMenuItem>
+                        </>
+                      ) : null}
+
+                      {shouldShowParticipantMenu ? (
+                        <DropdownMenuItem
+                          onClick={onCancelJoin}
+                          className="font-bold text-red-500"
+                        >
+                          모임 탈퇴하기
+                        </DropdownMenuItem>
+                      ) : null}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
             </div>
-            {/* 💡 세련된 참여 현황 통합 박스 */}
+
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -253,7 +245,6 @@ export function MeetingHeaderSection({
                 </div>
               </div>
 
-              {/* 에메랄드 글로우 프로그레스 바 */}
               <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
                   className="h-full rounded-full bg-purple-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
@@ -263,15 +254,7 @@ export function MeetingHeaderSection({
             </div>
           </div>
 
-          {/* 하단 액션 버튼 영역 */}
           <div className="mt-5 flex items-center gap-4 sm:mt-10">
-            <HeartIcon
-              liked={data.isFavorited}
-              onClick={() => loginGuardAction(handleFavoriteClick)}
-              size={28}
-              disabled={isFavoritePending}
-            />
-
             <BtnCommon
               type="button"
               size="md"
@@ -283,18 +266,16 @@ export function MeetingHeaderSection({
                 {isJoinPending ? "PROCESSING..." : actionLabel}
               </span>
             </BtnCommon>
+            <HeartIcon
+              liked={data.isFavorited}
+              onClick={() => loginGuardAction(handleFavoriteClick)}
+              size={28}
+              disabled={isFavoritePending}
+            />
           </div>
-
-          {shouldShowClosedGuide && (
-            <div className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-red-50/50 py-3 text-[11px] font-bold text-red-400">
-              <BellOff size={14} />
-              모집 마감되어 참여할 수 없습니다.
-            </div>
-          )}
         </div>
       </section>
 
-      {/* 모달 로직들 유지 */}
       <EditMeetingModal
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
@@ -312,41 +293,6 @@ export function MeetingHeaderSection({
           setIsDeleteModalOpen(false);
         }}
       />
-
-      <ModalBase
-        isOpen={isLoginConfirmOpen}
-        onOpenChange={setIsLoginConfirmOpen}
-        contentClassName="w-full sm:w-[400px] rounded-[32px] p-8 text-center"
-      >
-        <div className="flex flex-col items-center py-4">
-          <p className="text-2xl font-black tracking-tighter text-slate-950">
-            로그인이 필요합니다
-          </p>
-          <p className="mt-2 text-sm font-medium text-slate-400">
-            서비스를 이용하시려면 먼저 로그인해 주세요.
-          </p>
-          <div className="mt-8 flex w-full flex-col gap-3">
-            <BtnCommon
-              size="md"
-              className="!rounded-2xl bg-slate-950 text-white"
-              onClick={() => {
-                setIsLoginConfirmOpen(false);
-                router.push("/login");
-              }}
-            >
-              로그인 하기
-            </BtnCommon>
-            <BtnCommon
-              variant="teritary"
-              size="md"
-              className="!rounded-2xl"
-              onClick={() => setIsLoginConfirmOpen(false)}
-            >
-              취소
-            </BtnCommon>
-          </div>
-        </div>
-      </ModalBase>
     </>
   );
 }

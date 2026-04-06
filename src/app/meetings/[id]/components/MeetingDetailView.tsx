@@ -13,10 +13,12 @@ export function MeetingDetailView({
   isFavoritePending,
   isJoinPending,
   isAuthLoading,
+  actionState,
   actionLabel,
   isActionDisabled,
+  shouldShowShareButton,
   shouldShowHostMenu,
-  shouldShowClosedGuide,
+  shouldShowParticipantMenu,
   canViewLink,
   canWriteThread,
   linkGuideText,
@@ -37,10 +39,12 @@ export function MeetingDetailView({
         isFavoritePending={isFavoritePending}
         isJoinPending={isJoinPending}
         isAuthLoading={isAuthLoading}
+        actionState={actionState}
         actionLabel={actionLabel}
         isActionDisabled={isActionDisabled}
+        shouldShowShareButton={shouldShowShareButton}
         shouldShowHostMenu={shouldShowHostMenu}
-        shouldShowClosedGuide={shouldShowClosedGuide}
+        shouldShowParticipantMenu={shouldShowParticipantMenu}
         onJoin={onJoin}
         onCancelJoin={onCancelJoin}
         onAttend={onAttend}

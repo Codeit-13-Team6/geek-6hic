@@ -3,8 +3,7 @@ import LoungeDetailClient from "./component/LoungeDetailClient";
 import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
-import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
-import { getPostDetail, getPostCommentsServer } from "@/api/server";
+import { getPostDetail } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { BtnBack } from "@/components/features/btn/BtnBack";
@@ -55,18 +54,7 @@ export default async function LoungeDetailPageServer({
         </PrefetchBoundary>
       </Suspense>
 
-      <Suspense fallback={<CommentSkeleton />}>
-        <PrefetchBoundary
-          prefetchFn={async (qc) => {
-            await qc.prefetchQuery({
-              queryKey: QUERY_KEYS.comments.detail(postId),
-              queryFn: () => getPostCommentsServer(postId),
-            });
-          }}
-        >
-          <CommentSection postId={postId} />
-        </PrefetchBoundary>
-      </Suspense>
+      <CommentSection postId={postId} />
     </div>
   );
 }
