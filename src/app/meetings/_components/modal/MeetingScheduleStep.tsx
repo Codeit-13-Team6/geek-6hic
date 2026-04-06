@@ -78,7 +78,6 @@ export function MeetingScheduleStep({
               onChange={(value) => {
                 onChange({ endDate: value });
                 onChange({ startDate: value });
-                console.log(values);
               }}
             />
           </div>

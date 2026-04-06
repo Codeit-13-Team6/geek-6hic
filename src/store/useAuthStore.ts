@@ -21,5 +21,3 @@ export const useAuthStore = create<AuthState>((set) => ({
 // import { useAuthStore } from '@/store/useAuthStore';
 // const user = useAuthStore((s) => s.user);
 // const clearAuth = useAuthStore((s) => s.clearAuth);
-// console.log(user);
-// console.log(user?.id);

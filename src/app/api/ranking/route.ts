@@ -115,9 +115,6 @@ export async function GET() {
         const userScore = data.commentingUserList.length * 30;
         const rankScore = commentScore + data.checkScore + userScore;
 
-        console.log(
-          `[ranking] ${data.meetName}: 댓글(${data.commentLeng}×3=${commentScore}) + 출석체크점수(${data.checkScore}) + 유저(${data.commentingUserList.length}×30=${userScore}) = ${rankScore}`,
-        );
 
         return {
           id: Number(id),
