@@ -7,7 +7,7 @@ import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 import LoginModalProvider from "@/providers/LoginModalProvider";
-import BtnTop from "@/components/features/btn/BtnTop";
+import { BtnTop } from "@/components/features/btn/BtnTop";
 import type { User } from "@/types";
 
 const geistSans = Geist({

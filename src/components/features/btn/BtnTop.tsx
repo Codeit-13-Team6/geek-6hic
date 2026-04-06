@@ -5,10 +5,16 @@ import { ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-export default function BtnTop() {
+export function BtnTop() {
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
   const lastScrollY = useRef(0);
+
+  // 라우트 변경 시 상태 초기화
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+    setVisible(false); // 페이지 이동 시 항상 숨김
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -16,29 +22,32 @@ export default function BtnTop() {
       const isScrollingUp = currentY < lastScrollY.current;
 
       if (currentY > 100 && !isScrollingUp) {
-        setVisible(true);  // 100px 넘고 아래로 내려갈 때 보임
+        setVisible(true);
       } else {
-        setVisible(false); // 위로 올라가거나 100px 이하면 숨김
+        setVisible(false);
       }
 
       lastScrollY.current = currentY;
     };
 
-    window.addEventListener("scroll", onScroll);
+    // 마운트 시 초기 상태 동기화
+    onScroll();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const positionClass = pathname === "/meetings"
-  ? "lg:bottom-36 lg:right-16 sm:right-6 bottom-22 right-6"
-  : pathname === "/lounge"
-  ? "sm:bottom-6 bottom-22 right-6"
-  : "bottom-6 right-6";
+    ? "lg:bottom-36 lg:right-16 sm:right-6 bottom-[88px] right-6"
+    : pathname === "/lounge"
+    ? "sm:bottom-6 bottom-[88px] right-6"
+    : "bottom-6 right-6";
 
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 active:scale-95 shadow-[0_20px_40px_rgba(38,6,86,0.3)]",
+        "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 active:scale-95",
         positionClass,
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
       )}
