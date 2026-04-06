@@ -5,13 +5,12 @@ const axiosInstance = axios.create({
   withCredentials: true, // ** 브라우저가 자동으로 쿠키를 실어 보냄
 });
 
-
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     // auth 관련 요청은 리다이렉트하지 않음 ,
     // users/me 는 유저 정보를 가져오는건데 겹쳐지게 사용하는 부분이 있어서 route단으로 빼던가 하는게 좋을것같다는 생각 일단 미룸
-    const SKIP_REDIRECT_PATHS = ["/auth", "/users/me", '/api/hot'];
+    const SKIP_REDIRECT_PATHS = ["/auth", "/users/me", "/api/hot"];
 
     const shouldSkipRedirect = SKIP_REDIRECT_PATHS.some((path) =>
       error.config?.url?.startsWith(path),
@@ -26,7 +25,7 @@ axiosInstance.interceptors.response.use(
       // 이미 로그인 페이지에 있으면 리다이렉트하지 않음 (무한 루프 방지)
       if (window.location.pathname !== "/login") {
         window.location.href = "/login";
-        return new Promise(() => {});
+        return Promise.reject(error);
       }
     }
 
@@ -34,7 +33,4 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-
-
 export default axiosInstance;
-
