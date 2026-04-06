@@ -60,7 +60,7 @@ export default async function RootLayout({
 
             <ToasterProvider />
             <LoginModalProvider />
-            <main className="h-[calc(100dvh-72px)]">
+            <main className="min-h-[calc(100dvh-72px)]">
             {/* <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20"> */}
               {children}
             </main>
