@@ -1,22 +1,14 @@
 import { Metadata } from "next";
-import {
-  type InfiniteData,
-  QueryClient,
-} from "@tanstack/react-query";
+import { type InfiniteData } from "@tanstack/react-query";
 import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
 
 import {
   getCurrentUserOnServer,
   getMeetingDetail,
   getMeetingParticipants,
-  getMeetingRecommendationCandidates,
   getTodayAttendanceStatus,
 } from "@/api/server/meetingDetail";
-import {
-  type GetPostsResponse,
-  MeetingDetailApiData,
-  MeetingDetailPageProps,
-} from "@/types";
+import { type GetPostsResponse, MeetingDetailPageProps } from "@/types";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import { Suspense } from "react";
 import { getLoungePosts } from "@/api/server";
@@ -51,25 +43,7 @@ export default async function MeetingDetailPage({
 }: MeetingDetailPageProps) {
   const { id } = await params;
   const resolvedMeetingId = Number(id);
-
-  const queryClient = new QueryClient();
-
-  const meetingDetail = queryClient.getQueryData<MeetingDetailApiData>([
-    "meeting-detail",
-    resolvedMeetingId,
-  ]);
-
   const user = await getCurrentUserOnServer();
-
-  const getAttendancePostId = (region: string) => {
-    const postId = Number(region);
-    return Number.isFinite(postId) && postId > 0 ? postId : null;
-  };
-
-  const hasAttendedInitially = await getTodayAttendanceStatus({
-    postId: getAttendancePostId(meetingDetail?.region ?? ""),
-    userId: user?.id,
-  });
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 2xl:px-0">
@@ -77,18 +51,14 @@ export default async function MeetingDetailPage({
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
-            await Promise.all([
-              qc.prefetchQuery({
+            const [detail] = await Promise.all([
+              qc.fetchQuery({
                 queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
                 queryFn: () => getMeetingDetail(resolvedMeetingId),
               }),
               qc.prefetchQuery({
                 queryKey: QUERY_KEYS.meetings.participants(resolvedMeetingId),
                 queryFn: () => getMeetingParticipants(resolvedMeetingId),
-              }),
-              qc.prefetchQuery({
-                queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
-                queryFn: () => getMeetingRecommendationCandidates(),
               }),
               qc.prefetchInfiniteQuery<
                 GetPostsResponse,
@@ -103,12 +73,16 @@ export default async function MeetingDetailPage({
                 getNextPageParam,
               }),
             ]);
+
+            const postId = Number(detail.region) > 0 ? Number(detail.region) : null;
+            await qc.prefetchQuery({
+              queryKey: QUERY_KEYS.meetings.attendance(resolvedMeetingId),
+              queryFn: () =>
+                getTodayAttendanceStatus({ postId, userId: user?.id }),
+            });
           }}
         >
-          <MeetingDetailContent
-            meetingId={resolvedMeetingId}
-            hasAttendedInitially={hasAttendedInitially}
-          />
+          <MeetingDetailContent meetingId={resolvedMeetingId} />
         </PrefetchBoundary>
       </Suspense>
     </div>

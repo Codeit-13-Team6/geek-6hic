@@ -5,9 +5,9 @@ import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHead
 import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
 import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThreadSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
-import { useMeetingDetailMutations, useMeetingDetailQueries } from "@/hooks";
+import { useMeetingDetailQueries } from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
 import type {
-  MeetingActionState,
   MeetingDetailApiData,
   MeetingDetailContentProps,
   MeetingDetailData,
@@ -16,105 +16,22 @@ import type {
 } from "@/types";
 import { cn } from "@/lib/utils";
 
-
-const getActionState = ({
-  isLoggedIn,
-  isParticipant,
-  isCheckingAttendance,
-  hasAttended,
-}: {
-  isLoggedIn: boolean;
-  isParticipant: boolean;
-  isCheckingAttendance: boolean;
-  hasAttended: boolean;
-}): MeetingActionState => {
-  if (!isLoggedIn) return "guest_join";
-  if (!isParticipant) return "joinable";
-  if (isCheckingAttendance) return "attendance_checking";
-  if (hasAttended) return "attendance_done";
-  return "attendance_ready";
-};
-
-const getActionUI = ({
-  actionState,
-  isCapacityFull,
-}: {
-  actionState: MeetingActionState;
-  isCapacityFull: boolean;
-}) => {
-  switch (actionState) {
-    case "guest_join":
-      return { label: "참여하기", disabled: false };
-    case "joinable":
-      return { label: "참여하기", disabled: isCapacityFull };
-    case "attendance_checking":
-      return { label: "출석 확인 중", disabled: true };
-    case "attendance_done":
-      return { label: "출석완료", disabled: true };
-    case "attendance_ready":
-      return { label: "출석하기", disabled: false };
-  }
-};
-
-
-const getIsHost = (detail: MeetingDetailApiData, user: User | null) =>
-  user?.id === detail.hostId || user?.id === detail.host?.id;
-
-const getIsJoined = ({
+const toMeetingDetailViewModel = ({
   detail,
   participants,
   user,
-  isHost,
-  isLoggedIn,
 }: {
   detail: MeetingDetailApiData;
   participants: MeetingParticipant[];
   user: User | null;
-  isHost: boolean;
-  isLoggedIn: boolean;
 }) => {
-  return (
+  const isLoggedIn = Boolean(user);
+  const isHost = user?.id === detail.hostId || user?.id === detail.host?.id;
+  const isJoined =
     isHost ||
     (isLoggedIn &&
-      (detail.isJoined ||
-        participants.some((participant) => participant.userId === user?.id)))
-  );
-};
-
-export const toMeetingDetailViewModel = ({
-  detail,
-  participants,
-  user,
-  hasAttended,
-  isCheckingAttendance,
-}: {
-  detail: MeetingDetailApiData;
-  participants: MeetingParticipant[];
-  user: User | null;
-  hasAttended: boolean;
-  isCheckingAttendance: boolean;
-}) => {
-  const isHost = getIsHost(detail, user);
-  const isLoggedIn = Boolean(user);
-  const isJoined = getIsJoined({
-    detail,
-    participants,
-    user,
-    isHost,
-    isLoggedIn,
-  });
-  const isParticipant = isHost || isJoined;
-  const isCapacityFull = detail.participantCount >= detail.capacity;
-  const actionState = getActionState({
-    isLoggedIn,
-    isParticipant,
-    isCheckingAttendance,
-    hasAttended,
-  });
-  const actionUI = getActionUI({
-    actionState,
-    isCapacityFull,
-  });
+      (detail.isJoined || participants.some((p) => p.userId === user?.id)));
+  const isParticipantMember = isLoggedIn && (isHost || isJoined);
 
   const data: MeetingDetailData = {
     ...detail,
@@ -126,60 +43,22 @@ export const toMeetingDetailViewModel = ({
     recommendedMeetings: [],
   };
 
-  const canViewLink = isLoggedIn && isParticipant;
-  const canWriteThread = isLoggedIn && isParticipant;
-  const shouldShowShareButton = isLoggedIn && isParticipant;
-  const shouldShowHostMenu = isHost;
-  const shouldShowParticipantMenu = isJoined && !isHost;
-  const linkGuideText = isLoggedIn
-    ? "모임에 참여하면 링크를 확인할 수 있어요."
-    : "로그인 후 모임에 참여하면 링크를 확인할 수 있어요.";
-  const threadGuideText = isLoggedIn
-    ? "모임에 참여하면 스레드를 작성할 수 있어요."
-    : "로그인 후 모임에 참여하면 스레드를 작성할 수 있어요.";
-
   return {
-    actionState,
-    actionLabel: actionUI.label,
-    canViewLink,
-    canWriteThread,
     data,
-    isActionDisabled: actionUI.disabled,
-    linkGuideText,
-    participantAvatars: participants.map((participant) => participant.user),
-    shouldShowShareButton,
-    shouldShowHostMenu,
-    shouldShowParticipantMenu,
-    threadGuideText,
+    participantAvatars: participants.map((p) => p.user),
+    isParticipantMember,
+    linkGuideText: isLoggedIn
+      ? "모임에 참여하면 링크를 확인할 수 있어요."
+      : "로그인 후 모임에 참여하면 링크를 확인할 수 있어요.",
+    threadGuideText: isLoggedIn
+      ? "모임에 참여하면 스레드를 작성할 수 있어요."
+      : "로그인 후 모임에 참여하면 스레드를 작성할 수 있어요.",
   };
 };
 
-export function MeetingDetailContent({
-  meetingId,
-  hasAttendedInitially,
-}: MeetingDetailContentProps) {
-  const { detailQuery, participantsQuery } =
-    useMeetingDetailQueries(meetingId);
-  const {
-    user,
-    isAuthLoading,
-    hasAttended,
-    isCheckingAttendance,
-    joinMutation,
-    cancelJoinMutation,
-    favoriteMutation,
-    attendMutation,
-    handleJoinMeeting,
-    handleCancelJoinMeeting,
-    handleShareMeeting,
-    handleEditMeeting,
-    handleDeleteMeeting,
-    handleToggleFavorite,
-    handleAttendMeeting,
-  } = useMeetingDetailMutations({
-    meetingId,
-    initialHasAttended: hasAttendedInitially,
-  });
+export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
+  const user = useAuthStore((s) => s.user);
+  const { detailQuery, participantsQuery } = useMeetingDetailQueries(meetingId);
 
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
@@ -213,44 +92,16 @@ export function MeetingDetailContent({
     );
   }
 
-  const viewModel = toMeetingDetailViewModel({
-    detail,
-    participants,
-    user,
-    hasAttended,
-    isCheckingAttendance,
-  });
+  const viewModel = toMeetingDetailViewModel({ detail, participants, user });
 
   return (
     <div className="animate-fade-up flex w-full flex-col gap-10 sm:gap-12 lg:gap-14">
       <MeetingHeaderSection
+        meetingId={meetingId}
         data={viewModel.data}
         participantAvatars={viewModel.participantAvatars}
-        isFavoritePending={favoriteMutation.isPending}
-        isJoinPending={
-          joinMutation.isPending ||
-          cancelJoinMutation.isPending ||
-          attendMutation.isPending
-        }
-        isAuthLoading={isAuthLoading}
-        actionState={viewModel.actionState}
-        actionLabel={viewModel.actionLabel}
-        isActionDisabled={viewModel.isActionDisabled}
-        shouldShowShareButton={viewModel.shouldShowShareButton}
-        shouldShowHostMenu={viewModel.shouldShowHostMenu}
-        shouldShowParticipantMenu={viewModel.shouldShowParticipantMenu}
-        onJoin={handleJoinMeeting}
-        onCancelJoin={handleCancelJoinMeeting}
-        onAttend={() => handleAttendMeeting(detail.region)}
-        onShare={handleShareMeeting}
-        onEdit={handleEditMeeting}
-        onDelete={handleDeleteMeeting}
-        onToggleFavorite={() =>
-          handleToggleFavorite(viewModel.data.isFavorited)
-        }
       />
 
-      {/* desc section */}
       <section className="w-full space-y-6">
         <div className="flex flex-col gap-1 px-2">
           <div className="text-main-purple flex items-center gap-2">
@@ -271,22 +122,24 @@ export function MeetingDetailContent({
           )}
         >
           <div className="bg-main-purple/5 absolute -top-10 -right-10 size-40 rounded-full blur-3xl" />
-
           <div className="relative z-10 text-[15px] leading-[1.8] font-medium whitespace-pre-wrap text-slate-600 sm:text-base sm:leading-[1.9] xl:text-[17px]">
-            {viewModel.data.description}
+            {detail.description}
           </div>
         </div>
       </section>
+
       <MeetingLinkSection
-        link={viewModel.data.link}
-        canViewLink={viewModel.canViewLink}
+        link={detail.address}
+        canViewLink={viewModel.isParticipantMember}
         guideText={viewModel.linkGuideText}
       />
+
       <MeetingThreadSection
-        meetingId={viewModel.data.id}
-        canWriteThread={viewModel.canWriteThread}
+        meetingId={detail.id}
+        canWriteThread={viewModel.isParticipantMember}
         guideText={viewModel.threadGuideText}
       />
+
       <RecommendedMeetingsSection data={viewModel.data} />
     </div>
   );

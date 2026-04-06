@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
@@ -17,8 +18,53 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import {  Users2 } from "lucide-react";
-import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
+import { Users2 } from "lucide-react";
+import { useMeetingDetailMutations } from "@/hooks";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import type {
+  MeetingActionState,
+  MeetingHeaderSectionProps,
+  MeetingMember,
+} from "@/types";
+
+const getActionState = ({
+  isLoggedIn,
+  isParticipant,
+  isCheckingAttendance,
+  hasAttended,
+}: {
+  isLoggedIn: boolean;
+  isParticipant: boolean;
+  isCheckingAttendance: boolean;
+  hasAttended: boolean;
+}): MeetingActionState => {
+  if (!isLoggedIn) return "guest_join";
+  if (!isParticipant) return "joinable";
+  if (isCheckingAttendance) return "attendance_checking";
+  if (hasAttended) return "attendance_done";
+  return "attendance_ready";
+};
+
+const getActionUI = ({
+  actionState,
+  isCapacityFull,
+}: {
+  actionState: MeetingActionState;
+  isCapacityFull: boolean;
+}) => {
+  switch (actionState) {
+    case "guest_join":
+      return { label: "참여하기", disabled: false };
+    case "joinable":
+      return { label: "참여하기", disabled: isCapacityFull };
+    case "attendance_checking":
+      return { label: "출석 확인 중", disabled: true };
+    case "attendance_done":
+      return { label: "출석완료", disabled: true };
+    case "attendance_ready":
+      return { label: "출석하기", disabled: false };
+  }
+};
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -28,29 +74,59 @@ const hasUsableProfileImage = (
   !value?.startsWith("blob:");
 
 export function MeetingHeaderSection({
+  meetingId,
   data,
   participantAvatars,
-  isFavoritePending,
-  isJoinPending,
-  isAuthLoading,
-  actionState,
-  actionLabel,
-  isActionDisabled,
-  shouldShowShareButton,
-  shouldShowHostMenu,
-  shouldShowParticipantMenu,
-  onJoin,
-  onCancelJoin,
-  onAttend,
-  onShare,
-  onEdit,
-  onDelete,
-  onToggleFavorite,
 }: MeetingHeaderSectionProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+
+  const queryClient = useQueryClient();
+  const hasAttendedInitially =
+    queryClient.getQueryData<boolean>(
+      QUERY_KEYS.meetings.attendance(meetingId),
+    ) ?? false;
+
+  const {
+    isAuthLoading,
+    hasAttended,
+    isCheckingAttendance,
+    joinMutation,
+    cancelJoinMutation,
+    favoriteMutation,
+    attendMutation,
+    handleJoinMeeting,
+    handleCancelJoinMeeting,
+    handleShareMeeting,
+    handleEditMeeting,
+    handleDeleteMeeting,
+    handleToggleFavorite,
+    handleAttendMeeting,
+  } = useMeetingDetailMutations({ meetingId, initialHasAttended: hasAttendedInitially });
+
+  const isParticipant = data.isHost || data.isJoined;
+  const isCapacityFull = data.participantCount >= data.capacity;
+  const actionState = getActionState({
+    isLoggedIn: data.isLoggedIn,
+    isParticipant,
+    isCheckingAttendance,
+    hasAttended,
+  });
+  const { label: actionLabel, disabled: isActionDisabled } = getActionUI({
+    actionState,
+    isCapacityFull,
+  });
+
+  const shouldShowShareButton = data.isLoggedIn && isParticipant;
+  const shouldShowHostMenu = data.isHost;
+  const shouldShowParticipantMenu = data.isJoined && !data.isHost;
+
+  const isJoinPending =
+    joinMutation.isPending ||
+    cancelJoinMutation.isPending ||
+    attendMutation.isPending;
 
   const progressValue = (data.participantCount / data.capacity) * 100;
   const visibleParticipants =
@@ -69,10 +145,10 @@ export function MeetingHeaderSection({
       case "guest_join":
         return;
       case "joinable":
-        await onJoin();
+        await handleJoinMeeting();
         return;
       case "attendance_ready":
-        await onAttend();
+        await handleAttendMeeting(data.region);
         return;
       case "attendance_checking":
       case "attendance_done":
@@ -81,8 +157,8 @@ export function MeetingHeaderSection({
   };
 
   const handleFavoriteClick = () => {
-    if (isAuthLoading || isFavoritePending) return;
-    onToggleFavorite();
+    if (isAuthLoading || favoriteMutation.isPending) return;
+    handleToggleFavorite(data.isFavorited);
   };
 
   const renderParticipantAvatar = (
@@ -146,7 +222,7 @@ export function MeetingHeaderSection({
                     type="button"
                     size="sm"
                     variant="teritary"
-                    onClick={() => loginGuardAction(onShare)}
+                    onClick={() => loginGuardAction(handleShareMeeting)}
                     className="!rounded-2xl"
                   >
                     공유
@@ -190,7 +266,7 @@ export function MeetingHeaderSection({
 
                       {shouldShowParticipantMenu ? (
                         <DropdownMenuItem
-                          onClick={onCancelJoin}
+                          onClick={handleCancelJoinMeeting}
                           className="font-bold text-red-500"
                         >
                           모임 탈퇴하기
@@ -255,7 +331,7 @@ export function MeetingHeaderSection({
               liked={data.isFavorited}
               onClick={() => loginGuardAction(handleFavoriteClick)}
               size={28}
-              disabled={isFavoritePending}
+              disabled={favoriteMutation.isPending}
             />
           </div>
         </div>
@@ -265,7 +341,7 @@ export function MeetingHeaderSection({
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         data={data}
-        onSubmit={onEdit}
+        onSubmit={handleEditMeeting}
       />
 
       <ConfirmDeleteModal
@@ -274,7 +350,7 @@ export function MeetingHeaderSection({
         title="DELETE ARCHIVE"
         description="모임을 정말 삭제하시겠어요?"
         onConfirm={() => {
-          onDelete();
+          handleDeleteMeeting();
           setIsDeleteModalOpen(false);
         }}
       />

@@ -214,24 +214,9 @@ export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
 }
 
 export interface MeetingHeaderSectionProps {
+  meetingId: number;
   data: MeetingDetailData;
   participantAvatars: MeetingMember[];
-  isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
-  actionState: MeetingActionState;
-  actionLabel: string;
-  isActionDisabled: boolean;
-  shouldShowShareButton: boolean;
-  shouldShowHostMenu: boolean;
-  shouldShowParticipantMenu: boolean;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
-  onAttend: () => Promise<void> | void;
-  onShare: () => Promise<void> | void;
-  onEdit: (nextValues: Partial<MeetingDetailData>) => void;
-  onDelete: () => void;
-  onToggleFavorite: () => void;
 }
 
 export type MeetingActionState =
@@ -243,7 +228,6 @@ export type MeetingActionState =
 
 export interface MeetingDetailContentProps {
   meetingId: number;
-  hasAttendedInitially: boolean;
 }
 
 export interface MeetingDescriptionSectionProps {
