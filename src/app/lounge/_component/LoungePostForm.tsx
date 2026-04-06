@@ -131,6 +131,7 @@ export default function LoungePostForm({
     <div className="mx-auto w-full max-w-[900px] p-6 py-8">
       {/* 헤더 (제목 입력 & 등록 버튼) */}
       <BtnBack fallbackHref={`/lounge/${id}`} />
+
       <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
         <div className="relative flex-1 pl-2">
           <input
@@ -158,7 +159,7 @@ export default function LoungePostForm({
       </div>
 
       {/* 메인 카드 영역 */}
-      <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-4 pt-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:p-6 sm:pt-4 md:p-8 md:pt-5">
+      <div className="s flex min-h-[500px] flex-col rounded-[24px] bg-white p-8 pt-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:px-10 lg:px-14 lg:pb-12">
         {/* 에디터 영역 */}
         <div className="flex-1">
           <LoungeEditor

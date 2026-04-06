@@ -69,7 +69,6 @@ export const useGetPostForEdit = (postId: number) => {
         post.content,
       );
 
-
       if (parsedLinks.length === 0) {
         return {
           title: post.title,
@@ -86,7 +85,6 @@ export const useGetPostForEdit = (postId: number) => {
             const ogResult = await getOgData(link.url);
             return { ...link, image: ogResult.image || "" };
           } catch (error) {
-
             return link;
           }
         }),
@@ -141,10 +139,14 @@ export const useUpdatePost = (postId: number) => {
   return useMutation({
     mutationFn: (payload: PostPayload) => updatePost(postId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.list });
-
       ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
-      router.push(`/lounge/${postId}`);
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.list });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.posts.detail(postId),
+      });
+
+      router.back();
     },
     onError: () => {
       ToastCommon({ message: "수정에 실패했습니다.", size: "sm" });
@@ -192,8 +194,4 @@ export const useToggleLike = (postId: number) => {
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });
-
-
-
-
 };
