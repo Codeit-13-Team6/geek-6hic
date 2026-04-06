@@ -134,17 +134,9 @@ export function EditMeetingModal({
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <MeetingScheduleStep
                   values={{
-                    startDate: formValues.startDate,
-                    startTime: formValues.startTime,
-                    endDate: formValues.endDate,
-                    endTime: formValues.endTime,
                     capacity: formValues.capacity,
                   }}
                   errors={{
-                    startDate: errors.startDate,
-                    startTime: errors.startTime,
-                    endDate: errors.endDate,
-                    endTime: errors.endTime,
                     capacity: errors.capacity,
                   }}
                   onChange={handleChangeScheduleTab}

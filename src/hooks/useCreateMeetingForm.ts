@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "@/lib/clientFetcher";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
 import {
@@ -81,12 +80,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   };
 
   const handleChangeSchedule = (
-    nextValues: Partial<
-      Pick<
-        MeetingFormValues,
-        "startDate" | "startTime" | "endDate" | "endTime" | "capacity"
-      >
-    >,
+    nextValues: Partial<Pick<MeetingFormValues, "capacity">>,
   ) => {
     setFormValues((prev) => ({
       ...prev,
@@ -194,7 +188,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
         region: String(createdPostId),
       });
 
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root, })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
       ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
       onSuccess?.();
       router.push(`/meetings/${newMeetingId}`);

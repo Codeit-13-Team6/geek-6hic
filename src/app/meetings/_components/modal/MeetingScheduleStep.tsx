@@ -1,7 +1,4 @@
 "use client";
-
-import { ScheduleDatePicker } from "@/app/meetings/_components/modal/ScheduleDatePicker";
-import { ScheduleTimePicker } from "@/app/meetings/_components/modal/ScheduleTimePicker";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { MeetingScheduleStepProps } from "@/types";
 
@@ -20,8 +17,6 @@ export function MeetingScheduleStep({
   onChange,
 }: MeetingScheduleStepProps) {
   const todayDate = getTodayDateString();
-  const startRowHintText = errors.startDate || errors.startTime;
-  const endRowHintText = errors.endDate || errors.endTime;
 
   const handleChangeCapacity = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value.replace(/[^0-9]/g, "");
@@ -30,82 +25,6 @@ export function MeetingScheduleStep({
 
   return (
     <div className="space-y-6 pt-6">
-      {/*<div className="space-y-[6px]">*/}
-      {/*  <div className="flex items-start gap-3">*/}
-      {/*    <div className="min-w-0 flex-1">*/}
-      {/*      <ScheduleDatePicker*/}
-      {/*        id="startDate"*/}
-      {/*        label="모임 시작 날짜"*/}
-      {/*        value={values.startDate}*/}
-      {/*        min={todayDate}*/}
-      {/*        isRequired*/}
-      {/*        isDestructive={Boolean(startRowHintText)}*/}
-      {/*        onChange={(value) => {*/}
-      {/*          onChange({ startDate: value });*/}
-      {/*        }}*/}
-      {/*      />*/}
-      {/*    </div>*/}
-
-      {/*    <div className="min-w-0 flex-1 pt-[27px]">*/}
-      {/*      <ScheduleTimePicker*/}
-      {/*        id="startTime"*/}
-      {/*        value={values.startTime}*/}
-      {/*        isDestructive={Boolean(errors.startTime)}*/}
-      {/*        onChange={(value) => {*/}
-      {/*          onChange({ startTime: value });*/}
-      {/*        }}*/}
-      {/*      />*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-
-      {/*  {startRowHintText ? (*/}
-      {/*    <p className="text-error text-[12px] leading-[16px]">*/}
-      {/*      {startRowHintText}*/}
-      {/*    </p>*/}
-      {/*  ) : null}*/}
-      {/*</div>*/}
-
-      <div className="space-y-[6px]">
-        <div className="flex flex-col items-start gap-3 sm:flex-row">
-          <div className="min-w-0 flex-1 w-full">
-            <ScheduleDatePicker
-              id="endDate"
-              label="모임 시작 날짜"
-              value={values.endDate}
-              min={todayDate}
-              isRequired
-              isDestructive={Boolean(endRowHintText)}
-              onChange={(value) => {
-                onChange({ endDate: value });
-                onChange({ startDate: value });
-                console.log(values);
-              }}
-            />
-          </div>
-
-          <div className="min-w-0 flex-1 sm:pt-[27px] w-full">
-            <ScheduleTimePicker
-              id="endTime"
-              value={values.endTime}
-              isDestructive={Boolean(errors.endTime)}
-              onChange={(value) => {
-                onChange({ endTime: value });
-                const [h, m] = value.split(":").map(Number);
-                const date = new Date(0, 0, 0, h, m + 1);
-                const result = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-                onChange({ startTime: result });
-              }}
-            />
-          </div>
-        </div>
-
-        {endRowHintText ? (
-          <p className="text-error text-[12px] leading-[16px]">
-            {endRowHintText}
-          </p>
-        ) : null}
-      </div>
-
       <InputCommon
         id="capacity"
         type="text"
