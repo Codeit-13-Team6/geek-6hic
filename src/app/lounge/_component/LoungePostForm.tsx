@@ -170,7 +170,7 @@ export default function LoungePostForm({
       </div>
 
       {/* 메인 카드 영역 */}
-      <div className="s flex min-h-[500px] flex-col rounded-[24px] bg-white p-8 pt-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:px-10 lg:px-14 lg:pb-12">
+      <div className="flex min-h-[500px] flex-col rounded-[24px] bg-white p-8 pt-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:min-h-[600px] sm:px-10 lg:px-14 lg:pb-12">
         {/* 에디터 영역 */}
         <div className="flex-1">
           <LoungeEditor
