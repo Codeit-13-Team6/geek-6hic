@@ -7,6 +7,7 @@ import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 import LoginModalProvider from "@/providers/LoginModalProvider";
+import BtnTop from "@/components/features/btn/BtnTop";
 import type { User } from "@/types";
 
 const geistSans = Geist({
@@ -64,6 +65,7 @@ export default async function RootLayout({
             {/* <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20"> */}
               {children}
             </main>
+            <BtnTop />
           </MemberProvider>
         </QueryProvider>
       </body>
