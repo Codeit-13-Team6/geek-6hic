@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { useEditMeetingForm } from "@/hooks/useEditMeetingForm";
+import { useEditMeetingForm } from "@/hooks/useMeetingForm";
 import { EditMeetingModalProps } from "@/types";
 import { AlertCircle } from "lucide-react";
 

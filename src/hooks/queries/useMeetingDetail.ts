@@ -17,7 +17,6 @@ import {
   deleteMeeting,
   getMeetingDetail,
   getMeetingParticipants,
-  getMeetingRecommendationCandidates,
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
@@ -80,15 +79,9 @@ export function useMeetingDetailQueries(meetingId: number) {
     queryFn: () => getMeetingParticipants(meetingId),
   });
 
-  const recommendationCandidatesQuery = useQuery({
-    queryKey: QUERY_KEYS.meetings.recommendationCandidates,
-    queryFn: () => getMeetingRecommendationCandidates(),
-  });
-
   return {
     detailQuery,
     participantsQuery,
-    recommendationCandidatesQuery,
   };
 }
 

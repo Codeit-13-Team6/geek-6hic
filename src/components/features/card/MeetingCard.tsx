@@ -36,13 +36,10 @@ export default function MeetingCard({
 
         const isUserJoined =
           item.isJoined || (!!item.joinedAt && !item.isCompleted);
-        const isFinished = isClosed || item.isCompleted;
 
         let statusLabel = null;
         if (isUserJoined) {
           statusLabel = "참여중";
-        } else if (isFinished) {
-          statusLabel = "모집 마감";
         }
 
         return (

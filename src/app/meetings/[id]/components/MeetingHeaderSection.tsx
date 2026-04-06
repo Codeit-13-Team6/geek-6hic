@@ -17,23 +17,8 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Calendar, Clock, Users2 } from "lucide-react";
+import {  Users2 } from "lucide-react";
 import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
-
-const formatMonthDay = (value: string) => {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
-
-const formatHourMinute = (value: string) => {
-  const date = new Date(value);
-
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-};
 
 const hasUsableProfileImage = (
   value: string | null | undefined,

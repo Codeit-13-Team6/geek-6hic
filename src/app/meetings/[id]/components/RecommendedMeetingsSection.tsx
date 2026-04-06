@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { RecommendedMeetingsSectionProps } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
 
 const formatMonthDay = (value: string) => {
@@ -15,6 +13,9 @@ const formatMonthDay = (value: string) => {
 export function RecommendedMeetingsSection({
   data,
 }: RecommendedMeetingsSectionProps) {
+
+
+  // routehandler api  호출하는곳
   const meetings = data.recommendedMeetings || [];
 
   return (

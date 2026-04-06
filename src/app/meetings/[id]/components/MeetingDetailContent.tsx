@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { AlertCircle, AlignLeft } from "lucide-react";
 import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHeaderSection";
 import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
@@ -12,40 +11,11 @@ import type {
   MeetingDetailApiData,
   MeetingDetailContentProps,
   MeetingDetailData,
-  MeetingListItemApiData,
   MeetingParticipant,
-  RecommendedMeetingItem,
   User,
 } from "@/types";
 import { cn } from "@/lib/utils";
 
-const hasRecruitmentOpen = (
-  meeting: Pick<
-    MeetingListItemApiData,
-    "canceledAt" | "participantCount" | "capacity"
-  >,
-  currentTimestamp: number,
-) =>
-  !meeting.canceledAt &&
-  new Date(meeting.registrationEnd).getTime() > currentTimestamp &&
-  meeting.participantCount < meeting.capacity;
-
-const getStableRecommendationWeight = (
-  currentMeetingId: number,
-  candidateId: number,
-) => (candidateId * 31 + currentMeetingId * 17) % 997;
-
-const toRecommendedMeetingItem = (
-  meeting: MeetingListItemApiData,
-): RecommendedMeetingItem => ({
-  id: meeting.id,
-  name: meeting.name,
-  image: meeting.image,
-  participantCount: meeting.participantCount,
-  capacity: meeting.capacity,
-  registrationEnd: meeting.registrationEnd,
-  dateTime: meeting.dateTime,
-});
 
 const getActionState = ({
   isLoggedIn,
@@ -86,54 +56,6 @@ const getActionUI = ({
   }
 };
 
-export const getRecommendedMeetings = ({
-  currentMeeting,
-  candidates,
-  currentTimestamp,
-}: {
-  currentMeeting: MeetingDetailApiData;
-  candidates: MeetingListItemApiData[];
-  currentTimestamp: number;
-}) => {
-  const availableCandidates = candidates.filter(
-    (candidate) =>
-      candidate.id !== currentMeeting.id &&
-      hasRecruitmentOpen(candidate, currentTimestamp),
-  );
-
-  const sameTypeCandidates = availableCandidates
-    .filter((candidate) => candidate.type === currentMeeting.type)
-    .sort(
-      (left, right) =>
-        new Date(left.dateTime).getTime() - new Date(right.dateTime).getTime(),
-    );
-
-  const recommendedCandidates: MeetingListItemApiData[] = [];
-  const usedIds = new Set<number>();
-
-  sameTypeCandidates.slice(0, 2).forEach((candidate) => {
-    recommendedCandidates.push(candidate);
-    usedIds.add(candidate.id);
-  });
-
-  const otherCandidates = availableCandidates
-    .filter((candidate) => !usedIds.has(candidate.id))
-    .sort(
-      (left, right) =>
-        getStableRecommendationWeight(currentMeeting.id, left.id) -
-        getStableRecommendationWeight(currentMeeting.id, right.id),
-    );
-
-  otherCandidates.forEach((candidate) => {
-    if (recommendedCandidates.length >= 4) {
-      return;
-    }
-
-    recommendedCandidates.push(candidate);
-  });
-
-  return recommendedCandidates.slice(0, 4).map(toRecommendedMeetingItem);
-};
 
 const getIsHost = (detail: MeetingDetailApiData, user: User | null) =>
   user?.id === detail.hostId || user?.id === detail.host?.id;
@@ -162,16 +84,12 @@ const getIsJoined = ({
 export const toMeetingDetailViewModel = ({
   detail,
   participants,
-  recommendationCandidates,
-  currentTimestamp,
   user,
   hasAttended,
   isCheckingAttendance,
 }: {
   detail: MeetingDetailApiData;
   participants: MeetingParticipant[];
-  recommendationCandidates: MeetingListItemApiData[];
-  currentTimestamp: number;
   user: User | null;
   hasAttended: boolean;
   isCheckingAttendance: boolean;
@@ -198,41 +116,14 @@ export const toMeetingDetailViewModel = ({
     isCapacityFull,
   });
 
-  const recommendedMeetings = getRecommendedMeetings({
-    currentMeeting: detail,
-    candidates: recommendationCandidates,
-    currentTimestamp,
-  });
-
   const data: MeetingDetailData = {
-    id: detail.id,
-    teamId: detail.teamId,
-    name: detail.name,
-    type: detail.type,
-    region: detail.region,
-    address: detail.address,
+    ...detail,
     link: detail.address,
-    latitude: detail.latitude,
-    longitude: detail.longitude,
-    dateTime: detail.dateTime,
-    registrationEnd: detail.registrationEnd,
-    capacity: detail.capacity,
-    participantCount: detail.participantCount,
-    image: detail.image,
-    description: detail.description,
-    canceledAt: detail.canceledAt,
-    confirmedAt: detail.confirmedAt,
-    hostId: detail.hostId,
-    createdBy: detail.createdBy,
-    createdAt: detail.createdAt,
-    updatedAt: detail.updatedAt,
-    host: detail.host,
-    isFavorited: detail.isFavorited,
     isHost,
     isJoined,
     isLoggedIn,
     threads: [],
-    recommendedMeetings,
+    recommendedMeetings: [],
   };
 
   const canViewLink = isLoggedIn && isParticipant;
@@ -267,8 +158,7 @@ export function MeetingDetailContent({
   meetingId,
   hasAttendedInitially,
 }: MeetingDetailContentProps) {
-  const [currentTimestamp] = useState(() => Date.now());
-  const { detailQuery, participantsQuery, recommendationCandidatesQuery } =
+  const { detailQuery, participantsQuery } =
     useMeetingDetailQueries(meetingId);
   const {
     user,
@@ -293,8 +183,6 @@ export function MeetingDetailContent({
 
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
-  const recommendationCandidates =
-    recommendationCandidatesQuery.data?.data ?? [];
 
   if (detailQuery.isLoading || !detail) {
     return (
@@ -328,8 +216,6 @@ export function MeetingDetailContent({
   const viewModel = toMeetingDetailViewModel({
     detail,
     participants,
-    recommendationCandidates,
-    currentTimestamp,
     user,
     hasAttended,
     isCheckingAttendance,
