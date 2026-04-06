@@ -18,7 +18,7 @@ import type {
 const hasRecruitmentOpen = (
   meeting: Pick<
     MeetingListItemApiData,
-    "canceledAt" | "registrationEnd" | "participantCount" | "capacity"
+    "canceledAt" | "participantCount" | "capacity"
   >,
   currentTimestamp: number,
 ) =>

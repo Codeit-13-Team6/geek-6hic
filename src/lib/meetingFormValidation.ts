@@ -112,15 +112,8 @@ export const validateMeetingBasicInfoStep = (formValues: MeetingFormValues) => {
   };
 };
 
-const INVALID_END_DATETIME_MESSAGE =
-  "모집 마감은 모임 시작보다 늦을 수 없습니다.";
-
 export const validateMeetingScheduleStep = (formValues: MeetingFormValues) => {
   const errors = {
-    startDate: formValues.startDate ? "" : "모임 시작 날짜를 입력해 주세요.",
-    startTime: formValues.startTime ? "" : "모임 시작 시간을 입력해 주세요.",
-    endDate: formValues.endDate ? "" : "모집 마감 날짜를 입력해 주세요.",
-    endTime: formValues.endTime ? "" : "모집 마감 시간을 입력해 주세요.",
     capacity: "",
   };
 
@@ -132,19 +125,19 @@ export const validateMeetingScheduleStep = (formValues: MeetingFormValues) => {
     errors.capacity = "모임 정원은 1명 이상 입력해 주세요.";
   }
 
-  if (formValues.startDate && formValues.endDate) {
-    const isEndDateAfterStartDate = formValues.endDate > formValues.startDate;
-    const isSameDateAndEndTimeAfterStartTime =
-      formValues.startDate === formValues.endDate &&
-      formValues.startTime &&
-      formValues.endTime &&
-      formValues.endTime >= formValues.startTime;
+  // if (formValues.startDate && formValues.endDate) {
+  //   const isEndDateAfterStartDate = formValues.endDate > formValues.startDate;
+  //   const isSameDateAndEndTimeAfterStartTime =
+  //     formValues.startDate === formValues.endDate &&
+  //     formValues.startTime &&
+  //     formValues.endTime &&
+  //     formValues.endTime >= formValues.startTime;
 
-    if (isEndDateAfterStartDate || isSameDateAndEndTimeAfterStartTime) {
-      errors.endDate = INVALID_END_DATETIME_MESSAGE;
-      errors.endTime = INVALID_END_DATETIME_MESSAGE;
-    }
-  }
+  //   if (isEndDateAfterStartDate || isSameDateAndEndTimeAfterStartTime) {
+  //     errors.endDate = INVALID_END_DATETIME_MESSAGE;
+  //     errors.endTime = INVALID_END_DATETIME_MESSAGE;
+  //   }
+  // }
 
   return errors;
 };

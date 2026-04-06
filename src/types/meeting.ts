@@ -158,7 +158,11 @@ export interface MeetingType {
   createdAt: string;
 }
 
-export type SortValue = "" | "dateTime" | "registrationEnd" | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
+export type SortValue =
+  | ""
+  | "dateTime"
+  | "registrationEnd"
+  | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
 export type SortBy = SortValue;
 
 export interface MeetingFiltersProps {
@@ -338,10 +342,6 @@ export interface MeetingBasicInfoErrors {
 }
 
 export interface MeetingScheduleStepValues {
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
   capacity: string;
 }
 

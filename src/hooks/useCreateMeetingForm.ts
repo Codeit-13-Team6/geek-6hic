@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "@/lib/clientFetcher";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
 import {
@@ -84,12 +83,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   };
 
   const handleChangeSchedule = (
-    nextValues: Partial<
-      Pick<
-        MeetingFormValues,
-        "startDate" | "startTime" | "endDate" | "endTime" | "capacity"
-      >
-    >,
+    nextValues: Partial<Pick<MeetingFormValues, "capacity">>,
   ) => {
     setFormValues((prev) => ({
       ...prev,

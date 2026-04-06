@@ -153,22 +153,6 @@ export function MeetingHeaderSection({
                     </div>
                   )}
                 </div>
-
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <div className="bg-main-purple/10 text-main-purple flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black tracking-tight shadow-sm">
-                    <Calendar size={12} strokeWidth={3} />
-                    <span>{formatMonthDay(data.dateTime)}</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-black tracking-tight text-slate-600 shadow-sm">
-                    <Clock
-                      size={12}
-                      strokeWidth={3}
-                      className="text-main-purple"
-                    />
-                    <span>{formatHourMinute(data.dateTime)}</span>
-                  </div>
-                </div>
               </div>
 
               <div className="flex shrink-0 items-center gap-2">

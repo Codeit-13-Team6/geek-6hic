@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import defaultImage from "@/assets/img/fallback/mainFallback.png";
-import alram from "@/assets/icon/alarm/alarm-blue.svg";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
@@ -11,7 +10,6 @@ import { HeartIcon } from "../../icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 
-
 export default function MeetingCard({
   meetingList,
   onItemClick,
@@ -19,35 +17,10 @@ export default function MeetingCard({
   onHeartClick,
   meetingStatusBadgeVisible = true,
 }: MeetingListProps) {
-
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
-  function getDeadlineLabel(registrationEnd: string) {
-    const endDate = new Date(registrationEnd);
-    const now = new Date();
-    const isToday = endDate.toDateString() === now.toDateString();
-
-
-    if (!isToday) return null;
-    return `오늘 ${String(endDate.getHours()).padStart(2, "0")}시 마감`;
-  }
-
-  function formatDate(dateTime: string) {
-    const date = new Date(dateTime);
-    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-  }
-
-  function formatTime(dateTime: string) {
-    const date = new Date(dateTime);
-    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  }
-
   function isMeetingClosed(item: JoinedMeeting) {
-    const now = new Date();
-    return (
-      new Date(item.registrationEnd) < now ||
-      item.participantCount >= item.capacity
-    );
+    return item.participantCount >= item.capacity;
   }
 
   const visibleMeetingList =
@@ -57,11 +30,9 @@ export default function MeetingCard({
 
   return (
     <>
-      {visibleMeetingList.map((item, index) => {
+      {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
-
-        const deadLine = getDeadlineLabel(item.registrationEnd);
 
         const isUserJoined =
           item.isJoined || (!!item.joinedAt && !item.isCompleted);
@@ -125,23 +96,9 @@ export default function MeetingCard({
                 </h3>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-500">
-                  {formatDate(item.dateTime)}
-                </span>
-                <span className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-500">
-                  {formatTime(item.dateTime)}
-                </span>
-
-                {deadLine && !statusLabel && (
-                  <span className="bg-main-purple-light text-main-purple flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold">
-                    <span className="relative h-4 w-4">
-                      <Image src={alram} fill alt="알림" />
-                    </span>
-                    {deadLine}
-                  </span>
-                )}
-              </div>
+              <p className="mt-1.5 line-clamp-1 text-base font-medium text-slate-500">
+                {item.description || "모임 설명이 아직 등록되지 않았습니다."}
+              </p>
 
               <div className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
                 <div className="flex w-full items-center gap-3">
@@ -188,7 +145,6 @@ export default function MeetingCard({
                   size={22}
                   className="-mr-2"
                 />
-
               </div>
             </div>
           </div>
