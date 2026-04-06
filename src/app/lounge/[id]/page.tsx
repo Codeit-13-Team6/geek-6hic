@@ -55,18 +55,7 @@ export default async function LoungeDetailPageServer({
         </PrefetchBoundary>
       </Suspense>
 
-      <Suspense fallback={<CommentSkeleton />}>
-        <PrefetchBoundary
-          prefetchFn={async (qc) => {
-            await qc.prefetchQuery({
-              queryKey: QUERY_KEYS.comments.detail(postId),
-              queryFn: () => getPostCommentsServer(postId),
-            });
-          }}
-        >
-          <CommentSection postId={postId} />
-        </PrefetchBoundary>
-      </Suspense>
+      <CommentSection postId={postId} />
     </div>
   );
 }
