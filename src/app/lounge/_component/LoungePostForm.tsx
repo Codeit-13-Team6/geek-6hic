@@ -9,6 +9,7 @@ import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_component/LinkCard";
 import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
 import { PostPayload, LoungePostFormProps } from "@/types";
+import { BtnBack } from "@/components/features/btn/BtnBack";
 
 export default function LoungePostForm({
   initialData,
@@ -127,8 +128,9 @@ export default function LoungePostForm({
   }, [initialData, parsedContent, parsedLinks, setLinkList, setThumbnailImage]);
 
   return (
-    <div className="mx-auto h-full w-full max-w-[900px] p-6">
+    <div className="mx-auto w-full max-w-[900px] p-6 py-8">
       {/* 헤더 (제목 입력 & 등록 버튼) */}
+      <BtnBack />
       <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
         <div className="relative flex-1 pl-2">
           <input
