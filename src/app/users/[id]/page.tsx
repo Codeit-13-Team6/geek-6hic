@@ -14,10 +14,16 @@ import type {
   GetPostsResponse,
 } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-import { getFavorites, getMyMeetings, getLoungePosts } from "@/api/server";
+import {
+  getFavorites,
+  getLoungePosts,
+  getMyMeetings,
+  getPublicUserProfile,
+} from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { getCurrentUserOnServer } from "@/api/server/meetingDetail";
 
 export const metadata: Metadata = {
   title: "마이 페이지",
@@ -40,7 +46,15 @@ export default async function Page({
   const cookieStore = await cookies();
   const raw = cookieStore.get("user_display")?.value;
   const initialUser = raw ? JSON.parse(raw) : null;
+  const currentUser = await getCurrentUserOnServer();
   const isOwnProfile = initialUser?.id === Number(id);
+  const profileUser =
+    currentUser?.teamId && Number.isFinite(Number(id))
+      ? await getPublicUserProfile({
+          teamId: currentUser.teamId,
+          userId: Number(id),
+        })
+      : initialUser;
 
   const tabs = isOwnProfile
     ? [
@@ -66,7 +80,7 @@ export default async function Page({
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="w-full shrink-0 lg:w-[282px]">
-          <ProfileSection initialUser={initialUser} canEdit={isOwnProfile} />
+          <ProfileSection initialUser={profileUser} canEdit={isOwnProfile} />
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">

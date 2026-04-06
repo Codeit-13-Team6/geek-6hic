@@ -13,11 +13,11 @@ import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
-import { ca } from "date-fns/locale";
 
 interface ProfileSectionProps {
   initialUser?: {
     id: number;
+    teamId?: string;
     name: string;
     image: string | null;
     email: string;
@@ -33,7 +33,7 @@ export default function ProfileSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const storeUser = useAuthStore((state) => state.user);
   const setUser = useAuthStore((s) => s.setUser);
-  const user = storeUser ?? initialUser;
+  const user = canEdit ? storeUser ?? initialUser : initialUser;
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },
