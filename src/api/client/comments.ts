@@ -1,4 +1,4 @@
-import { GetCommentsResponse } from "@/types";
+import type { Comment, GetCommentsResponse } from "@/types";
 import axiosInstance from "@/lib/clientFetcher";
 
 export async function getComments(

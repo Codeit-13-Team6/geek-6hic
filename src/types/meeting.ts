@@ -158,7 +158,11 @@ export interface MeetingType {
   createdAt: string;
 }
 
-export type SortValue = "" | "dateTime" | "registrationEnd" | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
+export type SortValue =
+  | ""
+  | "dateTime"
+  | "registrationEnd"
+  | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
 export type SortBy = SortValue;
 
 export interface MeetingFiltersProps {
@@ -215,10 +219,12 @@ export interface MeetingHeaderSectionProps {
   isFavoritePending: boolean;
   isJoinPending: boolean;
   isAuthLoading: boolean;
+  actionState: MeetingActionState;
   actionLabel: string;
   isActionDisabled: boolean;
+  shouldShowShareButton: boolean;
   shouldShowHostMenu: boolean;
-  shouldShowClosedGuide: boolean;
+  shouldShowParticipantMenu: boolean;
   onJoin: () => Promise<void> | void;
   onCancelJoin: () => Promise<void> | void;
   onAttend: () => Promise<void> | void;
@@ -234,6 +240,13 @@ export interface MeetingDetailViewProps extends MeetingHeaderSectionProps {
   linkGuideText: string;
   threadGuideText: string;
 }
+
+export type MeetingActionState =
+  | "guest_join"
+  | "joinable"
+  | "attendance_checking"
+  | "attendance_ready"
+  | "attendance_done";
 
 export interface MeetingDetailContentProps {
   meetingId: number;
@@ -329,10 +342,6 @@ export interface MeetingBasicInfoErrors {
 }
 
 export interface MeetingScheduleStepValues {
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
   capacity: string;
 }
 

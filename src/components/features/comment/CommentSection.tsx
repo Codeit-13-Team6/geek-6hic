@@ -45,8 +45,9 @@ export default function CommentSection({
   const { mutate: postComment, isPending: isPosting } = useMutation({
     mutationFn: (newContent: string) => createComment(postId, newContent),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.comments.detail(postId) });
-
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.comments.detail(postId),
+      });
 
       if (isThread) {
         setThreadContent(""); // 스레드 입력창(state) 초기화
@@ -92,7 +93,7 @@ export default function CommentSection({
         ...old,
         data: old.data.map((c) => (c.id === commentId ? { ...c, content } : c)),
       }),
-      invalidateKeys: [["comments", postId]],
+      invalidateKeys: [QUERY_KEYS.comments.detail(postId)],
       onErrorMessage: "댓글 수정에 실패했습니다.",
     }),
     onSuccess: () => {
@@ -128,17 +129,17 @@ export default function CommentSection({
   };
 
   return (
-    <section
-      className={`mt-10 flex flex-col gap-6 ${isThread ? "" : ""}`}
-    >
-      <div className="flex items-center gap-2">
-        <h3 className="text-lg font-bold tracking-tighter text-slate-900 sm:text-xl">
-          {isThread ? null : "COMMENTS"}
-        </h3>
-        <span className="text-main-purple rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold">
-          {isThread ? null : commentsList.length || 0}
-        </span>
-      </div>
+    <section className={"mt-10 flex flex-col gap-6"}>
+      {!isThread && (
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-bold tracking-tighter text-slate-900 sm:text-xl">
+            COMMENTS
+          </h3>
+          <span className="text-main-purple rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold">
+            {commentsList.length || 0}
+          </span>
+        </div>
+      )}
 
       {isThread ? (
         <div className="-mt-10 flex flex-col gap-4">

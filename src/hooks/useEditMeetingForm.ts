@@ -26,23 +26,6 @@ export const getIsoDateTime = (date: string, time: string) => {
   return new Date(`${date}T${time}`).toISOString();
 };
 
-const formatLocalDate = (value: string) => {
-  const date = new Date(value);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-};
-
-const formatLocalTime = (value: string) => {
-  const date = new Date(value);
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${hours}:${minutes}`;
-};
-
 export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   return {
     name: formValues.name,
@@ -51,8 +34,8 @@ export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
     address: getNormalizedMeetingLink(formValues.link),
     latitude: 0,
     longitude: 0,
-    dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
-    registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
+    dateTime: "2100-01-01T00:00:00.000Z",
+    registrationEnd: "2099-12-31T23:59:59.000Z",
     capacity: Number(formValues.capacity),
     image: formValues.imageUrl,
     description: formValues.description,
@@ -79,10 +62,6 @@ export const toMeetingFormValues = (
   imageFile: null,
   previewImageUrl: data.image ?? "",
   imageUrl: data.image ?? "",
-  startDate: formatLocalDate(data.dateTime),
-  startTime: formatLocalTime(data.dateTime),
-  endDate: formatLocalDate(data.registrationEnd),
-  endTime: formatLocalTime(data.registrationEnd),
   capacity: String(data.capacity),
 });
 
@@ -93,8 +72,8 @@ export const toEditMeetingPayload = (formValues: MeetingFormValues) => {
     description: formValues.description,
     link: formValues.link,
     image: formValues.imageUrl || formValues.previewImageUrl || null,
-    dateTime: getIsoDateTime(formValues.startDate, formValues.startTime),
-    registrationEnd: getIsoDateTime(formValues.endDate, formValues.endTime),
+    dateTime: "2100-01-01T00:00:00.000Z",
+    registrationEnd: "2099-12-31T23:59:59.000Z",
     capacity: Number(formValues.capacity),
   };
 };
@@ -109,10 +88,6 @@ export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
   imageFile: null,
   previewImageUrl: "",
   imageUrl: null,
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
   capacity: "",
 };
 
@@ -122,10 +97,6 @@ export const createEmptyMeetingFormErrors = (): MeetingFormErrors => ({
   description: "",
   link: "",
   imageUrl: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
   capacity: "",
 });
 
@@ -241,23 +212,13 @@ export function useEditMeetingForm({
     }));
   };
 
-  const handleChangeScheduleTab = (nextValues: {
-    startDate?: string;
-    startTime?: string;
-    endDate?: string;
-    endTime?: string;
-    capacity?: string;
-  }) => {
+  const handleChangeScheduleTab = (nextValues: { capacity?: string }) => {
     setFormValues((prev) => ({
       ...prev,
       ...nextValues,
     }));
     setErrors((prev) => ({
       ...prev,
-      startDate: nextValues.startDate ? "" : prev.startDate,
-      startTime: nextValues.startTime ? "" : prev.startTime,
-      endDate: nextValues.endDate ? "" : prev.endDate,
-      endTime: nextValues.endTime ? "" : prev.endTime,
       capacity: typeof nextValues.capacity === "string" ? "" : prev.capacity,
     }));
   };

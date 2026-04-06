@@ -46,12 +46,7 @@ comment = 0,
           <div className="absolute top-4 right-4 sm:top-5 sm:right-6 lg:top-6 lg:right-7">
             <DropdownMenu>
               <DropdownMenuTrigger className="rounded-full p-2 transition-colors hover:bg-slate-50">
-                  <Image
-                    src={meatballsIcon}
-                    alt="menu"
-                    width={24}
-                    height={24}
-                  />
+                <Image src={meatballsIcon} alt="menu" width={24} height={24} />
               </DropdownMenuTrigger>
               <DropdownMenuContent size="sm">
                 <DropdownMenuItem onClick={onEdit}>수정하기</DropdownMenuItem>
@@ -88,13 +83,17 @@ comment = 0,
         <div
           className={cn(
             "prose prose-slate max-w-none leading-relaxed text-slate-600",
-            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:tracking-tight",
-            "prose-strong:text-slate-900 prose-strong:font-bold",
-            "prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-main-purple/60 prose-blockquote:bg-slate-50/50 prose-blockquote:py-4 prose-blockquote:pl-5 prose-blockquote:text-slate-600",
+            "prose-p:my-1",
 
-            "prose-pre:bg-slate-50/80 prose-pre:text-slate-600 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:shadow-none",
+            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:tracking-tight prose-headings:mt-8 prose-headings:mb-3",
+            "prose-strong:text-slate-900 prose-strong:font-bold",
+            "prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-main-purple/60 prose-blockquote:bg-slate-100/60 prose-blockquote:py-4 prose-blockquote:pl-5 prose-blockquote:text-slate-500 prose-blockquote:font-semibold",
+
+            "prose-pre:bg-slate-50 prose-pre:text-slate-600 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:shadow-none prose-pre:my-5",
 
             "prose-code:bg-slate-100 prose-code:text-rose-500 prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none",
+
+            "prose-ul:list-disc prose-ol:list-decimal prose-li:my-1",
           )}
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />

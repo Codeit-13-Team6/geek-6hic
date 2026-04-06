@@ -71,11 +71,15 @@ export function CreateMeetingModal({
   return (
     <>
       <BtnCommon
-        className={cn(floatingBtnStyle, "!p-0 sm:!p-6 group")}
+        className={cn(floatingBtnStyle, "group !p-0 sm:!p-6")}
         type="button"
         onClick={() => loginGuardAction(handleOpenModal)}
       >
-        <Plus size={20} strokeWidth={3} className="group-hover:rotate-180 transition-transform duration-300" />
+        <Plus
+          size={20}
+          strokeWidth={3}
+          className="transition-transform duration-300 group-hover:rotate-180"
+        />
         <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
           Create Meeting
         </span>
@@ -134,17 +138,9 @@ export function CreateMeetingModal({
             {currentStep === 3 && (
               <MeetingScheduleStep
                 values={{
-                  startDate: formValues.startDate,
-                  startTime: formValues.startTime,
-                  endDate: formValues.endDate,
-                  endTime: formValues.endTime,
                   capacity: formValues.capacity,
                 }}
                 errors={{
-                  startDate: isTouchedStep(3) ? scheduleErrors.startDate : "",
-                  startTime: isTouchedStep(3) ? scheduleErrors.startTime : "",
-                  endDate: isTouchedStep(3) ? scheduleErrors.endDate : "",
-                  endTime: isTouchedStep(3) ? scheduleErrors.endTime : "",
                   capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
                 }}
                 onChange={handleChangeSchedule}

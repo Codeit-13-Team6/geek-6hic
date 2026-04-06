@@ -1,7 +1,7 @@
 export default function MeetingCardSkeleton() {
   return (
     <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
-      {[1, 2, 3, 4,5,6,7,8].map((i) => (
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
         <div
           key={i}
           className="animate-pulse overflow-hidden rounded-3xl sm:flex sm:items-center sm:gap-5 sm:rounded-[32px] sm:bg-white sm:p-6"
