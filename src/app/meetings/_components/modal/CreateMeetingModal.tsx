@@ -28,6 +28,7 @@ export function CreateMeetingModal({
     basicInfoErrors,
     scheduleErrors,
     isTouchedStep,
+    isSubmitting,
     handleChangeCategory,
     handleChangeBasicInfo,
     handleChangeSchedule,
@@ -161,12 +162,17 @@ export function CreateMeetingModal({
             </BtnCommon>
             <BtnCommon
               type="button"
-              className="bg-main-purple h-12 flex-1 rounded-xl text-base font-bold text-white shadow-[0_10px_20px_rgba(38,6,86,0.15)] transition-all hover:bg-slate-950 sm:h-14 sm:rounded-2xl"
+              disabled={isSubmitting}
+              className="bg-main-purple h-12 flex-1 rounded-xl text-base font-bold text-white shadow-[0_10px_20px_rgba(38,6,86,0.15)] transition-all hover:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:rounded-2xl"
               onClick={
                 currentStep < totalSteps ? handleNextStep : handleSubmitMeeting
               }
             >
-              {currentStep < totalSteps ? "다음" : "생성"}
+              {currentStep < totalSteps
+                ? "다음"
+                : isSubmitting
+                  ? "생성 중..."
+                  : "생성"}
             </BtnCommon>
           </div>
         </div>
