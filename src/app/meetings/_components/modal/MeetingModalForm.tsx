@@ -17,7 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
 
-export function MeetingBasicInfoSection({
+export function MeetingModalForm({
   meetingTypeOptions: defaultMeetingTypeOptions = [],
   values,
   errors,
@@ -187,6 +187,24 @@ export function MeetingBasicInfoSection({
           <p className="text-error text-sm">{errors.imageUrl}</p>
         ) : null}
       </div>
+
+      <InputCommon
+        id="capacity"
+        type="text"
+        inputMode="numeric"
+        label="모임 정원"
+        isRequired
+        placeholder="숫자만 입력해주세요"
+        value={values.capacity}
+        onChange={(event) => {
+          onChange({ capacity: event.target.value.replace(/[^0-9]/g, "") });
+        }}
+        onClear={() => {
+          onChange({ capacity: "" });
+        }}
+        isDestructive={Boolean(errors.capacity)}
+        hintText={errors.capacity}
+      />
     </div>
   );
 }

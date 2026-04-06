@@ -234,13 +234,6 @@ export interface MeetingHeaderSectionProps {
   onToggleFavorite: () => void;
 }
 
-export interface MeetingDetailViewProps extends MeetingHeaderSectionProps {
-  canViewLink: boolean;
-  canWriteThread: boolean;
-  linkGuideText: string;
-  threadGuideText: string;
-}
-
 export type MeetingActionState =
   | "guest_join"
   | "joinable"
@@ -296,28 +289,6 @@ export interface MeetingCategoryItem {
   icon?: LucideIcon | React.ComponentType<LucideProps>;
 }
 
-export interface ScheduleDatePickerProps {
-  id: string;
-  label: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  min?: string;
-  max?: string;
-  onChange: (value: string) => void;
-}
-
-export interface ScheduleTimePickerProps {
-  id: string;
-  label?: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  onChange: (value: string) => void;
-}
-
 export interface UploadImageResponse {
   presignedUrl: string;
   publicUrl: string;
@@ -355,22 +326,20 @@ export interface MeetingFormErrors
   category: string;
 }
 
-export interface MeetingBasicInfoStepProps {
+export interface MeetingBasicInfoSectionProps {
   meetingTypeOptions?: TabItem[];
-  values: MeetingBasicInfoValues;
+  values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
-  errors: MeetingBasicInfoErrors;
+  errors: MeetingBasicInfoErrors & { capacity: string };
   onChange: (nextValues: {
     category?: string;
     name?: string;
     description?: string;
     link?: string;
+    capacity?: string;
   }) => void;
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
-}
-
-export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps {
   showCategoryField?: boolean;
   showImageMeta?: boolean;
 }
@@ -383,10 +352,4 @@ export interface MeetingCategoryStepProps {
 
 export interface CreateMeetingModalProps {
   meetingTypeOptions?: TabItem[];
-}
-
-export interface MeetingScheduleStepProps {
-  values: MeetingScheduleStepValues;
-  errors: MeetingScheduleStepValues;
-  onChange: (nextValues: Partial<MeetingScheduleStepValues>) => void;
 }

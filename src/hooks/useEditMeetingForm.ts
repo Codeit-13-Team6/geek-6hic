@@ -78,8 +78,6 @@ export const toEditMeetingPayload = (formValues: MeetingFormValues) => {
   };
 };
 
-type EditMeetingTab = "basic" | "schedule";
-
 export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
   category: "팀미팅",
   name: "",
@@ -111,7 +109,6 @@ export function useEditMeetingForm({
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
   onSuccess?: () => void;
 }) {
-  const [activeTab, setActiveTab] = useState<EditMeetingTab>("basic");
   const [formValues, setFormValues] = useState<MeetingFormValues>(
     toMeetingFormValues(data),
   );
@@ -128,7 +125,6 @@ export function useEditMeetingForm({
     const nextValues = toMeetingFormValues(nextData);
 
     previewImageUrlRef.current = nextValues.previewImageUrl;
-    setActiveTab("basic");
     setFormValues(nextValues);
     setErrors(createEmptyMeetingFormErrors());
     setIsImageUploading(false);
@@ -189,11 +185,12 @@ export function useEditMeetingForm({
     });
   };
 
-  const handleChangeBasicTab = (nextValues: {
+  const handleChange = (nextValues: {
     category?: string;
     name?: string;
     description?: string;
     link?: string;
+    capacity?: string;
     imageFile?: File | null;
     previewImageUrl?: string;
     imageUrl?: string;
@@ -209,16 +206,6 @@ export function useEditMeetingForm({
       description:
         typeof nextValues.description === "string" ? "" : prev.description,
       link: typeof nextValues.link === "string" ? "" : prev.link,
-    }));
-  };
-
-  const handleChangeScheduleTab = (nextValues: { capacity?: string }) => {
-    setFormValues((prev) => ({
-      ...prev,
-      ...nextValues,
-    }));
-    setErrors((prev) => ({
-      ...prev,
       capacity: typeof nextValues.capacity === "string" ? "" : prev.capacity,
     }));
   };
@@ -238,14 +225,9 @@ export function useEditMeetingForm({
 
     if (
       hasMeetingValidationError(nextCategoryErrors) ||
-      hasMeetingValidationError(nextBasicErrors)
+      hasMeetingValidationError(nextBasicErrors) ||
+      hasMeetingValidationError(nextScheduleErrors)
     ) {
-      setActiveTab("basic");
-      return;
-    }
-
-    if (hasMeetingValidationError(nextScheduleErrors)) {
-      setActiveTab("schedule");
       return;
     }
 
@@ -262,16 +244,13 @@ export function useEditMeetingForm({
   };
 
   return {
-    activeTab,
     errors,
     formValues,
     isImageUploading,
     isSubmitting,
-    setActiveTab,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
-    handleChangeBasicTab,
-    handleChangeScheduleTab,
+    handleChange,
     handleSubmit,
   };
 }

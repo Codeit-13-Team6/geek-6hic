@@ -25,7 +25,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
 import { threadKeyword } from "@/constans/post";
 
-const TOTAL_MEETING_FORM_STEPS = 3;
+const TOTAL_MEETING_FORM_STEPS = 2;
 
 export function useCreateMeetingForm(onSuccess?: () => void) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -75,16 +75,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     name?: string;
     description?: string;
     link?: string;
+    capacity?: string;
   }) => {
-    setFormValues((prev) => ({
-      ...prev,
-      ...nextValues,
-    }));
-  };
-
-  const handleChangeSchedule = (
-    nextValues: Partial<Pick<MeetingFormValues, "capacity">>,
-  ) => {
     setFormValues((prev) => ({
       ...prev,
       ...nextValues,
@@ -126,11 +118,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
 
   const handleNextStep = () => {
     const currentStepErrors =
-      currentStep === 1
-        ? categoryErrors
-        : currentStep === 2
-          ? basicInfoErrors
-          : scheduleErrors;
+      currentStep === 1 ? categoryErrors : basicInfoErrors;
 
     if (hasMeetingValidationError(currentStepErrors)) {
       markTouchedStep(currentStep);
@@ -171,8 +159,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     }
 
     if (hasMeetingValidationError(nextScheduleErrors)) {
-      markTouchedStep(3);
-      setCurrentStep(3);
+      markTouchedStep(2);
+      setCurrentStep(2);
       return;
     }
 
@@ -221,7 +209,6 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     isTouchedStep,
     handleChangeCategory,
     handleChangeBasicInfo,
-    handleChangeSchedule,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
     handlePrevStep,
