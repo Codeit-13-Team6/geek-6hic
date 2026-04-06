@@ -8,7 +8,7 @@ import { createPost, updatePost, deletePost } from "@/api/client/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { GetPostsParams, Post, PostPayload } from "@/types";
-import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
 /**
