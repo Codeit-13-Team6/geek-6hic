@@ -11,8 +11,11 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import {
-  MeetingBasicInfoSectionProps,
+  MeetingBasicInfoSectionProps, type MeetingType,
 } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { getMeetingTypes } from "@/api/client";
 
 export function MeetingBasicInfoSection({
   meetingTypeOptions: defaultMeetingTypeOptions = [],
@@ -25,6 +28,15 @@ export function MeetingBasicInfoSection({
   showCategoryField = false,
   showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
+
+
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: QUERY_KEYS.meetings.meetingType,
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+
   const meetingTypeOptions = (() => {
     if (!values.category) {
       return defaultMeetingTypeOptions;
@@ -38,6 +50,13 @@ export function MeetingBasicInfoSection({
       return defaultMeetingTypeOptions;
     }
 
+    console.log([
+      {
+        value: values.category,
+        label: values.category || "현재 모임 종류",
+      },
+      ...defaultMeetingTypeOptions,
+    ]);
     return [
       {
         value: values.category,
@@ -66,9 +85,8 @@ export function MeetingBasicInfoSection({
           >
             <SelectTrigger className="!h-[50px] w-full rounded-[8px] border border-gray-300 bg-gray-50 px-4 text-base text-gray-800">
               <SelectValue>
-                {meetingTypeOptions.find(
-                  (option) => option.value === values.category,
-                )?.label ?? "모임 종류를 선택해 주세요"}
+                {meetingTypes.find((option) => option.name === values.category)
+                  ?.name ?? "모임 종류를 선택해 주세요"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent
@@ -78,9 +96,9 @@ export function MeetingBasicInfoSection({
               alignItemWithTrigger={false}
               className="bg-gray-50 ring-gray-300"
             >
-              {meetingTypeOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
+              {meetingTypes.map((option) => (
+                <SelectItem key={option.id} value={option.name}>
+                  {option.name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -244,6 +244,9 @@ export function useMeetingDetailMutations({
       }
     },
     handleEditMeeting: async (nextValues: Partial<MeetingDetailData>) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.meetings.root,
+      });
       await updateMeetingMutation.mutateAsync(nextValues);
     },
     handleDeleteMeeting: () => {
