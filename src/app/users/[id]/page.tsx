@@ -21,8 +21,8 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 
 const defaultTabs = [
   { value: "liked", label: "찜한 모임" },
-  { value: "created", label: "내가 만든 모임" },
-  { value: "lounge", label: "내가 쓴 게시물" },
+  { value: "created", label: "주최한 모임" },
+  { value: "lounge", label: "작성한 게시물" },
 ];
 
 export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export default async function Page() {
   const initialUser = raw ? JSON.parse(raw) : null;
 
   return (
-    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
