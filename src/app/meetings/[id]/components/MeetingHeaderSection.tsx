@@ -143,7 +143,7 @@ export function MeetingHeaderSection({
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
-            src={data.image ?? ''}
+            src={data.image ?? ""}
             alt={data.name}
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
@@ -172,15 +172,15 @@ export function MeetingHeaderSection({
                 </div>
 
                 {/* 💡 2. 일시 & 메타 정보: 제목 바로 아래에 밀도 있게 배치 */}
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  {/* 날짜 태그 */}
-                  <div className="bg-main-purple/10 text-main-purple flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black tracking-tight shadow-sm">
+                {/* <div className="mt-4 flex flex-wrap items-center gap-2"> */}
+                {/* 날짜 태그 */}
+                {/* <div className="bg-main-purple/10 text-main-purple flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black tracking-tight shadow-sm">
                     <Calendar size={12} strokeWidth={3} />
                     <span>{formatMonthDay(data.dateTime)}</span>
-                  </div>
+                  </div> */}
 
-                  {/* 시간 태그 */}
-                  <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-black tracking-tight text-slate-600 shadow-sm">
+                {/* 시간 태그 */}
+                {/* <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-black tracking-tight text-slate-600 shadow-sm">
                     <Clock
                       size={12}
                       strokeWidth={3}
@@ -188,7 +188,7 @@ export function MeetingHeaderSection({
                     />
                     <span>{formatHourMinute(data.dateTime)}</span>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* 💡 호스트 전용 메뉴 (버튼 크기 살짝 조정) */}
