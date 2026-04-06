@@ -56,7 +56,6 @@
   --error-color: #ff0101;
 }
 
-/* 💡 모달 오버레이가 GNB를 덮도록 강제 설정 */
 .fixed {
   z-index: 500;
 }
@@ -122,7 +121,7 @@ body {
 /* globals.css */
 
 @layer components {
-  /* 💡 prose 클래스가 적용된 영역 내의 Quill 에디터 스타일 지원 */
+  /* prose 클래스가 적용된 영역 내의 Quill 에디터 스타일 지원 */
   .prose {
     @apply max-w-none;
   }
@@ -151,19 +150,34 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up .6s ease-in-out forwards;
+  animation: fade-up 0.6s ease-in-out forwards;
   opacity: 0;
 }
 
 /* 알림 hover */
 @keyframes bell-ring {
-  0%, 100% { transform: rotate(0deg); }
-  15% { transform: rotate(15deg); }
-  30% { transform: rotate(-15deg); }
-  45% { transform: rotate(10deg); }
-  60% { transform: rotate(-10deg); }
-  75% { transform: rotate(5deg); }
-  90% { transform: rotate(-5deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(15deg);
+  }
+  30% {
+    transform: rotate(-15deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  90% {
+    transform: rotate(-5deg);
+  }
 }
 
 .bell-hover:hover {
@@ -173,8 +187,12 @@ body {
 
 /* 페이지 hr 애니메이션 */
 @keyframes line-spread {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
 }
 
 .line-spread {
