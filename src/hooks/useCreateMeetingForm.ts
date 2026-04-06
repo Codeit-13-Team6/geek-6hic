@@ -24,6 +24,7 @@ import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
+import { threadKeyword } from "@/constans/post";
 
 const TOTAL_MEETING_FORM_STEPS = 3;
 
@@ -183,7 +184,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       const newMeetingId = newMeeting.id;
 
       const newPost = await createPost({
-        title: `isThread_${newMeetingId}`,
+        title: threadKeyword.build(newMeetingId),
         content:
           "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
       });

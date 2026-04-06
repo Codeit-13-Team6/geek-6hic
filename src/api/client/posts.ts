@@ -1,23 +1,23 @@
 import axiosInstance from "@/lib/clientFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
 import { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import { threadKeyword } from "@/constans/post";
 
 export async function getHotPosts() {
   const { data } = await axiosInstance.get("/hot");
   return data;
 }
 
-export const getPosts = async (
-  params: GetPostsParams,
-): Promise<GetPostsResponse> => {
+
+export async function getPosts(params: GetPostsParams): Promise<GetPostsResponse> {
   const { data: res } = await axiosInstance.get("/posts", {
     params,
   });
 
   return filterThreadPosts(res);
-};
+}
 
-export const getPostDetail = async (postId: number): Promise<Post> => {
+export async function  getPostDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
 };
@@ -50,10 +50,10 @@ export async function likePost(postId: number): Promise<void> {
 export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
-
+;
 export async function getThreadPost(meetingId: number): Promise<Post> {
   const { data } = await axiosInstance.get("/posts", {
-    params: { keyword: `isThread_${meetingId}` },
+    params: { keyword: threadKeyword.build(meetingId) },
   });
   return data?.data?.[0] || null;
 }
