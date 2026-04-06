@@ -111,10 +111,10 @@ export default function MeetingFilters() {
           ))}
         </ul>
 
-        <div className="flex shrink-0 items-center justify-end gap-6 sm:gap-8">
+        <div className="flex gap-4 shrink-0 items-center justify-end">
           {/* 날짜 선택 */}
 
-          <Popover open={isOpen} onOpenChange={setIsOpen}>
+          {/* <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger>
               <div
                 className={cn(
@@ -136,40 +136,7 @@ export default function MeetingFilters() {
                 onApply={handleCalendarApply}
               />
             </PopoverContent>
-          </Popover>
-
-          {/*<div className="relative">*/}
-          {/*  <button*/}
-          {/*    type="button"*/}
-          {/*    className={cn(*/}
-          {/*      "cursor-pointer pb-0.5 text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",*/}
-          {/*      appliedDate*/}
-          {/*        ? "text-main-purple"*/}
-          {/*        : "hover:text-main-purple text-slate-900",*/}
-          {/*    )}*/}
-          {/*    onClick={() => setIsOpen(true)}*/}
-          {/*  >*/}
-          {/*    Select Date*/}
-          {/*  </button>*/}
-          {/*  {isOpen ? (*/}
-          {/*    <>*/}
-          {/*      /!* 캘린더 팝업 *!/*/}
-          {/*      <div*/}
-          {/*        onClick={() => setIsOpen(false)}*/}
-          {/*        className="absolute inset-0 z-40 bg-transparent"*/}
-          {/*      ></div>*/}
-          {/*      <div className="shadow-mag absolute top-auto right-auto z-50 mt-2 rounded-2xl bg-white">*/}
-          {/*        <Calendar*/}
-          {/*          mode="range"*/}
-          {/*          selected={draftDate}*/}
-          {/*          onSelect={setDraftDate}*/}
-          {/*          onReset={handleCalendarReset}*/}
-          {/*          onApply={handleCalendarApply}*/}
-          {/*        />*/}
-          {/*      </div>*/}
-          {/*    </>*/}
-          {/*  ) : null}*/}
-          {/*</div>*/}
+          </Popover> */}
 
           <Select
             value={sortBy}
@@ -206,15 +173,25 @@ export default function MeetingFilters() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <div className="cursor-pointer" onClick={setSortOrder}>
+
+          <button onClick={setSortOrder} className="flex items-center">
             <Image
               className={sortOrder === "desc" ? "" : "rotate-180"}
               src={downIcon}
               width="24"
               height="24"
-              alt="구글 아이콘"
+              alt="드롭다운 아이콘"
             />
-          </div>
+            <span className="text-main-purple text-[12px] font-black tracking-[1.2px] gap-2">
+              {
+                sortOrder === "desc"
+                  ?
+                  "최신순"
+                  :
+                  "오래된 순"
+              }
+            </span>
+          </button>
         </div>
       </div>
     </>

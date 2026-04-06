@@ -99,6 +99,7 @@ export default async function Page({
       </div>
 
       <Suspense
+        key={`${params.type}-${params.sortBy}-${params.sortOrder}`} // key값으로 스켈레톤 범위 추가
         fallback={
           <div className="mx-auto max-w-[1280px]">
             <MeetingFilterSkeleton />
