@@ -85,6 +85,20 @@ export default function LoungePostForm({
       });
     }
 
+    if (linkUrl.trim().length > 0) {
+      return ToastCommon({
+        message: (
+          <>
+            입력하신 링크가 추가되지 않았습니다.
+            <br />
+            링크 추가 버튼을 먼저 눌러주세요.
+          </>
+        ),
+        size: "sm",
+        duration: 3500,
+      });
+    }
+
     const finalHtml = stitchPostData(content, linkList);
 
     const payload: PostPayload = {
