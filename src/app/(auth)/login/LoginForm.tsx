@@ -47,7 +47,6 @@ export default function LoginForm({
   const setUser = useAuthStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data, returnUrl, "gg ");
     setIsLoading(true);
     setError(null);
 
@@ -57,7 +56,6 @@ export default function LoginForm({
         password: data.password,
       });
 
-      console.log(res, res?.ok, res.user);
       if (res?.ok) {
         if (res.user) {
           setUser(res.user);

@@ -159,7 +159,6 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   );
 
   if (!matchedRule) {
-    console.log(`No such rule for ${targetPath}`);
     return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
 
@@ -196,7 +195,6 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
 
     // server-fetcher interceptor가 토큰 세팅 + 401 시 refresh 자동 처리
     const { data, status } = await serverAxios(axiosOptions);
-    console.log(" slug 페이지 트라이문 ");
 
     const response = NextResponse.json(data, { status });
 
@@ -204,7 +202,6 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
   } catch (err) {
     const error = err as AxiosErrorLike;
     // REFRESH_FAILED: 리프레시 토큰 만료 → 클라이언트에서 로그인 페이지로 처리
-    console.log("slug catch ");
     if (error.response?.data?.code === "REFRESH_FAILED") {
       return NextResponse.json(
         { message: "Unauthorized", code: "REFRESH_FAILED" },

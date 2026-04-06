@@ -257,18 +257,7 @@ export const toMeetingDetailViewModel = ({
     isJoined,
   });
 
-  // console.log(isStarted, actionLabel, isHost, isClosed, " 누구새오 ");
 
-  //
-  // console.log(
-  //   hasAttended,
-  //   actionLabel,
-  //   isAuthLoading,
-  //   isStarted,
-  //   hasAttended,
-  //   isHost && isClosed,
-  //   !isHost && isClosed && !isJoined,
-  // );
 
   const isActionDisabled = () => {
     if (actionLabel === "모집 마감" || actionLabel === "출석 완료") return true;
@@ -367,7 +356,6 @@ export function MeetingDetailContent({
     isAuthLoading,
     hasAttended,
   });
-  console.log(viewModel.data, "뷰모델");
 
   return (
     <>

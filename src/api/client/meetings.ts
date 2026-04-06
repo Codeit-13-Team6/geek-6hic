@@ -15,7 +15,6 @@ export async function getMeetingList(
   const res = await axiosInstance.get<JoinedMeetingsResponse>("/meetings", {
     params,
   });
-  console.log(res, params);
 
   return res.data;
 }

@@ -101,7 +101,6 @@ export default function LoungePostForm({
 
   useEffect(() => {
     if (!initialData) return;
-    console.log("🛠️ 폼에 세팅할 링크 데이터:", initialData);
     setContent(parsedContent);
     setLinkList(
       initialData.links?.length ? initialData.links : (parsedLinks ?? []),
