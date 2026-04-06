@@ -3,7 +3,11 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
-import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from "@/lib/authCookies";
+import {
+  ACCESS_TOKEN_MAX_AGE,
+  COOKIE_OPTIONS,
+  REFRESH_TOKEN_MAX_AGE,
+} from "@/lib/authCookies";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
@@ -28,16 +32,8 @@ interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  path: "/",
-  sameSite: "strict" as const,
-  secure: process.env.NODE_ENV === "production",
-};
-
 // 모듈 떨어지는거 테스팅
 const MODULE_INSTANCE_ID = Math.random().toString(36).slice(2, 8);
-console.log(`[server-fetcher] 모듈 로드됨: moduleId=${MODULE_INSTANCE_ID}`);
 
 // 그냥 serverAxios ,,,
 const serverAxios = axios.create({
@@ -106,25 +102,15 @@ const refreshAccessToken = async (
   requestUrl: string,
   forceRefresh = false,
 ): Promise<TokenPair | null> => {
-  console.log(
-    `[server-fetcher] refreshMap 상태: moduleId=${MODULE_INSTANCE_ID}, 
-    size=${refreshMap.size},
-     keys=[${[...refreshMap.keys()].join(",")}], 
-     userId=${userId}, 
-    forceRefresh=${forceRefresh}`,
-  );
 
   // 리프레쉬 맵에 유저아이디가 있을때  토큰 캐시처리 로직
   if (refreshMap.has(userId)) {
-    console.log("리프래쉬 맵 있어요");
 
     // 포스리프레쉬가 아닐떄 , 포스리프레쉬는 강제로 리프레쉬해버리니까 아래 로직이 필요없음
     if (!forceRefresh) {
       // 캐시 또는 진행 중인 refresh가 있으면 그대로 재사용
       // 캐시 히트 시에도 현재 요청의 응답에 쿠키를 세팅해야 브라우저에 전달됨
-      console.log(
-        `[server-fetcher] refresh 대기열 참여 (queue 재사용): ${requestUrl}`,
-      );
+
 
       const cachedTokenPair = await refreshMap.get(userId)!;
       if (cachedTokenPair) {
@@ -167,18 +153,14 @@ const refreshAccessToken = async (
     if (!isSettled) {
       // 아직 진행 중인 refresh가 있음 → 완료될 때까지 대기
       // 합류하면 rotation으로 무효한 토큰을 받을 수 있으므로 대기 후 새로 refresh
-      console.log(
-        `[server-fetcher] forceRefresh → 진행 중인 refresh 완료 대기: ${requestUrl}`,
-      );
+
       await existing;
 
       // 대기 사이에 다른 forceRefresh가 이미 새 refresh를 만들었을 수 있음
       // 새 entry가 있으면 그걸 재사용 (중복 refresh 방지)
       const current = refreshMap.get(userId);
       if (current && current !== existing) {
-        console.log(
-          `[server-fetcher] 다른 forceRefresh가 이미 새 refresh 생성 → 재사용: ${requestUrl}`,
-        );
+
         const result = await current;
         if (result) {
           try {
@@ -195,13 +177,10 @@ const refreshAccessToken = async (
     // settled(캐시) → 삭제 후 새로 생성
     // true 가 떨어져서 맵 안에는 결과값만 있는 상태인데 이 함수가 실행되었다는것은
     // 맵 안의 결과값이 만료된 토큰이라는 의미 그럼 맵을 한번 정리함
-    console.log(
-      `[server-fetcher] forceRefresh → 캐시 무효화 후 새로 refresh: ${requestUrl}`,
-    );
+
     refreshMap.delete(userId);
   } // if fine.
 
-  console.log(`[server-fetcher] refresh 최초 호출 (queue 생성): ${requestUrl}`);
 
   // await 전에 즉시 map에 등록하여 동시 진입 방지
   const promise = (async () => {
@@ -223,22 +202,18 @@ const refreshAccessToken = async (
         `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
         { refreshToken },
       );
-      console.log(`[server-fetcher] refresh 성공: ${requestUrl}`);
 
       // 쿠키 세팅 실패가 토큰 갱신 자체를 실패시키면 안되는 상황이라 분리
       // 특정 모듈 컨텍스트에서 cookies().set()이 실패할 수 있음 ( 서버컴포넌트 )
       try {
         await setTokenCookies(data as TokenPair);
       } catch {
-        console.log(
-          `[server-fetcher] 쿠키 세팅 실패 (토큰은 정상): ${requestUrl}`,
-        );
+
       }
 
       return data as TokenPair;
     } catch {
       // 리프레쉬 api 에서 실패난거라 리프레쉬 토큰 자체가 만료된것
-      console.log(`[server-fetcher] refresh 실패: ${requestUrl}`);
       refreshMap.delete(userId);
       return null;
     }
@@ -284,13 +259,7 @@ serverAxios.interceptors.request.use(async (config) => {
   const cookieStore = await cookies();
   let accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
-  console.log(" 리퀘스트 완전 처음 ", config.url);
-  console.log(
-    " isPublicPath 결과 ",
-    isPublicPath(config.url),
-    " refreshToken 유무 ",
-    !!refreshToken,
-  );
+
 
   // refreshToken도 없으면 요청 보내지 않고 즉시 차단 (공개 경로는 제외)
   if (!refreshToken) {
@@ -323,7 +292,6 @@ serverAxios.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryableRequestConfig | undefined;
-    console.log("응답 인터셉터 1", error);
 
     // config 없는 에러 = 직접 만든 REFRESH_FAILED 에러
     // config 있는 에러 = 백엔드에서 떨어지는 에러 = 403, 404, 500 등
@@ -335,7 +303,6 @@ serverAxios.interceptors.response.use(
     // 401이고 아직 재시도하지 않은 요청만 처리
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.log("응답 인터셉터 2");
 
       const cookieStore = await cookies();
       const refreshToken = cookieStore.get("refreshToken")?.value;
@@ -363,7 +330,6 @@ serverAxios.interceptors.response.use(
       return serverAxios(originalRequest);
     }
 
-    console.log("응답 인터셉터 3");
 
     return Promise.reject(error);
   },

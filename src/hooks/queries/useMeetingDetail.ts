@@ -38,7 +38,7 @@ import {
   unlikePost,
   updateFavorites,
 } from "@/api/client";
-import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
 const getJoinErrorMessage = (code?: string) => {

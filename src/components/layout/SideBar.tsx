@@ -32,7 +32,7 @@ export default function SideBar({
   return (
     <SheetContent
       side="right"
-      className="z-[999999] flex h-full w-[290px] flex-col border-l border-white/20 bg-white/50 px-6 pt-10 pb-12 shadow-[-20px_0_80px_rgba(0,0,0,0.05)] backdrop-blur-3xl [&>button.absolute]:hidden"
+      className="z-[200] flex h-full w-[290px] flex-col border-l border-white/20 bg-white/50 px-6 pt-10 pb-12 shadow-[-20px_0_80px_rgba(0,0,0,0.05)] backdrop-blur-3xl [&>button.absolute]:hidden"
     >
       <SheetTitle className="sr-only">모바일 네비게이션 메뉴</SheetTitle>
 

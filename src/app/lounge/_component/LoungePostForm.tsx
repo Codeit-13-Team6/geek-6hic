@@ -9,8 +9,10 @@ import { useLoungeLink } from "@/hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_component/LinkCard";
 import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
 import { PostPayload, LoungePostFormProps } from "@/types";
+import { BtnBack } from "@/components/features/btn/BtnBack";
 
 export default function LoungePostForm({
+  id,
   initialData,
   onSubmit,
   isSubmitting,
@@ -85,6 +87,20 @@ export default function LoungePostForm({
       });
     }
 
+    if (linkUrl.trim().length > 0) {
+      return ToastCommon({
+        message: (
+          <>
+            입력하신 링크가 추가되지 않았습니다.
+            <br />
+            링크 추가 버튼을 먼저 눌러주세요.
+          </>
+        ),
+        size: "sm",
+        duration: 3500,
+      });
+    }
+
     const finalHtml = stitchPostData(content, linkList);
 
     const payload: PostPayload = {
@@ -101,7 +117,6 @@ export default function LoungePostForm({
 
   useEffect(() => {
     if (!initialData) return;
-    console.log("🛠️ 폼에 세팅할 링크 데이터:", initialData);
     setContent(parsedContent);
     setLinkList(
       initialData.links?.length ? initialData.links : (parsedLinks ?? []),
@@ -113,8 +128,9 @@ export default function LoungePostForm({
   }, [initialData, parsedContent, parsedLinks, setLinkList, setThumbnailImage]);
 
   return (
-    <div className="w-full h-full max-w-[900px] mx-auto mt-20">
+    <div className="mx-auto w-full max-w-[900px] p-6 py-8">
       {/* 헤더 (제목 입력 & 등록 버튼) */}
+      <BtnBack fallbackHref={`/lounge/${id}`} />
       <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
         <div className="relative flex-1 pl-2">
           <input

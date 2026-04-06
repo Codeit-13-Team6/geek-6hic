@@ -8,7 +8,7 @@ import { createPost, updatePost, deletePost } from "@/api/client/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { GetPostsParams, Post, PostPayload } from "@/types";
-import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
 /**
@@ -63,14 +63,12 @@ export const useGetPostForEdit = (postId: number) => {
   const { data: initialData, isLoading: isOgLoading } = useQuery({
     queryKey: [...QUERY_KEYS.posts.detail(postId), "edit-og", post?.content],
     queryFn: async () => {
-      console.log("dgdgd");
       if (!post) return null;
 
       const { content: parsedContent, links: parsedLinks } = parsePostData(
         post.content,
       );
 
-      // console.log(parsedContent, "parsedContent", parsedLinks, "parsedLinks");
 
       if (parsedLinks.length === 0) {
         return {
@@ -86,22 +84,13 @@ export const useGetPostForEdit = (postId: number) => {
         parsedLinks.map(async (link) => {
           try {
             const ogResult = await getOgData(link.url);
-            console.log("OG API 성공!", { url: link.url, ogResult }); // <--- 이거 찍히는지 확인!
             return { ...link, image: ogResult.image || "" };
           } catch (error) {
-            console.log("OG API 실패!", { url: link.url, error }); // <--- 이거 찍히는지 확인!
 
             return link;
           }
         }),
       );
-      console.log("폼 초기 데이터:", {
-        ...post,
-        title: post.title,
-        content: parsedContent,
-        links: restoredLinks,
-        image: post.image || "",
-      }); // <--- 이거 찍히는지 확인!
 
       return {
         ...post,
@@ -206,33 +195,5 @@ export const useToggleLike = (postId: number) => {
 
 
 
-  // return useMutation({
-  //   mutationFn: (isLiked: boolean) =>
-  //     isLiked ? unlikePost(postId) : likePost(postId),
-  //   onMutate: async () => {
-  //     // 낙관적 업데이트
-  //     await queryClient.cancelQueries({ queryKey: ["post", postId] });
-  //     const previousPost = queryClient.getQueryData(["post", postId]);
-  //
-  //     queryClient.setQueryData(["post", postId], (oldData: Post) => {
-  //       if (!oldData) return oldData;
-  //       return {
-  //         ...oldData,
-  //         isLiked: !oldData.isLiked,
-  //         likeCount: oldData.isLiked
-  //           ? oldData.likeCount - 1
-  //           : oldData.likeCount + 1,
-  //       };
-  //     });
-  //     return { previousPost };
-  //   },
-  //   onError: (_err, _isLiked, context) => {
-  //     queryClient.setQueryData(["post", postId], context?.previousPost);
-  //     ToastCommon({ message: "좋아요 처리에 실패했습니다.", size: "sm" });
-  //   },
-  //   onSettled: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["post", postId] });
-  //     queryClient.invalidateQueries({ queryKey: ["post"] });
-  //   },
-  // });
+
 };

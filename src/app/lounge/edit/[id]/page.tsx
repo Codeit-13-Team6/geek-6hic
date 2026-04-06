@@ -40,6 +40,7 @@ export default function LoungeEditPage() {
 
   return (
     <LoungePostForm
+      id={postId}
       initialData={initialData}
       onSubmit={handleUpdate}
       isSubmitting={isPending}

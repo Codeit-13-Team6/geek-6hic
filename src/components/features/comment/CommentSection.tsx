@@ -16,7 +16,7 @@ import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CommentSectionProps, GetCommentsResponse } from "@/types";
-import { useOptimisticMutation } from "@/hooks/userOptimisticUpdate";
+import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { QUERY_KEYS } from "@/constans/queryKey";

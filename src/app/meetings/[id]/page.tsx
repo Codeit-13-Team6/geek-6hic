@@ -25,6 +25,7 @@ import { getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { BtnBack } from "@/components/features/btn/BtnBack";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -73,7 +74,8 @@ export default async function MeetingDetailPage({
   });
 
   return (
-    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10">
+      <BtnBack fallbackHref="/meetings" />
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
