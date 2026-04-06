@@ -13,6 +13,7 @@ import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
+import { ca } from "date-fns/locale";
 
 interface ProfileSectionProps {
   initialUser?: {
@@ -22,9 +23,13 @@ interface ProfileSectionProps {
     email: string;
     companyName: string;
   } | null;
+  canEdit?: boolean;
 }
 
-export default function ProfileSection({ initialUser }: ProfileSectionProps) {
+export default function ProfileSection({
+  initialUser,
+  canEdit,
+}: ProfileSectionProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const storeUser = useAuthStore((state) => state.user);
   const setUser = useAuthStore((s) => s.setUser);
@@ -53,11 +58,9 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
     },
   });
 
-  const onSubmitProfile = profileForm.handleSubmit(
-    ({  image, ...data }) => {
-      updateProfile({ ...data, ...(image && { image }) });
-    },
-  );
+  const onSubmitProfile = profileForm.handleSubmit(({ image, ...data }) => {
+    updateProfile({ ...data, ...(image && { image }) });
+  });
 
   return (
     <>
@@ -77,12 +80,14 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
               <h2 className="text-2xl font-bold tracking-tight break-all text-slate-950 sm:text-3xl">
                 {user?.name || "Sprinter"}
               </h2>
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="hover:text-main-purple cursor-pointer text-slate-300 transition-colors"
-              >
-                <Settings2 size={20} />
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="hover:text-main-purple cursor-pointer text-slate-300 transition-colors"
+                >
+                  <Settings2 size={20} />
+                </button>
+              )}
             </div>
           </div>
 

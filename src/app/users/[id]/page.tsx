@@ -19,12 +19,6 @@ import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
-const defaultTabs = [
-  { value: "liked", label: "찜한 모임" },
-  { value: "created", label: "주최한 모임" },
-  { value: "lounge", label: "작성한 게시물" },
-];
-
 export const metadata: Metadata = {
   title: "마이 페이지",
   description:
@@ -37,10 +31,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const cookieStore = await cookies();
   const raw = cookieStore.get("user_display")?.value;
   const initialUser = raw ? JSON.parse(raw) : null;
+  const isOwnProfile = initialUser?.id === Number(id);
+
+  const tabs = isOwnProfile
+    ? [
+        { value: "liked", label: "찜한 모임" },
+        { value: "created", label: "주최한 모임" },
+        { value: "lounge", label: "작성한 게시물" },
+      ]
+    : [
+        { value: "created", label: "주최한 모임" },
+        { value: "lounge", label: "작성한 게시물" },
+      ];
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
@@ -55,33 +66,35 @@ export default async function Page() {
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="w-full shrink-0 lg:w-[282px]">
-          <ProfileSection initialUser={initialUser} />
+          <ProfileSection initialUser={initialUser} canEdit={isOwnProfile} />
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">
-          <Tab tabs={defaultTabs} defaultValue="liked">
-            <TabsContent value="liked" className="mt-8 md:mt-12">
-              <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
-                <PrefetchBoundary
-                  prefetchFn={(qc) =>
-                    qc.prefetchInfiniteQuery<
-                      FavoritesResponse,
-                      Error,
-                      InfiniteData<FavoritesResponse>,
-                      readonly string[],
-                      string | undefined
-                    >({
-                      queryKey: QUERY_KEYS.favorites.root,
-                      queryFn: ({ pageParam }) => getFavorites(pageParam),
-                      initialPageParam: undefined,
-                      getNextPageParam,
-                    })
-                  }
-                >
-                  <FavoriteList />
-                </PrefetchBoundary>
-              </Suspense>
-            </TabsContent>
+          <Tab tabs={tabs} defaultValue="liked">
+            {isOwnProfile && (
+              <TabsContent value="liked" className="mt-8 md:mt-12">
+                <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
+                  <PrefetchBoundary
+                    prefetchFn={(qc) =>
+                      qc.prefetchInfiniteQuery<
+                        FavoritesResponse,
+                        Error,
+                        InfiniteData<FavoritesResponse>,
+                        readonly string[],
+                        string | undefined
+                      >({
+                        queryKey: QUERY_KEYS.favorites.root,
+                        queryFn: ({ pageParam }) => getFavorites(pageParam),
+                        initialPageParam: undefined,
+                        getNextPageParam,
+                      })
+                    }
+                  >
+                    <FavoriteList />
+                  </PrefetchBoundary>
+                </Suspense>
+              </TabsContent>
+            )}
 
             <TabsContent value="created" className="mt-8 !border-none md:mt-12">
               <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
