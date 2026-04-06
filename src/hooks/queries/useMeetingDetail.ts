@@ -30,12 +30,9 @@ import {
   MeetingActionErrorResponse,
   MeetingDetailApiData,
   MeetingDetailData,
-  Post,
 } from "@/types";
 import {
   deleteFavorites,
-  likePost,
-  unlikePost,
   updateFavorites,
 } from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
@@ -230,10 +227,13 @@ export function useMeetingDetailMutations({
     },
   });
 
+  const isCheckingAttendance = attendMutation.isPending;
+
   return {
     user,
     isAuthLoading,
     hasAttended,
+    isCheckingAttendance,
     joinMutation,
     cancelJoinMutation,
     favoriteMutation,

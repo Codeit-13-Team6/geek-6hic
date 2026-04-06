@@ -215,10 +215,12 @@ export interface MeetingHeaderSectionProps {
   isFavoritePending: boolean;
   isJoinPending: boolean;
   isAuthLoading: boolean;
+  actionState: MeetingActionState;
   actionLabel: string;
   isActionDisabled: boolean;
+  shouldShowShareButton: boolean;
   shouldShowHostMenu: boolean;
-  shouldShowClosedGuide: boolean;
+  shouldShowParticipantMenu: boolean;
   onJoin: () => Promise<void> | void;
   onCancelJoin: () => Promise<void> | void;
   onAttend: () => Promise<void> | void;
@@ -234,6 +236,13 @@ export interface MeetingDetailViewProps extends MeetingHeaderSectionProps {
   linkGuideText: string;
   threadGuideText: string;
 }
+
+export type MeetingActionState =
+  | "guest_join"
+  | "joinable"
+  | "attendance_checking"
+  | "attendance_ready"
+  | "attendance_done";
 
 export interface MeetingDetailContentProps {
   meetingId: number;
