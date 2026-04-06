@@ -138,7 +138,7 @@ export const getRecommendedMeetings = ({
 };
 
 const getIsHost = (detail: MeetingDetailApiData, user: User | null) =>
-  user?.id === detail.hostId || user?.id === detail.host.id;
+  user?.id === detail.hostId || user?.id === detail.host?.id;
 
 const getIsJoined = ({
   detail,

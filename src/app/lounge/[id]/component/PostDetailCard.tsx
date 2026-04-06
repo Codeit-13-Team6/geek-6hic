@@ -30,7 +30,7 @@ export function PostDetailCard({
   linkObjects = [],
   avatar = "https://avatar.vercel.sh/shadcn1",
   thumbsUp = 0,
-  comment = 0,
+comment = 0,
   isLiked = false,
   isOwner = false,
   onEdit,
