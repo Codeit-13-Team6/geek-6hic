@@ -5,9 +5,9 @@ import type {
 } from "@/types";
 import { serverFetch } from "@/lib/serverFetcher";
 
-export const getFavorites = async (
+export async function  getFavorites (
   cursor?: string,
-): Promise<FavoritesResponse> => {
+): Promise<FavoritesResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
@@ -16,9 +16,9 @@ export const getFavorites = async (
   return data;
 };
 
-export const getMyMeetings = async (
+export async function  getMyMeetings  (
   cursor?: string,
-): Promise<MyMeetingsResponse> => {
+): Promise<MyMeetingsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/meetings/my",
@@ -27,9 +27,9 @@ export const getMyMeetings = async (
   return data;
 };
 
-export const getLoungePosts = async (
+export async function  getLoungePosts (
   cursor?: string,
-): Promise<GetPostsResponse> => {
+): Promise<GetPostsResponse>  {
   const { data } = await serverFetch({
     method: "GET",
     url: "/posts",

@@ -3,7 +3,11 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
-import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from "@/lib/authCookies";
+import {
+  ACCESS_TOKEN_MAX_AGE,
+  COOKIE_OPTIONS,
+  REFRESH_TOKEN_MAX_AGE,
+} from "@/lib/authCookies";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
@@ -27,13 +31,6 @@ interface RefreshFailedError extends Error {
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  path: "/",
-  sameSite: "strict" as const,
-  secure: process.env.NODE_ENV === "production",
-};
 
 // 모듈 떨어지는거 테스팅
 const MODULE_INSTANCE_ID = Math.random().toString(36).slice(2, 8);

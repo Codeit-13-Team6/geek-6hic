@@ -33,7 +33,7 @@ export async function signupUser(
     companyName: data.introduce,
   };
 
-  const res = await axios.post("/api/auth/signup", payload, {
+  const res = await axiosInstance.post("/auth/signup", payload, {
     withCredentials: true,
   });
 

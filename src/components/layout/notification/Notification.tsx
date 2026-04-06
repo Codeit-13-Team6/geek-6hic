@@ -11,6 +11,7 @@ import NotificationCard from "@/components/layout/notification/NotificationCard"
 import type { NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 import { Trash2, CheckCheck } from "lucide-react";
+import { threadKeyword } from "@/constans/post";
 
 export default function Notification({
   isOpen,
@@ -113,14 +114,14 @@ export default function Notification({
         ) : notifications.length > 0 ? (
           <div className="flex flex-col divide-y divide-slate-50">
             {notifications.map((notification) =>
-              notification?.message?.split("_")[0] !== '"isThread' ? (
+              threadKeyword.is(notification?.message) ? (
+                <div key={notification.id}></div>
+              ) : (
                 <NotificationCard
                   key={notification.id}
                   notification={notification}
                   onClick={() => handleNotificationClick(notification)}
                 />
-              ) : (
-                <div key={notification.id}></div>
               ),
             )}
           </div>
