@@ -12,6 +12,7 @@ import { PostPayload, LoungePostFormProps } from "@/types";
 import { BtnBack } from "@/components/features/btn/BtnBack";
 
 export default function LoungePostForm({
+  id,
   initialData,
   onSubmit,
   isSubmitting,
@@ -130,7 +131,7 @@ export default function LoungePostForm({
   return (
     <div className="mx-auto w-full max-w-[900px] p-6 py-8">
       {/* 헤더 (제목 입력 & 등록 버튼) */}
-      <BtnBack />
+      <BtnBack fallbackHref={`/lounge/${id}`} />
       <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">
         <div className="relative flex-1 pl-2">
           <input

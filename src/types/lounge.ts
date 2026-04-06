@@ -17,6 +17,7 @@ export interface PostPayload {
 }
 
 export interface LoungePostFormProps {
+  id?: number;
   initialData?: {
     title: string;
     content: string; // 링크 없는 본문 콘텐츠

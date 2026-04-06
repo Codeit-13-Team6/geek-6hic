@@ -40,7 +40,7 @@ export default async function LoungeDetailPageServer({
 
   return (
     <div className="relative mx-auto w-full max-w-[900px] px-6 py-8">
-      <BtnBack />
+      <BtnBack fallbackHref="/lounge" />
 
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary

@@ -75,7 +75,7 @@ export default async function MeetingDetailPage({
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10">
-      <BtnBack />
+      <BtnBack fallbackHref="/meetings" />
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
