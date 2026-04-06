@@ -20,11 +20,7 @@ export default function MeetingCard({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   function isMeetingClosed(item: JoinedMeeting) {
-    const now = new Date();
-    return (
-      new Date(item.registrationEnd) < now ||
-      item.participantCount >= item.capacity
-    );
+    return item.participantCount >= item.capacity;
   }
 
   const visibleMeetingList =
@@ -34,7 +30,7 @@ export default function MeetingCard({
 
   return (
     <>
-      {visibleMeetingList.map((item, index) => {
+      {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
 

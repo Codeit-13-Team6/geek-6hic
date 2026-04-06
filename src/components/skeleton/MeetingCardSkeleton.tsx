@@ -18,10 +18,10 @@ export default function MeetingCardSkeleton() {
             </div>
 
             {/* 날짜 태그 */}
-            {/* <div className="mt-[14px] flex gap-2 sm:mt-10">
+            <div className="mt-[14px] flex gap-2 sm:mt-10">
               <div className="h-7 w-16 rounded-lg bg-gray-100" />
               <div className="h-7 w-14 rounded-lg bg-gray-100" />
-            </div> */}
+            </div>
 
             {/* 프로그레스바 */}
             <div className="mt-5 flex w-full items-center">

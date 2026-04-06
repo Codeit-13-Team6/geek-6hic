@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
 
-import { JoinedMeeting, User } from "@/types";
+import { User } from "@/types";
 import { useMeetingDetailQueries, useMeetingDetailMutations } from "@/hooks";
 import {
   MeetingDetailApiData,
@@ -18,13 +18,9 @@ import { AlertCircle } from "lucide-react";
 const hasRecruitmentOpen = (
   meeting: Pick<
     MeetingListItemApiData,
-    "canceledAt" | "registrationEnd" | "participantCount" | "capacity"
+    "canceledAt" | "participantCount" | "capacity"
   >,
-  currentTimestamp: number,
-) =>
-  !meeting.canceledAt &&
-  new Date(meeting.registrationEnd).getTime() > currentTimestamp &&
-  meeting.participantCount < meeting.capacity;
+) => !meeting.canceledAt && meeting.participantCount < meeting.capacity;
 
 const getStableRecommendationWeight = (
   currentMeetingId: number,
@@ -91,7 +87,6 @@ const getActionLabel = ({
 export const getRecommendedMeetings = ({
   currentMeeting,
   candidates,
-  currentTimestamp,
 }: {
   currentMeeting: MeetingDetailApiData;
   candidates: MeetingListItemApiData[];
@@ -99,8 +94,7 @@ export const getRecommendedMeetings = ({
 }) => {
   const availableCandidates = candidates.filter(
     (candidate) =>
-      candidate.id !== currentMeeting.id &&
-      hasRecruitmentOpen(candidate, currentTimestamp),
+      candidate.id !== currentMeeting.id && hasRecruitmentOpen(candidate),
   );
 
   const sameTypeCandidates = availableCandidates
@@ -236,11 +230,7 @@ export const toMeetingDetailViewModel = ({
   const isComplete = detail.isCompleted;
 
   function isMeetingClosed(detail: MeetingDetailApiData) {
-    const now = new Date();
-    const isRegistrationClosed = new Date(detail.registrationEnd) < now;
-    const isFull = detail.participantCount >= detail.capacity;
-
-    return isRegistrationClosed || isFull;
+    return detail.participantCount >= detail.capacity;
   }
 
   const isClosed = isMeetingClosed(detail);
@@ -256,8 +246,6 @@ export const toMeetingDetailViewModel = ({
     hasAttended,
     isJoined,
   });
-
-
 
   const isActionDisabled = () => {
     if (actionLabel === "모집 마감" || actionLabel === "출석 완료") return true;
