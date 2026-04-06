@@ -43,7 +43,7 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
         image: user.image ?? null,
       });
     }
-  }, [user, profileForm]);
+  }, [user, profileForm, isEditModalOpen]);
 
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
