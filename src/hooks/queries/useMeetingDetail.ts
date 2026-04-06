@@ -84,7 +84,7 @@ export function useMeetingDetailQueries(meetingId: number) {
   });
 
   const recommendationCandidatesQuery = useQuery({
-    queryKey: QUERY_KEYS.meetings.detail(meetingId),
+    queryKey: QUERY_KEYS.meetings.recommendationCandidates,
     queryFn: () => getMeetingRecommendationCandidates(),
   });
 
@@ -170,9 +170,20 @@ export function useMeetingDetailMutations({
     mutationFn: (nextValues: Partial<MeetingDetailData>) =>
       updateMeeting(meetingId, nextValues),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.meetings.detail(meetingId),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.detail(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.list,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.my,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.joined,
+        }),
+      ]);
 
       ToastCommon({ message: "모임 수정이 반영되었어요.", size: "sm" });
     },
@@ -244,9 +255,6 @@ export function useMeetingDetailMutations({
       }
     },
     handleEditMeeting: async (nextValues: Partial<MeetingDetailData>) => {
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.meetings.root,
-      });
       await updateMeetingMutation.mutateAsync(nextValues);
     },
     handleDeleteMeeting: () => {
