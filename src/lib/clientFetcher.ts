@@ -25,7 +25,11 @@ axiosInstance.interceptors.response.use(
       // 이미 로그인 페이지에 있으면 리다이렉트하지 않음 (무한 루프 방지)
       if (window.location.pathname !== "/login") {
         window.location.href = "/login";
-        return Promise.reject(error);
+        // 에러 객체에 속성 추가
+        const errorWithFlag = error;
+        errorWithFlag._isRedirecting = true;
+
+        return Promise.reject(errorWithFlag);
       }
     }
 
