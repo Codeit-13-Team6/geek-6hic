@@ -35,6 +35,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   );
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const queryClient = useQueryClient();
   const previewImageUrlRef = useRef("");
@@ -150,6 +152,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   };
 
   const handleSubmitMeeting = async () => {
+    if (isSubmittingRef.current) return;
+
     const nextCategoryErrors = validateMeetingCategoryStep(formValues);
     const nextBasicInfoErrors = validateMeetingBasicInfoStep(formValues);
     const nextScheduleErrors = validateMeetingScheduleStep(formValues);
@@ -171,6 +175,9 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       setCurrentStep(3);
       return;
     }
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
 
     try {
       const payload = toCreateMeetingPayload(formValues);
@@ -196,6 +203,9 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     } catch (error) {
       console.error("meeting create error", error);
       ToastCommon({ message: "모임 생성에 실패했습니다." });
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -204,6 +214,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     totalSteps: TOTAL_MEETING_FORM_STEPS,
     formValues,
     isImageUploading,
+    isSubmitting,
     imageErrorMessage,
     basicInfoErrors,
     scheduleErrors,

@@ -58,7 +58,12 @@ export default async function Page({
     sortOrder?: string;
   }>;
 }) {
+
   const params = await searchParams;
+  const type = params.type ?? "";
+  const sortBy = params.sortBy ?? "dateTime";
+  const sortOrder = params.sortOrder ?? "desc";
+
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up">
@@ -99,6 +104,7 @@ export default async function Page({
       </div>
 
       <Suspense
+        key={`${type}-${sortBy}-${sortOrder}`} // key값으로 스켈레톤 범위 추가
         fallback={
           <div className="mx-auto max-w-[1280px]">
             <MeetingFilterSkeleton />
@@ -115,21 +121,17 @@ export default async function Page({
               readonly unknown[],
               string | undefined
             >({
-              queryKey: QUERY_KEYS.meetings.listParams({
-                type: params.type ?? "",
-                sortBy: params.sortBy ?? "dateTime",
-                sortOrder: params.sortOrder ?? "desc",
-              }),
+              queryKey: QUERY_KEYS.meetings.listParams({ type, sortBy, sortOrder }),
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
                 return getMeetingList({
-                  type: params.type ?? "",
-                  sortBy: (params.sortBy ?? "dateTime") as
+                  type,
+                  sortBy: sortBy as
                     | "dateTime"
                     | "registrationEnd"
                     | "participantCount",
-                  sortOrder: (params.sortOrder ?? "desc") as "asc" | "desc",
+                  sortOrder: sortOrder as "asc" | "desc",
                   size: 10,
                   ...(cursor ? { cursor } : {}),
                 });

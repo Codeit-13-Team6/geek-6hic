@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
@@ -22,6 +22,14 @@ export default function LoungePostForm({
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [linkUrl, setLinkUrl] = useState("");
+  const isSubmittingRef = useRef(false);
+
+  // isSubmitting(isPending)이 false로 돌아오면 ref도 함께 초기화
+  useEffect(() => {
+    if (!isSubmitting) {
+      isSubmittingRef.current = false;
+    }
+  }, [isSubmitting]);
 
   // 링크 커스텀 훅 (모든 링크 로직 위임)
   const {
@@ -70,6 +78,8 @@ export default function LoungePostForm({
 
   // 게시물 제출 핸들러 (유틸 함수로 합친 뒤 부모에게 전달)
   const handleLocalSubmit = () => {
+    if (isSubmittingRef.current) return;
+
     const trimmedTitle = title.trim();
     const trimmedContentText = plainText.trim();
 
@@ -112,6 +122,7 @@ export default function LoungePostForm({
       payload.image = thumbnailImage;
     }
 
+    isSubmittingRef.current = true;
     onSubmit(payload);
   };
 
