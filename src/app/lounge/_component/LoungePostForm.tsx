@@ -139,7 +139,7 @@ export default function LoungePostForm({
   }, [initialData, parsedContent, parsedLinks, setLinkList, setThumbnailImage]);
 
   return (
-    <div className="mx-auto w-full max-w-[900px] px-6 py-8 2xl:px-0">
+    <div className="mx-auto w-full max-w-[900px] px-6 py-10 2xl:px-0">
       {/* 헤더 (제목 입력 & 등록 버튼) */}
       <BtnBack fallbackHref={`/lounge/${id}`} />
       <div className="mb-5 flex !h-[40px] items-center justify-between gap-6 sm:mb-8 sm:!h-[50px] lg:mb-10">

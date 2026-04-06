@@ -39,7 +39,7 @@ export default async function LoungeDetailPageServer({
   const postId = Number(id);
 
   return (
-    <div className="relative mx-auto w-full max-w-[900px] px-6 py-8">
+    <div className="relative mx-auto w-full max-w-[900px] px-6 py-10 2xl:px-0">
       <BtnBack fallbackHref="/lounge" />
 
       <Suspense fallback={<DetailSkeleton />}>
