@@ -104,7 +104,7 @@ export default async function LoungePage() {
       </Suspense>
 
       <Link href="/lounge/create">
-        <BtnCommon className="bg-main-purple fixed right-6 bottom-8 z-50 flex h-14 w-14 items-center justify-center rounded-full border-none text-white shadow-2xl transition-transform hover:scale-110 sm:hidden">
+        <BtnCommon className="bg-main-purple fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border-none text-white shadow-2xl transition-transform hover:scale-110 sm:hidden">
           <span className="pb-1 text-3xl font-light">+</span>
         </BtnCommon>
       </Link>
