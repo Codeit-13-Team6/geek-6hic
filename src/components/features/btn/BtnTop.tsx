@@ -38,13 +38,17 @@ export function BtnTop() {
   }, []);
 
   const positionClass = pathname === "/meetings"
-    ? "lg:bottom-36 lg:right-16 sm:right-6 bottom-[88px] right-6"
+    ? "lg:bottom-34 lg:right-16 sm:right-6 bottom-[92px] right-6"
     : pathname === "/lounge"
-    ? "sm:bottom-6 bottom-[88px] right-6"
-    : "bottom-6 right-6";
+      ? "sm:bottom-6 bottom-[92px] right-6"
+      : "bottom-6 right-6";
 
   return (
     <button
+      type="button"
+      aria-label="Scroll to top"
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
         "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 active:scale-95",
