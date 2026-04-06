@@ -7,11 +7,12 @@ import CommentSkeleton from "@/components/skeleton/CommentSkeleton";
 import { getPostDetail, getPostCommentsServer } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { BtnBack } from "@/components/features/btn/BtnBack";
 
-type Props = {
+interface Props {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -38,7 +39,9 @@ export default async function LoungeDetailPageServer({
   const postId = Number(id);
 
   return (
-    <div className="relative w-full mx-auto max-w-[900px] px-6 2xl:px-0 py-10 sm:py-20">
+    <div className="relative mx-auto w-full max-w-[900px] px-6 py-8">
+      <BtnBack fallbackHref="/lounge" />
+
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
