@@ -29,7 +29,9 @@ export const QUERY_KEYS = {
       "detail",
       `${String(meetingId)}`,
     ],
-    recommendationCandidates: ["meetings", "recommendationCandidates"] as const,
+    recommendations: (meetingId: number) =>
+      ["meetings", meetingId, "recommendations"] as const,
+
     list: ["meetings", "list"] as const,
     listParams: (params: { type: string; sortBy: string; sortOrder: string }) =>
       ["meetings", "list", params] as const,

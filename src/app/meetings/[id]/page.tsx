@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import {
-  dehydrate,
-  HydrationBoundary,
+  // dehydrate,
+  // HydrationBoundary,
   type InfiniteData,
   QueryClient,
 } from "@tanstack/react-query";
@@ -11,7 +11,6 @@ import {
   getCurrentUserOnServer,
   getMeetingDetail,
   getMeetingParticipants,
-  getMeetingRecommendationCandidates,
   getTodayAttendanceStatus,
 } from "@/api/server/meetingDetail";
 import {
@@ -87,10 +86,6 @@ export default async function MeetingDetailPage({
               qc.prefetchQuery({
                 queryKey: QUERY_KEYS.meetings.participants(resolvedMeetingId),
                 queryFn: () => getMeetingParticipants(resolvedMeetingId),
-              }),
-              qc.prefetchQuery({
-                queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
-                queryFn: () => getMeetingRecommendationCandidates(),
               }),
               qc.prefetchInfiniteQuery<
                 GetPostsResponse,

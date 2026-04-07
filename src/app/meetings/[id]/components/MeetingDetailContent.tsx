@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { MeetingDetailView } from "@/app/meetings/[id]/components/MeetingDetailView";
 import { useMeetingDetailMutations, useMeetingDetailQueries } from "@/hooks";
@@ -9,54 +8,21 @@ import type {
   MeetingDetailApiData,
   MeetingDetailContentProps,
   MeetingDetailData,
-  MeetingListItemApiData,
   MeetingParticipant,
-  RecommendedMeetingItem,
   User,
 } from "@/types";
-
-const hasRecruitmentOpen = (
-  meeting: Pick<
-    MeetingListItemApiData,
-    "canceledAt" | "participantCount" | "capacity"
-  >,
-  currentTimestamp: number,
-) =>
-  !meeting.canceledAt &&
-  new Date(meeting.registrationEnd).getTime() > currentTimestamp &&
-  meeting.participantCount < meeting.capacity;
-
-const getStableRecommendationWeight = (
-  currentMeetingId: number,
-  candidateId: number,
-) => (candidateId * 31 + currentMeetingId * 17) % 997;
-
-const toRecommendedMeetingItem = (
-  meeting: MeetingListItemApiData,
-): RecommendedMeetingItem => ({
-  id: meeting.id,
-  name: meeting.name,
-  image: meeting.image,
-  participantCount: meeting.participantCount,
-  capacity: meeting.capacity,
-  registrationEnd: meeting.registrationEnd,
-  dateTime: meeting.dateTime,
-});
 
 const getActionState = ({
   isLoggedIn,
   isParticipant,
-  isCheckingAttendance,
   hasAttended,
 }: {
   isLoggedIn: boolean;
   isParticipant: boolean;
-  isCheckingAttendance: boolean;
   hasAttended: boolean;
 }): MeetingActionState => {
   if (!isLoggedIn) return "guest_join";
   if (!isParticipant) return "joinable";
-  if (isCheckingAttendance) return "attendance_checking";
   if (hasAttended) return "attendance_done";
   return "attendance_ready";
 };
@@ -73,62 +39,11 @@ const getActionUI = ({
       return { label: "참여하기", disabled: false };
     case "joinable":
       return { label: "참여하기", disabled: isCapacityFull };
-    case "attendance_checking":
-      return { label: "출석 확인 중", disabled: true };
     case "attendance_done":
       return { label: "출석완료", disabled: true };
     case "attendance_ready":
       return { label: "출석하기", disabled: false };
   }
-};
-
-export const getRecommendedMeetings = ({
-  currentMeeting,
-  candidates,
-  currentTimestamp,
-}: {
-  currentMeeting: MeetingDetailApiData;
-  candidates: MeetingListItemApiData[];
-  currentTimestamp: number;
-}) => {
-  const availableCandidates = candidates.filter(
-    (candidate) =>
-      candidate.id !== currentMeeting.id &&
-      hasRecruitmentOpen(candidate, currentTimestamp),
-  );
-
-  const sameTypeCandidates = availableCandidates
-    .filter((candidate) => candidate.type === currentMeeting.type)
-    .sort(
-      (left, right) =>
-        new Date(left.dateTime).getTime() - new Date(right.dateTime).getTime(),
-    );
-
-  const recommendedCandidates: MeetingListItemApiData[] = [];
-  const usedIds = new Set<number>();
-
-  sameTypeCandidates.slice(0, 2).forEach((candidate) => {
-    recommendedCandidates.push(candidate);
-    usedIds.add(candidate.id);
-  });
-
-  const otherCandidates = availableCandidates
-    .filter((candidate) => !usedIds.has(candidate.id))
-    .sort(
-      (left, right) =>
-        getStableRecommendationWeight(currentMeeting.id, left.id) -
-        getStableRecommendationWeight(currentMeeting.id, right.id),
-    );
-
-  otherCandidates.forEach((candidate) => {
-    if (recommendedCandidates.length >= 4) {
-      return;
-    }
-
-    recommendedCandidates.push(candidate);
-  });
-
-  return recommendedCandidates.slice(0, 4).map(toRecommendedMeetingItem);
 };
 
 const getIsHost = (detail: MeetingDetailApiData, user: User | null) =>
@@ -158,19 +73,13 @@ const getIsJoined = ({
 export const toMeetingDetailViewModel = ({
   detail,
   participants,
-  recommendationCandidates,
-  currentTimestamp,
   user,
   hasAttended,
-  isCheckingAttendance,
 }: {
   detail: MeetingDetailApiData;
   participants: MeetingParticipant[];
-  recommendationCandidates: MeetingListItemApiData[];
-  currentTimestamp: number;
   user: User | null;
   hasAttended: boolean;
-  isCheckingAttendance: boolean;
 }) => {
   const isHost = getIsHost(detail, user);
   const isLoggedIn = Boolean(user);
@@ -186,18 +95,11 @@ export const toMeetingDetailViewModel = ({
   const actionState = getActionState({
     isLoggedIn,
     isParticipant,
-    isCheckingAttendance,
     hasAttended,
   });
   const actionUI = getActionUI({
     actionState,
     isCapacityFull,
-  });
-
-  const recommendedMeetings = getRecommendedMeetings({
-    currentMeeting: detail,
-    candidates: recommendationCandidates,
-    currentTimestamp,
   });
 
   const data: MeetingDetailData = {
@@ -228,7 +130,6 @@ export const toMeetingDetailViewModel = ({
     isJoined,
     isLoggedIn,
     threads: [],
-    recommendedMeetings,
   };
 
   const canViewLink = isLoggedIn && isParticipant;
@@ -263,14 +164,12 @@ export function MeetingDetailContent({
   meetingId,
   hasAttendedInitially,
 }: MeetingDetailContentProps) {
-  const [currentTimestamp] = useState(() => Date.now());
-  const { detailQuery, participantsQuery, recommendationCandidatesQuery } =
-    useMeetingDetailQueries(meetingId);
+  const { detailQuery, participantsQuery } = useMeetingDetailQueries(meetingId);
+
   const {
     user,
     isAuthLoading,
     hasAttended,
-    isCheckingAttendance,
     joinMutation,
     cancelJoinMutation,
     favoriteMutation,
@@ -289,8 +188,6 @@ export function MeetingDetailContent({
 
   const detail = detailQuery.data;
   const participants = participantsQuery.data?.data ?? [];
-  const recommendationCandidates =
-    recommendationCandidatesQuery.data?.data ?? [];
 
   if (detailQuery.isLoading || !detail) {
     return (
@@ -324,11 +221,8 @@ export function MeetingDetailContent({
   const viewModel = toMeetingDetailViewModel({
     detail,
     participants,
-    recommendationCandidates,
-    currentTimestamp,
     user,
     hasAttended,
-    isCheckingAttendance,
   });
 
   return (

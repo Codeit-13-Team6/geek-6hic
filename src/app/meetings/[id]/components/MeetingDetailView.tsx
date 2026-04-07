@@ -64,7 +64,7 @@ export function MeetingDetailView({
         canWriteThread={canWriteThread}
         guideText={threadGuideText}
       />
-      <RecommendedMeetingsSection data={data} />
+      <RecommendedMeetingsSection meetingId={data.id} />
     </div>
   );
 }
