@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import parse, { HTMLReactParserOptions, Element } from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
 import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
@@ -16,11 +17,11 @@ import {
 } from "@/components/ui/DropdownCommon";
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { Link2 } from "lucide-react";
-import { CompactLinkList } from "../../../../components/features/list/CompactLinkList";
+import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
-
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/icon/HeartIcon";
+import CodeBlock from "./CodeBlock";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
@@ -30,13 +31,35 @@ export function PostDetailCard({
   linkObjects = [],
   avatar = "https://avatar.vercel.sh/shadcn1",
   thumbsUp = 0,
-comment = 0,
+  comment = 0,
   isLiked = false,
   isOwner = false,
   onEdit,
   onDelete,
   onLike,
 }: PostDetailCardProps) {
+  // 1. HTML 파싱 옵션 설정
+  const options: HTMLReactParserOptions = {
+    replace: (domNode) => {
+      if (domNode instanceof Element && domNode.name === "pre") {
+        const codeElement = domNode.children.find(
+          (child) => child instanceof Element && child.name === "code",
+        ) as Element | undefined;
+
+        const targetNode = codeElement
+          ? codeElement.children[0]
+          : domNode.children[0];
+        const codeText = (targetNode as any)?.data || "";
+
+        const className =
+          codeElement?.attribs.class || domNode.attribs.class || "";
+        const language = className.replace(/language-/, "") || "javascript";
+
+        return <CodeBlock code={codeText} language={language} />;
+      }
+    },
+  };
+
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
 
   return (
@@ -84,19 +107,15 @@ comment = 0,
           className={cn(
             "prose prose-slate max-w-none leading-relaxed text-slate-600",
             "prose-p:my-1",
-
-            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:tracking-tight prose-headings:mt-8 prose-headings:mb-3",
-            "prose-strong:text-slate-900 prose-strong:font-bold",
-            "prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-main-purple/60 prose-blockquote:bg-slate-100/60 prose-blockquote:py-4 prose-blockquote:pl-5 prose-blockquote:text-slate-500 prose-blockquote:font-semibold",
-
-            "prose-pre:bg-slate-50 prose-pre:text-slate-600 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:shadow-none prose-pre:my-5",
+            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:mt-5",
 
             "prose-code:bg-slate-100 prose-code:text-rose-500 prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none",
 
-            "prose-ul:list-disc prose-ol:list-decimal prose-li:my-1",
+            "prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0 prose-pre:prose-code:text-inherit",
           )}
-          dangerouslySetInnerHTML={{ __html: processedContent }}
-        />
+        >
+          {parse(processedContent, options)}
+        </div>
 
         {linkObjects && linkObjects.length > 0 && (
           <div className="mt-12 border-t border-slate-100 pt-8">
