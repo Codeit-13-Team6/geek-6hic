@@ -48,13 +48,11 @@ export default async function Page({
   const initialUser = raw ? JSON.parse(raw) : null;
   const currentUser = await getCurrentUserOnServer();
   const isOwnProfile = initialUser?.id === Number(id);
-  const profileUser =
-    currentUser?.teamId && Number.isFinite(Number(id))
-      ? await getPublicUserProfile({
-          teamId: currentUser.teamId,
-          userId: Number(id),
-        })
-      : initialUser;
+  const profileUser = Number.isFinite(Number(id))
+    ? await getPublicUserProfile({
+        userId: Number(id),
+      })
+    : initialUser;
 
   const tabs = isOwnProfile
     ? [
