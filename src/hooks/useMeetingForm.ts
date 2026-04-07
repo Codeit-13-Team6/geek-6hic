@@ -45,15 +45,22 @@ export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   };
 };
 
-export const toEditMeetingPayload = (formValues: MeetingFormValues) => {
-  const secretTime = formValues.isPrivate ? generateSecretTime() : null;
+export const toEditMeetingPayload = (formValues: MeetingFormValues, originalDateTime: string) => {
+  let dateTime: string;
+  if (!formValues.isPrivate) {
+    dateTime = buildNormalDateTime();
+  } else if (isSecretMeeting(originalDateTime)) {
+    dateTime = originalDateTime;
+  } else {
+    dateTime = buildSecretDateTime(generateSecretTime());
+  }
   return {
     type: formValues.category,
     name: formValues.name,
     description: formValues.description,
     link: formValues.link,
     image: formValues.imageUrl || formValues.previewImageUrl || null,
-    dateTime: secretTime ? buildSecretDateTime(secretTime) : buildNormalDateTime(),
+    dateTime,
     registrationEnd: "2099-12-31T23:59:59.000Z",
     capacity: Number(formValues.capacity),
   };
@@ -397,7 +404,7 @@ export function useEditMeetingForm({
     setIsSubmitting(true);
 
     try {
-      await onSubmit(toEditMeetingPayload(formValues));
+      await onSubmit(toEditMeetingPayload(formValues, detail.dateTime));
       onSuccess?.();
     } catch {
       // updateMeetingMutation toast handles the error
