@@ -12,7 +12,7 @@ export default function GradeCard({
   tierLabel = "새싹 스프린터 🌱",
 }: GradeCardProps) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[40px] bg-[#260656] p-8 text-white shadow-lg lg:p-10">
+    <div className=" relative h-full overflow-hidden rounded-[40px] bg-[#260656] p-8 text-white shadow-lg lg:p-10 lg:mt-4">
       {/* 배경 장식 (데코레이션) */}
       <div className="absolute -right-6 -bottom-6 text-9xl font-black italic opacity-10 select-none">
         CG

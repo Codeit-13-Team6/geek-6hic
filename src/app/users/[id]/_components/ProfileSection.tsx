@@ -90,7 +90,7 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 Contact
               </p>
-              <p className="truncate text-sm font-semibold text-slate-600">
+              <p className="truncate text-sm font-semibold text-slate-600 line-clamp-2 break-all">
                 {user?.email}
               </p>
             </div>

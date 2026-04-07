@@ -107,7 +107,7 @@ body {
 
 /* 커스텀 스크롤 */
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

@@ -19,7 +19,7 @@ import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import GamificationSidebar from "@/components/features/card/GamificationSidebar";
-import FlipWrapper from "./_components/FlipWrapper";
+// import FlipWrapper from "./_components/FlipWrapper";
 import StatGrid from "./_components/StatGrid";
 import GradeCard from "./_components/GridCard";
 
@@ -58,22 +58,24 @@ export default async function Page() {
       </div>
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-16">
-        <aside className="no-scrollbar flex w-full shrink-0 snap-x snap-mandatory flex-row items-start gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0">
+        <aside className="custom-scrollbar flex w-full shrink-0 flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0 snap-x snap-mandatory">
           {/* 1. 뒤집히는 카드 구역 (프로필 & Grade) */}
-          <div className="min-w-[90%] snap-center md:min-w-full lg:min-w-full">
-            <FlipWrapper>
+          <div className="min-w-[180%] lg:min-w-full flex items-stretch gap-4 lg:w-full lg:flex-col">
+            <div className="w-1/2 lg:w-full snap-center lg:min-w-full">
               <ProfileSection initialUser={initialUser} />
+            </div>
+            <div className="w-1/2 lg:w-full snap-center">
               <GradeCard daysSinceJoin={42} />
-            </FlipWrapper>
+            </div>
           </div>
 
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
-          <div className="min-w-[90%] snap-center lg:min-w-full">
+          <div className="min-w-[90%] lg:min-w-full snap-center">
             <StatGrid
               postCount={10}
               meetingCount={2}
               favoriteCount={5}
-              insight="오늘도 즐거운 코딩 되세요! 🚀"
+            // insight="오늘도 즐거운 코딩 되세요! 🚀"
             />
           </div>
         </aside>
