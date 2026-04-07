@@ -47,6 +47,12 @@ export async function getUserMeetings({
           meeting.createdBy === userId,
       ),
     );
+    if (data.hasMore && !data.nextCursor) {
+      hasMore = false;
+      nextCursor = undefined;
+      break;
+    }
+
     hasMore = data.hasMore;
     nextCursor = data.nextCursor ?? undefined;
   }
@@ -89,6 +95,12 @@ export async function getUserLoungePosts({
     collected.push(
       ...filteredPage.data.filter((post: Post) => post.author.id === userId),
     );
+    if (filteredPage.hasMore && !filteredPage.nextCursor) {
+      hasMore = false;
+      nextCursor = undefined;
+      break;
+    }
+
     hasMore = filteredPage.hasMore;
     nextCursor = filteredPage.nextCursor ?? undefined;
   }

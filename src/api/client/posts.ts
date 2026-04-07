@@ -44,6 +44,12 @@ export async function getUserPosts(params: {
     collected.push(
       ...filteredPage.data.filter((post: Post) => post.author.id === userId),
     );
+    if (filteredPage.hasMore && !filteredPage.nextCursor) {
+      hasMore = false;
+      nextCursor = undefined;
+      break;
+    }
+
     hasMore = filteredPage.hasMore;
     nextCursor = filteredPage.nextCursor ?? undefined;
   }

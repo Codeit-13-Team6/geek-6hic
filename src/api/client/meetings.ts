@@ -62,6 +62,12 @@ export async function getUserMeetings(params: {
           meeting.createdBy === userId,
       ),
     );
+    if (data.hasMore && !data.nextCursor) {
+      hasMore = false;
+      nextCursor = undefined;
+      break;
+    }
+
     hasMore = data.hasMore;
     nextCursor = data.nextCursor ?? undefined;
   }
