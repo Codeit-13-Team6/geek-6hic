@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createComment,
@@ -25,6 +26,7 @@ export default function CommentSection({
   postId,
   isThread = false,
 }: CommentSectionProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
@@ -202,12 +204,14 @@ export default function CommentSection({
               key={item.id}
               id={item.id}
               name={item.author.name}
+              authorId={item.author.id}
               img={item.author.image}
               content={item.content}
               date={new Date(item.createdAt)}
               isOwner={userId !== null && userId === item.author.id}
               onDelete={handleDelete}
               onEdit={handleEdit}
+              onAuthorClick={() => router.push(`/users/${item.author.id}`)}
             />
           ) : (
             <div key={item.id} className="hidden" />
