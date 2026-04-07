@@ -71,11 +71,7 @@ export default function MeetingFilters() {
 
   return (
     <>
-      <CreateMeetingModal
-        meetingTypeOptions={tabList
-          .filter((item) => item.value !== "")
-          .map(({ value, label }) => ({ value, label }))}
-      />
+      <CreateMeetingModal />
       <div className="animate-fade-up flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
           {tabList.map(({ value, label }) => (

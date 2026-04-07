@@ -34,10 +34,6 @@ export function EditMeetingModal({
     },
   });
 
-  const handleClose = () => {
-    onOpenChange(false);
-  };
-
   const requestClose = () => {
     setIsCloseConfirmOpen(true);
   };
@@ -48,11 +44,7 @@ export function EditMeetingModal({
         disablePointerDismissal
         isOpen={isOpen}
         onOpenChange={(nextIsOpen) => {
-          if (!nextIsOpen) {
-            requestClose();
-            return;
-          }
-          onOpenChange(nextIsOpen);
+          if (!nextIsOpen) requestClose();
         }}
         contentClassName="w-full -mt-10 sm:max-w-[540px]  rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
@@ -69,30 +61,13 @@ export function EditMeetingModal({
 
           <div className="space-y-6">
             <MeetingModalForm
-              values={{
-                category: formValues.category,
-                name: formValues.name,
-                description: formValues.description,
-                link: formValues.link,
-                imageFile: formValues.imageFile,
-                previewImageUrl: formValues.previewImageUrl,
-                imageUrl: formValues.imageUrl,
-                capacity: formValues.capacity,
-              }}
-              errors={{
-                category: errors.category,
-                name: errors.name,
-                description: errors.description,
-                link: errors.link,
-                imageUrl: errors.imageUrl,
-                capacity: errors.capacity,
-              }}
+              values={formValues}
+              errors={errors}
               isImageUploading={isImageUploading}
               onChange={handleChange}
               onChangeImage={handleChangeMeetingImage}
               onRemoveImage={handleRemoveMeetingImage}
               showCategoryField
-              showImageMeta={false}
             />
           </div>
 
@@ -149,7 +124,7 @@ export function EditMeetingModal({
             className="h-14 w-full rounded-2xl bg-transparent font-bold text-slate-300 transition-all hover:bg-slate-50"
             onClick={() => {
               setIsCloseConfirmOpen(false);
-              handleClose();
+              onOpenChange(false);
             }}
           >
             나가기

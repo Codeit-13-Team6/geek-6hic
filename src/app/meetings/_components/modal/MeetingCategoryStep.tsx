@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   MeetingCategoryStepProps,
   MeetingCategoryItem,
+  type MeetingType,
 } from "@/types";
 import {
   Sparkles,
@@ -14,6 +15,9 @@ import {
   FolderKanban,
   Briefcase,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { getMeetingTypes } from "@/api/client";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
@@ -33,16 +37,21 @@ function getMeetingCategoryIcon(name: string) {
 }
 
 export function MeetingCategoryStep({
-  meetingTypeOptions = [],
   value,
   onChange,
 }: MeetingCategoryStepProps) {
-  const meetingCategoryList: MeetingCategoryItem[] = meetingTypeOptions.map(
-    ({ value, label }) => ({
-      value,
-      label,
-      icon: getMeetingCategoryIcon(label),
-      className: label === "기타" ? "col-span-2" : undefined,
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: QUERY_KEYS.meetings.meetingType,
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const meetingCategoryList: MeetingCategoryItem[] = meetingTypes.map(
+    (type) => ({
+      value: type.name,
+      label: type.name,
+      icon: getMeetingCategoryIcon(type.name),
+      className: type.name === "기타" ? "col-span-2" : undefined,
     }),
   );
 

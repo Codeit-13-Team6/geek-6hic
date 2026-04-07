@@ -9,27 +9,21 @@ import { useCreateMeetingForm } from "@/hooks";
 import { AlertCircle, Plus, StepForwardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { CreateMeetingModalProps } from "@/types";
 
-export function CreateMeetingModal({
-  meetingTypeOptions = [],
-}: CreateMeetingModalProps) {
+export function CreateMeetingModal() {
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
   const {
     currentStep,
     totalSteps,
     formValues,
     isImageUploading,
-    imageErrorMessage,
-    basicInfoErrors,
-    scheduleErrors,
-    isTouchedStep,
     isSubmitting,
-    handleChangeCategory,
-    handleChangeBasicInfo,
+    errors,
+    handleChange,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
     handlePrevStep,
@@ -45,31 +39,19 @@ export function CreateMeetingModal({
     setIsOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
   const requestCloseModal = () => {
     setIsCloseConfirmOpen(true);
   };
 
-  const handleOpenChangeModal = (nextIsOpen: boolean) => {
-    if (!nextIsOpen) {
-      requestCloseModal();
-      return;
-    }
-    setIsOpen(true);
-  };
-
-  const floatingBtnStyle =
-    "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95 " +
-    "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2 " +
-    "lg:right-16 lg:bottom-16";
-
   return (
     <>
       <BtnCommon
-        className={cn(floatingBtnStyle, "group !p-0 sm:!p-6")}
+        className={cn(
+          "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
+          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2",
+          "lg:right-16 lg:bottom-16",
+          "group !p-0 sm:!p-6",
+        )}
         type="button"
         onClick={() => loginGuardAction(handleOpenModal)}
       >
@@ -86,7 +68,9 @@ export function CreateMeetingModal({
       <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
-        onOpenChange={handleOpenChangeModal}
+        onOpenChange={(nextIsOpen) => {
+          if (!nextIsOpen) requestCloseModal();
+        }}
         contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
@@ -103,38 +87,19 @@ export function CreateMeetingModal({
           <div>
             {currentStep === 1 && (
               <MeetingCategoryStep
-                meetingTypeOptions={meetingTypeOptions}
                 value={formValues.category}
-                onChange={handleChangeCategory}
+                onChange={(value) => handleChange({ category: value })}
               />
             )}
             {currentStep === 2 && (
               <div className="pt-6 space-y-6">
                 <MeetingModalForm
-                  meetingTypeOptions={meetingTypeOptions}
-                  values={{
-                    name: formValues.name,
-                    description: formValues.description,
-                    link: formValues.link,
-                    imageFile: formValues.imageFile,
-                    previewImageUrl: formValues.previewImageUrl,
-                    imageUrl: formValues.imageUrl,
-                    capacity: formValues.capacity,
-                  }}
-                  errors={{
-                    name: isTouchedStep(2) ? basicInfoErrors.name : "",
-                    description: isTouchedStep(2)
-                      ? basicInfoErrors.description
-                      : "",
-                    link: isTouchedStep(2) ? basicInfoErrors.link : "",
-                    imageUrl: imageErrorMessage,
-                    capacity: isTouchedStep(2) ? scheduleErrors.capacity : "",
-                  }}
+                  values={formValues}
+                  errors={errors}
                   isImageUploading={isImageUploading}
-                  onChange={handleChangeBasicInfo}
+                  onChange={handleChange}
                   onChangeImage={handleChangeMeetingImage}
                   onRemoveImage={handleRemoveMeetingImage}
-                  showImageMeta
                 />
               </div>
             )}
@@ -198,7 +163,7 @@ export function CreateMeetingModal({
             className="h-14 w-full rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
             onClick={() => {
               setIsCloseConfirmOpen(false);
-              handleCloseModal();
+              setIsOpen(false);
             }}
           >
             <span className="text-base">나가기</span>

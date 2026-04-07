@@ -177,7 +177,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   const basicInfoErrors = validateMeetingBasicInfoStep(formValues);
   const scheduleErrors = validateMeetingScheduleStep(formValues);
 
-  const isTouchedStep = (step: number) => touchedStepList.includes(step);
+  const isTouched = (step: number) => touchedStepList.includes(step);
 
   const markTouchedStep = (step: number) => {
     setTouchedStepList((prev) => {
@@ -186,11 +186,16 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     });
   };
 
-  const handleChangeCategory = (value: string) => {
-    setFormValues((prev) => ({ ...prev, category: value }));
+  const errors = {
+    name: isTouched(2) ? basicInfoErrors.name : "",
+    description: isTouched(2) ? basicInfoErrors.description : "",
+    link: isTouched(2) ? basicInfoErrors.link : "",
+    imageUrl: imageErrorMessage,
+    capacity: isTouched(2) ? scheduleErrors.capacity : "",
   };
 
-  const handleChangeBasicInfo = (nextValues: {
+  const handleChange = (nextValues: {
+    category?: string;
     name?: string;
     description?: string;
     link?: string;
@@ -274,12 +279,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     formValues,
     isImageUploading,
     isSubmitting,
-    imageErrorMessage,
-    basicInfoErrors,
-    scheduleErrors,
-    isTouchedStep,
-    handleChangeCategory,
-    handleChangeBasicInfo,
+    errors,
+    handleChange,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
     handlePrevStep,

@@ -3,7 +3,6 @@ import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
 import { LucideIcon, LucideProps } from "lucide-react";
-import { TabItem } from "@/types/common";
 
 export interface MeetingMember {
   id: number;
@@ -316,7 +315,6 @@ export interface MeetingFormErrors
 }
 
 export interface MeetingBasicInfoSectionProps {
-  meetingTypeOptions?: TabItem[];
   values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
   errors: MeetingBasicInfoErrors & { capacity: string };
@@ -330,15 +328,10 @@ export interface MeetingBasicInfoSectionProps {
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
   showCategoryField?: boolean;
-  showImageMeta?: boolean;
 }
 
 export interface MeetingCategoryStepProps {
-  meetingTypeOptions?: TabItem[];
   value: string;
   onChange: (value: string) => void;
 }
 
-export interface CreateMeetingModalProps {
-  meetingTypeOptions?: TabItem[];
-}
