@@ -10,6 +10,7 @@ import {
 } from "@/components/shadcnOrigin/select";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
+import { CheckboxCommon } from "@/components/ui/CheckboxCommon";
 import {
   MeetingModalFormProps,
   type MeetingType,
@@ -138,6 +139,14 @@ export function MeetingModalForm({
         }}
         isDestructive={Boolean(errors.capacity)}
         hintText={errors.capacity}
+      />
+
+      <CheckboxCommon
+        label="비밀 모임으로 생성"
+        checked={values.isPrivate}
+        onChange={(event) => {
+          onChange({ isPrivate: event.target.checked });
+        }}
       />
 
       <div className="space-y-2">

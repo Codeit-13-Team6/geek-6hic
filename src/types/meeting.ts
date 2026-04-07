@@ -1,4 +1,3 @@
-import type { DateRange } from "react-day-picker";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
 
@@ -228,6 +227,7 @@ export interface MeetingBasicInfoValues {
   imageFile: File | null;
   previewImageUrl: string;
   imageUrl: string | null;
+  isPrivate: boolean;
 }
 
 export interface MeetingBasicInfoErrors {
@@ -264,6 +264,7 @@ export interface MeetingModalFormProps {
     description?: string;
     link?: string;
     capacity?: string;
+    isPrivate?: boolean;
   }) => void;
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;

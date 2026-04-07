@@ -98,11 +98,9 @@ export function useMeetingJoinMutations(meetingId: number) {
 
   const joinMutation = useMutation({
     mutationFn: () => joinMeeting(meetingId),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) }),
-      ]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) });
       ToastCommon({ message: "모임에 참여했어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
@@ -112,11 +110,9 @@ export function useMeetingJoinMutations(meetingId: number) {
 
   const cancelJoinMutation = useMutation({
     mutationFn: () => cancelMeetingJoin(meetingId),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) }),
-      ]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) });
       ToastCommon({ message: "참여를 취소했어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
@@ -126,8 +122,8 @@ export function useMeetingJoinMutations(meetingId: number) {
 
   return {
     isJoinPending: joinMutation.isPending || cancelJoinMutation.isPending,
-    handleJoinMeeting: async () => { await joinMutation.mutateAsync(); },
-    handleCancelJoinMeeting: async () => { await cancelJoinMutation.mutateAsync(); },
+    handleJoinMeeting: () => { joinMutation.mutate(); },
+    handleCancelJoinMeeting: () => { cancelJoinMutation.mutate(); },
   };
 }
 
