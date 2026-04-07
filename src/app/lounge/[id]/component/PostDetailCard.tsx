@@ -1,6 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import parse, {
+  HTMLReactParserOptions,
+  Element,
+  DOMNode,
+} from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
 import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
@@ -16,11 +21,11 @@ import {
 } from "@/components/ui/DropdownCommon";
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { Link2 } from "lucide-react";
-import { CompactLinkList } from "../../../../components/features/list/CompactLinkList";
+import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
-
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/icon/HeartIcon";
+import { CodeBlock } from "./CodeBlock";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
@@ -31,13 +36,55 @@ export function PostDetailCard({
   linkObjects = [],
   avatar = "https://avatar.vercel.sh/shadcn1",
   thumbsUp = 0,
-comment = 0,
+  comment = 0,
   isLiked = false,
   isOwner = false,
   onEdit,
   onDelete,
   onLike,
 }: PostDetailCardProps) {
+  const extractText = (node: DOMNode): string => {
+    // 텍스트 노드인 경우
+    if (node.type === "text") {
+      return node.data || "";
+    }
+    // 태그 노드이고 자식이 있는 경우
+    if (node instanceof Element && node.children) {
+      return (node.children as DOMNode[])
+        .map((child) => extractText(child))
+        .join("");
+    }
+    return "";
+  };
+
+  const options: HTMLReactParserOptions = {
+    replace: (domNode) => {
+      if (domNode.type !== "tag") return;
+
+      const element = domNode as Element;
+
+      // 방법 1: <pre> 태그 처리
+      if (element.name === "pre") {
+        const language = element.attribs["data-language"] || "code";
+        const codeText = extractText(element).trim();
+        return <CodeBlock code={codeText} language={language} />;
+      }
+
+      // 방법 2: Quill 2.0 컨테이너 (quill 업데이트 시 대비 방어 코드)
+      if (element.attribs?.class?.includes("ql-code-block-container")) {
+        const language = element.attribs["data-language"] || "typescript";
+
+        const codeText = (element.children as DOMNode[])
+          .filter((child) => child.type === "tag") // 줄 단위 div만 필터링
+          .map((child) => extractText(child))
+          .join("\n")
+          .trim();
+
+        return <CodeBlock code={codeText} language={language} />;
+      }
+    },
+  };
+
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
 
   return (
@@ -89,19 +136,15 @@ comment = 0,
           className={cn(
             "prose prose-slate max-w-none leading-relaxed text-slate-600",
             "prose-p:my-1",
-
-            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:tracking-tight prose-headings:mt-8 prose-headings:mb-3",
-            "prose-strong:text-slate-900 prose-strong:font-bold",
-            "prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-main-purple/60 prose-blockquote:bg-slate-100/60 prose-blockquote:py-4 prose-blockquote:pl-5 prose-blockquote:text-slate-500 prose-blockquote:font-semibold",
-
-            "prose-pre:bg-slate-50 prose-pre:text-slate-600 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:shadow-none prose-pre:my-5",
+            "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:mt-5",
 
             "prose-code:bg-slate-100 prose-code:text-rose-500 prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none",
 
-            "prose-ul:list-disc prose-ol:list-decimal prose-li:my-1",
+            "prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0 prose-pre:prose-code:text-inherit",
           )}
-          dangerouslySetInnerHTML={{ __html: processedContent }}
-        />
+        >
+          {parse(processedContent, options)}
+        </div>
 
         {linkObjects && linkObjects.length > 0 && (
           <div className="mt-12 border-t border-slate-100 pt-8">
