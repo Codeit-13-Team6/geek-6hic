@@ -18,6 +18,43 @@ export async function getPosts(
   return filterThreadPosts(res);
 }
 
+export async function getUserPosts(params: {
+  userId: number;
+  cursor?: string;
+  size?: number;
+}): Promise<GetPostsResponse> {
+  const { userId, cursor, size = 20 } = params;
+  const collected: GetPostsResponse["data"] = [];
+  let nextCursor = cursor;
+  let hasMore = true;
+
+  while (hasMore && collected.length < size) {
+    const { data: res } = await axiosInstance.get("/posts", {
+      params: {
+        keyword: "",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        size: 50,
+        ...(nextCursor ? { cursor: nextCursor } : {}),
+      },
+    });
+
+    const filteredPage = filterThreadPosts(res);
+
+    collected.push(
+      ...filteredPage.data.filter((post: Post) => post.author.id === userId),
+    );
+    hasMore = filteredPage.hasMore;
+    nextCursor = filteredPage.nextCursor ?? undefined;
+  }
+
+  return {
+    data: collected,
+    hasMore,
+    nextCursor: nextCursor ?? null,
+  };
+}
+
 export async function getPostDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
