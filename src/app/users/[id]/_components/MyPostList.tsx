@@ -1,55 +1,50 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "@/api/client/posts";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getMyPosts } from "@/api/client/posts";
 import PostCard from "@/components/features/card/PostCard";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
-import { useIntersectionObserver } from "@/hooks";
-import { filterThreadPosts } from "@/lib/postUtils";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
+import { useState } from "react";
+
+const MY_POSTS_PAGE_SIZE = 20;
 
 export default function MyPostList() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const [page, setPage] = useState(1);
+  const currentOffset = (page - 1) * MY_POSTS_PAGE_SIZE;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: QUERY_KEYS.posts.my,
-      queryFn: ({ pageParam }) =>
-        getPosts({
-          keyword: "",
-          sortBy: "createdAt",
-          sortOrder: "desc",
-          size: 20,
-          ...(pageParam ? { cursor: pageParam } : {}),
-        }),
-      initialPageParam: undefined as string | undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
-      select: (data) => ({
-        ...data,
-        pages: data.pages.map((page) =>
-          filterThreadPosts({
-            ...page,
-            data: page.data.filter((post: Post) => post.author.id === user?.id),
-          }),
-        ),
+  const { data, isFetching, isLoading } = useQuery({
+    queryKey: QUERY_KEYS.posts.myPage(page, MY_POSTS_PAGE_SIZE),
+    queryFn: () =>
+      getMyPosts({
+        offset: currentOffset,
+        limit: MY_POSTS_PAGE_SIZE,
       }),
-      staleTime: 1000 * 60 * 5,
-    });
+    enabled: !!user?.id,
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const bottomRef = useIntersectionObserver(
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  );
+  const posts = data?.data ?? [];
+  const totalCount = data?.totalCount ?? posts.length;
+  const knownPageCount = Math.max(1, Math.ceil(totalCount / MY_POSTS_PAGE_SIZE));
 
-  const allPosts = data?.pages.flatMap((page) => page.data) ?? [];
+  const handlePageChange = (targetPage: number) => {
+    if (targetPage < 1 || targetPage > knownPageCount) return;
+    setPage(targetPage);
+  };
 
-  if (allPosts.length === 0 && !isFetchingNextPage) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (posts.length === 0 && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
         <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
@@ -68,7 +63,7 @@ export default function MyPostList() {
   return (
     <div className="flex w-full flex-col">
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {allPosts.map((post: Post) => (
+        {posts.map((post: Post) => (
           <div
             key={post.id}
             className="group overflow-hidden rounded-[24px] border border-slate-100/50 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]"
@@ -90,22 +85,23 @@ export default function MyPostList() {
           </div>
         ))}
       </div>
-      <div ref={bottomRef} className="flex h-32 items-center justify-center">
-        {isFetchingNextPage ? (
+
+      <div className="mt-10 flex flex-col items-center gap-4">
+        {isFetching && (
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
               Updating Lounge...
             </span>
           </div>
-        ) : (
-          !hasNextPage &&
-          allPosts.length > 0 && (
-            <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
-              End of Posts.
-            </span>
-          )
         )}
+
+        <NumberPagination
+          href="#"
+          page={page}
+          totalPages={knownPageCount}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

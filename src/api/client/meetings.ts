@@ -27,6 +27,8 @@ export async function getMeetingTypes(): Promise<MeetingType[]> {
 }
 
 export async function getMeeting(params?: {
+  offset?: number;
+  limit?: number;
   cursor?: string;
   size?: number;
 }): Promise<MyMeetingsResponse> {
@@ -113,6 +115,8 @@ export async function deleteFavorites(meetingId: number): Promise<void> {
 }
 
 export async function getFavorites(params?: {
+  offset?: number;
+  limit?: number;
   cursor?: string;
   size?: number;
 }): Promise<FavoritesResponse> {

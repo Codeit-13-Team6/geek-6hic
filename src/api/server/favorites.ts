@@ -4,32 +4,43 @@ import type {
   MyMeetingsResponse,
 } from "@/types";
 import { serverFetch } from "@/lib/serverFetcher";
+import { filterThreadPosts } from "@/lib/postUtils";
 
-export async function  getFavorites (
-  cursor?: string,
+export async function getFavorites(
+  params: {
+    offset?: number;
+    limit?: number;
+    cursor?: string;
+    size?: number;
+  } = {},
 ): Promise<FavoritesResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
+    params,
   });
   return data;
-};
+}
 
-export async function  getMyMeetings  (
-  cursor?: string,
+export async function getMyMeetings(
+  params: {
+    offset?: number;
+    limit?: number;
+    cursor?: string;
+    size?: number;
+  } = {},
 ): Promise<MyMeetingsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/meetings/my",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
+    params,
   });
   return data;
-};
+}
 
-export async function  getLoungePosts (
+export async function getLoungePosts(
   cursor?: string,
-): Promise<GetPostsResponse>  {
+): Promise<GetPostsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/posts",
@@ -41,5 +52,5 @@ export async function  getLoungePosts (
       ...(cursor ? { cursor } : {}),
     },
   });
-  return data;
-};
+  return filterThreadPosts(data);
+}

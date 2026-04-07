@@ -61,6 +61,22 @@ export async function getUserPosts(params: {
   };
 }
 
+export async function getMyPosts(params: {
+  offset?: number;
+  limit?: number;
+} = {}): Promise<GetPostsResponse> {
+  const { data: res } = await axiosInstance.get("/users/me/posts", {
+    params: {
+      sortBy: "createdAt",
+      sortOrder: "desc",
+      offset: params.offset ?? 0,
+      limit: params.limit ?? 20,
+    },
+  });
+
+  return filterThreadPosts(res);
+}
+
 export async function getPostDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;

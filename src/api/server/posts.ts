@@ -44,3 +44,23 @@ export async function getPosts(cursor?: string): Promise<GetPostsResponse> {
 
   return filterThreadPosts(data);
 }
+
+export async function getMyPostsServer(
+  params: {
+    offset?: number;
+    limit?: number;
+  } = {},
+): Promise<GetPostsResponse> {
+  const { data } = await serverFetch({
+    method: "GET",
+    url: "/users/me/posts",
+    params: {
+      sortBy: "createdAt",
+      sortOrder: "desc",
+      offset: params.offset ?? 0,
+      limit: params.limit ?? 20,
+    },
+  });
+
+  return filterThreadPosts(data);
+}

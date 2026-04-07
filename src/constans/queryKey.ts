@@ -1,10 +1,14 @@
 export const QUERY_KEYS = {
   favorites: {
     root: ["favorite"] as const,
+    page: (page: number, limit: number) =>
+      ["favorite", "page", `${page}`, `${limit}`] as const,
   },
   posts: {
     root: ["posts"] as const, // 하위애들까지 전부 초기화
     my: ["posts", "my"] as const,
+    myPage: (page: number, limit: number) =>
+      ["posts", "my", "page", `${page}`, `${limit}`] as const,
     user: (userId: number | string) =>
       ["posts", "user", `${String(userId)}`] as const,
     hot: ["posts", "hot"] as const,
@@ -23,6 +27,8 @@ export const QUERY_KEYS = {
   meetings: {
     root: ["meetings"] as const,
     my: ["meetings", "my"] as const,
+    myPage: (page: number, limit: number) =>
+      ["meetings", "my", "page", `${page}`, `${limit}`] as const,
     user: (userId: number | string) =>
       ["meetings", "user", `${String(userId)}`] as const,
     joined: ["meetings", "joined"] as const,

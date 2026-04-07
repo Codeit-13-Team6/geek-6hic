@@ -12,23 +12,25 @@ import { Suspense } from "react";
 import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type {
   FavoritesResponse,
-  MyMeetingsResponse,
   GetPostsResponse,
+  MyMeetingsResponse,
 } from "@/types";
-import type { InfiniteData } from "@tanstack/react-query";
 import {
   getFavorites,
-  getLoungePosts,
   getMyMeetings,
+  getMyPostsServer,
   getPublicUserProfile,
   getUserLoungePosts,
   getUserMeetings,
 } from "@/api/server";
-import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
 import GradeCard from "./_components/GridCard";
+
+const FAVORITES_PAGE_SIZE = 10;
+const MY_MEETINGS_PAGE_SIZE = 10;
+const MY_POSTS_PAGE_SIZE = 20;
 
 export const metadata: Metadata = {
   title: "마이 페이지",
@@ -111,17 +113,13 @@ export default async function Page({
                 <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
-                      qc.prefetchInfiniteQuery<
-                        FavoritesResponse,
-                        Error,
-                        InfiniteData<FavoritesResponse>,
-                        readonly string[],
-                        string | undefined
-                      >({
-                        queryKey: QUERY_KEYS.favorites.root,
-                        queryFn: ({ pageParam }) => getFavorites(pageParam),
-                        initialPageParam: undefined,
-                        getNextPageParam,
+                      qc.prefetchQuery<FavoritesResponse>({
+                        queryKey: QUERY_KEYS.favorites.page(1, FAVORITES_PAGE_SIZE),
+                        queryFn: () =>
+                          getFavorites({
+                            offset: 0,
+                            limit: FAVORITES_PAGE_SIZE,
+                          }),
                       })
                     }
                   >
@@ -136,35 +134,28 @@ export default async function Page({
                 <PrefetchBoundary
                   prefetchFn={(qc) =>
                     isOwnProfile
-                      ? qc.prefetchInfiniteQuery<
-                          MyMeetingsResponse,
-                          Error,
-                          InfiniteData<MyMeetingsResponse>,
-                          readonly string[],
-                          string | undefined
-                        >({
-                          queryKey: QUERY_KEYS.meetings.my,
-                          queryFn: ({ pageParam }) => getMyMeetings(pageParam),
-                          initialPageParam: undefined,
-                          getNextPageParam,
+                      ? qc.prefetchQuery<MyMeetingsResponse>({
+                          queryKey: QUERY_KEYS.meetings.myPage(1, MY_MEETINGS_PAGE_SIZE),
+                          queryFn: () =>
+                            getMyMeetings({
+                              offset: 0,
+                              limit: MY_MEETINGS_PAGE_SIZE,
+                            }),
                         })
-                      : qc.prefetchInfiniteQuery<
-                          MyMeetingsResponse,
-                          Error,
-                          InfiniteData<MyMeetingsResponse>,
-                          ReturnType<typeof QUERY_KEYS.meetings.user>,
-                          string | undefined
-                        >({
+                      : qc.prefetchInfiniteQuery({
                           queryKey: QUERY_KEYS.meetings.user(profileUserId),
                           queryFn: ({ pageParam }) =>
                             getUserMeetings({
                               userId: profileUserId,
                               ...(pageParam
-                                ? { cursor: pageParam, size: 10 }
-                                : { size: 10 }),
+                                ? { cursor: pageParam, size: MY_MEETINGS_PAGE_SIZE }
+                                : { size: MY_MEETINGS_PAGE_SIZE }),
                             }),
                           initialPageParam: undefined,
-                          getNextPageParam,
+                          getNextPageParam: (lastPage: MyMeetingsResponse) =>
+                            lastPage.hasMore
+                              ? (lastPage.nextCursor ?? undefined)
+                              : undefined,
                         })
                   }
                 >
@@ -182,35 +173,28 @@ export default async function Page({
                 <PrefetchBoundary
                   prefetchFn={(qc) =>
                     isOwnProfile
-                      ? qc.prefetchInfiniteQuery<
-                          GetPostsResponse,
-                          Error,
-                          InfiniteData<GetPostsResponse>,
-                          readonly string[],
-                          string | undefined
-                        >({
-                          queryKey: QUERY_KEYS.posts.my,
-                          queryFn: ({ pageParam }) => getLoungePosts(pageParam),
-                          initialPageParam: undefined,
-                          getNextPageParam,
+                      ? qc.prefetchQuery<GetPostsResponse>({
+                          queryKey: QUERY_KEYS.posts.myPage(1, MY_POSTS_PAGE_SIZE),
+                          queryFn: () =>
+                            getMyPostsServer({
+                              offset: 0,
+                              limit: MY_POSTS_PAGE_SIZE,
+                            }),
                         })
-                      : qc.prefetchInfiniteQuery<
-                          GetPostsResponse,
-                          Error,
-                          InfiniteData<GetPostsResponse>,
-                          ReturnType<typeof QUERY_KEYS.posts.user>,
-                          string | undefined
-                        >({
+                      : qc.prefetchInfiniteQuery({
                           queryKey: QUERY_KEYS.posts.user(profileUserId),
                           queryFn: ({ pageParam }) =>
                             getUserLoungePosts({
                               userId: profileUserId,
                               ...(pageParam
-                                ? { cursor: pageParam, size: 20 }
-                                : { size: 20 }),
+                                ? { cursor: pageParam, size: MY_POSTS_PAGE_SIZE }
+                                : { size: MY_POSTS_PAGE_SIZE }),
                             }),
                           initialPageParam: undefined,
-                          getNextPageParam,
+                          getNextPageParam: (lastPage: GetPostsResponse) =>
+                            lastPage.hasMore
+                              ? (lastPage.nextCursor ?? undefined)
+                              : undefined,
                         })
                   }
                 >
