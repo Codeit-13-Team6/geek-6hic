@@ -1,3 +1,6 @@
+[github_app]
+pr_commands = ["/describe", "/review"]
+
 [config]
 model = "llama3-70b-8192"
 language = "Korean"
@@ -22,5 +25,5 @@ extra_instructions = """
 [pr_reviewer]
 extra_instructions = """
 1. 반드시 '한국어'로 작성하세요.
-2. 200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요. 이 규칙을 무시하세요.
+2. 200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요.
 """
