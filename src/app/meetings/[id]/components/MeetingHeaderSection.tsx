@@ -18,7 +18,13 @@ import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Users2 } from "lucide-react";
-import { useMeetingDetailMutations } from "@/hooks";
+import {
+  useMeetingJoinMutations,
+  useMeetingHostMutations,
+  useMeetingAttendMutation,
+  useMeetingDetailFavoriteMutation,
+} from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
 import type {
   MeetingHeaderSectionProps,
   MeetingMember,
@@ -62,20 +68,12 @@ export function MeetingHeaderSection({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-  const {
-    isAuthLoading,
-    hasAttended,
-    isCheckingAttendance,
-    isJoinPending,
-    isFavoritePending,
-    handleJoinMeeting,
-    handleCancelJoinMeeting,
-    handleEditMeeting,
-    handleDeleteMeeting,
-    handleToggleFavorite,
-    handleAttendMeeting,
-  } = useMeetingDetailMutations(meetingId);
+  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } = useMeetingJoinMutations(meetingId);
+  const { handleEditMeeting, handleDeleteMeeting } = useMeetingHostMutations(meetingId);
+  const { hasAttended, isCheckingAttendance, handleAttendMeeting } = useMeetingAttendMutation(meetingId);
+  const { isFavoritePending, handleToggleFavorite } = useMeetingDetailFavoriteMutation(meetingId);
 
   const handleShare = async () => {
     const isSuccess = await copyToClipboard(window.location.href);
@@ -88,6 +86,7 @@ export function MeetingHeaderSection({
 
   const isParticipant = isHost || isJoined;
   const isCapacityFull = detail.participantCount >= detail.capacity;
+  const isActionPending = isJoinPending || isCheckingAttendance;
 
   const menuConfig = {
     showShare: isLoggedIn && isParticipant,
@@ -117,12 +116,9 @@ export function MeetingHeaderSection({
 
   const progressValue = (detail.participantCount / detail.capacity) * 100;
   
-  const { visibleParticipants, hiddenParticipantCount } = (() => {
-    const avatars = participants.map((p) => p.user);
-    const visible = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
-    const hidden = Math.max(0, detail.participantCount - visible.length);
-    return { visibleParticipants: visible, hiddenParticipantCount: hidden };
-  })();
+  const avatars = participants.map((p) => p.user);
+  const visibleParticipants = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+  const hiddenParticipantCount = Math.max(0, detail.participantCount - visibleParticipants.length);
 
   const handleFavoriteClick = () => {
     if (isAuthLoading || isFavoritePending) return;
@@ -268,12 +264,12 @@ export function MeetingHeaderSection({
             <BtnCommon
               type="button"
               size="md"
-              disabled={action.disabled || isJoinPending || isAuthLoading}
+              disabled={action.disabled || isActionPending || isAuthLoading}
               onClick={() => loginGuardAction(action.handler)}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
             >
               <span className="tracking-widest sm:text-sm">
-                {isJoinPending ? "PROCESSING..." : action.label}
+                {isActionPending ? "PROCESSING..." : action.label}
               </span>
             </BtnCommon>
             <HeartIcon
