@@ -77,11 +77,12 @@ export default function CommentSection({
   const [page, setPage] = useState(1);
   const linkObjects = extractUrlsFromText(threadContent);
   const currentOffset = (page - 1) * COMMENTS_PAGE_LIMIT;
+  const activeCommentsQueryKey = isThread
+    ? QUERY_KEYS.comments.detail(postId)
+    : QUERY_KEYS.comments.page(postId, page, COMMENTS_PAGE_LIMIT);
 
   const { data: comments } = useQuery({
-    queryKey: isThread
-      ? QUERY_KEYS.comments.detail(postId)
-      : QUERY_KEYS.comments.page(postId, page, COMMENTS_PAGE_LIMIT),
+    queryKey: activeCommentsQueryKey,
     queryFn: () =>
       isThread
         ? getComments(postId)
@@ -101,6 +102,14 @@ export default function CommentSection({
   const { mutate: postComment, isPending: isPosting } = useMutation({
     mutationFn: (newContent: string) => createComment(postId, newContent),
     onSuccess: () => {
+      if (!isThread) {
+        setPage(1);
+        document.getElementById("comments")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.comments.detail(postId),
       });
@@ -119,7 +128,7 @@ export default function CommentSection({
   const { mutate: removeComment } = useMutation({
     mutationFn: (commentId: number) => deleteComment(postId, commentId),
     ...useOptimisticMutation<GetCommentsResponse, number>(queryClient, {
-      queryKey: QUERY_KEYS.comments.detail(postId),
+      queryKey: activeCommentsQueryKey,
       updater: (old, commentId) => ({
         ...old,
         data: old.data.filter((c) => c.id !== commentId),
@@ -144,7 +153,7 @@ export default function CommentSection({
       GetCommentsResponse,
       { commentId: number; content: string }
     >(queryClient, {
-      queryKey: QUERY_KEYS.comments.detail(postId),
+      queryKey: activeCommentsQueryKey,
       updater: (old, { commentId, content }) => ({
         ...old,
         data: old.data.map((c) => (c.id === commentId ? { ...c, content } : c)),
@@ -185,7 +194,7 @@ export default function CommentSection({
   };
 
   return (
-    <section className={"mt-10 flex flex-col gap-6"}>
+    <section id="comments" className={"mt-10 flex flex-col gap-6"}>
       {!isThread && (
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-bold tracking-tighter text-slate-900 sm:text-xl">
