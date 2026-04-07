@@ -260,9 +260,6 @@ export interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   detail: MeetingDetailApiData;
-  isHost: boolean;
-  isJoined: boolean;
-  isLoggedIn: boolean;
 }
 
 // --- 모임 생성/수정 폼 ---

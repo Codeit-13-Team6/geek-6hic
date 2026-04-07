@@ -25,6 +25,8 @@ import type {
   MeetingHeaderSectionProps,
   MeetingMember,
 } from "@/types";
+import { copyToClipboard } from "@/lib/utils";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -79,11 +81,19 @@ export function MeetingHeaderSection({
     attendMutation,
     handleJoinMeeting,
     handleCancelJoinMeeting,
-    handleShareMeeting,
     handleDeleteMeeting,
     handleToggleFavorite,
     handleAttendMeeting,
   } = useMeetingDetailMutations({ meetingId, initialHasAttended: hasAttendedInitially });
+
+  const handleShare = async () => {
+    const isSuccess = await copyToClipboard(window.location.href);
+    if (isSuccess) {
+      ToastCommon({ message: "모임 링크가 복사되었어요." });
+    } else {
+      ToastCommon({ message: "링크 복사에 실패했습니다." });
+    }
+  };
 
   const isParticipant = isHost || isJoined;
   const isCapacityFull = detail.participantCount >= detail.capacity;
@@ -169,7 +179,7 @@ export function MeetingHeaderSection({
                     type="button"
                     size="sm"
                     variant="teritary"
-                    onClick={() => loginGuardAction(handleShareMeeting)}
+                    onClick={() => loginGuardAction(handleShare)}
                     className="!rounded-2xl"
                   >
                     공유
@@ -290,9 +300,6 @@ export function MeetingHeaderSection({
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         detail={detail}
-        isHost={isHost}
-        isJoined={isJoined}
-        isLoggedIn={isLoggedIn}
       />
 
       <ConfirmDeleteModal
