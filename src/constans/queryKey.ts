@@ -5,6 +5,8 @@ export const QUERY_KEYS = {
   posts: {
     root: ["posts"] as const, // 하위애들까지 전부 초기화
     my: ["posts", "my"] as const,
+    user: (userId: number | string) =>
+      ["posts", "user", `${String(userId)}`] as const,
     hot: ["posts", "hot"] as const,
     list: ["posts", "list"] as const,
     listParams: (params: {
@@ -21,6 +23,8 @@ export const QUERY_KEYS = {
   meetings: {
     root: ["meetings"] as const,
     my: ["meetings", "my"] as const,
+    user: (userId: number | string) =>
+      ["meetings", "user", `${String(userId)}`] as const,
     joined: ["meetings", "joined"] as const,
     participants: (meetingId: number | string) =>
       ["meetings", "participants", `${String(meetingId)}`] as const,
@@ -29,7 +33,10 @@ export const QUERY_KEYS = {
       "detail",
       `${String(meetingId)}`,
     ],
-    recommendationCandidates: ["meetings", "recommendationCandidates"] as const,
+    attendance: (meetingId: number | string) =>
+      ["meetings", "attendance", `${String(meetingId)}`] as const,
+    recommendations: (meetingId: number) =>
+      ["meetings", meetingId, "recommendations"] as const,
     list: ["meetings", "list"] as const,
     listParams: (params: { type: string; sortBy: string; sortOrder: string }) =>
       ["meetings", "list", params] as const,

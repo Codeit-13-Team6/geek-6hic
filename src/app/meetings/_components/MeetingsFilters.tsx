@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/Calendar";
 import {
   Select,
   SelectContent,
@@ -15,11 +13,6 @@ import {
 import type { MeetingType } from "@/types";
 import Image from "next/image";
 import downIcon from "@/assets/icon/chevron/chevron-down.svg";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/shadcnOrigin/popover";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
@@ -27,8 +20,6 @@ import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
 import { CreateMeetingModal } from "@/app/meetings/_components/modal/CreateMeetingModal";
 
 const SORT_OPTIONS = [
-  { value: "dateTime", label: "모임일시" },
-  { value: "registrationEnd", label: "마감임박 순" },
   { value: "participantCount", label: "참여인원 순" },
 ] as const;
 
@@ -37,19 +28,17 @@ export default function MeetingFilters() {
     tabValue,
     sortBy,
     sortOrder,
-    dateRange,
     setTabValue,
     setSortBy,
     setSortOrder,
-    setDateRange,
   } = useMeetingSearchParams();
 
   const [tabList, setTabList] = useState<{ value: string; label: string }[]>([
     { value: "", label: "전체" },
   ]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [draftDate, setDraftDate] = useState<DateRange | undefined>(dateRange);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [draftDate, setDraftDate] = useState<DateRange | undefined>(dateRange);
 
   const currentSortLabel = SORT_OPTIONS.find(
     (opt) => opt.value === sortBy,
@@ -60,17 +49,16 @@ export default function MeetingFilters() {
     queryFn: getMeetingTypes,
     staleTime: 1000 * 60 * 5,
   });
-
-  const handleCalendarReset = () => {
-    setDraftDate(undefined);
-    setDateRange(undefined);
-    setIsOpen(false);
-  };
-
-  const handleCalendarApply = () => {
-    setDateRange(draftDate);
-    setIsOpen(false);
-  };
+  // const handleCalendarReset = () => {
+  //   setDraftDate(undefined);
+  //   setDateRange(undefined);
+  //   setIsOpen(false);
+  // };
+  //
+  // const handleCalendarApply = () => {
+  //   setDateRange(draftDate);
+  //   setIsOpen(false);
+  // };
 
   useEffect(() => {
     if (meetingTypes.length > 0) {
@@ -83,11 +71,7 @@ export default function MeetingFilters() {
 
   return (
     <>
-      <CreateMeetingModal
-        meetingTypeOptions={tabList
-          .filter((item) => item.value !== "")
-          .map(({ value, label }) => ({ value, label }))}
-      />
+      <CreateMeetingModal />
       <div className="animate-fade-up flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
           {tabList.map(({ value, label }) => (

@@ -8,6 +8,8 @@ export function useDragScroll() {
   const isDragging = useRef(false);
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    const container = scrollRef.current;
+    if (!container) return;
     isDown.current = true;
     isDragging.current = false;
     startX.current = e.pageX - scrollRef.current!.offsetLeft;
@@ -22,7 +24,9 @@ export function useDragScroll() {
     scrollRef.current!.scrollLeft = scrollLeft.current - (x - startX.current);
   };
 
-  const handleMouseUp = () => { isDown.current = false; };
+  const handleMouseUp = () => {
+    isDown.current = false;
+  };
 
   const handleClickCapture = (e: React.MouseEvent) => {
     if (isDragging.current) {

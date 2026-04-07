@@ -11,14 +11,14 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import {
-  MeetingBasicInfoSectionProps, type MeetingType,
+  MeetingBasicInfoSectionProps,
+  type MeetingType,
 } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
 
-export function MeetingBasicInfoSection({
-  meetingTypeOptions: defaultMeetingTypeOptions = [],
+export function MeetingModalForm({
   values,
   errors,
   isImageUploading,
@@ -26,45 +26,13 @@ export function MeetingBasicInfoSection({
   onChangeImage,
   onRemoveImage,
   showCategoryField = false,
-  showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
-
 
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
     staleTime: 1000 * 60 * 5,
   });
-
-
-  const meetingTypeOptions = (() => {
-    if (!values.category) {
-      return defaultMeetingTypeOptions;
-    }
-
-    const hasCurrentType = defaultMeetingTypeOptions.some(
-      (option) => option.value === values.category,
-    );
-
-    if (hasCurrentType) {
-      return defaultMeetingTypeOptions;
-    }
-
-    console.log([
-      {
-        value: values.category,
-        label: values.category || "현재 모임 종류",
-      },
-      ...defaultMeetingTypeOptions,
-    ]);
-    return [
-      {
-        value: values.category,
-        label: values.category || "현재 모임 종류",
-      },
-      ...defaultMeetingTypeOptions,
-    ];
-  })();
 
   return (
     <div className="space-y-5">
@@ -154,6 +122,24 @@ export function MeetingBasicInfoSection({
         hintText={errors.link}
       />
 
+      <InputCommon
+        id="capacity"
+        type="text"
+        inputMode="numeric"
+        label="모임 정원"
+        isRequired
+        placeholder="숫자만 입력해주세요"
+        value={values.capacity}
+        onChange={(event) => {
+          onChange({ capacity: event.target.value.replace(/[^0-9]/g, "") });
+        }}
+        onClear={() => {
+          onChange({ capacity: "" });
+        }}
+        isDestructive={Boolean(errors.capacity)}
+        hintText={errors.capacity}
+      />
+
       <div className="space-y-2">
         <p className="text-[14px] font-medium text-gray-800">
           이미지
@@ -169,17 +155,15 @@ export function MeetingBasicInfoSection({
           onRemove={onRemoveImage}
         />
 
-        {showImageMeta ? (
-          <p className="text-sm text-gray-500">
-            {values.imageFile ? values.imageFile.name : "선택된 파일 없음"}
-          </p>
+        {values.imageFile ? (
+          <p className="text-sm text-gray-500">{values.imageFile.name}</p>
         ) : null}
 
         {isImageUploading ? (
           <p className="text-sm text-gray-500">이미지 업로드 중..</p>
         ) : null}
 
-        {showImageMeta && values.imageUrl ? (
+        {!isImageUploading && values.imageUrl && !values.imageFile ? (
           <p className="text-sm text-green-600">이미지 업로드 완료</p>
         ) : null}
 
@@ -187,6 +171,8 @@ export function MeetingBasicInfoSection({
           <p className="text-error text-sm">{errors.imageUrl}</p>
         ) : null}
       </div>
+
+
     </div>
   );
 }

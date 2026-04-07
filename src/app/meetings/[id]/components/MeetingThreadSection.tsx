@@ -12,8 +12,12 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 export function MeetingThreadSection({
   meetingId,
   canWriteThread,
-  guideText,
+  isLoggedIn,
 }: MeetingThreadSectionProps) {
+  const guideText = isLoggedIn
+    ? "모임에 참여하면 스레드를 작성할 수 있어요."
+    : "로그인 후 모임에 참여하면 스레드를 작성할 수 있어요.";
+
   const { data: threadPost, isLoading: isPostLoading } = useQuery({
     queryKey: ["meeting-thread-post", meetingId],
     queryFn: () => getThreadPost(meetingId),

@@ -2,42 +2,27 @@
 
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "@/api/client/posts";
+import { getUserPosts } from "@/api/client/posts";
 import PostCard from "@/components/features/card/PostCard";
-import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks";
-import { filterThreadPosts } from "@/lib/postUtils";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
-export default function MyPostList() {
+export default function UserPostList({ userId }: { userId: number }) {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: QUERY_KEYS.posts.my,
+      queryKey: QUERY_KEYS.posts.user(userId),
       queryFn: ({ pageParam }) =>
-        getPosts({
-          keyword: "",
-          sortBy: "createdAt",
-          sortOrder: "desc",
-          size: 20,
-          ...(pageParam ? { cursor: pageParam } : {}),
+        getUserPosts({
+          userId,
+          ...(pageParam ? { cursor: pageParam, size: 20 } : { size: 20 }),
         }),
       initialPageParam: undefined as string | undefined,
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
-      select: (data) => ({
-        ...data,
-        pages: data.pages.map((page) =>
-          filterThreadPosts({
-            ...page,
-            data: page.data.filter((post: Post) => post.author.id === user?.id),
-          }),
-        ),
-      }),
       staleTime: 1000 * 60 * 5,
     });
 
@@ -90,6 +75,7 @@ export default function MyPostList() {
           </div>
         ))}
       </div>
+
       <div ref={bottomRef} className="flex h-32 items-center justify-center">
         {isFetchingNextPage ? (
           <div className="flex items-center gap-3">

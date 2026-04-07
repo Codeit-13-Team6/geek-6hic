@@ -1,9 +1,6 @@
 import type { DateRange } from "react-day-picker";
-import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
-import { LucideIcon, LucideProps } from "lucide-react";
-import { TabItem } from "@/types/common";
 
 export interface MeetingMember {
   id: number;
@@ -85,7 +82,6 @@ export interface MeetingDetailData extends MeetingResponseBase {
   isJoined: boolean;
   isLoggedIn: boolean;
   threads: MeetingThreadItem[];
-  recommendedMeetings: RecommendedMeetingItem[];
 }
 
 //내가 참여한 모임에 대한 추가 정보
@@ -128,6 +124,10 @@ export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
 export type MeetingListResponse = CursorResponse<MeetingResponseBase>;
+
+export interface MeetingsRecommendResponse {
+  data: RecommendedMeetingItem[];
+}
 
 export interface MeetingJoinResponse {
   message: string;
@@ -214,43 +214,22 @@ export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
 }
 
 export interface MeetingHeaderSectionProps {
-  data: MeetingDetailData;
-  participantAvatars: MeetingMember[];
-  isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
-  actionState: MeetingActionState;
-  actionLabel: string;
-  isActionDisabled: boolean;
-  shouldShowShareButton: boolean;
-  shouldShowHostMenu: boolean;
-  shouldShowParticipantMenu: boolean;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
-  onAttend: () => Promise<void> | void;
-  onShare: () => Promise<void> | void;
-  onEdit: (nextValues: Partial<MeetingDetailData>) => void;
-  onDelete: () => void;
-  onToggleFavorite: () => void;
-}
-
-export interface MeetingDetailViewProps extends MeetingHeaderSectionProps {
-  canViewLink: boolean;
-  canWriteThread: boolean;
-  linkGuideText: string;
-  threadGuideText: string;
+  meetingId: number;
+  detail: MeetingDetailApiData;
+  participants: MeetingParticipant[];
+  isHost: boolean;
+  isJoined: boolean;
+  isLoggedIn: boolean;
 }
 
 export type MeetingActionState =
   | "guest_join"
   | "joinable"
-  | "attendance_checking"
   | "attendance_ready"
   | "attendance_done";
 
 export interface MeetingDetailContentProps {
   meetingId: number;
-  hasAttendedInitially: boolean;
 }
 
 export interface MeetingDescriptionSectionProps {
@@ -260,17 +239,17 @@ export interface MeetingDescriptionSectionProps {
 export interface MeetingLinkSectionProps {
   link: string;
   canViewLink: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
 export interface MeetingThreadSectionProps {
   meetingId: number;
   canWriteThread: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
 export interface RecommendedMeetingsSectionProps {
-  data: MeetingDetailData;
+  meetingId: number;
 }
 
 export interface MeetingDetailPageProps {
@@ -282,41 +261,12 @@ export interface MeetingDetailPageProps {
 export interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  data: MeetingDetailData;
+  detail: MeetingDetailApiData;
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
 // --- 모임 생성/수정 폼 ---
 
-export interface MeetingCategoryItem {
-  value: string;
-  label: string;
-  imageSrc?: StaticImageData;
-  className?: string;
-  icon?: LucideIcon | React.ComponentType<LucideProps>;
-}
-
-export interface ScheduleDatePickerProps {
-  id: string;
-  label: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  min?: string;
-  max?: string;
-  onChange: (value: string) => void;
-}
-
-export interface ScheduleTimePickerProps {
-  id: string;
-  label?: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  onChange: (value: string) => void;
-}
 
 export interface UploadImageResponse {
   presignedUrl: string;
@@ -355,38 +305,20 @@ export interface MeetingFormErrors
   category: string;
 }
 
-export interface MeetingBasicInfoStepProps {
-  meetingTypeOptions?: TabItem[];
-  values: MeetingBasicInfoValues;
+export interface MeetingBasicInfoSectionProps {
+  values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
-  errors: MeetingBasicInfoErrors;
+  errors: MeetingBasicInfoErrors & { capacity: string };
   onChange: (nextValues: {
     category?: string;
     name?: string;
     description?: string;
     link?: string;
+    capacity?: string;
   }) => void;
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
-}
-
-export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps {
   showCategoryField?: boolean;
-  showImageMeta?: boolean;
 }
 
-export interface MeetingCategoryStepProps {
-  meetingTypeOptions?: TabItem[];
-  value: string;
-  onChange: (value: string) => void;
-}
 
-export interface CreateMeetingModalProps {
-  meetingTypeOptions?: TabItem[];
-}
-
-export interface MeetingScheduleStepProps {
-  values: MeetingScheduleStepValues;
-  errors: MeetingScheduleStepValues;
-  onChange: (nextValues: Partial<MeetingScheduleStepValues>) => void;
-}

@@ -18,12 +18,14 @@ import { CommentProps } from "@/types";
 export default function Comment({
   id,
   name = "익명",
+  authorId,
   img,
   date = new Date(),
   content = "",
   isOwner = false,
   onDelete,
   onEdit,
+  onAuthorClick,
 }: CommentProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,7 +60,13 @@ export default function Comment({
   return (
     <article className="group flex flex-col py-8 transition-colors first:pt-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={() => {
+            if (authorId) onAuthorClick?.();
+          }}
+          className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-80"
+        >
           <div className="relative size-6 overflow-hidden rounded-full bg-slate-100">
             <Image
               src={img ?? profileImg}
@@ -87,7 +95,7 @@ export default function Comment({
               </time>
             </div>
           </div>
-        </div>
+        </button>
 
         {isOwner && !isEditing && (
           <div className="">

@@ -86,6 +86,7 @@ export default function PostList({
                 <PostCard
                   {...post}
                   authorName={post.author.name}
+                  authorId={post.author.id}
                   commentCount={post._count.comments}
                   date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
                     month: "long",
@@ -94,6 +95,7 @@ export default function PostList({
                   timeAgo={post.createdAt}
                   thumbnailUrl={post.image}
                   onDetailClick={() => router.push(`/lounge/${post.id}`)}
+                  onAuthorClick={() => router.push(`/users/${post.author.id}`)}
                 />
               </div>
             ))}

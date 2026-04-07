@@ -5,13 +5,12 @@ import {
   MeetingDetailApiData,
   MeetingDetailData,
   MeetingJoinResponse,
-  MeetingListResponse,
+  MeetingsRecommendResponse,
   MeetingParticipantsResponse,
 } from "@/types";
 import { UploadImageResponse } from "@/types";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
-const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;
 
 export const getAttendancePostId = (region: string) => {
   const postId = Number(region);
@@ -40,16 +39,12 @@ export async function getMeetingParticipants(meetingId: number) {
   return data;
 }
 
-export async function getMeetingRecommendationCandidates() {
-  const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
-    params: {
-      sortBy: "dateTime",
-      sortOrder: "desc",
-      size: RECOMMENDED_MEETINGS_PAGE_SIZE,
-    },
-  });
+export async function getMeetingRecommendations(meetingId: number) {
+  const { data } = await axiosInstance.get<MeetingsRecommendResponse>(
+    `/meetingsRecommend/${meetingId}`,
+  );
 
-  return data;
+  return data.data;
 }
 
 export async function joinMeeting(meetingId: number) {

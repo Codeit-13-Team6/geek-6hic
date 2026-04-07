@@ -5,8 +5,12 @@ import { cn } from "@/lib/utils";
 export function MeetingLinkSection({
   link,
   canViewLink,
-  guideText,
+  isLoggedIn,
 }: MeetingLinkSectionProps) {
+  const guideText = isLoggedIn
+    ? "모임에 참여하면 링크를 확인할 수 있어요."
+    : "로그인 후 모임에 참여하면 링크를 확인할 수 있어요.";
+
   // 파비콘 URL 추출 로직
   const getFaviconUrl = (url: string) => {
     try {

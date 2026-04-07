@@ -27,6 +27,7 @@ export function PostDetailCard({
   title = "제목이 없습니다.",
   date = new Date(),
   name = "익명",
+  onAuthorClick,
   content = "본문내용 ",
   linkObjects = [],
   avatar = "https://avatar.vercel.sh/shadcn1",
@@ -98,10 +99,14 @@ export function PostDetailCard({
           {title}
         </CardTitle>
 
-        <div className="mb-3 flex items-center gap-3 text-sm font-medium text-slate-400">
+        <button
+          type="button"
+          onClick={onAuthorClick}
+          className="mb-3 flex items-center gap-3 text-sm font-medium text-slate-400 transition-opacity hover:opacity-80"
+        >
           <div className="relative size-5 overflow-hidden rounded-full bg-slate-100">
             <Image
-              src={avatar && profileImg}
+              src={avatar || profileImg}
               alt="profile"
               fill
               className="object-cover"
@@ -112,7 +117,7 @@ export function PostDetailCard({
           <time className="text-slate-400">
             {date.toLocaleDateString("ko-KR")}
           </time>
-        </div>
+        </button>
       </div>
 
       <CardContent className="p-8 sm:px-14 lg:px-18 lg:pb-12">

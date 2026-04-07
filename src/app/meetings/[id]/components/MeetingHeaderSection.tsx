@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
+import shareIcon from "@/assets/icon/share/share.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
@@ -17,23 +19,20 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Calendar, Clock, Users2 } from "lucide-react";
-import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
-
-const formatMonthDay = (value: string) => {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
-
-const formatHourMinute = (value: string) => {
-  const date = new Date(value);
-
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-};
+import { Users2 } from "lucide-react";
+import {
+  useMeetingJoinMutations,
+  useMeetingHostMutations,
+  useMeetingAttendMutation,
+  useMeetingDetailFavoriteMutation,
+} from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
+import type {
+  MeetingHeaderSectionProps,
+  MeetingMember,
+} from "@/types";
+import { copyToClipboard } from "@/lib/utils";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -42,83 +41,103 @@ const hasUsableProfileImage = (
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
 
-export function MeetingHeaderSection({
-  data,
-  participantAvatars,
-  isFavoritePending,
-  isJoinPending,
-  isAuthLoading,
-  actionState,
-  actionLabel,
-  isActionDisabled,
-  shouldShowShareButton,
-  shouldShowHostMenu,
-  shouldShowParticipantMenu,
-  onJoin,
-  onCancelJoin,
-  onAttend,
-  onShare,
-  onEdit,
-  onDelete,
-  onToggleFavorite,
-}: MeetingHeaderSectionProps) {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const ParticipantAvatar = ({
+  participant,
+  onClick,
+}: {
+  participant: MeetingMember;
+  onClick: () => void;
+}) => {
+  const displayName = participant.name || "참여자";
+  const profileImage = hasUsableProfileImage(participant.image)
+    ? participant.image
+    : profileFemaleSm;
 
-  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
-
-  const progressValue = (data.participantCount / data.capacity) * 100;
-  const visibleParticipants =
-    participantAvatars.length > 0
-      ? participantAvatars.slice(0, 3)
-      : [data.host];
-  const hiddenParticipantCount = Math.max(
-    0,
-    data.participantCount - visibleParticipants.length,
-  );
-
-  const handleActionClick = async () => {
-    if (isAuthLoading || isJoinPending || isActionDisabled) return;
-
-    switch (actionState) {
-      case "guest_join":
-        return;
-      case "joinable":
-        await onJoin();
-        return;
-      case "attendance_ready":
-        await onAttend();
-        return;
-      case "attendance_checking":
-      case "attendance_done":
-        return;
-    }
-  };
-
-  const handleFavoriteClick = () => {
-    if (isAuthLoading || isFavoritePending) return;
-    onToggleFavorite();
-  };
-
-  const renderParticipantAvatar = (
-    participant: MeetingMember,
-    index: number,
-  ) => {
-    const displayName = participant.name || "참여자";
-    const profileImage = hasUsableProfileImage(participant.image)
-      ? participant.image
-      : profileFemaleSm;
-
-    return (
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full transition-transform hover:scale-105"
+    >
       <Image
-        key={`${participant.id}-${index}`}
         src={profileImage}
         alt={displayName}
         width={36}
         height={36}
         className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
       />
-    );
+    </button>
+  );
+};
+
+export function MeetingHeaderSection({
+  meetingId,
+  detail,
+  participants,
+  isHost,
+  isJoined,
+  isLoggedIn,
+}: MeetingHeaderSectionProps) {
+  const router = useRouter();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
+
+  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } = useMeetingJoinMutations(meetingId);
+  const { handleEditMeeting, handleDeleteMeeting } = useMeetingHostMutations(meetingId);
+  const { hasAttended, isCheckingAttendance, handleAttendMeeting } = useMeetingAttendMutation(meetingId);
+  const { isFavoritePending, handleToggleFavorite } = useMeetingDetailFavoriteMutation(meetingId);
+
+  const handleShare = async () => {
+    const isSuccess = await copyToClipboard(window.location.href);
+    if (isSuccess) {
+      ToastCommon({ message: "모임 링크가 복사되었어요." });
+    } else {
+      ToastCommon({ message: "링크 복사에 실패했습니다." });
+    }
+  };
+
+  const isParticipant = isHost || isJoined;
+  const isCapacityFull = detail.participantCount >= detail.capacity;
+  const isActionPending = isJoinPending || isCheckingAttendance;
+
+  const menuConfig = {
+    showShare: isLoggedIn && isParticipant,
+    showHost: isHost,
+    showMember: isJoined && !isHost,
+  };
+
+  const action = (() => {
+    if (!isLoggedIn) {
+      return { label: "참여하기", disabled: false, handler: () => {} };
+    }
+    if (!isParticipant) {
+      return { label: "참여하기", disabled: isCapacityFull, handler: handleJoinMeeting };
+    }
+    if (isCheckingAttendance) {
+      return { label: "출석 확인 중", disabled: true, handler: () => {} };
+    }
+    if (hasAttended) {
+      return { label: "출석완료", disabled: true, handler: () => {} };
+    }
+    return {
+      label: "출석하기",
+      disabled: false,
+      handler: () => handleAttendMeeting(detail.region)
+    };
+  })();
+
+  const progressValue = (detail.participantCount / detail.capacity) * 100;
+
+  const avatars = participants.map((p) => p.user);
+  const visibleParticipants = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+  const hiddenParticipantCount = Math.max(0, detail.participantCount - visibleParticipants.length);
+
+  const handleFavoriteClick = () => {
+    if (isAuthLoading || isFavoritePending) return;
+    handleToggleFavorite(detail.isFavorited);
   };
 
   return (
@@ -126,8 +145,8 @@ export function MeetingHeaderSection({
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
-            src={data.image ?? ""}
-            alt={data.name}
+            src={detail.image ?? ""}
+            alt={detail.name}
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
@@ -139,9 +158,9 @@ export function MeetingHeaderSection({
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start gap-3">
                   <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
-                    {data.name}
+                    {detail.name}
                   </h1>
-                  {data.isHost && (
+                  {isHost && (
                     <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
                       <Image
                         src={crownLgIcon}
@@ -156,19 +175,25 @@ export function MeetingHeaderSection({
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
-                {shouldShowShareButton && (
+                {menuConfig.showShare && (
                   <BtnCommon
                     type="button"
                     size="sm"
                     variant="teritary"
-                    onClick={() => loginGuardAction(onShare)}
-                    className="!rounded-2xl"
+                    onClick={() => loginGuardAction(handleShare)}
+                    className="!rounded-2xl group rounded-full p-2 transition hover:bg-slate-50"
                   >
-                    공유
+                    <Image
+                      src={shareIcon}
+                      alt="Share"
+                      width={22}
+                      height={22}
+                      className="opacity-40 group-hover:opacity-100 sm:size-7"
+                    />
                   </BtnCommon>
                 )}
 
-                {(shouldShowHostMenu || shouldShowParticipantMenu) && (
+                {(menuConfig.showHost || menuConfig.showMember) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       render={
@@ -179,15 +204,15 @@ export function MeetingHeaderSection({
                           <Image
                             src={meatballsLgIcon}
                             alt="Menu"
-                            width={28}
-                            height={28}
-                            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white"
+                            width={22}
+                            height={22}
+                            className="opacity-40 group-hover:opacity-100 sm:size-7"
                           />
                         </button>
                       }
                     />
                     <DropdownMenuContent align="end">
-                      {shouldShowHostMenu ? (
+                      {menuConfig.showHost ? (
                         <>
                           <DropdownMenuItem
                             onClick={() => setIsEditModalOpen(true)}
@@ -203,9 +228,9 @@ export function MeetingHeaderSection({
                         </>
                       ) : null}
 
-                      {shouldShowParticipantMenu ? (
+                      {menuConfig.showMember ? (
                         <DropdownMenuItem
-                          onClick={onCancelJoin}
+                          onClick={handleCancelJoinMeeting}
                           className="font-bold text-red-500"
                         >
                           모임 탈퇴하기
@@ -228,15 +253,21 @@ export function MeetingHeaderSection({
                       Participants
                     </p>
                     <p className="text-xl font-black text-slate-950">
-                      {data.participantCount}{" "}
+                      {detail.participantCount}{" "}
                       <span className="text-sm font-bold text-slate-400">
-                        / {data.capacity}명
+                        / {detail.capacity}명
                       </span>
                     </p>
                   </div>
                 </div>
                 <div className="flex -space-x-2.5">
-                  {visibleParticipants.map(renderParticipantAvatar)}
+                  {visibleParticipants.map((p, idx) => (
+                    <ParticipantAvatar
+                      key={p.id || idx}
+                      participant={p}
+                      onClick={() => router.push(`/users/${p.id}`)}
+                    />
+                  ))}
                   {hiddenParticipantCount > 0 && (
                     <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">
                       +{hiddenParticipantCount}
@@ -258,16 +289,16 @@ export function MeetingHeaderSection({
             <BtnCommon
               type="button"
               size="md"
-              disabled={isActionDisabled || isJoinPending || isAuthLoading}
-              onClick={() => loginGuardAction(handleActionClick)}
+              disabled={action.disabled || isActionPending || isAuthLoading}
+              onClick={() => loginGuardAction(action.handler)}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
             >
               <span className="tracking-widest sm:text-sm">
-                {isJoinPending ? "PROCESSING..." : actionLabel}
+                {isActionPending ? "PROCESSING..." : action.label}
               </span>
             </BtnCommon>
             <HeartIcon
-              liked={data.isFavorited}
+              liked={detail.isFavorited}
               onClick={() => loginGuardAction(handleFavoriteClick)}
               size={28}
               disabled={isFavoritePending}
@@ -279,8 +310,8 @@ export function MeetingHeaderSection({
       <EditMeetingModal
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        data={data}
-        onSubmit={onEdit}
+        detail={detail}
+        onSubmit={handleEditMeeting}
       />
 
       <ConfirmDeleteModal
@@ -289,7 +320,7 @@ export function MeetingHeaderSection({
         title="DELETE ARCHIVE"
         description="모임을 정말 삭제하시겠어요?"
         onConfirm={() => {
-          onDelete();
+          handleDeleteMeeting();
           setIsDeleteModalOpen(false);
         }}
       />
