@@ -85,7 +85,6 @@ export interface MeetingDetailData extends MeetingResponseBase {
   isJoined: boolean;
   isLoggedIn: boolean;
   threads: MeetingThreadItem[];
-  recommendedMeetings: RecommendedMeetingItem[];
 }
 
 //내가 참여한 모임에 대한 추가 정보
@@ -128,6 +127,10 @@ export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
 export type MeetingListResponse = CursorResponse<MeetingResponseBase>;
+
+export interface MeetingsRecommendResponse {
+  data: RecommendedMeetingItem[];
+}
 
 export interface MeetingJoinResponse {
   message: string;
@@ -225,7 +228,6 @@ export interface MeetingHeaderSectionProps {
 export type MeetingActionState =
   | "guest_join"
   | "joinable"
-  | "attendance_checking"
   | "attendance_ready"
   | "attendance_done";
 
@@ -249,6 +251,9 @@ export interface MeetingThreadSectionProps {
   isLoggedIn: boolean;
 }
 
+export interface RecommendedMeetingsSectionProps {
+  meetingId: number;
+}
 
 export interface MeetingDetailPageProps {
   params: Promise<{

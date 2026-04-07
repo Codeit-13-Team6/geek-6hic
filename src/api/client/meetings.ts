@@ -4,9 +4,11 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
+  MeetingListItemApiData,
   MyMeetingsResponse,
   FavoritesResponse,
   MeetingType,
+  MeetingListResponse,
 } from "@/types";
 
 export async function getMeetingList(
@@ -30,6 +32,45 @@ export async function getMeeting(params?: {
 }): Promise<MyMeetingsResponse> {
   const { data } = await axiosInstance.get("/meetings/my", { params });
   return data;
+}
+
+export async function getUserMeetings(params: {
+  userId: number;
+  cursor?: string;
+  size?: number;
+}): Promise<MyMeetingsResponse> {
+  const { userId, cursor, size = 10 } = params;
+  const collected: MyMeetingsResponse["data"] = [];
+  let nextCursor = cursor;
+  let hasMore = true;
+
+  while (hasMore && collected.length < size) {
+    const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
+      params: {
+        sortBy: "dateTime",
+        sortOrder: "desc",
+        size: 50,
+        ...(nextCursor ? { cursor: nextCursor } : {}),
+      },
+    });
+
+    collected.push(
+      ...data.data.filter(
+        (meeting: MeetingListItemApiData) =>
+          meeting.hostId === userId ||
+          meeting.host?.id === userId ||
+          meeting.createdBy === userId,
+      ),
+    );
+    hasMore = data.hasMore;
+    nextCursor = data.nextCursor ?? undefined;
+  }
+
+  return {
+    data: collected,
+    hasMore,
+    nextCursor: nextCursor ?? null,
+  };
 }
 
 export async function getJoinedMeetings(params: {

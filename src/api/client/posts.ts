@@ -3,13 +3,14 @@ import { filterThreadPosts } from "@/lib/postUtils";
 import { GetPostsParams, GetPostsResponse, Post } from "@/types";
 import { threadKeyword } from "@/constans/post";
 
-export async function getHotPosts() {
-  const { data } = await axiosInstance.get("/hot");
+export async function getHotPosts(): Promise<Post[]> {
+  const { data } = await axiosInstance.get<Post[]>("/hot");
   return data;
 }
 
-
-export async function getPosts(params: GetPostsParams): Promise<GetPostsResponse> {
+export async function getPosts(
+  params: GetPostsParams,
+): Promise<GetPostsResponse> {
   const { data: res } = await axiosInstance.get("/posts", {
     params,
   });
@@ -17,10 +18,47 @@ export async function getPosts(params: GetPostsParams): Promise<GetPostsResponse
   return filterThreadPosts(res);
 }
 
-export async function  getPostDetail(postId: number): Promise<Post> {
+export async function getUserPosts(params: {
+  userId: number;
+  cursor?: string;
+  size?: number;
+}): Promise<GetPostsResponse> {
+  const { userId, cursor, size = 20 } = params;
+  const collected: GetPostsResponse["data"] = [];
+  let nextCursor = cursor;
+  let hasMore = true;
+
+  while (hasMore && collected.length < size) {
+    const { data: res } = await axiosInstance.get("/posts", {
+      params: {
+        keyword: "",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        size: 50,
+        ...(nextCursor ? { cursor: nextCursor } : {}),
+      },
+    });
+
+    const filteredPage = filterThreadPosts(res);
+
+    collected.push(
+      ...filteredPage.data.filter((post: Post) => post.author.id === userId),
+    );
+    hasMore = filteredPage.hasMore;
+    nextCursor = filteredPage.nextCursor ?? undefined;
+  }
+
+  return {
+    data: collected,
+    hasMore,
+    nextCursor: nextCursor ?? null,
+  };
+}
+
+export async function getPostDetail(postId: number): Promise<Post> {
   const { data } = await axiosInstance.get(`/posts/${postId}`);
   return data;
-};
+}
 
 export async function createPost(postData: {
   title: string;
@@ -38,8 +76,11 @@ export async function deletePost(postId: number): Promise<void> {
 export async function updatePost(
   postId: number,
   postData: { title: string; content: string; image?: string | null },
-) {
-  const { data } = await axiosInstance.patch(`/posts/${postId}`, postData);
+): Promise<Post> {
+  const { data } = await axiosInstance.patch<Post>(
+    `/posts/${postId}`,
+    postData,
+  );
   return data;
 }
 
@@ -50,7 +91,6 @@ export async function likePost(postId: number): Promise<void> {
 export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
-;
 export async function getThreadPost(meetingId: number): Promise<Post> {
   const { data } = await axiosInstance.get("/posts", {
     params: { keyword: threadKeyword.build(meetingId) },

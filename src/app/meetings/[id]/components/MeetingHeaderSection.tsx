@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
+import shareIcon from "@/assets/icon/share/share.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
@@ -107,15 +108,15 @@ export function MeetingHeaderSection({
     if (hasAttended) {
       return { label: "출석완료", disabled: true, handler: () => {} };
     }
-    return { 
-      label: "출석하기", 
-      disabled: false, 
-      handler: () => handleAttendMeeting(detail.region) 
+    return {
+      label: "출석하기",
+      disabled: false,
+      handler: () => handleAttendMeeting(detail.region)
     };
   })();
 
   const progressValue = (detail.participantCount / detail.capacity) * 100;
-  
+
   const avatars = participants.map((p) => p.user);
   const visibleParticipants = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
   const hiddenParticipantCount = Math.max(0, detail.participantCount - visibleParticipants.length);
@@ -166,9 +167,15 @@ export function MeetingHeaderSection({
                     size="sm"
                     variant="teritary"
                     onClick={() => loginGuardAction(handleShare)}
-                    className="!rounded-2xl"
+                    className="!rounded-2xl group rounded-full p-2 transition hover:bg-slate-50"
                   >
-                    공유
+                    <Image
+                      src={shareIcon}
+                      alt="Share"
+                      width={22}
+                      height={22}
+                      className="opacity-40 group-hover:opacity-100 sm:size-7"
+                    />
                   </BtnCommon>
                 )}
 
@@ -183,9 +190,9 @@ export function MeetingHeaderSection({
                           <Image
                             src={meatballsLgIcon}
                             alt="Menu"
-                            width={28}
-                            height={28}
-                            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white"
+                            width={22}
+                            height={22}
+                            className="opacity-40 group-hover:opacity-100 sm:size-7"
                           />
                         </button>
                       }

@@ -20,6 +20,7 @@ import {
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
+  getMeetingRecommendations,
 } from "@/api/client/meetingDetail";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import {
@@ -29,10 +30,7 @@ import {
   MeetingDetailApiData,
   MeetingDetailData,
 } from "@/types";
-import {
-  deleteFavorites,
-  updateFavorites,
-} from "@/api/client";
+import { deleteFavorites, updateFavorites } from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
 

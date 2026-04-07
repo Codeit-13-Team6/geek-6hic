@@ -1,25 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { RecommendedMeetingItem } from "@/types";
+import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type {
+  RecommendedMeetingItem,
+  RecommendedMeetingsSectionProps,
+} from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
-
-const formatMonthDay = (value: string) => {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
+import { useMeetingDetailQueries } from "@/hooks";
 
 export function RecommendedMeetingsSection() {
 
   const meetings: RecommendedMeetingItem[] = [];
+export function RecommendedMeetingsSection({
+  meetingId,
+}: RecommendedMeetingsSectionProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isPointerDownRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startScrollLeftRef = useRef(0);
+
+  const { recommendationsQuery } = useMeetingDetailQueries(meetingId);
+  const meetings = recommendationsQuery.data ?? [];
+  const isPending = recommendationsQuery.isPending;
+
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    const container = containerRef.current;
+    if (!container) return;
+
+    isPointerDownRef.current = true;
+    isDraggingRef.current = false;
+    startXRef.current = event.pageX - container.offsetLeft;
+    startScrollLeftRef.current = container.scrollLeft;
+  }
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+    const container = containerRef.current;
+    if (!container || !isPointerDownRef.current) return;
+
+    const currentX = event.pageX - container.offsetLeft;
+    const deltaX = currentX - startXRef.current;
+
+    if (Math.abs(deltaX) > 6) {
+      isDraggingRef.current = true;
+    }
+
+    if (!isDraggingRef.current) return;
+
+    event.preventDefault();
+    container.scrollLeft = startScrollLeftRef.current - deltaX;
+  }
+
+  function handleMouseUp() {
+    isPointerDownRef.current = false;
+  }
+
+  function handleMouseLeave() {
+    isPointerDownRef.current = false;
+  }
+
+  function handleClickCapture(event: React.MouseEvent<HTMLDivElement>) {
+    if (!isDraggingRef.current) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    isDraggingRef.current = false;
+  }
 
   return (
     <section className="w-full space-y-6">
       <div className="flex flex-col gap-1 px-2">
         <div className="text-main-purple flex items-center gap-2">
           <Sparkles size={18} strokeWidth={3} />
-
           <h2 className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
             이런 모임은 어때요?
           </h2>
@@ -30,14 +85,21 @@ export function RecommendedMeetingsSection() {
         </p>
       </div>
 
-      {meetings.length === 0 ? (
+      {isPending ? (
+        <div className="flex min-h-[240px] w-full items-center justify-center rounded-[32px] border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
+          <p className="text-sm font-bold text-slate-400">
+            추천 모임을 불러오는 중이에요.
+          </p>
+        </div>
+      ) : meetings.length === 0 ? (
         <div className="flex min-h-[240px] w-full flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
           <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-white text-slate-200 shadow-sm">
             <Sparkles size={28} />
           </div>
+
           <div className="space-y-1">
             <p className="text-lg font-black tracking-tighter text-slate-900">
-              새로운 모임을 찾는 중이에요
+              새로울 모임을 찾는 중이에요
             </p>
             <p className="text-sm font-bold text-slate-400">
               아직 추천해 드릴 수 있는 모임이 없습니다.
@@ -54,11 +116,21 @@ export function RecommendedMeetingsSection() {
         </div>
       ) : (
         <div className="relative -mx-4 overflow-hidden sm:-mx-6 lg:-mx-8">
-          <div className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 sm:px-6 lg:px-8">
+          <div
+            ref={containerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            onClickCapture={handleClickCapture}
+            className="scrollbar-hide flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 active:cursor-grabbing sm:px-6 lg:px-8"
+            style={{ userSelect: "none", WebkitUserSelect: "none" }}
+          >
             {meetings.slice(0, 5).map((meeting) => (
               <Link
                 key={meeting.id}
-                href={`` + `/meetings/${meeting.id}`}
+                href={`/meetings/${meeting.id}`}
+                draggable={false}
                 className="group relative flex w-[260px] shrink-0 snap-start flex-col overflow-hidden transition-all duration-300 sm:w-[300px]"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] bg-slate-100 shadow-sm transition-shadow group-hover:shadow-md">
@@ -66,7 +138,7 @@ export function RecommendedMeetingsSection() {
                     src={meeting.image ?? ""}
                     alt={meeting.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="pointer-events-none object-cover transition-transform duration-500 group-hover:scale-110"
                   />
 
                   <div className="group-hover:blur-0 absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/20 opacity-0 blur-sm backdrop-blur-md transition-all group-hover:opacity-100">
@@ -80,11 +152,9 @@ export function RecommendedMeetingsSection() {
 
                 <div className="flex flex-col px-2 pt-4 pb-2">
                   <div className="flex items-center gap-2 text-xs font-bold tracking-tight text-slate-400 sm:text-[13px]">
-                    <span className="text-main-purple/70">
-                      {formatMonthDay(meeting.dateTime)}
+                    <span>
+                      {meeting.participantCount} / {meeting.capacity}명
                     </span>
-                    <span className="size-1 rounded-full bg-slate-200" />
-                    <span>{meeting.participantCount}명 참여 중</span>
                   </div>
 
                   <h3 className="group-hover:text-main-purple mt-2 line-clamp-1 text-base font-black tracking-tighter text-slate-900 transition-colors sm:text-lg">
