@@ -17,10 +17,10 @@ import {
   deleteMeeting,
   getMeetingDetail,
   getMeetingParticipants,
-  getMeetingRecommendationCandidates,
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
+  getMeetingRecommendations,
 } from "@/api/client/meetingDetail";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -31,10 +31,7 @@ import {
   MeetingDetailApiData,
   MeetingDetailData,
 } from "@/types";
-import {
-  deleteFavorites,
-  updateFavorites,
-} from "@/api/client";
+import { deleteFavorites, updateFavorites } from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
 
@@ -80,15 +77,15 @@ export function useMeetingDetailQueries(meetingId: number) {
     queryFn: () => getMeetingParticipants(meetingId),
   });
 
-  const recommendationCandidatesQuery = useQuery({
-    queryKey: QUERY_KEYS.meetings.recommendationCandidates,
-    queryFn: () => getMeetingRecommendationCandidates(),
+  const recommendationsQuery = useQuery({
+    queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+    queryFn: () => getMeetingRecommendations(meetingId),
+    staleTime: 1000 * 60 * 10,
   });
-
   return {
     detailQuery,
     participantsQuery,
-    recommendationCandidatesQuery,
+    recommendationsQuery,
   };
 }
 
@@ -227,13 +224,10 @@ export function useMeetingDetailMutations({
     },
   });
 
-  const isCheckingAttendance = attendMutation.isPending;
-
   return {
     user,
     isAuthLoading,
     hasAttended,
-    isCheckingAttendance,
     joinMutation,
     cancelJoinMutation,
     favoriteMutation,

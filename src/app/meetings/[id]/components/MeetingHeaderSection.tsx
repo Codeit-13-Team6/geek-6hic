@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
+import shareIcon from "@/assets/icon/share/share.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
@@ -17,23 +18,8 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Calendar, Clock, Users2 } from "lucide-react";
+import { Users2 } from "lucide-react";
 import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
-
-const formatMonthDay = (value: string) => {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
-
-const formatHourMinute = (value: string) => {
-  const date = new Date(value);
-
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-};
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -89,7 +75,6 @@ export function MeetingHeaderSection({
       case "attendance_ready":
         await onAttend();
         return;
-      case "attendance_checking":
       case "attendance_done":
         return;
     }
@@ -155,17 +140,21 @@ export function MeetingHeaderSection({
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 items-center gap-1">
                 {shouldShowShareButton && (
-                  <BtnCommon
+                  <button
                     type="button"
-                    size="sm"
-                    variant="teritary"
                     onClick={() => loginGuardAction(onShare)}
-                    className="!rounded-2xl"
+                    className="group rounded-full p-2 transition hover:bg-slate-50"
                   >
-                    공유
-                  </BtnCommon>
+                    <Image
+                      src={shareIcon}
+                      alt="Share"
+                      width={22}
+                      height={22}
+                      className="opacity-40 group-hover:opacity-100 sm:size-7"
+                    />
+                  </button>
                 )}
 
                 {(shouldShowHostMenu || shouldShowParticipantMenu) && (
@@ -179,9 +168,9 @@ export function MeetingHeaderSection({
                           <Image
                             src={meatballsLgIcon}
                             alt="Menu"
-                            width={28}
-                            height={28}
-                            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white"
+                            width={22}
+                            height={22}
+                            className="opacity-40 group-hover:opacity-100 sm:size-7"
                           />
                         </button>
                       }
