@@ -24,6 +24,7 @@ extra_instructions = """
 
 [pr_reviewer]
 extra_instructions = """
-1. 반드시 '한국어'로 작성하세요.
+1. 반드시 모든 리뷰는 '한국어'로 작성하세요.
 2. 200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요.
+3. uses default export 제안은 하지 마세요.
 """
