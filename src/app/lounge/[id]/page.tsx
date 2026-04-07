@@ -3,10 +3,12 @@ import LoungeDetailClient from "./component/LoungeDetailClient";
 import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
-import { getPostDetail } from "@/api/server";
+import { getPostCommentsServer, getPostDetail } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { BtnBack } from "@/components/features/btn/BtnBack";
+
+const COMMENTS_PAGE_LIMIT = 10;
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -44,10 +46,20 @@ export default async function LoungeDetailPageServer({
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
-            await qc.prefetchQuery({
-              queryKey: QUERY_KEYS.posts.detail(postId),
-              queryFn: () => getPostDetail(postId),
-            });
+            await Promise.all([
+              qc.prefetchQuery({
+                queryKey: QUERY_KEYS.posts.detail(postId),
+                queryFn: () => getPostDetail(postId),
+              }),
+              qc.prefetchQuery({
+                queryKey: QUERY_KEYS.comments.page(postId, 1, COMMENTS_PAGE_LIMIT),
+                queryFn: () =>
+                  getPostCommentsServer(postId, {
+                    offset: 0,
+                    limit: COMMENTS_PAGE_LIMIT,
+                  }),
+              }),
+            ]);
           }}
         >
           <LoungeDetailClient postId={postId} />

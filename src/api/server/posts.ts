@@ -12,14 +12,25 @@ export async function getPostDetail(postId: number): Promise<Post> {
 
 export async function getPostCommentsServer(
   postId: number,
+  params?: {
+    offset?: number;
+    limit?: number;
+  },
 ): Promise<GetCommentsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: `/posts/${postId}/comments`,
-    params: {
-      sortOrder: "desc",
-      size: 100,
-    },
+    params: params
+      ? {
+          sortOrder: "desc",
+          offset: params.offset,
+          limit: params.limit,
+        }
+      : //쓰레드 댓글 위해 남겨놓을게용
+        {
+          sortOrder: "desc",
+          size: 100,
+        },
   });
   return data;
 }

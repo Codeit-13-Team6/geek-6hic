@@ -2,7 +2,12 @@
 
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createComment,
   deleteComment,
@@ -21,6 +26,41 @@ import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/PaginationCommon";
+
+const COMMENTS_PAGE_LIMIT = 10;
+
+function getVisiblePages(currentPage: number, totalPages: number) {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, "ellipsis", totalPages] as const;
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, "ellipsis", totalPages - 3, totalPages - 2, totalPages - 1, totalPages] as const;
+  }
+
+  return [
+    1,
+    "ellipsis-left",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "ellipsis-right",
+    totalPages,
+  ] as const;
+}
 
 export default function CommentSection({
   postId,
@@ -34,15 +74,29 @@ export default function CommentSection({
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const [threadContent, setThreadContent] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
   const linkObjects = extractUrlsFromText(threadContent);
+  const currentOffset = (page - 1) * COMMENTS_PAGE_LIMIT;
 
   const { data: comments } = useQuery({
-    queryKey: QUERY_KEYS.comments.detail(postId),
-    queryFn: () => getComments(postId),
+    queryKey: isThread
+      ? QUERY_KEYS.comments.detail(postId)
+      : QUERY_KEYS.comments.page(postId, page, COMMENTS_PAGE_LIMIT),
+    queryFn: () =>
+      isThread
+        ? getComments(postId)
+        : getComments(postId, {
+            offset: currentOffset,
+            limit: COMMENTS_PAGE_LIMIT,
+          }),
     enabled: !!postId,
+    placeholderData: isThread ? undefined : keepPreviousData,
   });
 
   const commentsList = comments?.data || [];
+  const totalCount = comments?.totalCount ?? commentsList.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / COMMENTS_PAGE_LIMIT));
+  const visiblePages = getVisiblePages(page, totalPages);
 
   const { mutate: postComment, isPending: isPosting } = useMutation({
     mutationFn: (newContent: string) => createComment(postId, newContent),
@@ -138,7 +192,7 @@ export default function CommentSection({
             COMMENTS
           </h3>
           <span className="text-main-purple rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold">
-            {commentsList.length || 0}
+            {totalCount || 0}
           </span>
         </div>
       )}
@@ -218,6 +272,53 @@ export default function CommentSection({
           ),
         )}
       </div>
+
+      {!isThread && totalPages > 1 && (
+        <Pagination className="mt-6">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#comments"
+                disabled={page === 1}
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (page > 1) setPage((prev) => prev - 1);
+                }}
+              />
+            </PaginationItem>
+
+            {visiblePages.map((value, index) => (
+              <PaginationItem key={`${value}-${index}`}>
+                {typeof value === "number" ? (
+                  <PaginationLink
+                    href="#comments"
+                    isActive={value === page}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setPage(value);
+                    }}
+                  >
+                    {value}
+                  </PaginationLink>
+                ) : (
+                  <PaginationEllipsis />
+                )}
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                href="#comments"
+                disabled={page === totalPages}
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (page < totalPages) setPage((prev) => prev + 1);
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <ConfirmDeleteModal
         isOpen={deleteTargetId !== null}
