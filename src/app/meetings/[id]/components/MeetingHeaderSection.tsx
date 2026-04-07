@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import shareIcon from "@/assets/icon/share/share.svg";
@@ -40,20 +41,32 @@ const hasUsableProfileImage = (
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
 
-const ParticipantAvatar = ({ participant }: { participant: MeetingMember }) => {
+const ParticipantAvatar = ({
+  participant,
+  onClick,
+}: {
+  participant: MeetingMember;
+  onClick: () => void;
+}) => {
   const displayName = participant.name || "참여자";
   const profileImage = hasUsableProfileImage(participant.image)
     ? participant.image
     : profileFemaleSm;
 
   return (
-    <Image
-      src={profileImage}
-      alt={displayName}
-      width={36}
-      height={36}
-      className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
-    />
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full transition-transform hover:scale-105"
+    >
+      <Image
+        src={profileImage}
+        alt={displayName}
+        width={36}
+        height={36}
+        className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
+      />
+    </button>
   );
 };
 
@@ -65,6 +78,7 @@ export function MeetingHeaderSection({
   isJoined,
   isLoggedIn,
 }: MeetingHeaderSectionProps) {
+  const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -248,7 +262,11 @@ export function MeetingHeaderSection({
                 </div>
                 <div className="flex -space-x-2.5">
                   {visibleParticipants.map((p, idx) => (
-                    <ParticipantAvatar key={p.id || idx} participant={p} />
+                    <ParticipantAvatar
+                      key={p.id || idx}
+                      participant={p}
+                      onClick={() => router.push(`/users/${p.id}`)}
+                    />
                   ))}
                   {hiddenParticipantCount > 0 && (
                     <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">

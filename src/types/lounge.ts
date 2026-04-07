@@ -49,12 +49,14 @@ export interface EmptyStateProps {
 export interface CommentProps {
   id: number;
   name?: string;
+  authorId?: number;
   img?: string;
   date?: Date;
   content?: string;
   isOwner: boolean;
   onDelete: (id: number) => void;
   onEdit: (id: number, newContent: string) => void;
+  onAuthorClick?: () => void;
 }
 
 export interface CommentSectionProps {

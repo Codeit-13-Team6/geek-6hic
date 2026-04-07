@@ -44,18 +44,21 @@ export interface PostCardProps {
   title: string;
   content: string;
   authorName: string;
+  authorId?: number;
   date: string;
   timeAgo: string;
   likeCount: number;
   commentCount: number;
   thumbnailUrl?: string | null;
   onDetailClick?: () => void;
+  onAuthorClick?: () => void;
 }
 
 export interface PostDetailCardProps {
   title?: string;
   date?: Date;
   name?: string;
+  authorId?: number;
   img?: string;
   linkObjects?: {
     id: string;
@@ -71,4 +74,5 @@ export interface PostDetailCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onLike?: () => void;
+  onAuthorClick?: () => void;
 }

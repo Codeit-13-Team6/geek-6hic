@@ -61,9 +61,11 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
         <PostDetailCard
           title={post.title}
           name={post.author.name}
+          authorId={post.author.id}
           date={new Date(post.createdAt)}
           content={mainContent}
           linkObjects={linkObjects}
+          avatar={post.author.image ?? undefined}
           thumbsUp={post.likeCount}
           comment={post.comments.length || 0}
           isOwner={isPostOwner}
@@ -71,6 +73,7 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
           onEdit={handlePostEdit}
           onDelete={handlePostDelete}
           onLike={handleLikeClick}
+          onAuthorClick={() => router.push(`/users/${post.author.id}`)}
         />
       </section>
 
