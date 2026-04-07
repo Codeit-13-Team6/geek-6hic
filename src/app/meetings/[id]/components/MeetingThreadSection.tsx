@@ -25,7 +25,7 @@ export function MeetingThreadSection({
 
   const { data: commentsData } = useQuery({
     queryKey: QUERY_KEYS.comments.detail(threadPost?.id || 0),
-    queryFn: () => getComments(threadPost!.id),
+    queryFn: () => getComments(threadPost!.id, { offset: 0, limit: 100 }),
     enabled: !!threadPost?.id,
   });
 

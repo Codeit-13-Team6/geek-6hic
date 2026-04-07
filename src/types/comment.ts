@@ -18,8 +18,8 @@ export interface Comment {
 export interface GetCommentsResponse {
   data: Comment[];
   hasMore: boolean;
-  nextCursor: string | null;
-  totalCount?: number;
-  currentOffset?: number;
-  limit?: number;
+  totalCount: number;
+  currentOffset: number;
+  limit: number;
+  nextCursor?: string | null;
 }

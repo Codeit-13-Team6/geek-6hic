@@ -84,12 +84,10 @@ export default function CommentSection({
   const { data: comments } = useQuery({
     queryKey: activeCommentsQueryKey,
     queryFn: () =>
-      isThread
-        ? getComments(postId)
-        : getComments(postId, {
-            offset: currentOffset,
-            limit: COMMENTS_PAGE_LIMIT,
-          }),
+      getComments(postId, {
+        offset: isThread ? 0 : currentOffset,
+        limit: isThread ? 100 : COMMENTS_PAGE_LIMIT,
+      }),
     enabled: !!postId,
     placeholderData: isThread ? undefined : keepPreviousData,
   });
@@ -267,14 +265,14 @@ export default function CommentSection({
               key={item.id}
               id={item.id}
               name={item.author.name}
-              authorId={item.author.id}
+              authorId={item.authorId}
               img={item.author.image}
               content={item.content}
               date={new Date(item.createdAt)}
-              isOwner={userId !== null && userId === item.author.id}
+              isOwner={userId !== null && userId === item.authorId}
               onDelete={handleDelete}
               onEdit={handleEdit}
-              onAuthorClick={() => router.push(`/users/${item.author.id}`)}
+              onAuthorClick={() => router.push(`/users/${item.authorId}`)}
             />
           ) : (
             <div key={item.id} className="hidden" />
