@@ -1,7 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import parse, { HTMLReactParserOptions, Element } from "html-react-parser";
+import parse, {
+  HTMLReactParserOptions,
+  Element,
+  DOMNode,
+} from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
 import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
 import profileImg from "@/assets/img/profile/female1-m.jpg";
@@ -21,7 +25,7 @@ import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/icon/HeartIcon";
-import CodeBlock from "./CodeBlock";
+import { CodeBlock } from "./CodeBlock";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
@@ -39,37 +43,44 @@ export function PostDetailCard({
   onDelete,
   onLike,
 }: PostDetailCardProps) {
-  console.log("content", content);
-  // 1. HTML 파싱 옵션 설정
+  const extractText = (node: DOMNode): string => {
+    // 텍스트 노드인 경우
+    if (node.type === "text") {
+      return node.data || "";
+    }
+    // 태그 노드이고 자식이 있는 경우
+    if (node instanceof Element && node.children) {
+      return (node.children as DOMNode[])
+        .map((child) => extractText(child))
+        .join("");
+    }
+    return "";
+  };
+
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
-      if (domNode instanceof Element) {
-        // 1. 일반적인 <pre> 태그로 올 때
-        if (domNode.name === "pre") {
-          const language = domNode.attribs["data-language"] || "code";
+      if (domNode.type !== "tag") return;
 
-          // 텍스트만 추출하는 재귀 함수 (내부에 태그가 섞여 있어도 텍스트만 추출)
-          const extractText = (node: any): string => {
-            if (node.type === "text") return node.data || "";
-            if (node.children) return node.children.map(extractText).join("");
-            return "";
-          };
+      const element = domNode as Element;
 
-          const codeText = extractText(domNode).trim();
+      // 방법 1: <pre> 태그 처리
+      if (element.name === "pre") {
+        const language = element.attribs["data-language"] || "code";
+        const codeText = extractText(element).trim();
+        return <CodeBlock code={codeText} language={language} />;
+      }
 
-          return <CodeBlock code={codeText} language={language} />;
-        }
+      // 방법 2: Quill 2.0 컨테이너 (quill 업데이트 시 대비 방어 코드)
+      if (element.attribs?.class?.includes("ql-code-block-container")) {
+        const language = element.attribs["data-language"] || "typescript";
 
-        // 2. Quill 2.0 컨테이너로 올 때
-        if (domNode.attribs?.class?.includes("ql-code-block-container")) {
-          const language = domNode.attribs["data-language"] || "code";
+        const codeText = (element.children as DOMNode[])
+          .filter((child) => child.type === "tag") // 줄 단위 div만 필터링
+          .map((child) => extractText(child))
+          .join("\n")
+          .trim();
 
-          const codeText = domNode.children
-            .map((child: any) => (child.children?.[0] as any)?.data || "")
-            .join("\n");
-
-          return <CodeBlock code={codeText} language={language} />;
-        }
+        return <CodeBlock code={codeText} language={language} />;
       }
     },
   };

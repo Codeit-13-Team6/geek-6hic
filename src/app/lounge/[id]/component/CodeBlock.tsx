@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
-  vscDarkPlus,
-  prism,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+  atomOneDark,
+  atomOneLight,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Sun, Moon, Check, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 
-export default function CodeBlock({
+export function CodeBlock({
   code,
   language,
 }: {
@@ -72,7 +72,7 @@ export default function CodeBlock({
               isDark
                 ? "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
                 : "text-slate-500 hover:bg-slate-200 hover:text-slate-900",
-              isCopied && "text-emerald-600!",
+              isCopied && "text-emerald-600",
             )}
           >
             {isCopied ? (
@@ -87,13 +87,14 @@ export default function CodeBlock({
       {/* 코드 본문 */}
       <SyntaxHighlighter
         language={language}
-        style={isDark ? vscDarkPlus : prism}
+        style={isDark ? atomOneDark : atomOneLight}
         customStyle={{
           margin: 0,
           padding: "1.5rem",
           fontSize: "14px",
           fontWeight: "500",
           lineHeight: "1.7",
+          borderRadius: "2px",
           background: isDark ? "#1e1e1e" : "#ffffff",
         }}
       >
