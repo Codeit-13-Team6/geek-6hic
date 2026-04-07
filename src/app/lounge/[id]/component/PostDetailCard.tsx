@@ -38,24 +38,37 @@ export function PostDetailCard({
   onDelete,
   onLike,
 }: PostDetailCardProps) {
+  console.log("content", content);
   // 1. HTML 파싱 옵션 설정
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
-      if (domNode instanceof Element && domNode.name === "pre") {
-        const codeElement = domNode.children.find(
-          (child) => child instanceof Element && child.name === "code",
-        ) as Element | undefined;
+      if (domNode instanceof Element) {
+        // 1. 일반적인 <pre> 태그로 올 때
+        if (domNode.name === "pre") {
+          const language = domNode.attribs["data-language"] || "code";
 
-        const targetNode = codeElement
-          ? codeElement.children[0]
-          : domNode.children[0];
-        const codeText = (targetNode as any)?.data || "";
+          // 텍스트만 추출하는 재귀 함수 (내부에 태그가 섞여 있어도 텍스트만 추출)
+          const extractText = (node: any): string => {
+            if (node.type === "text") return node.data || "";
+            if (node.children) return node.children.map(extractText).join("");
+            return "";
+          };
 
-        const className =
-          codeElement?.attribs.class || domNode.attribs.class || "";
-        const language = className.replace(/language-/, "") || "javascript";
+          const codeText = extractText(domNode).trim();
 
-        return <CodeBlock code={codeText} language={language} />;
+          return <CodeBlock code={codeText} language={language} />;
+        }
+
+        // 2. Quill 2.0 컨테이너로 올 때
+        if (domNode.attribs?.class?.includes("ql-code-block-container")) {
+          const language = domNode.attribs["data-language"] || "code";
+
+          const codeText = domNode.children
+            .map((child: any) => (child.children?.[0] as any)?.data || "")
+            .join("\n");
+
+          return <CodeBlock code={codeText} language={language} />;
+        }
       }
     },
   };

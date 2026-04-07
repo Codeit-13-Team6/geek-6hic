@@ -112,7 +112,7 @@ export default function LoungePostForm({
     }
 
     const finalHtml = stitchPostData(content, linkList);
-
+    console.log("finalHtml", finalHtml);
     const payload: PostPayload = {
       title: trimmedTitle,
       content: finalHtml,
