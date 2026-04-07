@@ -17,7 +17,6 @@ extra_instructions = """
      * Naming: camelCase, Btn- prefix, artistList 형식 준수
      * Styling: Semantic Tag 사용
      * URL: RESTful 구조 및 Lowercase 경로 확인
-3. **로직 다이어그램**: 마지막에 Mermaid 문법(```mermaid)으로 코드 구조 다이어그램을 그리세요.
 """
 
 [pr_reviewer]
