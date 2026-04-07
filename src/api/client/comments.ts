@@ -3,11 +3,16 @@ import axiosInstance from "@/lib/clientFetcher";
 
 export async function getComments(
   postId: number,
+  params: {
+    offset?: number;
+    limit?: number;
+  } = {},
 ): Promise<GetCommentsResponse> {
   const { data } = await axiosInstance.get(`/posts/${postId}/comments`, {
     params: {
       sortOrder: "desc",
-      size: 100,
+      offset: params.offset ?? 0,
+      limit: params.limit ?? 100,
     },
   });
   return data;

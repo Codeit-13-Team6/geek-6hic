@@ -12,13 +12,18 @@ export async function getPostDetail(postId: number): Promise<Post> {
 
 export async function getPostCommentsServer(
   postId: number,
+  params: {
+    offset?: number;
+    limit?: number;
+  } = {},
 ): Promise<GetCommentsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: `/posts/${postId}/comments`,
     params: {
       sortOrder: "desc",
-      size: 100,
+      offset: params.offset ?? 0,
+      limit: params.limit ?? 100,
     },
   });
   return data;

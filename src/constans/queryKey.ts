@@ -45,6 +45,8 @@ export const QUERY_KEYS = {
   comments: {
     root: ["comments"] as const,
     detail: (postId: number | string) => ["comments", `${String(postId)}`],
+    page: (postId: number | string, page: number, limit: number) =>
+      ["comments", `${String(postId)}`, "page", `${page}`, `${limit}`] as const,
   },
   ranking: {
     root: ["ranking"] as const,
