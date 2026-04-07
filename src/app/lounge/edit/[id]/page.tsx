@@ -13,7 +13,6 @@ export default function LoungeEditPage() {
   const userId = useAuthStore((state) => state.user?.id);
 
   const { initialData, post, isLoading } = useGetPostForEdit(postId);
-
   const { mutate: handleUpdate, isPending } = useUpdatePost(postId);
   useEffect(() => {
     if (post && userId && post.author.id !== userId) {
