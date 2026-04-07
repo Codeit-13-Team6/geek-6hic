@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { serverAxios } from "@/lib/serverFetcher";
 import type {
+  GetMeetingsResponse,
   GetPostsResponse,
   MeetingDetailApiData,
-  MeetingListItemApiData,
-  MeetingListResponse,
+  MeetingBaseData,
   RecommendedMeetingItem,
 } from "@/types";
 
@@ -14,8 +14,154 @@ const MEETING_MAX_COUNT = 100;
 const THREAD_PAGE_SIZE = 100;
 const THREAD_MAX_COUNT = 300;
 
+// 현재 모임, 취소된 모임, 정원이 다 찬 모임은 추천 대상에서 제외합니다.
+function isRecommendableMeeting(
+  candidate: MeetingBaseData,
+  currentMeetingId: number,
+) {
+  if (candidate.id === currentMeetingId) return false;
+  if (candidate.canceledAt) return false;
+  if (candidate.participantCount >= candidate.capacity) return false;
+  return true;
+}
+
+// 정원 대비 참가율이 적당히 찬 모임을 우선 추천하기 위한 점수입니다.
+// 50~70% 구간을 가장 높은 점수로 보고, 그 주변 구간에 보조 점수를 줍니다.
+function getParticipantRatioScore(participantCount: number, capacity: number) {
+  if (capacity <= 0) return 0;
+
+  const participantRatio = participantCount / capacity;
+
+  if (participantRatio >= 0.5 && participantRatio <= 0.7) return 3;
+  if (
+    (participantRatio >= 0.3 && participantRatio < 0.5) ||
+    (participantRatio > 0.7 && participantRatio <= 0.9)
+  ) {
+    return 2;
+  }
+
+  return 1;
+}
+
+// 참가율, 활동도 점수가 같을 때 추천 결과가 매번 완전히 바뀌지 않도록
+// 현재 모임 id와 후보 모임 id를 섞어서 고정된 비교값을 만듭니다.
+function getStableWeight(currentMeetingId: number, candidateId: number) {
+  return (candidateId * 31 + currentMeetingId * 17) % 997;
+}
+
+// 같은 타입 / 다른 타입 / fallback 정렬을 하나의 비교 함수로 처리합니다.
+// 같은 타입은 참가율 위주, 다른 타입과 fallback은 활동도 + 참가율 위주로 비교합니다.
+function compareMeetingCandidate(
+  targetA: MeetingBaseData,
+  targetB: MeetingBaseData,
+  currentMeetingId: number,
+  threadActivityMap: Map<number, number>,
+  compareMode: "sameType" | "otherType" | "fallback",
+) {
+  if (compareMode !== "sameType") {
+    const activityDiff =
+      (threadActivityMap.get(targetB.id) ?? 0) -
+      (threadActivityMap.get(targetA.id) ?? 0);
+
+    if (activityDiff !== 0) return activityDiff;
+  }
+
+  const participantRatioScoreDiff =
+    getParticipantRatioScore(targetB.participantCount, targetB.capacity) -
+    getParticipantRatioScore(targetA.participantCount, targetA.capacity);
+
+  if (participantRatioScoreDiff !== 0) return participantRatioScoreDiff;
+
+  return (
+    getStableWeight(currentMeetingId, targetA.id) -
+    getStableWeight(currentMeetingId, targetB.id)
+  );
+}
+
+async function getMeetingDetail(meetingId: number) {
+  const response = await serverAxios.get<MeetingDetailApiData>(
+    `/meetings/${meetingId}`,
+  );
+
+  return response.data;
+}
+
+// 추천 후보군을 넉넉히 확보하기 위해 meetings 목록을 cursor 기반으로 여러 번 조회합니다.
+// participantCount 내림차순으로 가져와 인기 있는 모임을 우선 후보로 모읍니다.
+async function getMeetingCandidateList() {
+  let cursor: string | undefined;
+  const meetingCandidateList: MeetingBaseData[] = [];
+
+  while (meetingCandidateList.length < MEETING_MAX_COUNT) {
+    const response = await serverAxios.get<GetMeetingsResponse>("/meetings", {
+      params: {
+        sortBy: "participantCount",
+        sortOrder: "desc",
+        size: MEETING_PAGE_SIZE,
+        ...(cursor ? { cursor } : {}),
+      },
+    });
+
+    for (const meeting of response.data.data) {
+      meetingCandidateList.push(meeting);
+    }
+
+    if (!response.data.hasMore || !response.data.nextCursor) {
+      break;
+    }
+
+    cursor = response.data.nextCursor;
+  }
+
+  return meetingCandidateList.slice(0, MEETING_MAX_COUNT);
+}
+
+// 다른 타입 추천에서 활동도 기준을 쓰기 위해 스레드 댓글 수를 모임별로 수집합니다.
+// isThread_{meetingId} 제목 규칙을 가진 post를 찾아 meetingId -> 댓글 수 맵으로 만듭니다.
+async function getThreadActivityMap() {
+  let cursor: string | undefined;
+  const threadPostList: GetPostsResponse["data"] = [];
+
+  while (threadPostList.length < THREAD_MAX_COUNT) {
+    const response = await serverAxios.get<GetPostsResponse>("/posts", {
+      params: {
+        type: "all",
+        keyword: THREAD_KEYWORD,
+        sortBy: "commentCount",
+        sortOrder: "desc",
+        size: THREAD_PAGE_SIZE,
+        ...(cursor ? { cursor } : {}),
+      },
+    });
+
+    for (const post of response.data.data) {
+      threadPostList.push(post);
+    }
+
+    if (!response.data.hasMore || !response.data.nextCursor) {
+      break;
+    }
+
+    cursor = response.data.nextCursor;
+  }
+
+  const threadActivityMap = new Map<number, number>();
+
+  for (const post of threadPostList.slice(0, THREAD_MAX_COUNT)) {
+    if (!post.title.startsWith(THREAD_KEYWORD)) continue;
+
+    const meetingId = Number(post.title.replace(THREAD_KEYWORD, ""));
+    if (!Number.isFinite(meetingId)) continue;
+
+    threadActivityMap.set(meetingId, post._count.comments);
+  }
+
+  return threadActivityMap;
+}
+
+// 추천 API 응답에서 바로 내려줄 카드 형태로 변환합니다.
 function toRecommendedMeetingItem(
-  meeting: MeetingListItemApiData,
+  meeting: MeetingBaseData,
 ): RecommendedMeetingItem {
   return {
     id: meeting.id,
@@ -28,270 +174,102 @@ function toRecommendedMeetingItem(
   };
 }
 
-function isRecommendableMeeting(
-  candidate: MeetingListItemApiData,
-  currentMeetingId: number,
-) {
-  if (candidate.id === currentMeetingId) return false;
-  if (candidate.canceledAt) return false;
-  if (candidate.participantCount >= candidate.capacity) return false;
-  return true;
-}
-
-function getParticipantRatioScore(participantCount: number, capacity: number) {
-  if (capacity <= 0) return 0;
-
-  const ratio = participantCount / capacity;
-
-  if (ratio >= 0.5 && ratio <= 0.7) return 3;
-  if ((ratio >= 0.3 && ratio < 0.5) || (ratio > 0.7 && ratio <= 0.9)) {
-    return 2;
-  }
-
-  return 1;
-}
-
-function getStableWeight(currentMeetingId: number, candidateId: number) {
-  return (candidateId * 31 + currentMeetingId * 17) % 997;
-}
-
-function extractMeetingIdFromThreadTitle(title: string) {
-  if (!title.startsWith(THREAD_KEYWORD)) return null;
-
-  const meetingId = Number(title.replace(THREAD_KEYWORD, ""));
-  return Number.isFinite(meetingId) ? meetingId : null;
-}
-
-async function getMeetingDetail(meetingId: number) {
-  const response = await serverAxios.get<MeetingDetailApiData>(
-    `/meetings/${meetingId}`,
-  );
-
-  return response.data;
-}
-
-async function getMeetingCandidates() {
-  let cursor: string | undefined;
-  const results: MeetingListItemApiData[] = [];
-
-  while (results.length < MEETING_MAX_COUNT) {
-    const response = await serverAxios.get<MeetingListResponse>("/meetings", {
-      params: {
-        sortBy: "participantCount",
-        sortOrder: "desc",
-        size: MEETING_PAGE_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    const pageItems = response.data.data;
-    for (const item of pageItems) {
-      results.push(item);
-    }
-
-    if (!response.data.hasMore || !response.data.nextCursor) {
-      break;
-    }
-
-    cursor = response.data.nextCursor;
-  }
-
-  return results.slice(0, MEETING_MAX_COUNT);
-}
-
-// 댓글 수가 많은 스레드 후보를 cursor 기반으로 더 넓게 수집합니다.
-// 추천 후보 모임이 1페이지 바깥에 있어도 활동도를 반영할 수 있게 합니다.
-async function getThreadActivityMap() {
-  let cursor: string | undefined;
-  const posts: GetPostsResponse["data"] = [];
-
-  while (posts.length < THREAD_MAX_COUNT) {
-    const response = await serverAxios.get<GetPostsResponse>("/posts", {
-      params: {
-        type: "all",
-        keyword: THREAD_KEYWORD,
-        sortBy: "commentCount",
-        sortOrder: "desc",
-        size: THREAD_PAGE_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    const pagePosts = response.data.data;
-    for (const post of pagePosts) {
-      posts.push(post);
-    }
-
-    if (!response.data.hasMore || !response.data.nextCursor) {
-      break;
-    }
-
-    cursor = response.data.nextCursor;
-  }
-
-  const activityMap = new Map<number, number>();
-  const limitedPosts = posts.slice(0, THREAD_MAX_COUNT);
-
-  for (const post of limitedPosts) {
-    const meetingId = extractMeetingIdFromThreadTitle(post.title);
-    if (!meetingId) continue;
-
-    activityMap.set(meetingId, post._count.comments);
-  }
-
-  return activityMap;
-}
-
-function sortSameTypeCandidates(
-  currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
-) {
-  return [...candidates].sort(function compareSameType(a, b) {
-    const scoreDiff =
-      getParticipantRatioScore(b.participantCount, b.capacity) -
-      getParticipantRatioScore(a.participantCount, a.capacity);
-
-    if (scoreDiff !== 0) return scoreDiff;
-
-    return (
-      getStableWeight(currentMeetingId, a.id) -
-      getStableWeight(currentMeetingId, b.id)
-    );
-  });
-}
-
-function sortOtherTypeCandidates(
-  currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
-  threadActivityMap: Map<number, number>,
-) {
-  return [...candidates].sort(function compareOtherType(a, b) {
-    const activityDiff =
-      (threadActivityMap.get(b.id) ?? 0) - (threadActivityMap.get(a.id) ?? 0);
-
-    if (activityDiff !== 0) return activityDiff;
-
-    const scoreDiff =
-      getParticipantRatioScore(b.participantCount, b.capacity) -
-      getParticipantRatioScore(a.participantCount, a.capacity);
-
-    if (scoreDiff !== 0) return scoreDiff;
-
-    return (
-      getStableWeight(currentMeetingId, a.id) -
-      getStableWeight(currentMeetingId, b.id)
-    );
-  });
-}
-
-function sortFallbackCandidates(
-  currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
-  threadActivityMap: Map<number, number>,
-) {
-  return [...candidates].sort(function compareFallback(a, b) {
-    const aActivity = threadActivityMap.get(a.id) ?? 0;
-    const bActivity = threadActivityMap.get(b.id) ?? 0;
-
-    if (bActivity !== aActivity) return bActivity - aActivity;
-
-    const scoreDiff =
-      getParticipantRatioScore(b.participantCount, b.capacity) -
-      getParticipantRatioScore(a.participantCount, a.capacity);
-
-    if (scoreDiff !== 0) return scoreDiff;
-
-    return (
-      getStableWeight(currentMeetingId, a.id) -
-      getStableWeight(currentMeetingId, b.id)
-    );
-  });
-}
-
-// 같은 타입 2개, 다른 타입 2개를 우선 추천합니다.
-// 같은 타입은 참가율, 다른 타입은 활동도(스레드 댓글 수) + 참가율 기준으로 정렬하고,
-// 부족한 경우 남은 후보로 최대 4개까지 보충합니다.
-function selectRecommendedMeetings({
+// 추천 전체 흐름:
+// 1. 추천 가능 후보만 남김
+// 2. 같은 타입 / 다른 타입 후보를 분리
+// 3. 같은 타입 2개, 다른 타입 2개를 우선 선별
+// 4. 부족하면 남은 후보를 같은 기준으로 다시 정렬해 최대 4개까지 채움
+function selectRecommendedMeetingList({
   currentMeeting,
-  candidates,
+  meetingCandidateList,
   threadActivityMap,
 }: {
   currentMeeting: MeetingDetailApiData;
-  candidates: MeetingListItemApiData[];
+  meetingCandidateList: MeetingBaseData[];
   threadActivityMap: Map<number, number>;
 }) {
-  const filteredCandidates: MeetingListItemApiData[] = [];
+  const filteredCandidateList: MeetingBaseData[] = [];
 
-  for (const candidate of candidates) {
-    if (isRecommendableMeeting(candidate, currentMeeting.id)) {
-      filteredCandidates.push(candidate);
+  for (const meeting of meetingCandidateList) {
+    if (isRecommendableMeeting(meeting, currentMeeting.id)) {
+      filteredCandidateList.push(meeting);
     }
   }
 
-  const sameTypePool: MeetingListItemApiData[] = [];
-  const otherTypePool: MeetingListItemApiData[] = [];
+  const sameTypeCandidateList: MeetingBaseData[] = [];
+  const otherTypeCandidateList: MeetingBaseData[] = [];
 
-  for (const candidate of filteredCandidates) {
+  for (const candidate of filteredCandidateList) {
     if (candidate.type === currentMeeting.type) {
-      sameTypePool.push(candidate);
+      sameTypeCandidateList.push(candidate);
       continue;
     }
 
-    otherTypePool.push(candidate);
+    otherTypeCandidateList.push(candidate);
   }
 
-  const sameTypeCandidates = sortSameTypeCandidates(
-    currentMeeting.id,
-    sameTypePool,
-  );
-  const otherTypeCandidates = sortOtherTypeCandidates(
-    currentMeeting.id,
-    otherTypePool,
-    threadActivityMap,
-  );
+  sameTypeCandidateList.sort(function compareSameType(targetA, targetB) {
+    return compareMeetingCandidate(
+      targetA,
+      targetB,
+      currentMeeting.id,
+      threadActivityMap,
+      "sameType",
+    );
+  });
+  otherTypeCandidateList.sort(function compareOtherType(targetA, targetB) {
+    return compareMeetingCandidate(
+      targetA,
+      targetB,
+      currentMeeting.id,
+      threadActivityMap,
+      "otherType",
+    );
+  });
 
   // 우선 같은 타입 2개, 다른 타입 2개를 먼저 선별합니다.
-  const pickedSameType = sameTypeCandidates.slice(0, 2);
-  const pickedOtherType = otherTypeCandidates.slice(0, 2);
+  const prioritizedSameTypeCandidateList = sameTypeCandidateList.slice(0, 2);
+  const prioritizedOtherTypeCandidateList = otherTypeCandidateList.slice(0, 2);
 
-  const selectedIds = new Set<number>();
+  const selectedMeetingIdSet = new Set<number>();
 
-  for (const candidate of pickedSameType) {
-    selectedIds.add(candidate.id);
+  for (const meeting of prioritizedSameTypeCandidateList) {
+    selectedMeetingIdSet.add(meeting.id);
   }
 
-  for (const candidate of pickedOtherType) {
-    selectedIds.add(candidate.id);
+  for (const meeting of prioritizedOtherTypeCandidateList) {
+    selectedMeetingIdSet.add(meeting.id);
   }
+  const remainingCandidateList: MeetingBaseData[] = [];
 
-  const remainingCandidates: MeetingListItemApiData[] = [];
-
-  for (const candidate of filteredCandidates) {
-    if (!selectedIds.has(candidate.id)) {
-      remainingCandidates.push(candidate);
+  for (const meeting of filteredCandidateList) {
+    if (!selectedMeetingIdSet.has(meeting.id)) {
+      remainingCandidateList.push(meeting);
     }
   }
 
-  // 타입별 추천으로 4개를 못 채우면, 남은 후보 중 활동도와 참가율이 높은 순으로 보충합니다.
-  const fallbackCandidates = sortFallbackCandidates(
-    currentMeeting.id,
-    remainingCandidates,
-    threadActivityMap,
-  );
+  // 타입별 추천만으로 4개를 못 채우면 남은 후보를 보충용으로 다시 정렬합니다.
+  remainingCandidateList.sort(function compareFallback(targetA, targetB) {
+    return compareMeetingCandidate(
+      targetA,
+      targetB,
+      currentMeeting.id,
+      threadActivityMap,
+      "fallback",
+    );
+  });
 
-  const mergedCandidates = [
-    ...pickedSameType,
-    ...pickedOtherType,
-    ...fallbackCandidates,
-  ].slice(0, 4);
+  const recommendedMeetingList: RecommendedMeetingItem[] = [];
 
-  const recommendations: RecommendedMeetingItem[] = [];
-
-  for (const candidate of mergedCandidates) {
-    recommendations.push(toRecommendedMeetingItem(candidate));
+  for (const meeting of [
+    ...prioritizedSameTypeCandidateList,
+    ...prioritizedOtherTypeCandidateList,
+    ...remainingCandidateList,
+  ].slice(0, 4)) {
+    recommendedMeetingList.push(toRecommendedMeetingItem(meeting));
   }
 
-  return recommendations;
+  return recommendedMeetingList;
 }
 
 export async function GET(
@@ -309,21 +287,20 @@ export async function GET(
   }
 
   try {
-    const [currentMeeting, meetingCandidates, threadActivityMap] =
-      await Promise.all([
-        getMeetingDetail(meetingId),
-        getMeetingCandidates(),
-        getThreadActivityMap(),
-      ]);
+    // 현재 모임 -> 추천 후보 목록 -> 스레드 활동도 순으로 데이터를 모읍니다.
+    const currentMeeting = await getMeetingDetail(meetingId);
+    const meetingCandidateList = await getMeetingCandidateList();
+    const threadActivityMap = await getThreadActivityMap();
 
-    const recommendations = selectRecommendedMeetings({
+    // 모은 데이터를 바탕으로 최종 추천 목록 4개를 계산합니다.
+    const recommendedMeetingList = selectRecommendedMeetingList({
       currentMeeting,
-      candidates: meetingCandidates,
+      meetingCandidateList,
       threadActivityMap,
     });
 
     return NextResponse.json({
-      data: recommendations,
+      data: recommendedMeetingList,
     });
   } catch {
     return NextResponse.json(

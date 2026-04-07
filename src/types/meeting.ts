@@ -44,7 +44,7 @@ export interface RecommendedMeetingItem {
   dateTime: string;
 }
 
-export interface MeetingResponseBase {
+export interface MeetingBaseData {
   id: number;
   teamId: string;
   name: string;
@@ -69,14 +69,12 @@ export interface MeetingResponseBase {
   isFavorited: boolean;
 }
 
-export type MeetingListItemApiData = MeetingResponseBase;
-
-export interface MeetingDetailApiData extends MeetingResponseBase {
+export interface MeetingDetailApiData extends MeetingBaseData {
   isCompleted: boolean;
   isJoined: boolean;
 }
 
-export interface MeetingDetailData extends MeetingResponseBase {
+export interface MeetingDetailData extends MeetingBaseData {
   link: string;
   isHost: boolean;
   isJoined: boolean;
@@ -123,7 +121,7 @@ export type MyMeetingsResponse = CursorResponse<Meeting>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
-export type MeetingListResponse = CursorResponse<MeetingResponseBase>;
+export type GetMeetingsResponse = CursorResponse<MeetingBaseData>;
 
 export interface MeetingsRecommendResponse {
   data: RecommendedMeetingItem[];
@@ -267,7 +265,6 @@ export interface EditMeetingModalProps {
 
 // --- 모임 생성/수정 폼 ---
 
-
 export interface UploadImageResponse {
   presignedUrl: string;
   publicUrl: string;
@@ -320,5 +317,3 @@ export interface MeetingBasicInfoSectionProps {
   onRemoveImage: () => void;
   showCategoryField?: boolean;
 }
-
-

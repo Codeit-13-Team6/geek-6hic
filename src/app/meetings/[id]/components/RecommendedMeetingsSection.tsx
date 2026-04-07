@@ -1,69 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
-import type {
-  RecommendedMeetingsSectionProps,
-} from "@/types";
+import type { RecommendedMeetingsSectionProps } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useMeetingRecommendationsQuery } from "@/hooks";
 
+import { useDragScroll } from "@/hooks/useDragScroll";
+
 export function RecommendedMeetingsSection({
   meetingId,
 }: RecommendedMeetingsSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isPointerDownRef = useRef(false);
-  const isDraggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const startScrollLeftRef = useRef(0);
-
   const recommendationsQuery = useMeetingRecommendationsQuery(meetingId);
   const meetings = recommendationsQuery.data ?? [];
   const isPending = recommendationsQuery.isPending;
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    const container = containerRef.current;
-    if (!container) return;
-
-    isPointerDownRef.current = true;
-    isDraggingRef.current = false;
-    startXRef.current = event.pageX - container.offsetLeft;
-    startScrollLeftRef.current = container.scrollLeft;
-  }
-
-  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
-    const container = containerRef.current;
-    if (!container || !isPointerDownRef.current) return;
-
-    const currentX = event.pageX - container.offsetLeft;
-    const deltaX = currentX - startXRef.current;
-
-    if (Math.abs(deltaX) > 6) {
-      isDraggingRef.current = true;
-    }
-
-    if (!isDraggingRef.current) return;
-
-    event.preventDefault();
-    container.scrollLeft = startScrollLeftRef.current - deltaX;
-  }
-
-  function handleMouseUp() {
-    isPointerDownRef.current = false;
-  }
-
-  function handleMouseLeave() {
-    isPointerDownRef.current = false;
-  }
-
-  function handleClickCapture(event: React.MouseEvent<HTMLDivElement>) {
-    if (!isDraggingRef.current) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    isDraggingRef.current = false;
-  }
+  const { dragProps } = useDragScroll({ dragDistanceThreshold: 4 });
 
   return (
     <section className="w-full space-y-6">
@@ -112,14 +64,8 @@ export function RecommendedMeetingsSection({
       ) : (
         <div className="relative -mx-4 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div
-            ref={containerRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-            onClickCapture={handleClickCapture}
+            {...dragProps}
             className="scrollbar-hide flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 active:cursor-grabbing sm:px-6 lg:px-8"
-            style={{ userSelect: "none", WebkitUserSelect: "none" }}
           >
             {meetings.slice(0, 5).map((meeting) => (
               <Link
