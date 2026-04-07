@@ -98,7 +98,7 @@ export default function ProfileSection({
               <p className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
                 Contact
               </p>
-              <p className="text-sm font-semibold break-all text-slate-600 sm:text-base">
+              <p className="text-sm font-semibold break-all text-slate-600 line-clamp-2 break-all">
                 {user?.email}
               </p>
             </div>
