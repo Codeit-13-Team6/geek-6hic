@@ -1,8 +1,6 @@
 import type { DateRange } from "react-day-picker";
-import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
-import { LucideIcon, LucideProps } from "lucide-react";
 
 export interface MeetingMember {
   id: number;
@@ -269,13 +267,6 @@ export interface EditMeetingModalProps {
 
 // --- 모임 생성/수정 폼 ---
 
-export interface MeetingCategoryItem {
-  value: string;
-  label: string;
-  imageSrc?: StaticImageData;
-  className?: string;
-  icon?: LucideIcon | React.ComponentType<LucideProps>;
-}
 
 export interface UploadImageResponse {
   presignedUrl: string;
@@ -330,8 +321,4 @@ export interface MeetingBasicInfoSectionProps {
   showCategoryField?: boolean;
 }
 
-export interface MeetingCategoryStepProps {
-  value: string;
-  onChange: (value: string) => void;
-}
 
