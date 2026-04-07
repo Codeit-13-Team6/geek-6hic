@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "@/app/lounge/_component/HotPostList";
-import LoungeContent from "@/app/lounge/_component/LoungeSection";
+import LoungeClient from "@/app/lounge/_component/LoungeClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
@@ -105,7 +105,7 @@ export default async function LoungePage() {
             })
           }
         >
-          <LoungeContent />
+          <LoungeClient />
         </PrefetchBoundary>
       </Suspense>
 
