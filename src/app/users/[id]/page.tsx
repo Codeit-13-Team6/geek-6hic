@@ -27,6 +27,8 @@ import {
 import { getNextPageParam } from "@/lib/pagination";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import StatGrid from "./_components/StatGrid";
+import GradeCard from "./_components/GridCard";
 
 export const metadata: Metadata = {
   title: "마이 페이지",
@@ -80,8 +82,26 @@ export default async function Page({
       </div>
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
-        <aside className="w-full shrink-0 lg:w-[282px]">
-          <ProfileSection initialUser={profileUser} canEdit={isOwnProfile} />
+      <aside className="custom-scrollbar flex w-full shrink-0 flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0 snap-x snap-mandatory">
+          <div className="min-w-[180%] lg:min-w-full flex items-stretch gap-4 lg:w-full lg:flex-col">
+            <div className="w-1/2 lg:w-full snap-center lg:min-w-full">
+              {/* 남 프로필이랑 내 프로필 구분 */}
+              <ProfileSection initialUser={profileUser} canEdit={isOwnProfile} />
+            </div>
+            <div className="w-1/2 lg:w-full snap-center">
+              <GradeCard daysSinceJoin={42} />
+            </div>
+          </div>
+
+          {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
+          <div className="min-w-[90%] lg:min-w-full snap-center">
+            <StatGrid
+              postCount={10}
+              meetingCount={2}
+              favoriteCount={5}
+            // insight="오늘도 즐거운 코딩 되세요! 🚀"
+            />
+          </div>
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">
