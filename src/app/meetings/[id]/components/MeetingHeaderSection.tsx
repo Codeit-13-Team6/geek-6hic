@@ -2,6 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion"; // 애니메이션 라이브러리
+import Lottie from "lottie-react"; // Lottie 라이브러리
+import checkAnim from "@/assets/lottie/check-anim.json"; // 제공받은 Lottie JSON
+
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
@@ -17,23 +21,8 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Calendar, Clock, Users2 } from "lucide-react";
+import { Users2 } from "lucide-react";
 import { MeetingHeaderSectionProps, MeetingMember } from "@/types";
-
-const formatMonthDay = (value: string) => {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
-};
-
-const formatHourMinute = (value: string) => {
-  const date = new Date(value);
-
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-};
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -65,6 +54,16 @@ export function MeetingHeaderSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // --- 애니메이션 전용 상태 ---
+  const [showReward, setShowReward] = useState<{
+    show: boolean;
+    point: number;
+  }>({
+    show: false,
+    point: 0,
+  });
+  const [isAnimating, setIsAnimating] = useState(false);
+
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   const progressValue = (data.participantCount / data.capacity) * 100;
@@ -78,19 +77,31 @@ export function MeetingHeaderSection({
   );
 
   const handleActionClick = async () => {
-    if (isAuthLoading || isJoinPending || isActionDisabled) return;
+    if (isAuthLoading || isJoinPending || isActionDisabled || isAnimating)
+      return;
 
     switch (actionState) {
-      case "guest_join":
-        return;
       case "joinable":
         await onJoin();
         return;
       case "attendance_ready":
+        // 1. 포인트 랜덤 생성 (1~5점)
+        const earnedPoint = Math.floor(Math.random() * 5) + 1;
+
+        // 2. 실제 출석 함수 실행
         await onAttend();
+
+        // 3. 게이미케이션 애니메이션 시작
+        setIsAnimating(true);
+        setShowReward({ show: true, point: earnedPoint });
+
+        // 4. 일정 시간 후 상태 초기화
+        setTimeout(() => {
+          setShowReward({ show: false, point: 0 });
+          setIsAnimating(false);
+        }, 3000);
         return;
-      case "attendance_checking":
-      case "attendance_done":
+      default:
         return;
     }
   };
@@ -124,6 +135,7 @@ export function MeetingHeaderSection({
   return (
     <>
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
+        {/* 왼쪽 이미지 섹션 */}
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
             src={data.image ?? ""}
@@ -133,6 +145,7 @@ export function MeetingHeaderSection({
           />
         </div>
 
+        {/* 오른쪽 정보 섹션 */}
         <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">
           <div className="space-y-6">
             <div className="flex items-start justify-between">
@@ -187,7 +200,7 @@ export function MeetingHeaderSection({
                       }
                     />
                     <DropdownMenuContent align="end">
-                      {shouldShowHostMenu ? (
+                      {shouldShowHostMenu && (
                         <>
                           <DropdownMenuItem
                             onClick={() => setIsEditModalOpen(true)}
@@ -201,22 +214,22 @@ export function MeetingHeaderSection({
                             모임 삭제하기
                           </DropdownMenuItem>
                         </>
-                      ) : null}
-
-                      {shouldShowParticipantMenu ? (
+                      )}
+                      {shouldShowParticipantMenu && (
                         <DropdownMenuItem
                           onClick={onCancelJoin}
                           className="font-bold text-red-500"
                         >
                           모임 탈퇴하기
                         </DropdownMenuItem>
-                      ) : null}
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
               </div>
             </div>
 
+            {/* 게이지 바 섹션 */}
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -245,27 +258,75 @@ export function MeetingHeaderSection({
                 </div>
               </div>
 
+              {/* 애니메이션 게이지 바 */}
               <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
-                <div
-                  className="h-full rounded-full bg-purple-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
-                  style={{ width: `${progressValue}%` }}
+                <motion.div
+                  className="h-full rounded-full bg-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressValue}%` }}
+                  transition={{ duration: 1, ease: "circOut" }}
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-5 flex items-center gap-4 sm:mt-10">
+          {/* 하단 버튼 섹션 및 포인트 애니메이션 */}
+          <div className="relative mt-5 flex items-center gap-4 sm:mt-10">
+            {/* 포인트 팝업 (Framer Motion) */}
+
+            {/* 출석 버튼 */}
             <BtnCommon
               type="button"
               size="md"
-              disabled={isActionDisabled || isJoinPending || isAuthLoading}
+              disabled={
+                isActionDisabled ||
+                isJoinPending ||
+                isAuthLoading ||
+                isAnimating
+              }
               onClick={() => loginGuardAction(handleActionClick)}
-              className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
+              className="bg-main-purple hover:bg-main-purple/80 relative h-16 flex-1 overflow-hidden !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
             >
-              <span className="tracking-widest sm:text-sm">
+              <span
+                className={
+                  isAnimating ? "opacity-0" : "opacity-100 transition-opacity"
+                }
+              >
                 {isJoinPending ? "PROCESSING..." : actionLabel}
               </span>
+
+              {/* 버튼 클릭 시 내부에 Lottie 체크 애니메이션 표시 */}
+              {isAnimating && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Lottie
+                    animationData={checkAnim}
+                    loop={false}
+                    className="h-20 w-20" // 버튼 크기에 맞춰 조절
+                  />
+                </div>
+              )}
             </BtnCommon>
+
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, right: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  right: 0,
+                  y: -50,
+                }}
+                exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
+                className="pointer-events-none z-50 text-white"
+              >
+                <div
+                  className={`flex items-center gap-2 rounded-2xl border-2 border-none bg-none px-6 py-2 text-sm font-bold whitespace-nowrap ${
+                    showReward.show ? "text-main-purple" : ""
+                  }`}
+                >
+                  <span>+{showReward.point} Points</span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
             <HeartIcon
               liked={data.isFavorited}
               onClick={() => loginGuardAction(handleFavoriteClick)}
@@ -276,13 +337,13 @@ export function MeetingHeaderSection({
         </div>
       </section>
 
+      {/* 기존 모달 유지 */}
       <EditMeetingModal
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         data={data}
         onSubmit={onEdit}
       />
-
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
