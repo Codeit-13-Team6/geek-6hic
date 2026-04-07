@@ -217,31 +217,12 @@ export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
 }
 
 export interface MeetingHeaderSectionProps {
-  data: MeetingDetailData;
-  participantAvatars: MeetingMember[];
-  isFavoritePending: boolean;
-  isJoinPending: boolean;
-  isAuthLoading: boolean;
-  actionState: MeetingActionState;
-  actionLabel: string;
-  isActionDisabled: boolean;
-  shouldShowShareButton: boolean;
-  shouldShowHostMenu: boolean;
-  shouldShowParticipantMenu: boolean;
-  onJoin: () => Promise<void> | void;
-  onCancelJoin: () => Promise<void> | void;
-  onAttend: () => Promise<void> | void;
-  onShare: () => Promise<void> | void;
-  onEdit: (nextValues: Partial<MeetingDetailData>) => void;
-  onDelete: () => void;
-  onToggleFavorite: () => void;
-}
-
-export interface MeetingDetailViewProps extends MeetingHeaderSectionProps {
-  canViewLink: boolean;
-  canWriteThread: boolean;
-  linkGuideText: string;
-  threadGuideText: string;
+  meetingId: number;
+  detail: MeetingDetailApiData;
+  participants: MeetingParticipant[];
+  isHost: boolean;
+  isJoined: boolean;
+  isLoggedIn: boolean;
 }
 
 export type MeetingActionState =
@@ -252,7 +233,6 @@ export type MeetingActionState =
 
 export interface MeetingDetailContentProps {
   meetingId: number;
-  hasAttendedInitially: boolean;
 }
 
 export interface MeetingDescriptionSectionProps {
@@ -262,13 +242,13 @@ export interface MeetingDescriptionSectionProps {
 export interface MeetingLinkSectionProps {
   link: string;
   canViewLink: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
 export interface MeetingThreadSectionProps {
   meetingId: number;
   canWriteThread: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
 export interface RecommendedMeetingsSectionProps {
@@ -284,7 +264,7 @@ export interface MeetingDetailPageProps {
 export interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  data: MeetingDetailData;
+  detail: MeetingDetailApiData;
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
@@ -296,28 +276,6 @@ export interface MeetingCategoryItem {
   imageSrc?: StaticImageData;
   className?: string;
   icon?: LucideIcon | React.ComponentType<LucideProps>;
-}
-
-export interface ScheduleDatePickerProps {
-  id: string;
-  label: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  min?: string;
-  max?: string;
-  onChange: (value: string) => void;
-}
-
-export interface ScheduleTimePickerProps {
-  id: string;
-  label?: string;
-  value: string;
-  hintText?: string;
-  isRequired?: boolean;
-  isDestructive?: boolean;
-  onChange: (value: string) => void;
 }
 
 export interface UploadImageResponse {
@@ -357,22 +315,20 @@ export interface MeetingFormErrors
   category: string;
 }
 
-export interface MeetingBasicInfoStepProps {
+export interface MeetingBasicInfoSectionProps {
   meetingTypeOptions?: TabItem[];
-  values: MeetingBasicInfoValues;
+  values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
-  errors: MeetingBasicInfoErrors;
+  errors: MeetingBasicInfoErrors & { capacity: string };
   onChange: (nextValues: {
     category?: string;
     name?: string;
     description?: string;
     link?: string;
+    capacity?: string;
   }) => void;
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
-}
-
-export interface MeetingBasicInfoSectionProps extends MeetingBasicInfoStepProps {
   showCategoryField?: boolean;
   showImageMeta?: boolean;
 }
@@ -385,10 +341,4 @@ export interface MeetingCategoryStepProps {
 
 export interface CreateMeetingModalProps {
   meetingTypeOptions?: TabItem[];
-}
-
-export interface MeetingScheduleStepProps {
-  values: MeetingScheduleStepValues;
-  errors: MeetingScheduleStepValues;
-  onChange: (nextValues: Partial<MeetingScheduleStepValues>) => void;
 }

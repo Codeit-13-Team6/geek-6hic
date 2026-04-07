@@ -17,8 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
 
-export function MeetingBasicInfoSection({
-  meetingTypeOptions: defaultMeetingTypeOptions = [],
+export function MeetingModalForm({
   values,
   errors,
   isImageUploading,
@@ -29,42 +28,11 @@ export function MeetingBasicInfoSection({
   showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
 
-
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
     staleTime: 1000 * 60 * 5,
   });
-
-
-  const meetingTypeOptions = (() => {
-    if (!values.category) {
-      return defaultMeetingTypeOptions;
-    }
-
-    const hasCurrentType = defaultMeetingTypeOptions.some(
-      (option) => option.value === values.category,
-    );
-
-    if (hasCurrentType) {
-      return defaultMeetingTypeOptions;
-    }
-
-    console.log([
-      {
-        value: values.category,
-        label: values.category || "현재 모임 종류",
-      },
-      ...defaultMeetingTypeOptions,
-    ]);
-    return [
-      {
-        value: values.category,
-        label: values.category || "현재 모임 종류",
-      },
-      ...defaultMeetingTypeOptions,
-    ];
-  })();
 
   return (
     <div className="space-y-5">
@@ -154,6 +122,24 @@ export function MeetingBasicInfoSection({
         hintText={errors.link}
       />
 
+      <InputCommon
+        id="capacity"
+        type="text"
+        inputMode="numeric"
+        label="모임 정원"
+        isRequired
+        placeholder="숫자만 입력해주세요"
+        value={values.capacity}
+        onChange={(event) => {
+          onChange({ capacity: event.target.value.replace(/[^0-9]/g, "") });
+        }}
+        onClear={() => {
+          onChange({ capacity: "" });
+        }}
+        isDestructive={Boolean(errors.capacity)}
+        hintText={errors.capacity}
+      />
+
       <div className="space-y-2">
         <p className="text-[14px] font-medium text-gray-800">
           이미지
@@ -187,6 +173,8 @@ export function MeetingBasicInfoSection({
           <p className="text-error text-sm">{errors.imageUrl}</p>
         ) : null}
       </div>
+
+
     </div>
   );
 }

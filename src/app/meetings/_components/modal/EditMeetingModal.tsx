@@ -1,36 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { MeetingBasicInfoSection } from "@/app/meetings/_components/modal/MeetingBasicInfoSection";
-import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingScheduleStep";
+import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
-import { useEditMeetingForm } from "@/hooks/useEditMeetingForm";
+import { useEditMeetingForm } from "@/hooks/useMeetingForm";
 import { EditMeetingModalProps } from "@/types";
-import { AlertCircle, LayoutDashboard, CalendarRange } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { AlertCircle } from "lucide-react";
 
 export function EditMeetingModal({
   isOpen,
   onOpenChange,
-  data,
+  detail,
   onSubmit,
 }: EditMeetingModalProps) {
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
   const {
-    activeTab,
     errors,
     formValues,
     isImageUploading,
     isSubmitting,
-    setActiveTab,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
-    handleChangeBasicTab,
-    handleChangeScheduleTab,
+    handleChange,
     handleSubmit,
   } = useEditMeetingForm({
-    data,
+    detail,
     isOpen,
     onSubmit,
     onSuccess: () => {
@@ -71,78 +67,33 @@ export function EditMeetingModal({
             </p>
           </div>
 
-          <div className="mb-4 flex gap-2 rounded-2xl bg-slate-50 p-1.5">
-            <button
-              type="button"
-              onClick={() => setActiveTab("basic")}
-              className={cn(
-                "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-black transition-all",
-                activeTab === "basic"
-                  ? "text-main-purple bg-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-600",
-              )}
-            >
-              <LayoutDashboard size={16} strokeWidth={2.5} />
-              기본 정보
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("schedule")}
-              className={cn(
-                "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-black transition-all",
-                activeTab === "schedule"
-                  ? "text-main-purple bg-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-600",
-              )}
-            >
-              <CalendarRange size={16} strokeWidth={2.5} />
-              일정 및 인원
-            </button>
-          </div>
-
-          <div className="min-h-[300px]">
-            {activeTab === "basic" && (
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <MeetingBasicInfoSection
-                  values={{
-                    category: formValues.category,
-                    name: formValues.name,
-                    description: formValues.description,
-                    link: formValues.link,
-                    imageFile: formValues.imageFile,
-                    previewImageUrl: formValues.previewImageUrl,
-                    imageUrl: formValues.imageUrl,
-                  }}
-                  errors={{
-                    category: errors.category,
-                    name: errors.name,
-                    description: errors.description,
-                    link: errors.link,
-                    imageUrl: errors.imageUrl,
-                  }}
-                  isImageUploading={isImageUploading}
-                  onChange={handleChangeBasicTab}
-                  onChangeImage={handleChangeMeetingImage}
-                  onRemoveImage={handleRemoveMeetingImage}
-                  showCategoryField
-                  showImageMeta={false}
-                />
-              </div>
-            )}
-
-            {activeTab === "schedule" && (
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <MeetingScheduleStep
-                  values={{
-                    capacity: formValues.capacity,
-                  }}
-                  errors={{
-                    capacity: errors.capacity,
-                  }}
-                  onChange={handleChangeScheduleTab}
-                />
-              </div>
-            )}
+          <div className="space-y-6">
+            <MeetingModalForm
+              values={{
+                category: formValues.category,
+                name: formValues.name,
+                description: formValues.description,
+                link: formValues.link,
+                imageFile: formValues.imageFile,
+                previewImageUrl: formValues.previewImageUrl,
+                imageUrl: formValues.imageUrl,
+                capacity: formValues.capacity,
+              }}
+              errors={{
+                category: errors.category,
+                name: errors.name,
+                description: errors.description,
+                link: errors.link,
+                imageUrl: errors.imageUrl,
+                capacity: errors.capacity,
+              }}
+              isImageUploading={isImageUploading}
+              onChange={handleChange}
+              onChangeImage={handleChangeMeetingImage}
+              onRemoveImage={handleRemoveMeetingImage}
+              showCategoryField
+              showImageMeta={false}
+            />
           </div>
 
           <div className="my-8 flex gap-4 pt-4">

@@ -7,7 +7,7 @@ import {
   InfiniteData,
   QueryKey,
   useMutation,
-  useQuery,
+  useSuspenseQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import {
@@ -23,7 +23,6 @@ import {
   getMeetingRecommendations,
 } from "@/api/client/meetingDetail";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import { useAuthStore } from "@/store/useAuthStore";
 import {
   JoinedMeeting,
   JoinedMeetingsResponse,
@@ -67,61 +66,37 @@ const getCancelJoinErrorMessage = (code?: string) => {
 
 // 모임 상세 조회 함수 모음
 export function useMeetingDetailQueries(meetingId: number) {
-  const detailQuery = useQuery({
+  const detailQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.detail(meetingId),
     queryFn: () => getMeetingDetail(meetingId),
   });
 
-  const participantsQuery = useQuery({
+  const participantsQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.participants(meetingId),
     queryFn: () => getMeetingParticipants(meetingId),
   });
 
-  const recommendationsQuery = useQuery({
-    queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
-    queryFn: () => getMeetingRecommendations(meetingId),
-    staleTime: 1000 * 60 * 10,
-  });
   return {
     detailQuery,
     participantsQuery,
-    recommendationsQuery,
   };
 }
 
-// 모임 상세 mutation 함수 모음
-export function useMeetingDetailMutations({
-  meetingId,
-  initialHasAttended,
-}: {
-  meetingId: number;
-  initialHasAttended: boolean;
-}) {
+// 참여 / 탈퇴
+export function useMeetingJoinMutations(meetingId: number) {
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
-  const [hasAttended, setHasAttended] = useState(initialHasAttended);
 
   const joinMutation = useMutation({
     mutationFn: () => joinMeeting(meetingId),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.detail(meetingId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.participants(meetingId),
-        }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) }),
       ]);
-
       ToastCommon({ message: "모임에 참여했어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
-      ToastCommon({
-        message: getJoinErrorMessage(error.response?.data?.code),
-        size: "sm",
-      });
+      ToastCommon({ message: getJoinErrorMessage(error.response?.data?.code), size: "sm" });
     },
   });
 
@@ -129,62 +104,43 @@ export function useMeetingDetailMutations({
     mutationFn: () => cancelMeetingJoin(meetingId),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.detail(meetingId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.participants(meetingId),
-        }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.participants(meetingId) }),
       ]);
-
       ToastCommon({ message: "참여를 취소했어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
-      ToastCommon({
-        message: getCancelJoinErrorMessage(error.response?.data?.code),
-        size: "sm",
-      });
+      ToastCommon({ message: getCancelJoinErrorMessage(error.response?.data?.code), size: "sm" });
     },
   });
 
-  const favoriteMutation = useMutation({
-    mutationFn: (isFavorited: boolean) =>
-      isFavorited
-        ? removeMeetingFavorite(meetingId)
-        : addMeetingFavorite(meetingId),
-    ...useOptimisticMutation<MeetingDetailApiData, boolean>(queryClient, {
-      queryKey: QUERY_KEYS.meetings.detail(meetingId),
-      updater: (old, isFavorited) => ({ ...old, isFavorited: !isFavorited }),
-      invalidateKeys: [["meeting-detail", meetingId]],
-      onErrorMessage: "찜하기 처리 중 문제가 발생했어요.",
-    }),
-  });
+  return {
+    isJoinPending: joinMutation.isPending || cancelJoinMutation.isPending,
+    handleJoinMeeting: async () => { await joinMutation.mutateAsync(); },
+    handleCancelJoinMeeting: async () => { await cancelJoinMutation.mutateAsync(); },
+  };
+}
+
+// 수정 / 삭제 (호스트 전용)
+export function useMeetingHostMutations(meetingId: number) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const updateMeetingMutation = useMutation({
     mutationFn: (nextValues: Partial<MeetingDetailData>) =>
       updateMeeting(meetingId, nextValues),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.detail(meetingId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.list,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.my,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: QUERY_KEYS.meetings.joined,
-        }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.list }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.my }),
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.joined }),
       ]);
-
       ToastCommon({ message: "모임 수정이 반영되었어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
       ToastCommon({
-        message:
-          error.response?.data?.message ?? "모임 수정 중 문제가 발생했어요.",
+        message: error.response?.data?.message ?? "모임 수정 중 문제가 발생했어요.",
         size: "sm",
       });
     },
@@ -200,66 +156,63 @@ export function useMeetingDetailMutations({
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
       ToastCommon({
-        message:
-          error.response?.data?.message ?? "모임 삭제 중 문제가 발생했어요.",
-        size: "sm",
-      });
-    },
-  });
-
-  const attendMutation = useMutation({
-    mutationFn: attendMeeting,
-    onSuccess: () => {
-      setHasAttended(true);
-      ToastCommon({
-        message: "출석이 완료되었습니다.",
-        size: "sm",
-      });
-    },
-    onError: () => {
-      ToastCommon({
-        message: "출석 처리 중 문제가 발생했어요.",
+        message: error.response?.data?.message ?? "모임 삭제 중 문제가 발생했어요.",
         size: "sm",
       });
     },
   });
 
   return {
-    user,
-    isAuthLoading,
-    hasAttended,
-    joinMutation,
-    cancelJoinMutation,
-    favoriteMutation,
-    attendMutation,
-    handleJoinMeeting: async () => {
-      await joinMutation.mutateAsync();
-    },
-    handleCancelJoinMeeting: async () => {
-      await cancelJoinMutation.mutateAsync();
-    },
-    handleShareMeeting: async () => {
-      const meetingUrl = window.location.href;
-
-      try {
-        await navigator.clipboard.writeText(meetingUrl);
-        ToastCommon({ message: "모임 링크가 복사되었어요." });
-      } catch {
-        ToastCommon({ message: "링크 복사에 실패했습니다." });
-      }
-    },
     handleEditMeeting: async (nextValues: Partial<MeetingDetailData>) => {
       await updateMeetingMutation.mutateAsync(nextValues);
     },
-    handleDeleteMeeting: () => {
-      deleteMeetingMutation.mutate();
+    handleDeleteMeeting: () => { deleteMeetingMutation.mutate(); },
+  };
+}
+
+// 출석
+export function useMeetingAttendMutation(meetingId: number) {
+  const queryClient = useQueryClient();
+  const [hasAttended, setHasAttended] = useState(
+    queryClient.getQueryData<boolean>(QUERY_KEYS.meetings.attendance(meetingId)) ?? false,
+  );
+
+  const attendMutation = useMutation({
+    mutationFn: attendMeeting,
+    onSuccess: () => {
+      setHasAttended(true);
+      ToastCommon({ message: "출석이 완료되었습니다.", size: "sm" });
     },
-    handleToggleFavorite: (isFavorited: boolean) => {
-      favoriteMutation.mutate(isFavorited);
+    onError: () => {
+      ToastCommon({ message: "출석 처리 중 문제가 발생했어요.", size: "sm" });
     },
-    handleAttendMeeting: (region: string) => {
-      attendMutation.mutate(region);
-    },
+  });
+
+  return {
+    hasAttended,
+    isCheckingAttendance: attendMutation.isPending,
+    handleAttendMeeting: (region: string) => { attendMutation.mutate(region); },
+  };
+}
+
+// 찜하기 (상세 페이지)
+export function useMeetingDetailFavoriteMutation(meetingId: number) {
+  const queryClient = useQueryClient();
+
+  const favoriteMutation = useMutation({
+    mutationFn: (isFavorited: boolean) =>
+      isFavorited ? removeMeetingFavorite(meetingId) : addMeetingFavorite(meetingId),
+    ...useOptimisticMutation<MeetingDetailApiData, boolean>(queryClient, {
+      queryKey: QUERY_KEYS.meetings.detail(meetingId),
+      updater: (old, isFavorited) => ({ ...old, isFavorited: !isFavorited }),
+      invalidateKeys: [["meeting-detail", meetingId]],
+      onErrorMessage: "찜하기 처리 중 문제가 발생했어요.",
+    }),
+  });
+
+  return {
+    isFavoritePending: favoriteMutation.isPending,
+    handleToggleFavorite: (isFavorited: boolean) => { favoriteMutation.mutate(isFavorited); },
   };
 }
 

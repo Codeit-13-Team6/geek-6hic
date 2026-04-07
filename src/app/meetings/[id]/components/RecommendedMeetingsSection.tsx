@@ -11,6 +11,9 @@ import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useMeetingDetailQueries } from "@/hooks";
 
+export function RecommendedMeetingsSection() {
+
+  const meetings: RecommendedMeetingItem[] = [];
 export function RecommendedMeetingsSection({
   meetingId,
 }: RecommendedMeetingsSectionProps) {

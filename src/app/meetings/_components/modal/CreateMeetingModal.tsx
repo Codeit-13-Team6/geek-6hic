@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { MeetingCategoryStep } from "@/app/meetings/_components/modal/MeetingCategoryStep";
-import { MeetingBasicInfoStep } from "@/app/meetings/_components/modal/MeetingBasicInfoStep";
-import { MeetingScheduleStep } from "@/app/meetings/_components/modal/MeetingScheduleStep";
+import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
@@ -31,7 +30,6 @@ export function CreateMeetingModal({
     isSubmitting,
     handleChangeCategory,
     handleChangeBasicInfo,
-    handleChangeSchedule,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
     handlePrevStep,
@@ -111,40 +109,34 @@ export function CreateMeetingModal({
               />
             )}
             {currentStep === 2 && (
-              <MeetingBasicInfoStep
-                meetingTypeOptions={meetingTypeOptions}
-                values={{
-                  name: formValues.name,
-                  description: formValues.description,
-                  link: formValues.link,
-                  imageFile: formValues.imageFile,
-                  previewImageUrl: formValues.previewImageUrl,
-                  imageUrl: formValues.imageUrl,
-                }}
-                errors={{
-                  name: isTouchedStep(2) ? basicInfoErrors.name : "",
-                  description: isTouchedStep(2)
-                    ? basicInfoErrors.description
-                    : "",
-                  link: isTouchedStep(2) ? basicInfoErrors.link : "",
-                  imageUrl: imageErrorMessage,
-                }}
-                isImageUploading={isImageUploading}
-                onChange={handleChangeBasicInfo}
-                onChangeImage={handleChangeMeetingImage}
-                onRemoveImage={handleRemoveMeetingImage}
-              />
-            )}
-            {currentStep === 3 && (
-              <MeetingScheduleStep
-                values={{
-                  capacity: formValues.capacity,
-                }}
-                errors={{
-                  capacity: isTouchedStep(3) ? scheduleErrors.capacity : "",
-                }}
-                onChange={handleChangeSchedule}
-              />
+              <div className="pt-6 space-y-6">
+                <MeetingModalForm
+                  meetingTypeOptions={meetingTypeOptions}
+                  values={{
+                    name: formValues.name,
+                    description: formValues.description,
+                    link: formValues.link,
+                    imageFile: formValues.imageFile,
+                    previewImageUrl: formValues.previewImageUrl,
+                    imageUrl: formValues.imageUrl,
+                    capacity: formValues.capacity,
+                  }}
+                  errors={{
+                    name: isTouchedStep(2) ? basicInfoErrors.name : "",
+                    description: isTouchedStep(2)
+                      ? basicInfoErrors.description
+                      : "",
+                    link: isTouchedStep(2) ? basicInfoErrors.link : "",
+                    imageUrl: imageErrorMessage,
+                    capacity: isTouchedStep(2) ? scheduleErrors.capacity : "",
+                  }}
+                  isImageUploading={isImageUploading}
+                  onChange={handleChangeBasicInfo}
+                  onChangeImage={handleChangeMeetingImage}
+                  onRemoveImage={handleRemoveMeetingImage}
+                  showImageMeta
+                />
+              </div>
             )}
           </div>
 
