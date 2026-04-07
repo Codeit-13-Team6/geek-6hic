@@ -3,7 +3,7 @@ import { serverAxios } from "@/lib/serverFetcher";
 import type {
   GetPostsResponse,
   MeetingDetailApiData,
-  MeetingListItemApiData,
+  MeetingResponse,
   MeetingListResponse,
   RecommendedMeetingItem,
 } from "@/types";
@@ -15,7 +15,7 @@ const THREAD_PAGE_SIZE = 100;
 const THREAD_MAX_COUNT = 300;
 
 function toRecommendedMeetingItem(
-  meeting: MeetingListItemApiData,
+  meeting: MeetingResponse,
 ): RecommendedMeetingItem {
   return {
     id: meeting.id,
@@ -29,7 +29,7 @@ function toRecommendedMeetingItem(
 }
 
 function isRecommendableMeeting(
-  candidate: MeetingListItemApiData,
+  candidate: MeetingResponse,
   currentMeetingId: number,
 ) {
   if (candidate.id === currentMeetingId) return false;
@@ -72,7 +72,7 @@ async function getMeetingDetail(meetingId: number) {
 
 async function getMeetingCandidates() {
   let cursor: string | undefined;
-  const results: MeetingListItemApiData[] = [];
+  const results: MeetingResponse[] = [];
 
   while (results.length < MEETING_MAX_COUNT) {
     const response = await serverAxios.get<MeetingListResponse>("/meetings", {
@@ -144,7 +144,7 @@ async function getThreadActivityMap() {
 
 function sortSameTypeCandidates(
   currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
+  candidates: MeetingResponse[],
 ) {
   return [...candidates].sort(function compareSameType(a, b) {
     const scoreDiff =
@@ -162,7 +162,7 @@ function sortSameTypeCandidates(
 
 function sortOtherTypeCandidates(
   currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
+  candidates: MeetingResponse[],
   threadActivityMap: Map<number, number>,
 ) {
   return [...candidates].sort(function compareOtherType(a, b) {
@@ -186,7 +186,7 @@ function sortOtherTypeCandidates(
 
 function sortFallbackCandidates(
   currentMeetingId: number,
-  candidates: MeetingListItemApiData[],
+  candidates: MeetingResponse[],
   threadActivityMap: Map<number, number>,
 ) {
   return [...candidates].sort(function compareFallback(a, b) {
@@ -217,10 +217,10 @@ function selectRecommendedMeetings({
   threadActivityMap,
 }: {
   currentMeeting: MeetingDetailApiData;
-  candidates: MeetingListItemApiData[];
+  candidates: MeetingResponse[];
   threadActivityMap: Map<number, number>;
 }) {
-  const filteredCandidates: MeetingListItemApiData[] = [];
+  const filteredCandidates: MeetingResponse[] = [];
 
   for (const candidate of candidates) {
     if (isRecommendableMeeting(candidate, currentMeeting.id)) {
@@ -228,8 +228,8 @@ function selectRecommendedMeetings({
     }
   }
 
-  const sameTypePool: MeetingListItemApiData[] = [];
-  const otherTypePool: MeetingListItemApiData[] = [];
+  const sameTypePool: MeetingResponse[] = [];
+  const otherTypePool: MeetingResponse[] = [];
 
   for (const candidate of filteredCandidates) {
     if (candidate.type === currentMeeting.type) {
@@ -264,7 +264,7 @@ function selectRecommendedMeetings({
     selectedIds.add(candidate.id);
   }
 
-  const remainingCandidates: MeetingListItemApiData[] = [];
+  const remainingCandidates: MeetingResponse[] = [];
 
   for (const candidate of filteredCandidates) {
     if (!selectedIds.has(candidate.id)) {

@@ -44,7 +44,7 @@ export interface RecommendedMeetingItem {
   dateTime: string;
 }
 
-export interface MeetingResponseBase {
+export interface MeetingResponse {
   id: number;
   teamId: string;
   name: string;
@@ -69,14 +69,12 @@ export interface MeetingResponseBase {
   isFavorited: boolean;
 }
 
-export type MeetingListItemApiData = MeetingResponseBase;
-
-export interface MeetingDetailApiData extends MeetingResponseBase {
+export interface MeetingDetailApiData extends MeetingResponse {
   isCompleted: boolean;
   isJoined: boolean;
 }
 
-export interface MeetingDetailData extends MeetingResponseBase {
+export interface MeetingDetailData extends MeetingResponse {
   link: string;
   isHost: boolean;
   isJoined: boolean;
@@ -121,9 +119,8 @@ export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
 export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
 export type MyMeetingsResponse = CursorResponse<Meeting>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
-export type MeetingAttendanceCommentsResponse =
-  CursorResponse<MeetingAttendanceComment>;
-export type MeetingListResponse = CursorResponse<MeetingResponseBase>;
+export type MeetingAttendanceCommentsResponse = CursorResponse<MeetingAttendanceComment>;
+export type MeetingListResponse = CursorResponse<MeetingResponse>;
 
 export interface MeetingsRecommendResponse {
   data: RecommendedMeetingItem[];
@@ -148,8 +145,6 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-export type TabValue = string;
-
 export interface MeetingType {
   id: number;
   teamId: string;
@@ -163,15 +158,12 @@ export type SortValue =
   | "dateTime"
   | "registrationEnd"
   | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
-export type SortBy = SortValue;
-
 export interface MeetingFiltersProps {
-  // tabList?: { value: string; label: string }[];
-  activeValue: TabValue;
+  activeValue: string;
   sortValue: SortValue;
   sortDescValue: boolean;
   appliedDate: DateRange | undefined;
-  onChangeTab: (value: TabValue) => void;
+  onChangeTab: (value: string) => void;
   onChangeSort: (value: SortValue) => void;
   onApplyDate: (value: DateRange | undefined) => void;
   onResetFilters: () => void;
@@ -232,10 +224,6 @@ export interface MeetingDetailContentProps {
   meetingId: number;
 }
 
-export interface MeetingDescriptionSectionProps {
-  data: MeetingDetailData;
-}
-
 export interface MeetingLinkSectionProps {
   link: string;
   canViewLink: boolean;
@@ -266,7 +254,6 @@ export interface EditMeetingModalProps {
 }
 
 // --- 모임 생성/수정 폼 ---
-
 
 export interface UploadImageResponse {
   presignedUrl: string;
@@ -305,7 +292,7 @@ export interface MeetingFormErrors
   category: string;
 }
 
-export interface MeetingBasicInfoSectionProps {
+export interface MeetingModalFormProps {
   values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
   errors: MeetingBasicInfoErrors & { capacity: string };
@@ -320,5 +307,3 @@ export interface MeetingBasicInfoSectionProps {
   onRemoveImage: () => void;
   showCategoryField?: boolean;
 }
-
-

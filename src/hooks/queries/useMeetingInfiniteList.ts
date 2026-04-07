@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
-import type { JoinedMeetingsResponse, GetMeetingListParams, SortBy } from "@/types";
+import type { JoinedMeetingsResponse, GetMeetingListParams, SortValue } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
@@ -12,7 +12,7 @@ export interface InfiniteListResult {
   fetchNextPage: () => void;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
-  sortValue?: SortBy;
+  sortValue?: SortValue;
   favoriteQueryKey: QueryKey;
 }
 

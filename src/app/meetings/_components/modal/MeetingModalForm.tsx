@@ -11,7 +11,7 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import {
-  MeetingBasicInfoSectionProps,
+  MeetingModalFormProps,
   type MeetingType,
 } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ export function MeetingModalForm({
   onChangeImage,
   onRemoveImage,
   showCategoryField = false,
-}: MeetingBasicInfoSectionProps) {
+}: MeetingModalFormProps) {
 
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
