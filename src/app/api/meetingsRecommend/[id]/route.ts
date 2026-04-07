@@ -3,7 +3,6 @@ import { serverAxios } from "@/lib/serverFetcher";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,
-  MeetingDetailApiData,
   MeetingBaseData,
   RecommendedMeetingItem,
 } from "@/types";
@@ -76,14 +75,6 @@ function compareMeetingCandidate(
     getStableWeight(currentMeetingId, targetA.id) -
     getStableWeight(currentMeetingId, targetB.id)
   );
-}
-
-async function getMeetingDetail(meetingId: number) {
-  const response = await serverAxios.get<MeetingDetailApiData>(
-    `/meetings/${meetingId}`,
-  );
-
-  return response.data;
 }
 
 // 추천 후보군을 넉넉히 확보하기 위해 meetings 목록을 cursor 기반으로 여러 번 조회합니다.
@@ -178,20 +169,22 @@ function toRecommendedMeetingItem(
 // 1. 추천 가능 후보만 남김
 // 2. 같은 타입 / 다른 타입 후보를 분리
 // 3. 같은 타입 2개, 다른 타입 2개를 우선 선별
-// 4. 부족하면 남은 후보를 같은 기준으로 다시 정렬해 최대 4개까지 채움
+// 4. 부족하면 각 타입의 다음 순번 후보(3, 4등)로 최대 4개까지 보충
 function selectRecommendedMeetingList({
-  currentMeeting,
+  currentMeetingId,
+  currentMeetingType,
   meetingCandidateList,
   threadActivityMap,
 }: {
-  currentMeeting: MeetingDetailApiData;
+  currentMeetingId: number;
+  currentMeetingType: string;
   meetingCandidateList: MeetingBaseData[];
   threadActivityMap: Map<number, number>;
 }) {
   const filteredCandidateList: MeetingBaseData[] = [];
 
   for (const meeting of meetingCandidateList) {
-    if (isRecommendableMeeting(meeting, currentMeeting.id)) {
+    if (isRecommendableMeeting(meeting, currentMeetingId)) {
       filteredCandidateList.push(meeting);
     }
   }
@@ -200,7 +193,7 @@ function selectRecommendedMeetingList({
   const otherTypeCandidateList: MeetingBaseData[] = [];
 
   for (const candidate of filteredCandidateList) {
-    if (candidate.type === currentMeeting.type) {
+    if (candidate.type === currentMeetingType) {
       sameTypeCandidateList.push(candidate);
       continue;
     }
@@ -208,76 +201,64 @@ function selectRecommendedMeetingList({
     otherTypeCandidateList.push(candidate);
   }
 
-  sameTypeCandidateList.sort(function compareSameType(targetA, targetB) {
-    return compareMeetingCandidate(
+  sameTypeCandidateList.sort((targetA, targetB) =>
+    compareMeetingCandidate(
       targetA,
       targetB,
-      currentMeeting.id,
+      currentMeetingId,
       threadActivityMap,
       "sameType",
-    );
-  });
-  otherTypeCandidateList.sort(function compareOtherType(targetA, targetB) {
-    return compareMeetingCandidate(
+    ),
+  );
+  otherTypeCandidateList.sort((targetA, targetB) =>
+    compareMeetingCandidate(
       targetA,
       targetB,
-      currentMeeting.id,
+      currentMeetingId,
       threadActivityMap,
       "otherType",
-    );
-  });
+    ),
+  );
 
   // 우선 같은 타입 2개, 다른 타입 2개를 먼저 선별합니다.
-  const prioritizedSameTypeCandidateList = sameTypeCandidateList.slice(0, 2);
-  const prioritizedOtherTypeCandidateList = otherTypeCandidateList.slice(0, 2);
-
-  const selectedMeetingIdSet = new Set<number>();
-
-  for (const meeting of prioritizedSameTypeCandidateList) {
-    selectedMeetingIdSet.add(meeting.id);
-  }
-
-  for (const meeting of prioritizedOtherTypeCandidateList) {
-    selectedMeetingIdSet.add(meeting.id);
-  }
-  const remainingCandidateList: MeetingBaseData[] = [];
-
-  for (const meeting of filteredCandidateList) {
-    if (!selectedMeetingIdSet.has(meeting.id)) {
-      remainingCandidateList.push(meeting);
-    }
-  }
-
-  // 타입별 추천만으로 4개를 못 채우면 남은 후보를 보충용으로 다시 정렬합니다.
-  remainingCandidateList.sort(function compareFallback(targetA, targetB) {
-    return compareMeetingCandidate(
-      targetA,
-      targetB,
-      currentMeeting.id,
-      threadActivityMap,
-      "fallback",
-    );
-  });
+  const prioritizedSameTypeCandidateList = sameTypeCandidateList.slice(0, 4);
+  const prioritizedOtherTypeCandidateList = otherTypeCandidateList.slice(0, 4);
 
   const recommendedMeetingList: RecommendedMeetingItem[] = [];
+  const selectedMeetingIdSet = new Set<number>();
 
-  for (const meeting of [
-    ...prioritizedSameTypeCandidateList,
-    ...prioritizedOtherTypeCandidateList,
-    ...remainingCandidateList,
-  ].slice(0, 4)) {
-    recommendedMeetingList.push(toRecommendedMeetingItem(meeting));
+  function pushCandidate(candidate?: MeetingBaseData) {
+    if (!candidate) return;
+    if (selectedMeetingIdSet.has(candidate.id)) return;
+    if (recommendedMeetingList.length >= 4) return;
+
+    selectedMeetingIdSet.add(candidate.id);
+    recommendedMeetingList.push(toRecommendedMeetingItem(candidate));
   }
+
+  // 우선 same 2개, other 2개를 먼저 채웁니다.
+  pushCandidate(prioritizedSameTypeCandidateList[0]);
+  pushCandidate(prioritizedSameTypeCandidateList[1]);
+  pushCandidate(prioritizedOtherTypeCandidateList[0]);
+  pushCandidate(prioritizedOtherTypeCandidateList[1]);
+
+  // 부족하면 same / other의 3, 4등 후보로 보충합니다.
+  pushCandidate(prioritizedSameTypeCandidateList[2]);
+  pushCandidate(prioritizedSameTypeCandidateList[3]);
+  pushCandidate(prioritizedOtherTypeCandidateList[2]);
+  pushCandidate(prioritizedOtherTypeCandidateList[3]);
 
   return recommendedMeetingList;
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const meetingId = Number(id);
+  const { searchParams } = new URL(request.url);
+  const meetingType = searchParams.get("type");
 
   if (!Number.isFinite(meetingId)) {
     return NextResponse.json(
@@ -285,16 +266,23 @@ export async function GET(
       { status: 400 },
     );
   }
+  if (!meetingType) {
+    return NextResponse.json(
+      { message: "Missing meeting type" },
+      { status: 400 },
+    );
+  }
 
   try {
-    // 현재 모임 -> 추천 후보 목록 -> 스레드 활동도 순으로 데이터를 모읍니다.
-    const currentMeeting = await getMeetingDetail(meetingId);
+    // 추천 후보 목록과 스레드 활동도를 모아 최종 추천 목록을 계산합니다.
+
     const meetingCandidateList = await getMeetingCandidateList();
     const threadActivityMap = await getThreadActivityMap();
 
     // 모은 데이터를 바탕으로 최종 추천 목록 4개를 계산합니다.
     const recommendedMeetingList = selectRecommendedMeetingList({
-      currentMeeting,
+      currentMeetingId: meetingId,
+      currentMeetingType: meetingType,
       meetingCandidateList,
       threadActivityMap,
     });

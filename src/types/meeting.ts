@@ -248,6 +248,7 @@ export interface MeetingThreadSectionProps {
 
 export interface RecommendedMeetingsSectionProps {
   meetingId: number;
+  meetingType: string;
 }
 
 export interface MeetingDetailPageProps {

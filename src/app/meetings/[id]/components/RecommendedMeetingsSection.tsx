@@ -10,8 +10,12 @@ import { useDragScroll } from "@/hooks/useDragScroll";
 
 export function RecommendedMeetingsSection({
   meetingId,
+  meetingType,
 }: RecommendedMeetingsSectionProps) {
-  const recommendationsQuery = useMeetingRecommendationsQuery(meetingId);
+  const recommendationsQuery = useMeetingRecommendationsQuery(
+    meetingId,
+    meetingType,
+  );
   const meetings = recommendationsQuery.data ?? [];
   const isPending = recommendationsQuery.isPending;
 
