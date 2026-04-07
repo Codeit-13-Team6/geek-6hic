@@ -1,9 +1,6 @@
 import type { DateRange } from "react-day-picker";
-import type { StaticImageData } from "next/image";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
-import { LucideIcon, LucideProps } from "lucide-react";
-import { TabItem } from "@/types/common";
 
 export interface MeetingMember {
   id: number;
@@ -270,13 +267,6 @@ export interface EditMeetingModalProps {
 
 // --- 모임 생성/수정 폼 ---
 
-export interface MeetingCategoryItem {
-  value: string;
-  label: string;
-  imageSrc?: StaticImageData;
-  className?: string;
-  icon?: LucideIcon | React.ComponentType<LucideProps>;
-}
 
 export interface UploadImageResponse {
   presignedUrl: string;
@@ -316,7 +306,6 @@ export interface MeetingFormErrors
 }
 
 export interface MeetingBasicInfoSectionProps {
-  meetingTypeOptions?: TabItem[];
   values: MeetingBasicInfoValues & { capacity: string };
   isImageUploading: boolean;
   errors: MeetingBasicInfoErrors & { capacity: string };
@@ -330,15 +319,6 @@ export interface MeetingBasicInfoSectionProps {
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
   showCategoryField?: boolean;
-  showImageMeta?: boolean;
 }
 
-export interface MeetingCategoryStepProps {
-  meetingTypeOptions?: TabItem[];
-  value: string;
-  onChange: (value: string) => void;
-}
 
-export interface CreateMeetingModalProps {
-  meetingTypeOptions?: TabItem[];
-}

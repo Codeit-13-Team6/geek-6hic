@@ -94,7 +94,7 @@ function MeetingDetailContentInner({ meetingId }: MeetingDetailContentProps) {
         isLoggedIn={isLoggedIn}
       />
 
-      <RecommendedMeetingsSection/>
+      <RecommendedMeetingsSection meetingId={meetingId} />
     </div>
   );
 }

@@ -2,18 +2,13 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
 import type {
-  RecommendedMeetingItem,
   RecommendedMeetingsSectionProps,
 } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
-import { useMeetingDetailQueries } from "@/hooks";
+import { useMeetingRecommendationsQuery } from "@/hooks";
 
-export function RecommendedMeetingsSection() {
-
-  const meetings: RecommendedMeetingItem[] = [];
 export function RecommendedMeetingsSection({
   meetingId,
 }: RecommendedMeetingsSectionProps) {
@@ -23,7 +18,7 @@ export function RecommendedMeetingsSection({
   const startXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
 
-  const { recommendationsQuery } = useMeetingDetailQueries(meetingId);
+  const recommendationsQuery = useMeetingRecommendationsQuery(meetingId);
   const meetings = recommendationsQuery.data ?? [];
   const isPending = recommendationsQuery.isPending;
 

@@ -1,35 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { MeetingCategoryStep } from "@/app/meetings/_components/modal/MeetingCategoryStep";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
-import { AlertCircle, Plus, StepForwardIcon } from "lucide-react";
+import { type MeetingType } from "@/types";
+import { AlertCircle, Plus, StepForwardIcon, Sparkles, BookOpen, Coffee, MoreHorizontal, Check, FolderKanban, Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { CreateMeetingModalProps } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { getMeetingTypes } from "@/api/client";
 
-export function CreateMeetingModal({
-  meetingTypeOptions = [],
-}: CreateMeetingModalProps) {
+function getMeetingCategoryIcon(name: string) {
+  switch (name) {
+    case "팀미팅": return Sparkles;
+    case "스터디": return BookOpen;
+    case "프로젝트": return FolderKanban;
+    case "취준생": return Briefcase;
+    case "기타": return MoreHorizontal;
+    default: return Coffee;
+  }
+}
+
+export function CreateMeetingModal() {
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
+  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
+    queryKey: QUERY_KEYS.meetings.meetingType,
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
   const {
     currentStep,
     totalSteps,
     formValues,
     isImageUploading,
-    imageErrorMessage,
-    basicInfoErrors,
-    scheduleErrors,
-    isTouchedStep,
     isSubmitting,
-    handleChangeCategory,
-    handleChangeBasicInfo,
+    errors,
+    handleChange,
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
     handlePrevStep,
@@ -45,31 +59,19 @@ export function CreateMeetingModal({
     setIsOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
   const requestCloseModal = () => {
     setIsCloseConfirmOpen(true);
   };
 
-  const handleOpenChangeModal = (nextIsOpen: boolean) => {
-    if (!nextIsOpen) {
-      requestCloseModal();
-      return;
-    }
-    setIsOpen(true);
-  };
-
-  const floatingBtnStyle =
-    "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95 " +
-    "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2 " +
-    "lg:right-16 lg:bottom-16";
-
   return (
     <>
       <BtnCommon
-        className={cn(floatingBtnStyle, "group !p-0 sm:!p-6")}
+        className={cn(
+          "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
+          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2",
+          "lg:right-16 lg:bottom-16",
+          "group !p-0 sm:!p-6",
+        )}
         type="button"
         onClick={() => loginGuardAction(handleOpenModal)}
       >
@@ -86,7 +88,9 @@ export function CreateMeetingModal({
       <ModalBase
         disablePointerDismissal
         isOpen={isOpen}
-        onOpenChange={handleOpenChangeModal}
+        onOpenChange={(nextIsOpen) => {
+          if (!nextIsOpen) requestCloseModal();
+        }}
         contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
@@ -102,39 +106,65 @@ export function CreateMeetingModal({
 
           <div>
             {currentStep === 1 && (
-              <MeetingCategoryStep
-                meetingTypeOptions={meetingTypeOptions}
-                value={formValues.category}
-                onChange={handleChangeCategory}
-              />
+              <div className="w-full">
+                <div className="mb-8 text-center sm:text-left">
+                  <p className="text-lg font-bold tracking-tight text-slate-900">
+                    어떤 모임을 만들고 싶으세요?
+                    <span className="text-main-purple ml-1">*</span>
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-slate-400">
+                    카테고리를 선택해 주세요.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {meetingTypes.map((type) => {
+                    const isSelected = formValues.category === type.name;
+                    const Icon = getMeetingCategoryIcon(type.name);
+                    return (
+                      <button
+                        key={type.name}
+                        type="button"
+                        onClick={() => handleChange({ category: type.name })}
+                        className={cn(
+                          "group relative flex h-[100px] flex-col items-center justify-center rounded-2xl border-2 transition-all duration-200 sm:h-[120px]",
+                          isSelected
+                            ? "border-main-purple bg-main-purple/5 shadow-sm"
+                            : "border-slate-50 bg-slate-50/50 hover:border-slate-200 hover:bg-white",
+                          type.name === "기타" ? "col-span-2" : undefined,
+                        )}
+                      >
+                        <div className={cn(
+                          "mb-3 flex size-12 items-center justify-center rounded-full bg-white transition-transform group-hover:scale-110",
+                          isSelected ? "text-main-purple shadow-sm" : "text-slate-300",
+                        )}>
+                          <Icon size={24} strokeWidth={1.5} />
+                        </div>
+                        <span className={cn(
+                          "text-sm font-bold tracking-tight transition-colors",
+                          isSelected ? "text-main-purple" : "text-slate-600 group-hover:text-slate-900",
+                        )}>
+                          {type.name}
+                        </span>
+                        {isSelected && (
+                          <div className="bg-main-purple absolute top-3 right-3 flex size-5 items-center justify-center rounded-full text-white shadow-sm">
+                            <Check size={12} strokeWidth={4} />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
             {currentStep === 2 && (
               <div className="pt-6 space-y-6">
                 <MeetingModalForm
-                  meetingTypeOptions={meetingTypeOptions}
-                  values={{
-                    name: formValues.name,
-                    description: formValues.description,
-                    link: formValues.link,
-                    imageFile: formValues.imageFile,
-                    previewImageUrl: formValues.previewImageUrl,
-                    imageUrl: formValues.imageUrl,
-                    capacity: formValues.capacity,
-                  }}
-                  errors={{
-                    name: isTouchedStep(2) ? basicInfoErrors.name : "",
-                    description: isTouchedStep(2)
-                      ? basicInfoErrors.description
-                      : "",
-                    link: isTouchedStep(2) ? basicInfoErrors.link : "",
-                    imageUrl: imageErrorMessage,
-                    capacity: isTouchedStep(2) ? scheduleErrors.capacity : "",
-                  }}
+                  values={formValues}
+                  errors={errors}
                   isImageUploading={isImageUploading}
-                  onChange={handleChangeBasicInfo}
+                  onChange={handleChange}
                   onChangeImage={handleChangeMeetingImage}
                   onRemoveImage={handleRemoveMeetingImage}
-                  showImageMeta
                 />
               </div>
             )}
@@ -198,7 +228,7 @@ export function CreateMeetingModal({
             className="h-14 w-full rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
             onClick={() => {
               setIsCloseConfirmOpen(false);
-              handleCloseModal();
+              setIsOpen(false);
             }}
           >
             <span className="text-base">나가기</span>

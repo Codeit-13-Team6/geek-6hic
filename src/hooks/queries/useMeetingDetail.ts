@@ -7,6 +7,7 @@ import {
   InfiniteData,
   QueryKey,
   useMutation,
+  useQuery,
   useSuspenseQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -17,10 +18,10 @@ import {
   deleteMeeting,
   getMeetingDetail,
   getMeetingParticipants,
+  getMeetingRecommendations,
   joinMeeting,
   removeMeetingFavorite,
   updateMeeting,
-  getMeetingRecommendations,
 } from "@/api/client/meetingDetail";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import {
@@ -82,6 +83,15 @@ export function useMeetingDetailQueries(meetingId: number) {
   };
 }
 
+// 추천 모임 조회
+export function useMeetingRecommendationsQuery(meetingId: number) {
+  return useQuery({
+    queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+    queryFn: () => getMeetingRecommendations(meetingId),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
 // 참여 / 탈퇴
 export function useMeetingJoinMutations(meetingId: number) {
   const queryClient = useQueryClient();
@@ -130,12 +140,7 @@ export function useMeetingHostMutations(meetingId: number) {
     mutationFn: (nextValues: Partial<MeetingDetailData>) =>
       updateMeeting(meetingId, nextValues),
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.detail(meetingId) }),
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.list }),
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.my }),
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.joined }),
-      ]);
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
       ToastCommon({ message: "모임 수정이 반영되었어요.", size: "sm" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {

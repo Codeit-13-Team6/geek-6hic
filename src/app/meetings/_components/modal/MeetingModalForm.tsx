@@ -11,7 +11,8 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import {
-  MeetingBasicInfoSectionProps, type MeetingType,
+  MeetingBasicInfoSectionProps,
+  type MeetingType,
 } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -25,7 +26,6 @@ export function MeetingModalForm({
   onChangeImage,
   onRemoveImage,
   showCategoryField = false,
-  showImageMeta = true,
 }: MeetingBasicInfoSectionProps) {
 
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
@@ -155,17 +155,15 @@ export function MeetingModalForm({
           onRemove={onRemoveImage}
         />
 
-        {showImageMeta ? (
-          <p className="text-sm text-gray-500">
-            {values.imageFile ? values.imageFile.name : "선택된 파일 없음"}
-          </p>
+        {values.imageFile ? (
+          <p className="text-sm text-gray-500">{values.imageFile.name}</p>
         ) : null}
 
         {isImageUploading ? (
           <p className="text-sm text-gray-500">이미지 업로드 중..</p>
         ) : null}
 
-        {showImageMeta && values.imageUrl ? (
+        {!isImageUploading && values.imageUrl && !values.imageFile ? (
           <p className="text-sm text-green-600">이미지 업로드 완료</p>
         ) : null}
 
