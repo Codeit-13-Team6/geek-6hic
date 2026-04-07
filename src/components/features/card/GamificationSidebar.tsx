@@ -1,19 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-
 export default function GamificationSidebar({
   postCount = 0,
   meetingCount = 0,
   favoriteCount = 0,
   daysSinceJoin = 1,
   insight = "오늘도 즐거운 코딩 되세요! 🚀",
-  isFlipped = false, // 뒤집힘 상태를 프로필 카드와 동기화하거나 내부에서 관리
 }) {
   return (
     <div className="flex w-full flex-col gap-3 lg:gap-4">
-      {/* 1. Grade 카드 (모바일에서는 뒤집혔을 때만 보임, 태블릿/데스크탑은 고정) */}
       <div className="relative overflow-hidden rounded-[32px] bg-[#260656] p-6 text-white shadow-lg lg:rounded-[40px]">
         <div className="absolute -right-4 -bottom-4 text-8xl font-black italic opacity-10 select-none">
           CG
@@ -41,11 +36,7 @@ export default function GamificationSidebar({
         </div>
       </div>
 
-      {/* 2. 게이미피케이션 스탯 그리드 */}
-      {/* 모바일: 2열 (Created 1줄, 나머지 2x2 2줄, 명언 1줄) */}
-      {/* 태블릿/데스크탑: 4열 (Created가 상황에 따라 조정) */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-2 lg:gap-3">
-        {/* Created Meetings (항상 한 줄 꽉 차게) */}
         <div className="col-span-2 flex items-center justify-between rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm md:col-span-4 lg:col-span-2">
           <div className="flex flex-col">
             <span className="mb-1 text-[11px] font-bold text-slate-400 uppercase">
@@ -63,7 +54,6 @@ export default function GamificationSidebar({
           </div>
         </div>
 
-        {/* 나머지 4개 (모바일 2x2, 태블릿 4열 일렬, 데스크탑 2x2) */}
         {[
           {
             label: "Posts",
@@ -114,7 +104,6 @@ export default function GamificationSidebar({
           </div>
         ))}
 
-        {/* 데일리 명언 (항상 한 줄 꽉 차게) */}
         <div className="col-span-2 flex items-center gap-3 rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-4 md:col-span-4 lg:col-span-2">
           <div className="flex-1 overflow-hidden">
             <p className="mb-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase">

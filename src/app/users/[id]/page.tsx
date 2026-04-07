@@ -83,10 +83,10 @@ export default async function Page({
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
       <aside className="custom-scrollbar flex w-full shrink-0 flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0 snap-x snap-mandatory">
-          {/* 1. 뒤집히는 카드 구역 (프로필 & Grade) */}
           <div className="min-w-[180%] lg:min-w-full flex items-stretch gap-4 lg:w-full lg:flex-col">
             <div className="w-1/2 lg:w-full snap-center lg:min-w-full">
-              <ProfileSection initialUser={initialUser} />
+              {/* 남 프로필이랑 내 프로필 구분 */}
+              <ProfileSection initialUser={profileUser} canEdit={isOwnProfile} />
             </div>
             <div className="w-1/2 lg:w-full snap-center">
               <GradeCard daysSinceJoin={42} />

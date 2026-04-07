@@ -136,19 +136,14 @@ export function MeetingHeaderSection({
       disabled: false,
       handler: () => {
         handleAttendMeeting(detail.region);
-    
+
         const earnedPoint = Math.floor(Math.random() * 3) + 1;
-    
+
         setShowReward({
           show: true,
           point: earnedPoint,
         });
         setIsAnimating(true);
-    
-        setTimeout(() => {
-          setIsAnimating(false);
-          setShowReward({ show: false, point: 0 });
-        }, 2000);
       },
     };
   })();
