@@ -260,6 +260,7 @@ export interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   detail: MeetingDetailApiData;
+  onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
 // --- 모임 생성/수정 폼 ---

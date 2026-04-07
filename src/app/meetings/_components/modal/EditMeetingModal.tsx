@@ -7,18 +7,14 @@ import ModalBase from "@/components/ui/ModalBase";
 import { useEditMeetingForm } from "@/hooks/useMeetingForm";
 import { EditMeetingModalProps } from "@/types";
 import { AlertCircle } from "lucide-react";
-import { useMeetingDetailMutations } from "@/hooks";
 
 export function EditMeetingModal({
   isOpen,
   onOpenChange,
   detail,
+  onSubmit,
 }: EditMeetingModalProps) {
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
-  const { handleEditMeeting } = useMeetingDetailMutations({
-    meetingId: detail.id,
-    initialHasAttended: false,
-  });
 
   const {
     errors,
@@ -32,7 +28,7 @@ export function EditMeetingModal({
   } = useEditMeetingForm({
     detail,
     isOpen,
-    onSubmit: handleEditMeeting,
+    onSubmit,
     onSuccess: () => {
       onOpenChange(false);
     },

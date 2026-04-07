@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
@@ -20,7 +19,6 @@ import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Users2 } from "lucide-react";
 import { useMeetingDetailMutations } from "@/hooks";
-import { QUERY_KEYS } from "@/constans/queryKey";
 import type {
   MeetingHeaderSectionProps,
   MeetingMember,
@@ -65,26 +63,19 @@ export function MeetingHeaderSection({
 
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
-  const queryClient = useQueryClient();
-  const hasAttendedInitially =
-    queryClient.getQueryData<boolean>(
-      QUERY_KEYS.meetings.attendance(meetingId),
-    ) ?? false;
-
   const {
     isAuthLoading,
     hasAttended,
     isCheckingAttendance,
-    joinMutation,
-    cancelJoinMutation,
-    favoriteMutation,
-    attendMutation,
+    isJoinPending,
+    isFavoritePending,
     handleJoinMeeting,
     handleCancelJoinMeeting,
+    handleEditMeeting,
     handleDeleteMeeting,
     handleToggleFavorite,
     handleAttendMeeting,
-  } = useMeetingDetailMutations({ meetingId, initialHasAttended: hasAttendedInitially });
+  } = useMeetingDetailMutations(meetingId);
 
   const handleShare = async () => {
     const isSuccess = await copyToClipboard(window.location.href);
@@ -97,7 +88,6 @@ export function MeetingHeaderSection({
 
   const isParticipant = isHost || isJoined;
   const isCapacityFull = detail.participantCount >= detail.capacity;
-  const isJoinPending = joinMutation.isPending || cancelJoinMutation.isPending || attendMutation.isPending;
 
   const menuConfig = {
     showShare: isLoggedIn && isParticipant,
@@ -135,7 +125,7 @@ export function MeetingHeaderSection({
   })();
 
   const handleFavoriteClick = () => {
-    if (isAuthLoading || favoriteMutation.isPending) return;
+    if (isAuthLoading || isFavoritePending) return;
     handleToggleFavorite(detail.isFavorited);
   };
 
@@ -290,7 +280,7 @@ export function MeetingHeaderSection({
               liked={detail.isFavorited}
               onClick={() => loginGuardAction(handleFavoriteClick)}
               size={28}
-              disabled={favoriteMutation.isPending}
+              disabled={isFavoritePending}
             />
           </div>
         </div>
@@ -300,6 +290,7 @@ export function MeetingHeaderSection({
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         detail={detail}
+        onSubmit={handleEditMeeting}
       />
 
       <ConfirmDeleteModal

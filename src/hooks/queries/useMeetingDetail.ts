@@ -87,18 +87,13 @@ export function useMeetingDetailQueries(meetingId: number) {
 }
 
 // 모임 상세 mutation 함수 모음
-export function useMeetingDetailMutations({
-  meetingId,
-  initialHasAttended,
-}: {
-  meetingId: number;
-  initialHasAttended: boolean;
-}) {
+export function useMeetingDetailMutations(meetingId: number) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
-  const [hasAttended, setHasAttended] = useState(initialHasAttended);
+  const [hasAttended, setHasAttended] = useState(
+    queryClient.getQueryData<boolean>(QUERY_KEYS.meetings.attendance(meetingId)) ?? false,
+  );
 
   const joinMutation = useMutation({
     mutationFn: () => joinMeeting(meetingId),
@@ -221,32 +216,17 @@ export function useMeetingDetailMutations({
     },
   });
 
-  const isCheckingAttendance = attendMutation.isPending;
-
   return {
-    user,
     isAuthLoading,
     hasAttended,
-    isCheckingAttendance,
-    joinMutation,
-    cancelJoinMutation,
-    favoriteMutation,
-    attendMutation,
+    isCheckingAttendance: attendMutation.isPending,
+    isJoinPending: joinMutation.isPending || cancelJoinMutation.isPending || attendMutation.isPending,
+    isFavoritePending: favoriteMutation.isPending,
     handleJoinMeeting: async () => {
       await joinMutation.mutateAsync();
     },
     handleCancelJoinMeeting: async () => {
       await cancelJoinMutation.mutateAsync();
-    },
-    handleShareMeeting: async () => {
-      const meetingUrl = window.location.href;
-
-      try {
-        await navigator.clipboard.writeText(meetingUrl);
-        ToastCommon({ message: "모임 링크가 복사되었어요." });
-      } catch {
-        ToastCommon({ message: "링크 복사에 실패했습니다." });
-      }
     },
     handleEditMeeting: async (nextValues: Partial<MeetingDetailData>) => {
       await updateMeetingMutation.mutateAsync(nextValues);
