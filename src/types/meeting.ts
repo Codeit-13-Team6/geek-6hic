@@ -2,10 +2,33 @@ import type { DateRange } from "react-day-picker";
 import type { CursorResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
 
+
 export interface MeetingMember {
   id: number;
   name: string;
   image: string | null;
+}
+
+export interface MeetingThreadItem {
+  id: number;
+  author: string;
+  createdAt: string;
+  content: string;
+}
+
+export interface MeetingAttendanceComment {
+  id: number;
+  authorId: number;
+  content: string;
+  createdAt: string;
+}
+
+export interface MeetingType {
+  id: number;
+  teamId: string;
+  name: string;
+  description: string;
+  createdAt: string;
 }
 
 export interface CreateMeeting {
@@ -27,13 +50,6 @@ export interface Meeting extends CreateMeeting {
   participantCount: number;
 }
 
-export interface MeetingThreadItem {
-  id: number;
-  author: string;
-  createdAt: string;
-  content: string;
-}
-
 export interface RecommendedMeetingItem {
   id: number;
   name: string;
@@ -44,21 +60,9 @@ export interface RecommendedMeetingItem {
   dateTime: string;
 }
 
-export interface MeetingResponse {
-  id: number;
+
+export interface MeetingResponse extends Meeting {
   teamId: string;
-  name: string;
-  type: string;
-  region: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  dateTime: string;
-  registrationEnd: string;
-  capacity: number;
-  participantCount: number;
-  image: string | null;
-  description: string;
   canceledAt: string | null;
   confirmedAt: string | null;
   hostId: number;
@@ -82,7 +86,6 @@ export interface MeetingDetailData extends MeetingResponse {
   threads: MeetingThreadItem[];
 }
 
-//내가 참여한 모임에 대한 추가 정보
 export interface JoinedMeeting extends Meeting {
   isFavorited: boolean;
   joinedAt: string;
@@ -108,18 +111,13 @@ export interface MeetingParticipant {
   user: MeetingMember;
 }
 
-export interface MeetingAttendanceComment {
-  id: number;
-  authorId: number;
-  content: string;
-  createdAt: string;
-}
 
 export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
 export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
 export type MyMeetingsResponse = CursorResponse<Meeting>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
-export type MeetingAttendanceCommentsResponse = CursorResponse<MeetingAttendanceComment>;
+export type MeetingAttendanceCommentsResponse =
+  CursorResponse<MeetingAttendanceComment>;
 export type MeetingListResponse = CursorResponse<MeetingResponse>;
 
 export interface MeetingsRecommendResponse {
@@ -137,38 +135,25 @@ export interface MeetingActionErrorResponse {
 
 export interface GetMeetingListParams {
   type?: string;
-  // region?: string;
-  // date?: string;
   sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
-  sortOrder?: "asc" | "desc"; // 오름차순 내림차순
+  sortOrder?: "asc" | "desc";
   cursor?: string;
   size?: number;
 }
 
-export interface MeetingType {
-  id: number;
-  teamId: string;
-  name: string;
-  description: string;
-  createdAt: string;
+export interface UploadImageResponse {
+  presignedUrl: string;
+  publicUrl: string;
 }
+
 
 export type SortValue =
   | ""
   | "dateTime"
   | "registrationEnd"
-  | "participantCount"; // 모임일시 , 모집 마감일 , 참가자수
-export interface MeetingFiltersProps {
-  activeValue: string;
-  sortValue: SortValue;
-  sortDescValue: boolean;
-  appliedDate: DateRange | undefined;
-  onChangeTab: (value: string) => void;
-  onChangeSort: (value: SortValue) => void;
-  onApplyDate: (value: DateRange | undefined) => void;
-  onResetFilters: () => void;
-  onChangeSortDesc: (value: boolean) => void;
-}
+  | "participantCount";
+
+
 
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];
@@ -192,19 +177,6 @@ export interface UserCardProps {
   onDetailClick?: () => void;
 }
 
-export interface RemoveMeetingImageParams {
-  previewImageUrlRef: { current: string };
-  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
-  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
-  clearImageError: () => void;
-}
-
-export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
-  nextFile: File | null;
-  setImageError: (message: string) => void;
-  onUploadError: () => void;
-}
-
 export interface MeetingHeaderSectionProps {
   meetingId: number;
   detail: MeetingDetailApiData;
@@ -213,12 +185,6 @@ export interface MeetingHeaderSectionProps {
   isJoined: boolean;
   isLoggedIn: boolean;
 }
-
-export type MeetingActionState =
-  | "guest_join"
-  | "joinable"
-  | "attendance_ready"
-  | "attendance_done";
 
 export interface MeetingDetailContentProps {
   meetingId: number;
@@ -253,12 +219,6 @@ export interface EditMeetingModalProps {
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
-// --- 모임 생성/수정 폼 ---
-
-export interface UploadImageResponse {
-  presignedUrl: string;
-  publicUrl: string;
-}
 
 export interface MeetingBasicInfoValues {
   category?: string;
@@ -283,12 +243,14 @@ export interface MeetingScheduleStepValues {
 }
 
 export interface MeetingFormValues
-  extends MeetingBasicInfoValues, MeetingScheduleStepValues {
+  extends MeetingBasicInfoValues,
+    MeetingScheduleStepValues {
   category: string;
 }
 
 export interface MeetingFormErrors
-  extends MeetingBasicInfoErrors, MeetingScheduleStepValues {
+  extends MeetingBasicInfoErrors,
+    MeetingScheduleStepValues {
   category: string;
 }
 
@@ -306,4 +268,17 @@ export interface MeetingModalFormProps {
   onChangeImage: (nextFile: File | null) => void;
   onRemoveImage: () => void;
   showCategoryField?: boolean;
+}
+
+export interface RemoveMeetingImageParams {
+  previewImageUrlRef: { current: string };
+  setFormValues: Dispatch<SetStateAction<MeetingFormValues>>;
+  setIsImageUploading: Dispatch<SetStateAction<boolean>>;
+  clearImageError: () => void;
+}
+
+export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
+  nextFile: File | null;
+  setImageError: (message: string) => void;
+  onUploadError: () => void;
 }
