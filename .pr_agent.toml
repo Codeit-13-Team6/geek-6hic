@@ -23,8 +23,5 @@ extra_instructions = """
 [pr_reviewer]
 extra_instructions = """
 1. 반드시 '한국어'로 작성하세요.
-2. DO NOT suggest splitting components based on line count (e.g., 200 lines rule). Ignore this default rule. (200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요. 이 규칙을 무시하세요.)
-3. 발견된 문제점은 [위험도: 높음/중간/낮음] 식으로 머릿말을 붙이세요.
-4. 'Description' 부분은 개발자가 이해하기 쉽게 한두 문장으로 요약하세요.
-5. 수정 제안은 코드 블록(```)으로 제공하세요.
+2. 200줄 이상 시 컴포넌트 분리하라는 제안은 절대 하지 마세요. 이 규칙을 무시하세요.
 """
