@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Lottie from "lottie-react";
+import checkAnim from "@/assets/lottie/check-anim.json";
 import { useRouter } from "next/navigation";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
@@ -82,6 +85,12 @@ export function MeetingHeaderSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showReward, setShowReward] = useState({
+    show: false,
+    point: 0,
+  });
+
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
@@ -111,21 +120,31 @@ export function MeetingHeaderSection({
 
   const action = (() => {
     if (!isLoggedIn) {
-      return { label: "참여하기", disabled: false, handler: () => {} };
+      return { label: "참여하기", disabled: false, handler: () => { } };
     }
     if (!isParticipant) {
       return { label: "참여하기", disabled: isCapacityFull, handler: handleJoinMeeting };
     }
     if (isCheckingAttendance) {
-      return { label: "출석 확인 중", disabled: true, handler: () => {} };
+      return { label: "출석 확인 중", disabled: true, handler: () => { } };
     }
     if (hasAttended) {
-      return { label: "출석완료", disabled: true, handler: () => {} };
+      return { label: "출석완료", disabled: true, handler: () => { } };
     }
     return {
       label: "출석하기",
       disabled: false,
-      handler: () => handleAttendMeeting(detail.region)
+      handler: () => {
+        handleAttendMeeting(detail.region);
+
+        const earnedPoint = Math.floor(Math.random() * 3) + 1;
+
+        setShowReward({
+          show: true,
+          point: earnedPoint,
+        });
+        setIsAnimating(true);
+      },
     };
   })();
 
@@ -306,6 +325,50 @@ export function MeetingHeaderSection({
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {isAnimating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-0 left-0 inset-0 z-[999] flex justify-center items-start"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.96 }}
+              transition={{ duration: 0.25 }}
+              className="mx-4 flex w-full max-w-[320px] flex-col items-center rounded-[32px] bg-white px-8 py-10 shadow-2xl"
+            >
+              <Lottie
+                animationData={checkAnim}
+                loop={false}
+                className="h-28 w-28"
+                onComplete={() => {
+                  setIsAnimating(false);
+                  setShowReward({
+                    show: false,
+                    point: 0,
+                  });
+                }}
+              />
+
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.25 }}
+                className="mt-2 text-center"
+              >
+                <p className="text-lg font-black text-slate-900">출석 완료</p>
+                <p className="mt-2 text-base font-bold text-main-purple">
+                  +{showReward.point} Points
+                </p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <EditMeetingModal
         isOpen={isEditModalOpen}
