@@ -14,7 +14,7 @@ import {
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
 } from "@/lib/meetingFormImage";
-import { MeetingDetailData, MeetingFormErrors, MeetingFormValues } from "@/types";
+import { MeetingDetailApiData, MeetingDetailData, MeetingFormErrors, MeetingFormValues } from "@/types";
 import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -49,14 +49,14 @@ export const toEditMeetingPayload = (formValues: MeetingFormValues) => ({
 
 export const toMeetingFormValues = (
   data: Pick<
-    MeetingDetailData,
-    "type" | "name" | "description" | "link" | "image" | "dateTime" | "registrationEnd" | "capacity"
+    MeetingDetailApiData,
+    "type" | "name" | "description" | "address" | "image" | "dateTime" | "registrationEnd" | "capacity"
   >,
 ): MeetingFormValues => ({
   category: data.type,
   name: data.name,
   description: data.description,
-  link: data.link,
+  link: data.address,
   imageFile: null,
   previewImageUrl: data.image ?? "",
   imageUrl: data.image ?? "",
@@ -292,12 +292,12 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
 // edit
 
 export function useEditMeetingForm({
-  data,
+  detail,
   isOpen,
   onSubmit,
   onSuccess,
 }: {
-  data: MeetingDetailData;
+  detail: MeetingDetailApiData;
   isOpen: boolean;
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
   onSuccess?: () => void;
@@ -315,13 +315,13 @@ export function useEditMeetingForm({
     handleChangeMeetingImage,
     handleRemoveMeetingImage,
   } = useMeetingFormBase({
-    initialValues: toMeetingFormValues(data),
+    initialValues: toMeetingFormValues(detail),
     onClearImageError: () => setErrors((prev) => ({ ...prev, imageUrl: "" })),
     onSetImageError: (message) => setErrors((prev) => ({ ...prev, imageUrl: message })),
   });
 
-  const resetEditMeetingForm = (nextData: MeetingDetailData) => {
-    const nextValues = toMeetingFormValues(nextData);
+  const resetEditMeetingForm = (nextDetail: MeetingDetailApiData) => {
+    const nextValues = toMeetingFormValues(nextDetail);
     previewImageUrlRef.current = nextValues.previewImageUrl;
     setFormValues(nextValues);
     setErrors(createEmptyMeetingFormErrors());
@@ -332,11 +332,11 @@ export function useEditMeetingForm({
   useEffect(() => {
     if (!previousIsOpenRef.current && isOpen) {
       queueMicrotask(() => {
-        resetEditMeetingForm(data);
+        resetEditMeetingForm(detail);
       });
     }
     previousIsOpenRef.current = isOpen;
-  }, [data, isOpen]);
+  }, [detail, isOpen]);
 
   const handleChange = (nextValues: {
     category?: string;

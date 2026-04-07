@@ -8,6 +8,7 @@ import {
   QueryKey,
   useMutation,
   useQuery,
+  useSuspenseQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import {
@@ -69,12 +70,12 @@ const getCancelJoinErrorMessage = (code?: string) => {
 
 // 모임 상세 조회 함수 모음
 export function useMeetingDetailQueries(meetingId: number) {
-  const detailQuery = useQuery({
+  const detailQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.detail(meetingId),
     queryFn: () => getMeetingDetail(meetingId),
   });
 
-  const participantsQuery = useQuery({
+  const participantsQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.participants(meetingId),
     queryFn: () => getMeetingParticipants(meetingId),
   });

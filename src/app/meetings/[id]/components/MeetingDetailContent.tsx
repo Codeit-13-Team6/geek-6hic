@@ -8,23 +8,35 @@ import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/Recom
 import { useMeetingDetailQueries } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
 import type {
-  MeetingDetailApiData,
   MeetingDetailContentProps,
-  MeetingDetailData,
-  MeetingParticipant,
-  User,
 } from "@/types";
 import { cn } from "@/lib/utils";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
-const toMeetingDetailViewModel = ({
-  detail,
-  participants,
-  user,
-}: {
-  detail: MeetingDetailApiData;
-  participants: MeetingParticipant[];
-  user: User | null;
-}) => {
+
+export function MeetingDetailErrorView() {
+  return (
+    <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-[32px] border border-red-50 bg-red-50/30 p-12 text-center shadow-sm">
+      <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-red-100/50 text-red-500">
+        <AlertCircle size={32} strokeWidth={2.5} />
+      </div>
+      <p className="text-lg font-black tracking-tighter text-slate-950">
+        정보를 불러올 수 없습니다.
+      </p>
+      <p className="mt-2 text-sm font-medium text-slate-400">
+        잠시 후 다시 시도해 주세요.
+      </p>
+    </div>
+  );
+}
+
+function MeetingDetailContentInner({ meetingId }: MeetingDetailContentProps) {
+  const user = useAuthStore((s) => s.user);
+  const { detailQuery, participantsQuery } = useMeetingDetailQueries(meetingId);
+
+  const detail = detailQuery.data;
+  const participants = participantsQuery.data.data;
+
   const isLoggedIn = Boolean(user);
   const isHost = user?.id === detail.hostId || user?.id === detail.host?.id;
   const isJoined =
@@ -33,73 +45,15 @@ const toMeetingDetailViewModel = ({
       (detail.isJoined || participants.some((p) => p.userId === user?.id)));
   const isParticipantMember = isLoggedIn && (isHost || isJoined);
 
-  const data: MeetingDetailData = {
-    ...detail,
-    link: detail.address,
-    isHost,
-    isJoined,
-    isLoggedIn,
-    threads: [],
-    recommendedMeetings: [],
-  };
-
-  return {
-    data,
-    participantAvatars: participants.map((p) => p.user),
-    isParticipantMember,
-    linkGuideText: isLoggedIn
-      ? "모임에 참여하면 링크를 확인할 수 있어요."
-      : "로그인 후 모임에 참여하면 링크를 확인할 수 있어요.",
-    threadGuideText: isLoggedIn
-      ? "모임에 참여하면 스레드를 작성할 수 있어요."
-      : "로그인 후 모임에 참여하면 스레드를 작성할 수 있어요.",
-  };
-};
-
-export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
-  const user = useAuthStore((s) => s.user);
-  const { detailQuery, participantsQuery } = useMeetingDetailQueries(meetingId);
-
-  const detail = detailQuery.data;
-  const participants = participantsQuery.data?.data ?? [];
-
-  if (detailQuery.isLoading || !detail) {
-    return (
-      <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-[32px] border border-slate-50 bg-white p-12 shadow-sm">
-        <div className="bg-main-purple/10 flex size-12 animate-pulse items-center justify-center rounded-full">
-          <div className="bg-main-purple size-3 rounded-full" />
-        </div>
-        <p className="mt-4 text-sm font-bold tracking-tight text-slate-400">
-          ARCHIVE LOADING...
-        </p>
-      </div>
-    );
-  }
-
-  if (detailQuery.isError) {
-    return (
-      <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-[32px] border border-red-50 bg-red-50/30 p-12 text-center shadow-sm">
-        <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-red-100/50 text-red-500">
-          <AlertCircle size={32} strokeWidth={2.5} />
-        </div>
-        <p className="text-lg font-black tracking-tighter text-slate-950">
-          정보를 불러올 수 없습니다.
-        </p>
-        <p className="mt-2 text-sm font-medium text-slate-400">
-          잠시 후 다시 시도해 주세요.
-        </p>
-      </div>
-    );
-  }
-
-  const viewModel = toMeetingDetailViewModel({ detail, participants, user });
-
   return (
     <div className="animate-fade-up flex w-full flex-col gap-10 sm:gap-12 lg:gap-14">
       <MeetingHeaderSection
         meetingId={meetingId}
-        data={viewModel.data}
-        participantAvatars={viewModel.participantAvatars}
+        detail={detail}
+        participants={participants}
+        isHost={isHost}
+        isJoined={isJoined}
+        isLoggedIn={isLoggedIn}
       />
 
       <section className="w-full space-y-6">
@@ -130,17 +84,25 @@ export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
 
       <MeetingLinkSection
         link={detail.address}
-        canViewLink={viewModel.isParticipantMember}
-        guideText={viewModel.linkGuideText}
+        canViewLink={isParticipantMember}
+        isLoggedIn={isLoggedIn}
       />
 
       <MeetingThreadSection
         meetingId={detail.id}
-        canWriteThread={viewModel.isParticipantMember}
-        guideText={viewModel.threadGuideText}
+        canWriteThread={isParticipantMember}
+        isLoggedIn={isLoggedIn}
       />
 
-      <RecommendedMeetingsSection data={viewModel.data} />
+      <RecommendedMeetingsSection/>
     </div>
+  );
+}
+
+export function MeetingDetailContent({ meetingId }: MeetingDetailContentProps) {
+  return (
+    <ErrorBoundary errorComponent={MeetingDetailErrorView}>
+      <MeetingDetailContentInner meetingId={meetingId} />
+    </ErrorBoundary>
   );
 }

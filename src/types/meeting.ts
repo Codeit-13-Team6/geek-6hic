@@ -215,8 +215,11 @@ export interface ChangeMeetingImageParams extends RemoveMeetingImageParams {
 
 export interface MeetingHeaderSectionProps {
   meetingId: number;
-  data: MeetingDetailData;
-  participantAvatars: MeetingMember[];
+  detail: MeetingDetailApiData;
+  participants: MeetingParticipant[];
+  isHost: boolean;
+  isJoined: boolean;
+  isLoggedIn: boolean;
 }
 
 export type MeetingActionState =
@@ -237,18 +240,15 @@ export interface MeetingDescriptionSectionProps {
 export interface MeetingLinkSectionProps {
   link: string;
   canViewLink: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
 export interface MeetingThreadSectionProps {
   meetingId: number;
   canWriteThread: boolean;
-  guideText: string;
+  isLoggedIn: boolean;
 }
 
-export interface RecommendedMeetingsSectionProps {
-  data: MeetingDetailData;
-}
 
 export interface MeetingDetailPageProps {
   params: Promise<{
@@ -259,8 +259,10 @@ export interface MeetingDetailPageProps {
 export interface EditMeetingModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  data: MeetingDetailData;
-  onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
+  detail: MeetingDetailApiData;
+  isHost: boolean;
+  isJoined: boolean;
+  isLoggedIn: boolean;
 }
 
 // --- 모임 생성/수정 폼 ---

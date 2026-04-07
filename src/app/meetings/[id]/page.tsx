@@ -74,7 +74,8 @@ export default async function MeetingDetailPage({
               }),
             ]);
 
-            const postId = Number(detail.region) > 0 ? Number(detail.region) : null;
+            const postId =
+              Number(detail.region) > 0 ? Number(detail.region) : null;
             await qc.prefetchQuery({
               queryKey: QUERY_KEYS.meetings.attendance(resolvedMeetingId),
               queryFn: () =>

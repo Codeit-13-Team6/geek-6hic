@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RecommendedMeetingsSectionProps } from "@/types";
+import { RecommendedMeetingItem } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
 
@@ -10,13 +10,9 @@ const formatMonthDay = (value: string) => {
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 };
 
-export function RecommendedMeetingsSection({
-  data,
-}: RecommendedMeetingsSectionProps) {
+export function RecommendedMeetingsSection() {
 
-
-  // routehandler api  호출하는곳
-  const meetings = data.recommendedMeetings || [];
+  const meetings: RecommendedMeetingItem[] = [];
 
   return (
     <section className="w-full space-y-6">
@@ -62,7 +58,7 @@ export function RecommendedMeetingsSection({
             {meetings.slice(0, 5).map((meeting) => (
               <Link
                 key={meeting.id}
-                href={`/meetings/${meeting.id}`}
+                href={`` + `/meetings/${meeting.id}`}
                 className="group relative flex w-[260px] shrink-0 snap-start flex-col overflow-hidden transition-all duration-300 sm:w-[300px]"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] bg-slate-100 shadow-sm transition-shadow group-hover:shadow-md">

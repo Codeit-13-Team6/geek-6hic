@@ -22,49 +22,9 @@ import { Users2 } from "lucide-react";
 import { useMeetingDetailMutations } from "@/hooks";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import type {
-  MeetingActionState,
   MeetingHeaderSectionProps,
   MeetingMember,
 } from "@/types";
-
-const getActionState = ({
-  isLoggedIn,
-  isParticipant,
-  isCheckingAttendance,
-  hasAttended,
-}: {
-  isLoggedIn: boolean;
-  isParticipant: boolean;
-  isCheckingAttendance: boolean;
-  hasAttended: boolean;
-}): MeetingActionState => {
-  if (!isLoggedIn) return "guest_join";
-  if (!isParticipant) return "joinable";
-  if (isCheckingAttendance) return "attendance_checking";
-  if (hasAttended) return "attendance_done";
-  return "attendance_ready";
-};
-
-const getActionUI = ({
-  actionState,
-  isCapacityFull,
-}: {
-  actionState: MeetingActionState;
-  isCapacityFull: boolean;
-}) => {
-  switch (actionState) {
-    case "guest_join":
-      return { label: "참여하기", disabled: false };
-    case "joinable":
-      return { label: "참여하기", disabled: isCapacityFull };
-    case "attendance_checking":
-      return { label: "출석 확인 중", disabled: true };
-    case "attendance_done":
-      return { label: "출석완료", disabled: true };
-    case "attendance_ready":
-      return { label: "출석하기", disabled: false };
-  }
-};
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -73,10 +33,30 @@ const hasUsableProfileImage = (
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
 
+const ParticipantAvatar = ({ participant }: { participant: MeetingMember }) => {
+  const displayName = participant.name || "참여자";
+  const profileImage = hasUsableProfileImage(participant.image)
+    ? participant.image
+    : profileFemaleSm;
+
+  return (
+    <Image
+      src={profileImage}
+      alt={displayName}
+      width={36}
+      height={36}
+      className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
+    />
+  );
+};
+
 export function MeetingHeaderSection({
   meetingId,
-  data,
-  participantAvatars,
+  detail,
+  participants,
+  isHost,
+  isJoined,
+  isLoggedIn,
 }: MeetingHeaderSectionProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -100,86 +80,53 @@ export function MeetingHeaderSection({
     handleJoinMeeting,
     handleCancelJoinMeeting,
     handleShareMeeting,
-    handleEditMeeting,
     handleDeleteMeeting,
     handleToggleFavorite,
     handleAttendMeeting,
   } = useMeetingDetailMutations({ meetingId, initialHasAttended: hasAttendedInitially });
 
-  const isParticipant = data.isHost || data.isJoined;
-  const isCapacityFull = data.participantCount >= data.capacity;
-  const actionState = getActionState({
-    isLoggedIn: data.isLoggedIn,
-    isParticipant,
-    isCheckingAttendance,
-    hasAttended,
-  });
-  const { label: actionLabel, disabled: isActionDisabled } = getActionUI({
-    actionState,
-    isCapacityFull,
-  });
+  const isParticipant = isHost || isJoined;
+  const isCapacityFull = detail.participantCount >= detail.capacity;
+  const isJoinPending = joinMutation.isPending || cancelJoinMutation.isPending || attendMutation.isPending;
 
-  const shouldShowShareButton = data.isLoggedIn && isParticipant;
-  const shouldShowHostMenu = data.isHost;
-  const shouldShowParticipantMenu = data.isJoined && !data.isHost;
-
-  const isJoinPending =
-    joinMutation.isPending ||
-    cancelJoinMutation.isPending ||
-    attendMutation.isPending;
-
-  const progressValue = (data.participantCount / data.capacity) * 100;
-  const visibleParticipants =
-    participantAvatars.length > 0
-      ? participantAvatars.slice(0, 3)
-      : [data.host];
-  const hiddenParticipantCount = Math.max(
-    0,
-    data.participantCount - visibleParticipants.length,
-  );
-
-  const handleActionClick = async () => {
-    if (isAuthLoading || isJoinPending || isActionDisabled) return;
-
-    switch (actionState) {
-      case "guest_join":
-        return;
-      case "joinable":
-        await handleJoinMeeting();
-        return;
-      case "attendance_ready":
-        await handleAttendMeeting(data.region);
-        return;
-      case "attendance_checking":
-      case "attendance_done":
-        return;
-    }
+  const menuConfig = {
+    showShare: isLoggedIn && isParticipant,
+    showHost: isHost,
+    showMember: isJoined && !isHost,
   };
+
+  const action = (() => {
+    if (!isLoggedIn) {
+      return { label: "참여하기", disabled: false, handler: () => {} };
+    }
+    if (!isParticipant) {
+      return { label: "참여하기", disabled: isCapacityFull, handler: handleJoinMeeting };
+    }
+    if (isCheckingAttendance) {
+      return { label: "출석 확인 중", disabled: true, handler: () => {} };
+    }
+    if (hasAttended) {
+      return { label: "출석완료", disabled: true, handler: () => {} };
+    }
+    return { 
+      label: "출석하기", 
+      disabled: false, 
+      handler: () => handleAttendMeeting(detail.region) 
+    };
+  })();
+
+  const progressValue = (detail.participantCount / detail.capacity) * 100;
+  
+  const { visibleParticipants, hiddenParticipantCount } = (() => {
+    const avatars = participants.map((p) => p.user);
+    const visible = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+    const hidden = Math.max(0, detail.participantCount - visible.length);
+    return { visibleParticipants: visible, hiddenParticipantCount: hidden };
+  })();
 
   const handleFavoriteClick = () => {
     if (isAuthLoading || favoriteMutation.isPending) return;
-    handleToggleFavorite(data.isFavorited);
-  };
-
-  const renderParticipantAvatar = (
-    participant: MeetingMember,
-    index: number,
-  ) => {
-    const displayName = participant.name || "참여자";
-    const profileImage = hasUsableProfileImage(participant.image)
-      ? participant.image
-      : profileFemaleSm;
-
-    return (
-      <Image
-        key={`${participant.id}-${index}`}
-        src={profileImage}
-        alt={displayName}
-        width={36}
-        height={36}
-        className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
-      />
-    );
+    handleToggleFavorite(detail.isFavorited);
   };
 
   return (
@@ -187,8 +134,8 @@ export function MeetingHeaderSection({
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
-            src={data.image ?? ""}
-            alt={data.name}
+            src={detail.image ?? ""}
+            alt={detail.name}
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
@@ -200,9 +147,9 @@ export function MeetingHeaderSection({
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start gap-3">
                   <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
-                    {data.name}
+                    {detail.name}
                   </h1>
-                  {data.isHost && (
+                  {isHost && (
                     <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
                       <Image
                         src={crownLgIcon}
@@ -217,7 +164,7 @@ export function MeetingHeaderSection({
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
-                {shouldShowShareButton && (
+                {menuConfig.showShare && (
                   <BtnCommon
                     type="button"
                     size="sm"
@@ -229,7 +176,7 @@ export function MeetingHeaderSection({
                   </BtnCommon>
                 )}
 
-                {(shouldShowHostMenu || shouldShowParticipantMenu) && (
+                {(menuConfig.showHost || menuConfig.showMember) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       render={
@@ -248,7 +195,7 @@ export function MeetingHeaderSection({
                       }
                     />
                     <DropdownMenuContent align="end">
-                      {shouldShowHostMenu ? (
+                      {menuConfig.showHost ? (
                         <>
                           <DropdownMenuItem
                             onClick={() => setIsEditModalOpen(true)}
@@ -264,7 +211,7 @@ export function MeetingHeaderSection({
                         </>
                       ) : null}
 
-                      {shouldShowParticipantMenu ? (
+                      {menuConfig.showMember ? (
                         <DropdownMenuItem
                           onClick={handleCancelJoinMeeting}
                           className="font-bold text-red-500"
@@ -289,15 +236,17 @@ export function MeetingHeaderSection({
                       Participants
                     </p>
                     <p className="text-xl font-black text-slate-950">
-                      {data.participantCount}{" "}
+                      {detail.participantCount}{" "}
                       <span className="text-sm font-bold text-slate-400">
-                        / {data.capacity}명
+                        / {detail.capacity}명
                       </span>
                     </p>
                   </div>
                 </div>
                 <div className="flex -space-x-2.5">
-                  {visibleParticipants.map(renderParticipantAvatar)}
+                  {visibleParticipants.map((p, idx) => (
+                    <ParticipantAvatar key={p.id || idx} participant={p} />
+                  ))}
                   {hiddenParticipantCount > 0 && (
                     <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">
                       +{hiddenParticipantCount}
@@ -319,16 +268,16 @@ export function MeetingHeaderSection({
             <BtnCommon
               type="button"
               size="md"
-              disabled={isActionDisabled || isJoinPending || isAuthLoading}
-              onClick={() => loginGuardAction(handleActionClick)}
+              disabled={action.disabled || isJoinPending || isAuthLoading}
+              onClick={() => loginGuardAction(action.handler)}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
             >
               <span className="tracking-widest sm:text-sm">
-                {isJoinPending ? "PROCESSING..." : actionLabel}
+                {isJoinPending ? "PROCESSING..." : action.label}
               </span>
             </BtnCommon>
             <HeartIcon
-              liked={data.isFavorited}
+              liked={detail.isFavorited}
               onClick={() => loginGuardAction(handleFavoriteClick)}
               size={28}
               disabled={favoriteMutation.isPending}
@@ -340,8 +289,10 @@ export function MeetingHeaderSection({
       <EditMeetingModal
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        data={data}
-        onSubmit={handleEditMeeting}
+        detail={detail}
+        isHost={isHost}
+        isJoined={isJoined}
+        isLoggedIn={isLoggedIn}
       />
 
       <ConfirmDeleteModal
