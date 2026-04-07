@@ -24,16 +24,16 @@ export const metadata: Metadata = {
 };
 
 const LOUNGE_DEFAULT_PARAMS = {
-  keyword: '',
+  keyword: "",
   sortBy: "createdAt" as const,
   sortOrder: "desc" as const,
 };
 
 export default async function LoungePage() {
   return (
-    <div className="relative w-full mx-auto max-w-[1280px] px-6 2xl:px-0 py-10 sm:py-20">
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up">
-        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:items-center">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
@@ -56,8 +56,10 @@ export default async function LoungePage() {
               <LoginGuard
                 fallback={
                   <BtnCommon className="group bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
-                    <div className="flex gap-2 items-center text-xs tracking-widest uppercase">
-                      <span className="group-hover:rotate-180 transition-transform duration-300 text-bases">+</span>
+                    <div className="flex items-center gap-2 text-xs tracking-widest uppercase">
+                      <span className="text-bases transition-transform duration-300 group-hover:rotate-180">
+                        +
+                      </span>
                       <span>Create Post</span>
                     </div>
                   </BtnCommon>
@@ -65,8 +67,10 @@ export default async function LoungePage() {
               >
                 <Link href="/lounge/create" className="hidden sm:block">
                   <BtnCommon className="group bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
-                    <div className="flex gap-2 items-center text-xs tracking-widest uppercase">
-                      <span className="group-hover:rotate-180 transition-transform duration-300 text-base">+</span>
+                    <div className="flex items-center gap-2 text-xs tracking-widest uppercase">
+                      <span className="text-base transition-transform duration-300 group-hover:rotate-180">
+                        +
+                      </span>
                       <span>Create Post</span>
                     </div>
                   </BtnCommon>
@@ -80,7 +84,9 @@ export default async function LoungePage() {
       <section className="mb-20">
         <div className="animate-fade-up mt-10 mb-4 flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-8 rounded-full" />
-          <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">Weekly HOT Posts</span>
+          <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+            Weekly HOT Posts
+          </span>
         </div>
         <div className="animate-fade-up">
           <HotPostList />
