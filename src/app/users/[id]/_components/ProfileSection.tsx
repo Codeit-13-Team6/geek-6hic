@@ -53,16 +53,15 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
     },
   });
 
-  const onSubmitProfile = profileForm.handleSubmit(
-    ({  image, ...data }) => {
-      updateProfile({ ...data, ...(image && { image }) });
-    },
-  );
+  const onSubmitProfile = profileForm.handleSubmit(({ image, ...data }) => {
+    updateProfile({ ...data, ...(image && { image }) });
+  });
 
   return (
     <>
-      <article className="flex w-full flex-col items-center gap-8 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/40 sm:flex-row sm:items-center sm:justify-start lg:flex-col lg:items-center lg:p-10">
-        <div className="relative size-24 shrink-0 overflow-hidden rounded-full shadow-inner ring-4 ring-slate-200 lg:size-32">
+      <article className="flex h-full w-full flex-row items-center gap-8 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs sm:gap-8 lg:flex-col lg:p-8">
+        {/* 이미지 크기 축소 (size-24 -> size-20) */}
+        <div className="relative size-20 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 lg:size-24">
           <Image
             src={user?.image ?? profileImg}
             alt="profile"
@@ -71,38 +70,35 @@ export default function ProfileSection({ initialUser }: ProfileSectionProps) {
           />
         </div>
 
-        <div className="flex w-full flex-1 flex-col items-center gap-5 sm:items-start lg:items-center">
-          <div className="flex flex-col items-center gap-2 sm:items-start lg:items-center">
-            <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold tracking-tight break-all text-slate-950 sm:text-3xl">
-                {user?.name || "Sprinter"}
-              </h2>
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="hover:text-main-purple cursor-pointer text-slate-300 transition-colors"
-              >
-                <Settings2 size={20} />
-              </button>
-            </div>
+        <div className="flex w-full flex-1 flex-col items-start gap-4 lg:items-center">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-slate-950 sm:text-2xl">
+              {user?.name || "Sprinter"}
+            </h2>
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="hover:text-main-purple text-slate-300 transition-colors"
+            >
+              <Settings2 size={18} />
+            </button>
           </div>
 
-          <div className="h-[1px] w-60 bg-slate-100 sm:w-full lg:w-40" />
+          <div className="h-[1px] w-full bg-slate-50" />
 
-          <div className="flex w-full flex-col items-center gap-5 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
-            <div className="space-y-1">
-              <p className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
+          <div className="w-full space-y-3 text-left lg:text-center">
+            <div>
+              <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 Contact
               </p>
-              <p className="text-sm font-semibold break-all text-slate-600 sm:text-base">
+              <p className="truncate text-sm font-semibold text-slate-600">
                 {user?.email}
               </p>
             </div>
-
-            <div className="space-y-1">
-              <p className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
-                Introduction
+            <div>
+              <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
+                Intro
               </p>
-              <p className="text-sm leading-relaxed font-semibold break-words whitespace-pre-wrap text-slate-600 sm:text-base">
+              <p className="line-clamp-2 text-sm leading-relaxed font-semibold text-slate-600">
                 {user?.companyName || "자기소개가 없습니다."}
               </p>
             </div>
