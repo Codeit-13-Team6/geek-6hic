@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 
 interface StatGridProps {
-  isOwnProfile: boolean;
   postCount: number;
   meetingCount: number;
   favoriteCount: number;
