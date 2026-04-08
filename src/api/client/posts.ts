@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/clientFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
-import { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import { GetPostsParams, GetPostsResponse, MyPostsPageResponse, Post } from "@/types";
 import { threadKeyword } from "@/constans/post";
 
 export async function getHotPosts(): Promise<Post[]> {
@@ -69,8 +69,10 @@ export async function getMyPosts(
     offset?: number;
     limit?: number;
   } = {},
-): Promise<GetPostsResponse> {
-  const { data } = await axiosInstance.get("/users/me/posts-visible", {
+): Promise<MyPostsPageResponse> {
+  const { data } = await axiosInstance.get<MyPostsPageResponse>(
+    "/users/me/posts-visible",
+    {
     params: {
       offset: params.offset ?? 0,
       limit: params.limit ?? 20,

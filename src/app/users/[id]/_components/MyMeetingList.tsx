@@ -1,43 +1,29 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { Loader2, PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
-import { useState } from "react";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 
 export default function MyMeetingList() {
   const router = useRouter();
-  const [page, setPage] = useState(1);
-  const currentOffset = (page - 1) * MY_MEETINGS_PAGE_SIZE;
-
-  const { data, isFetching, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.meetings.myPage(page, MY_MEETINGS_PAGE_SIZE),
-    queryFn: () =>
-      getMeeting({
-        offset: currentOffset,
-        limit: MY_MEETINGS_PAGE_SIZE,
-      }),
-    placeholderData: keepPreviousData,
-    staleTime: 1000 * 60 * 5,
+  const {
+    items: meetings,
+    isFetching,
+    isLoading,
+    page,
+    totalPages,
+    handlePageChange,
+  } = useOffsetPaginationQuery({
+    pageSize: MY_MEETINGS_PAGE_SIZE,
+    queryKey: QUERY_KEYS.meetings.myPage,
+    queryFn: getMeeting,
   });
-
-  const meetings = data?.data ?? [];
-  const totalCount = data?.totalCount ?? meetings.length;
-  const knownPageCount = Math.max(
-    1,
-    Math.ceil(totalCount / MY_MEETINGS_PAGE_SIZE),
-  );
-
-  const handlePageChange = (targetPage: number) => {
-    if (targetPage < 1 || targetPage > knownPageCount) return;
-    setPage(targetPage);
-  };
 
   if (isLoading) {
     return null;
@@ -90,7 +76,7 @@ export default function MyMeetingList() {
         <NumberPagination
           href="#"
           page={page}
-          totalPages={knownPageCount}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>

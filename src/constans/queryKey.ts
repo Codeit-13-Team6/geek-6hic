@@ -1,8 +1,8 @@
 export const QUERY_KEYS = {
   favorites: {
-    root: ["favorite"] as const,
+    root: ["favorites"] as const,
     page: (page: number, limit: number) =>
-      ["favorite", "page", `${page}`, `${limit}`] as const,
+      ["favorites", "page", `${page}`, `${limit}`] as const,
   },
   posts: {
     root: ["posts"] as const, // 하위애들까지 전부 초기화

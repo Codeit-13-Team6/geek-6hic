@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getMyPosts } from "@/api/client/posts";
 import PostCard from "@/components/features/card/PostCard";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -9,38 +8,28 @@ import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
-import { useState } from "react";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 
-const MY_POSTS_PAGE_SIZE = 20;
+const MY_POSTS_PAGE_SIZE = 10;
 
 export default function MyPostList() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const [page, setPage] = useState(1);
-  const currentOffset = (page - 1) * MY_POSTS_PAGE_SIZE;
-
-  const { data, isFetching, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.posts.myPage(page, MY_POSTS_PAGE_SIZE),
-    queryFn: () =>
-      getMyPosts({
-        offset: currentOffset,
-        limit: MY_POSTS_PAGE_SIZE,
-      }),
-    enabled: !!user?.id,
-    placeholderData: keepPreviousData,
-    staleTime: 1000 * 60 * 5,
+  const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
+  const {
+    items: posts,
+    isFetching,
+    isLoading,
+    page,
+    totalPages,
+    handlePageChange,
+  } = useOffsetPaginationQuery({
+    pageSize: MY_POSTS_PAGE_SIZE,
+    queryKey: QUERY_KEYS.posts.myPage,
+    queryFn: getMyPosts,
+    enabled: !isAuthLoading,
   });
 
-  const posts = data?.data ?? [];
-  const totalCount = data?.totalCount ?? posts.length;
-  const knownPageCount = Math.max(1, Math.ceil(totalCount / MY_POSTS_PAGE_SIZE));
-
-  const handlePageChange = (targetPage: number) => {
-    if (targetPage < 1 || targetPage > knownPageCount) return;
-    setPage(targetPage);
-  };
-
-  if (isLoading) {
+  if (isAuthLoading || isLoading) {
     return null;
   }
 
@@ -99,7 +88,7 @@ export default function MyPostList() {
         <NumberPagination
           href="#"
           page={page}
-          totalPages={knownPageCount}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>

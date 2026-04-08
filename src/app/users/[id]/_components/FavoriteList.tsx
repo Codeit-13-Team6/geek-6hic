@@ -1,36 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteFavorites, getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { Loader2, HeartOff } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 
 const FAVORITES_PAGE_SIZE = 10;
 
 export default function FavoriteList() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [page, setPage] = useState(1);
-  const currentOffset = (page - 1) * FAVORITES_PAGE_SIZE;
-
-  const { data, isFetching, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.favorites.page(page, FAVORITES_PAGE_SIZE),
-    queryFn: () =>
-      getFavorites({
-        offset: currentOffset,
-        limit: FAVORITES_PAGE_SIZE,
-      }),
-    placeholderData: keepPreviousData,
-    staleTime: 1000 * 60 * 5,
+  const {
+    items: favorites,
+    isFetching,
+    isLoading,
+    page,
+    totalPages,
+    handlePageChange,
+    setPage,
+  } = useOffsetPaginationQuery({
+    pageSize: FAVORITES_PAGE_SIZE,
+    queryKey: QUERY_KEYS.favorites.page,
+    queryFn: getFavorites,
   });
 
   const { mutate: toggleFavorite } = useMutation({
@@ -40,14 +36,11 @@ export default function FavoriteList() {
     },
   });
 
-  const favorites = data?.data ?? [];
-  const totalCount = data?.totalCount ?? favorites.length;
-  const totalPages = Math.max(1, Math.ceil(totalCount / FAVORITES_PAGE_SIZE));
-
-  const handlePageChange = (targetPage: number) => {
-    if (targetPage < 1 || targetPage > totalPages) return;
-    setPage(targetPage);
-  };
+  useEffect(() => {
+    if (!isFetching && favorites.length === 0 && page > 1) {
+      setPage(totalPages);
+    }
+  }, [favorites.length, isFetching, page, setPage, totalPages]);
 
   if (isLoading) {
     return null;

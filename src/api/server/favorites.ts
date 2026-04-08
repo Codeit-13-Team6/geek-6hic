@@ -1,7 +1,7 @@
 import type {
-  FavoritesResponse,
+  FavoritesPageResponse,
   GetPostsResponse,
-  MyMeetingsResponse,
+  MyMeetingsPageResponse,
 } from "@/types";
 import { serverFetch } from "@/lib/serverFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
@@ -13,7 +13,7 @@ export async function getFavorites(
     cursor?: string;
     size?: number;
   } = {},
-): Promise<FavoritesResponse> {
+): Promise<FavoritesPageResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
@@ -29,7 +29,7 @@ export async function getMyMeetings(
     cursor?: string;
     size?: number;
   } = {},
-): Promise<MyMeetingsResponse> {
+): Promise<MyMeetingsPageResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/meetings/my",
@@ -48,7 +48,7 @@ export async function getLoungePosts(
       keyword: "",
       sortBy: "createdAt",
       sortOrder: "desc",
-      size: 20,
+      size: 10,
       ...(cursor ? { cursor } : {}),
     },
   });

@@ -1,5 +1,10 @@
 import { serverAxios, serverFetch } from "@/lib/serverFetcher";
-import type { GetCommentsResponse, GetPostsResponse, Post } from "@/types";
+import type {
+  GetCommentsResponse,
+  GetPostsResponse,
+  MyPostsPageResponse,
+  Post,
+} from "@/types";
 import { filterThreadPosts } from "@/lib/postUtils";
 import { getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
 
@@ -51,11 +56,11 @@ export async function getMyPostsServer(
     offset?: number;
     limit?: number;
   } = {},
-): Promise<GetPostsResponse> {
+): Promise<MyPostsPageResponse> {
   return getVisibleMyPostsPage(
     {
       offset: params.offset ?? 0,
-      limit: params.limit ?? 20,
+      limit: params.limit ?? 10,
     },
     async ({ offset, limit }) => {
       const { data } = await serverAxios.get<GetPostsResponse>(
