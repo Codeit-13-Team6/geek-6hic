@@ -90,6 +90,7 @@ export interface JoinedMeeting extends Meeting {
   joinedAt: string;
   isJoined: boolean;
   isCompleted: boolean;
+  createdAt: string;
 }
 
 export interface FavoritesResponseData {
