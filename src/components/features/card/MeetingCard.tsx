@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { HeartIcon } from "../../icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { Calendar } from "lucide-react";
 
 export default function MeetingCard({
   meetingList,
@@ -88,17 +89,27 @@ export default function MeetingCard({
                 <span className="text-main-purple/60 text-[10px] font-bold tracking-[0.15em] uppercase sm:text-[11px]">
                   {item.type}
                 </span>
-                <h3 className="line-clamp-2 text-lg leading-snug font-extrabold tracking-tight text-slate-900 sm:text-xl">
+                <h3 className="line-clamp-1 text-lg leading-snug font-extrabold tracking-tight text-slate-900">
                   {item.name}
                 </h3>
               </div>
-
+              <HeartIcon
+                liked={item.isFavorited}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  loginGuardAction(() => {
+                    onHeartClick(item);
+                  });
+                }}
+                size={22}
+                className="absolute top-4 right-4 cursor-pointer"
+              />
               <p className="mt-1.5 line-clamp-1 text-base font-medium text-slate-500">
                 {item.description || "모임 설명이 아직 등록되지 않았습니다."}
               </p>
 
               <div className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
-                <div className="flex w-full items-center gap-3">
+                <div className="flex w-full items-center justify-between gap-3">
                   <div className="flex items-center gap-1.5">
                     <div className="relative h-3.5 w-3.5 opacity-30">
                       <Image src={person} fill alt="인원" />
@@ -129,19 +140,20 @@ export default function MeetingCard({
                       value={(item.participantCount / item.capacity) * 100}
                     />
                   </div>
+                  <div className="flex items-center gap-1.5">
+                    <Calendar size={14} className="text-slate-300" />
+                    <span className="text-xs font-medium text-slate-400">
+                      {new Date(item.createdAt)
+                        .toLocaleDateString("ko-KR", {
+                          year: "2-digit",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })
+                        .replace(/\. /g, "/")
+                        .replace(/\./g, "")}
+                    </span>
+                  </div>
                 </div>
-
-                <HeartIcon
-                  liked={item.isFavorited}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    loginGuardAction(() => {
-                      onHeartClick(item);
-                    });
-                  }}
-                  size={22}
-                  className="-mr-2"
-                />
               </div>
             </div>
           </div>
