@@ -137,6 +137,7 @@ export interface MeetingActionErrorResponse {
 
 export interface GetMeetingListParams {
   type?: string;
+  keyword?: string;
   sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
   sortOrder?: "asc" | "desc";
   cursor?: string;

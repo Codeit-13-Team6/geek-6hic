@@ -23,25 +23,13 @@ export const metadata: Metadata = {
   },
 };
 
-type SortBy = "createdAt" | "likeCount" | "commentCount";
-type SortOrder = "desc" | "asc";
+const LOUNGE_DEFAULT_PARAMS = {
+  keyword: "",
+  sortBy: "createdAt" as const,
+  sortOrder: "desc" as const,
+};
 
-export default async function LoungePage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    keyword?: string;
-    sortBy?: SortBy;
-    sortOrder?: SortOrder;
-  }>;
-}) {
-  const params = await searchParams;
-  const keyword = params.keyword ?? "";
-  const sortBy = params.sortBy ?? ("createdAt" as SortBy);
-  const sortOrder = params.sortOrder ?? ("desc" as SortOrder);
-
-  const currentParams = { keyword, sortBy, sortOrder };
-
+export default async function LoungePage() {
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up">
@@ -105,16 +93,12 @@ export default async function LoungePage({
         </div>
       </section>
 
-      <Suspense
-        key={`${keyword}-${sortBy}-${sortOrder}`}
-        fallback={<LoungeSkeleton />}
-      >
+      <Suspense fallback={<LoungeSkeleton />}>
         <PrefetchBoundary
           prefetchFn={(qc) =>
             qc.prefetchInfiniteQuery({
-              queryKey: QUERY_KEYS.posts.listParams(currentParams),
-              queryFn: ({ pageParam }) =>
-                getPosts({ ...currentParams, cursor: pageParam }),
+              queryKey: QUERY_KEYS.posts.listParams(LOUNGE_DEFAULT_PARAMS),
+              queryFn: ({ pageParam }) => getPosts(pageParam),
               initialPageParam: undefined as string | undefined,
               getNextPageParam,
               staleTime: 1000 * 60,

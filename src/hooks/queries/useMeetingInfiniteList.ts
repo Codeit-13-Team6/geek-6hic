@@ -1,10 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
-import type { JoinedMeetingsResponse, GetMeetingListParams, SortValue } from "@/types";
+import type {
+  JoinedMeetingsResponse,
+  GetMeetingListParams,
+  SortValue,
+} from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
 import type { QueryKey } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 
 export interface InfiniteListResult {
   meetingList: JoinedMeetingsResponse["data"];
@@ -17,12 +22,14 @@ export interface InfiniteListResult {
 }
 
 export function useAllMeetingList(enabled = true): InfiniteListResult {
-  const { tabValue, sortBy, sortOrder, dateRange } = useMeetingSearchParams();
+  const { tabValue, keyword, sortBy, sortOrder, dateRange } =
+    useMeetingSearchParams();
 
   const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: QUERY_KEYS.meetings.listParams({
         type: tabValue,
+        keyword: keyword ?? "",
         sortBy: sortBy ?? "",
         sortOrder,
       }),
@@ -30,6 +37,7 @@ export function useAllMeetingList(enabled = true): InfiniteListResult {
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
         const params: GetMeetingListParams = {
           type: tabValue,
+          keyword: keyword ?? "",
           size: 10,
           sortOrder,
           ...(sortBy ? { sortBy } : {}),
@@ -62,7 +70,7 @@ export function useAllMeetingList(enabled = true): InfiniteListResult {
     hasNextPage,
     isFetchingNextPage,
     sortValue: sortBy || undefined,
-    favoriteQueryKey: ["meetings", tabValue, sortBy, sortOrder],
+    favoriteQueryKey: ["meetings", tabValue, keyword, sortBy, sortOrder],
   };
 }
 

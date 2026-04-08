@@ -11,10 +11,10 @@ export function useMeetingSearchParams() {
   const pathname = usePathname();
 
   const tabValue = searchParams.get("type") ?? "";
+  const keyword = searchParams.get("keyword") ?? "";
+
   const sortBy = (searchParams.get("sortBy") ?? "dateTime") as SortValue;
-  const sortOrder = (searchParams.get("sortOrder") ?? "desc") as
-    | "asc"
-    | "desc";
+  const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
   const from = searchParams.get("from");
   const to = searchParams.get("to");
   const dateRange: DateRange | undefined =
@@ -39,12 +39,22 @@ export function useMeetingSearchParams() {
   const setTabValue = (type: string) =>
     updateParams({
       type,
+      keyword: null,
       sortBy: null,
       sortOrder: null,
       from: null,
       to: null,
     });
 
+  const setKeyword = (keyword: string) =>
+    updateParams({
+      type: null,
+      keyword,
+      sortBy: null,
+      sortOrder: null,
+      from: null,
+      to: null,
+    });
   const setSortValue = (value: SortValue) => updateParams({ sortBy: value });
 
   const setSortOrder = () =>
@@ -59,6 +69,7 @@ export function useMeetingSearchParams() {
   const resetFilter = () =>
     updateParams({
       type: null,
+      keyword: null,
       sortBy: null,
       sortOrder: null,
       from: null,
@@ -67,9 +78,11 @@ export function useMeetingSearchParams() {
 
   return {
     tabValue,
+    keyword,
     sortBy,
     sortOrder,
     dateRange,
+    setKeyword,
     setTabValue,
     setSortValue,
     setSortOrder,

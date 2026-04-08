@@ -55,12 +55,14 @@ export default async function Page({
 }: {
   searchParams: Promise<{
     type?: string;
+    keyword?: string;
     sortBy?: string;
     sortOrder?: string;
   }>;
 }) {
   const params = await searchParams;
   const type = params.type ?? "";
+  const keyword = params.keyword ?? "";
   const sortBy = params.sortBy ?? "dateTime";
   const sortOrder = params.sortOrder ?? "desc";
 
@@ -104,7 +106,7 @@ export default async function Page({
       </div>
 
       <Suspense
-        key={`${type}-${sortBy}-${sortOrder}`} // key값으로 스켈레톤 범위 추가
+        key={`${type}-${sortBy}-${sortOrder}-${keyword}`}
         fallback={
           <div className="mx-auto max-w-[1280px]">
             <MeetingFilterSkeleton />
@@ -123,6 +125,7 @@ export default async function Page({
             >({
               queryKey: QUERY_KEYS.meetings.listParams({
                 type,
+                keyword,
                 sortBy,
                 sortOrder,
               }),
@@ -131,6 +134,7 @@ export default async function Page({
                   typeof pageParam === "string" ? pageParam : undefined;
                 return getMeetingList({
                   type,
+                  keyword,
                   sortBy: sortBy as
                     | "dateTime"
                     | "registrationEnd"
