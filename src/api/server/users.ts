@@ -68,7 +68,7 @@ export async function getUserMeetings({
 export async function getUserLoungePosts({
   userId,
   cursor,
-  size = 20,
+  size = 10,
 }: {
   userId: number;
   cursor?: string;

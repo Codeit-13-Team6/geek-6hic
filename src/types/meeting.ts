@@ -1,6 +1,6 @@
-import type { CursorResponse } from "./pagination";
+import type { DateRange } from "react-day-picker";
+import type { CursorResponse, OffsetResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
-
 
 export interface MeetingMember {
   id: number;
@@ -59,7 +59,6 @@ export interface RecommendedMeetingItem {
   dateTime: string;
 }
 
-
 export interface MeetingResponse extends Meeting {
   teamId: string;
   canceledAt: string | null;
@@ -111,10 +110,11 @@ export interface MeetingParticipant {
   user: MeetingMember;
 }
 
-
 export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
 export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
 export type MyMeetingsResponse = CursorResponse<Meeting>;
+export type FavoritesPageResponse = OffsetResponse<FavoritesResponseData>;
+export type MyMeetingsPageResponse = OffsetResponse<Meeting>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
@@ -147,14 +147,11 @@ export interface UploadImageResponse {
   publicUrl: string;
 }
 
-
 export type SortValue =
   | ""
   | "dateTime"
   | "registrationEnd"
   | "participantCount";
-
-
 
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];
@@ -252,14 +249,12 @@ export interface MeetingScheduleStepValues {
 }
 
 export interface MeetingFormValues
-  extends MeetingBasicInfoValues,
-    MeetingScheduleStepValues {
+  extends MeetingBasicInfoValues, MeetingScheduleStepValues {
   category: string;
 }
 
 export interface MeetingFormErrors
-  extends MeetingBasicInfoErrors,
-    MeetingScheduleStepValues {
+  extends MeetingBasicInfoErrors, MeetingScheduleStepValues {
   category: string;
 }
 

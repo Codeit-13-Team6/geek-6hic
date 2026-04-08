@@ -1,6 +1,14 @@
-
 export interface CursorResponse<T> {
   data: T[];
   hasMore: boolean;
   nextCursor: string | null;
+}
+
+export interface OffsetResponse<T> {
+  data: T[];
+  hasMore: boolean;
+  nextCursor: string | null;
+  totalCount: number;
+  currentOffset: number;
+  limit: number;
 }
