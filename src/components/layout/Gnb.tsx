@@ -97,20 +97,20 @@ export function Gnb({ initialUser }: GnbProps) {
   }, [isNotificationOpen]);
 
   return (
-    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 px-2 backdrop-blur-xl transition-all sm:px-6 md:h-18">
+    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 backdrop-blur-xl transition-all md:h-18 px-4 2xl:px-0">
       <div className="flex h-full w-full max-w-[1280px] items-center justify-between">
         {/* 왼쪽 영역 */}
         <div className="flex items-center gap-10 lg:gap-14">
           <Link
             href="/"
-            className="flex items-center transition-transform hover:scale-105 active:scale-95"
+            className="flex items-center transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-main-purple"
           >
-            <span className="text-main-purple px-2 text-2xl font-black tracking-tighter sm:text-3xl">
+            <span className="text-main-purple text-2xl font-black tracking-tighter sm:text-3xl">
               co-git.
             </span>
           </Link>
 
-          <nav className="hidden items-center md:flex md:gap-8">
+          <nav className="hidden items-center md:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
@@ -126,7 +126,7 @@ export function Gnb({ initialUser }: GnbProps) {
                   }, isNavActive(pathname, link.href, link.exact) ? 500 : 100);
                 }}
                 className={cn(
-                  "relative py-2 text-sm font-bold tracking-tight transition-all",
+                  "relative py-2 px-4 text-sm font-bold tracking-tight transition-all focus-visible:ring-2 focus-visible:ring-main-purple",
                   isNavActive(pathname, link.href, link.exact)
                     ? "text-main-purple after:bg-main-purple after:absolute after:-bottom-1 after:left-1/2 after:h-[3px] after:w-5 after:-translate-x-1/2 after:rounded-full"
                     : "text-slate-400 hover:text-slate-900",
@@ -147,6 +147,7 @@ export function Gnb({ initialUser }: GnbProps) {
             >
               <button
                 type="button"
+                aria-label="알림 열기"
                 onClick={() => setIsNotificationOpen((prev) => !prev)}
                 className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-all hover:bg-slate-50"
               >
@@ -156,6 +157,7 @@ export function Gnb({ initialUser }: GnbProps) {
               <button
                 className="hidden h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-all hover:opacity-80 active:scale-95 md:flex"
                 onClick={() => router.push(`/users/${user.id}`)}
+                aria-label="프로필 페이지 이동"
               >
                 {user?.image && !isBlobUrl ? (
                   <Image
@@ -190,6 +192,7 @@ export function Gnb({ initialUser }: GnbProps) {
               <div className="absolute z-50 sm:absolute">
                 <Notification
                   isOpen={isNotificationOpen}
+                  aria-label="알림 닫기"
                   onClose={() => setIsNotificationOpen(false)}
                   onUnreadChange={setHasUnreadNotifications}
                 />
@@ -208,9 +211,16 @@ export function Gnb({ initialUser }: GnbProps) {
 
           {/* 모바일 햄버거 */}
           <div className="flex items-center justify-center md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <Sheet
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              aria-label="메뉴 열기"
+            >
               <SheetTrigger className="flex h-8 w-8 items-center justify-center rounded-xl transition-all hover:bg-slate-50 active:scale-95">
-                <Menu className="h-5 w-5 text-slate-800" />
+                <Menu
+                  className="h-5 w-5 text-slate-800"
+                  aria-hidden="true"
+                />
               </SheetTrigger>
               <SideBar
                 isLoggedIn={isLoggedIn}

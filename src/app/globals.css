@@ -65,6 +65,10 @@ body {
   color: var(--foreground);
 }
 
+footer {
+  background-color: var(--background);
+}
+
 @layer base {
   :root {
     --ring: transparent; /* 링 색상을 투명으로 초기화 */
@@ -115,6 +119,7 @@ body {
 
 /* 커스텀 스크롤 */
 .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
   height: 6px;
 }
 
@@ -126,6 +131,8 @@ body {
   background-color: #ddd;
   border-radius: 8px;
 }
+
+
 /* globals.css */
 
 @layer components {

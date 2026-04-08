@@ -53,11 +53,18 @@ export default function NotificationCard({
   const relativeTime = formatRelativeTime(notification.createdAt);
 
   return (
-    <article
+    <button
+      role="button"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.(notification);
+        }
+      }}
       className={cn(
         "flex w-full gap-4 px-5 py-4 transition-colors",
         notification.isRead ? "bg-white" : "bg-slate-50",
-        "cursor-pointer hover:bg-slate-50",
+        "hover:bg-slate-50 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-main-purple focus-visible:outline-none",
         className,
       )}
       onClick={() => onClick?.(notification)}
@@ -75,7 +82,7 @@ export default function NotificationCard({
         ) : (
           <Image
             src={profileSm}
-            alt="프로필"
+            alt=""
             width={40}
             height={40}
             className="size-10 rounded-full object-cover shadow-sm"
@@ -117,6 +124,6 @@ export default function NotificationCard({
           {notification.message}
         </p>
       </div>
-    </article>
+    </button>
   );
 }
