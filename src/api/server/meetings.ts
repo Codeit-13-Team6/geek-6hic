@@ -19,6 +19,7 @@ export async function getJoinedMeetingsServer(params: {
 
 export async function getMeetingList(params: {
   type: string;
+  keyword: string;
   sortBy: "dateTime" | "registrationEnd" | "participantCount" | "createdAt";
   sortOrder: "asc" | "desc";
   size: number;
