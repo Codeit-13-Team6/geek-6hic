@@ -31,11 +31,16 @@ import {
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingHeaderSectionProps, MeetingMember } from "@/types";
-import { copyToClipboard } from "@/lib/utils";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import { extractSecretCode, isSecretMeeting, verifySecretCode } from "@/lib/meetingSecret";
+import {
+  extractSecretCode,
+  isSecretMeeting,
+  verifySecretCode,
+} from "@/lib/meetingSecret";
 import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
+import { shareLink } from "@/lib/share";
+import { copyToClipboard } from "@/lib/utils";
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -97,17 +102,29 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } = useMeetingJoinMutations(meetingId);
-  const { handleEditMeeting, handleDeleteMeeting } = useMeetingHostMutations(meetingId);
-  const { hasAttended, isCheckingAttendance, handleAttendMeeting } = useMeetingAttendMutation(meetingId);
-  const { isFavoritePending, handleToggleFavorite } = useMeetingDetailFavoriteMutation(meetingId);
+  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
+    useMeetingJoinMutations(meetingId);
+  const { handleEditMeeting, handleDeleteMeeting } =
+    useMeetingHostMutations(meetingId);
+  const { hasAttended, isCheckingAttendance, handleAttendMeeting } =
+    useMeetingAttendMutation(meetingId);
+  const { isFavoritePending, handleToggleFavorite } =
+    useMeetingDetailFavoriteMutation(meetingId);
 
   const handleShare = async () => {
-    const isSuccess = await copyToClipboard(window.location.href);
-    if (isSuccess) {
+    const shareResult = await shareLink({
+      title: detail.name,
+      url: window.location.href,
+      text: `${detail.name} 모임을 공유해요.`,
+    });
+
+    if (shareResult.result === "copied-by-app") {
       ToastCommon({ message: "모임 링크가 복사되었어요." });
-    } else {
-      ToastCommon({ message: "링크 복사에 실패했습니다." });
+      return;
+    }
+
+    if (shareResult.result === "failed") {
+      ToastCommon({ message: "링크 복사에 실패했어요." });
     }
   };
 
@@ -132,7 +149,11 @@ export function MeetingHeaderSection({
         label: "참여하기",
         disabled: isCapacityFull,
         handler: isSecret
-          ? () => { setSecretInput(""); setSecretError(""); setIsSecretModalOpen(true); }
+          ? () => {
+              setSecretInput("");
+              setSecretError("");
+              setIsSecretModalOpen(true);
+            }
           : handleJoinMeeting,
       };
     }
@@ -215,7 +236,7 @@ export function MeetingHeaderSection({
                     size="sm"
                     variant="teritary"
                     onClick={() => loginGuardAction(handleShare)}
-                    className="!rounded-2xl group rounded-full p-2 transition hover:bg-slate-50"
+                    className="group !rounded-2xl rounded-full p-2 transition hover:bg-slate-50"
                   >
                     <Image
                       src={shareIcon}
@@ -332,8 +353,14 @@ export function MeetingHeaderSection({
               <button
                 type="button"
                 onClick={async () => {
-                  const ok = await copyToClipboard(extractSecretCode(detail.dateTime));
-                  ToastCommon({ message: ok ? "비밀 코드가 복사되었어요." : "복사에 실패했습니다." });
+                  const ok = await copyToClipboard(
+                    extractSecretCode(detail.dateTime),
+                  );
+                  ToastCommon({
+                    message: ok
+                      ? "비밀 코드가 복사되었어요."
+                      : "복사에 실패했습니다.",
+                  });
                 }}
                 className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-600 transition hover:bg-purple-200"
               >
@@ -430,7 +457,10 @@ export function MeetingHeaderSection({
         isOpen={isSecretModalOpen}
         onOpenChange={(open) => {
           setIsSecretModalOpen(open);
-          if (!open) { setSecretInput(""); setSecretError(""); }
+          if (!open) {
+            setSecretInput("");
+            setSecretError("");
+          }
         }}
         title="비밀 모임 참여"
         contentClassName="max-w-[400px] rounded-[32px]"
