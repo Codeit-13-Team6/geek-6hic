@@ -17,7 +17,6 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
 import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
-import { CreateMeetingModal } from "@/app/meetings/_components/modal/CreateMeetingModal";
 
 const SORT_OPTIONS = [
   { value: "participantCount", label: "참여인원 순" },

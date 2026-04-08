@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
 };
 
-type SortBy = "createdAt" | "likeCount" | "commentCount" | "viewCount";
+type SortBy = "createdAt" | "likeCount" | "commentCount";
 type SortOrder = "desc" | "asc";
 
 export default async function LoungePage({
@@ -31,8 +31,8 @@ export default async function LoungePage({
 }: {
   searchParams: Promise<{
     keyword?: string;
-    sortBy?: string;
-    sortOrder?: string;
+    sortBy?: SortBy;
+    sortOrder?: SortOrder;
   }>;
 }) {
   const params = await searchParams;
@@ -112,8 +112,9 @@ export default async function LoungePage({
         <PrefetchBoundary
           prefetchFn={(qc) =>
             qc.prefetchInfiniteQuery({
-              queryKey: QUERY_KEYS.posts.listParams(LOUNGE_DEFAULT_PARAMS),
-              queryFn: ({ pageParam }) => getPosts(pageParam),
+              queryKey: QUERY_KEYS.posts.listParams(currentParams),
+              queryFn: ({ pageParam }) =>
+                getPosts({ ...currentParams, cursor: pageParam }),
               initialPageParam: undefined as string | undefined,
               getNextPageParam,
               staleTime: 1000 * 60,
