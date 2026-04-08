@@ -39,9 +39,17 @@ export async function getMeetingParticipants(meetingId: number) {
   return data;
 }
 
-export async function getMeetingRecommendations(meetingId: number) {
+export async function getMeetingRecommendations(
+  meetingId: number,
+  meetingType: string,
+) {
   const { data } = await axiosInstance.get<MeetingsRecommendResponse>(
     `/meetingsRecommend/${meetingId}`,
+    {
+      params: {
+        type: meetingType,
+      },
+    },
   );
 
   return data.data;

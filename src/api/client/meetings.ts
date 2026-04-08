@@ -4,11 +4,11 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
-  MeetingListItemApiData,
+  MeetingBaseData,
   MyMeetingsResponse,
   FavoritesResponse,
   MeetingType,
-  MeetingListResponse,
+  GetMeetingsResponse,
 } from "@/types";
 
 export async function getMeetingList(
@@ -45,7 +45,7 @@ export async function getUserMeetings(params: {
   let hasMore = true;
 
   while (hasMore && collected.length < size) {
-    const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
+    const { data } = await axiosInstance.get<GetMeetingsResponse>("/meetings", {
       params: {
         sortBy: "dateTime",
         sortOrder: "desc",
@@ -56,7 +56,7 @@ export async function getUserMeetings(params: {
 
     collected.push(
       ...data.data.filter(
-        (meeting: MeetingListItemApiData) =>
+        (meeting: MeetingBaseData) =>
           meeting.hostId === userId ||
           meeting.host?.id === userId ||
           meeting.createdBy === userId,

@@ -2,8 +2,8 @@ import { serverAxios, serverFetch } from "@/lib/serverFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
 import type {
   GetPostsResponse,
-  MeetingListItemApiData,
-  MeetingListResponse,
+  MeetingBaseData,
+  GetMeetingsResponse,
   MyMeetingsResponse,
   Post,
   User,
@@ -28,7 +28,7 @@ export async function getUserMeetings({
   let hasMore = true;
 
   while (hasMore && collected.length < size) {
-    const { data } = await serverFetch<MeetingListResponse>({
+    const { data } = await serverFetch<GetMeetingsResponse>({
       method: "GET",
       url: "/meetings",
       params: {
@@ -41,7 +41,7 @@ export async function getUserMeetings({
 
     collected.push(
       ...data.data.filter(
-        (meeting: MeetingListItemApiData) =>
+        (meeting: MeetingBaseData) =>
           meeting.hostId === userId ||
           meeting.host?.id === userId ||
           meeting.createdBy === userId,
