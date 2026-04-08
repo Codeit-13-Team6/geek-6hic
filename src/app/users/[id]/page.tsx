@@ -17,6 +17,7 @@ import {
   getFavorites,
   getMyMeetings,
   getMyPostsServer,
+  getProfileStats,
   getPublicUserProfile,
   getUserMeetingsPageServer,
   getUserPostsPageServer,
@@ -58,6 +59,10 @@ export default async function Page({
         userId: profileUserId,
       })
     : initialUser;
+  const stats = await getProfileStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
 
   const tabs = isOwnProfile
     ? [
@@ -99,9 +104,9 @@ export default async function Page({
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
           <div className="min-w-[90%] snap-center lg:min-w-full">
             <StatGrid
-              postCount={10}
-              meetingCount={2}
-              favoriteCount={5}
+              postCount={stats.postCount}
+              meetingCount={stats.meetingCount}
+              favoriteCount={stats.favoriteCount}
               // insight="오늘도 즐거운 코딩 되세요! 🚀"
             />
           </div>
