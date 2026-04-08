@@ -250,44 +250,12 @@
   border-radius: 4px;
   margin: 8px !important;
 }
-/* highlight.js 색상 강제 적용 (상세페이지와 맞춤) */
 
 /* 1. 코드 블록 배경 (검정색 유지) */
 .quill-wrap .ql-editor .ql-code-block-container {
   background-color: #1e1e1e !important;
   color: #d4d4d4 !important;
 }
-
-/* 2. 실시간 하이라이팅 색상 (중요: !important로 강제 적용) */
-.ql-code-block .hljs-keyword,
-.ql-code-block .hljs-selector-tag {
-  color: #569cd6 !important;
-} /* 파랑 */
-
-.ql-code-block .hljs-string,
-.ql-code-block .hljs-doctag {
-  color: #ce9178 !important;
-} /* 오렌지 */
-
-.ql-code-block .hljs-title,
-.ql-code-block .hljs-section,
-.ql-code-block .hljs-name {
-  color: #dcdcaa !important;
-} /* 노랑 */
-
-.ql-code-block .hljs-variable,
-.ql-code-block .hljs-template-variable {
-  color: #9cdcfe !important;
-} /* 하늘색 */
-
-.ql-code-block .hljs-comment {
-  color: #6a9955 !important;
-  font-style: italic;
-} /* 초록 */
-
-.ql-code-block .hljs-number {
-  color: #b5cea8 !important;
-} /* 연녹색 */
 
 /* 3. 리스트 (숫자형 ol, 기호형 ul) 스타일 동기화 */
 .quill-wrap .ql-editor ol,

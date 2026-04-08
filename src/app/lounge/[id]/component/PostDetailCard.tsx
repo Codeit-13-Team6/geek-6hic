@@ -65,7 +65,7 @@ export function PostDetailCard({
 
       // 방법 1: <pre> 태그 처리
       if (element.name === "pre") {
-        const language = element.attribs["data-language"] || "code";
+        const language = element.attribs["data-language"] || "plain";
         const codeText = extractText(element).trim();
         return <CodeBlock code={codeText} language={language} />;
       }

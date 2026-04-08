@@ -7,6 +7,7 @@ import { Loader2, PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+import { isSecretMeeting } from "@/lib/meetingSecret";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 
@@ -78,6 +79,7 @@ export default function MyMeetingList({
             capacity={item.capacity}
             participantCount={item.participantCount}
             showLikeBtn={false}
+            showLockBtn={isSecretMeeting(item.dateTime)}
             onDetailClick={() => router.push(`/meetings/${item.id}`)}
           />
         ))}

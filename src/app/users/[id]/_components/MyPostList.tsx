@@ -54,7 +54,11 @@ export default function MyPostList({
 
   if (posts.length === 0 && !isFetching) {
     return (
-      <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
+      <div
+        className="flex flex-col items-center justify-center border-t border-slate-100 py-32"
+        role="status"
+        aria-label="작성한 게시물 없음"
+      >
         <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
           <FileText className="size-10 text-slate-200" strokeWidth={1.5} />
         </div>
@@ -72,9 +76,9 @@ export default function MyPostList({
 
   return (
     <div className="flex w-full flex-col">
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+      <ul className="grid grid-cols-1 gap-4 sm:gap-6">
         {posts.map((post: Post) => (
-          <div
+          <li
             key={post.id}
             className="group overflow-hidden rounded-[24px] border border-slate-100/50 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]"
           >
@@ -92,11 +96,14 @@ export default function MyPostList({
               onDetailClick={() => router.push(`/lounge/${post.id}`)}
               onAuthorClick={() => router.push(`/users/${post.author.id}`)}
             />
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="mt-10 flex flex-col items-center gap-4">
+      <div
+        className="mt-10 flex flex-col items-center gap-4"
+        aria-live="polite"
+      >
         {isFetching && (
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />

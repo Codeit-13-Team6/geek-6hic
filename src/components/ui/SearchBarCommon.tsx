@@ -26,6 +26,7 @@ export default function SearchBarCommon({
 
   return (
     <div
+      role="search"
       className={cn(
         "flex w-full items-center gap-0 sm:max-w-[480px]",
         className,
@@ -39,12 +40,14 @@ export default function SearchBarCommon({
           placeholder={placeholder}
           className="focus:border-main-purple h-12 w-full rounded-xl border-slate-200 !bg-white pl-5 transition-all focus:bg-white sm:h-14"
           onKeyDown={handleKeyDown}
+          aria-label="검색어 입력"
         />
       </div>
 
       <button
         onClick={handleSearchClick}
-        className="hover:text-main-purple flex h-12 w-12 shrink-0 items-center justify-center text-slate-400 transition-colors active:scale-90 sm:h-14 sm:w-14"
+        className="ml-4 hover:text-main-purple flex shrink-0 items-center justify-center text-slate-400 transition-colors active:scale-90"
+        aria-label="검색"
       >
         <Search size={24} strokeWidth={2.5} />
       </button>

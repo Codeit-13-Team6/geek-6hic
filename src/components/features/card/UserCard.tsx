@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Users, Calendar } from "lucide-react";
+import { Users, Calendar, LucideLock} from "lucide-react";
 import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ export function UserCard({
   participantCount = 0,
   capacity = 20,
   showLikeBtn = true,
+  showLockBtn = false,
   onHeartClick,
   onDetailClick,
 }: UserCardProps) {
@@ -85,6 +86,12 @@ export function UserCard({
             <HeartIcon
               liked={isLiked}
               onClick={handleHeartClick}
+              size={22}
+              className=""
+            />
+          )}
+          {showLockBtn && (
+            <LucideLock
               size={22}
               className=""
             />

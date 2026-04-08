@@ -90,6 +90,7 @@ export interface JoinedMeeting extends Meeting {
   joinedAt: string;
   isJoined: boolean;
   isCompleted: boolean;
+  createdAt: string;
 }
 
 export interface FavoritesResponseData {
@@ -136,6 +137,7 @@ export interface MeetingActionErrorResponse {
 
 export interface GetMeetingListParams {
   type?: string;
+  keyword?: string;
   sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
   sortOrder?: "asc" | "desc";
   cursor?: string;
@@ -171,6 +173,7 @@ export interface UserCardProps {
   capacity?: number;
   defaultLiked?: boolean;
   showLikeBtn?: boolean;
+  showLockBtn?: boolean;
   onHeartClick?: (liked: boolean) => void;
   onDetailClick?: () => void;
 }
