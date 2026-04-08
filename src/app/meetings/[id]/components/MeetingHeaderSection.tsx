@@ -212,21 +212,19 @@ export function MeetingHeaderSection({
 
               <div className="flex shrink-0 items-center gap-2">
                 {menuConfig.showShare && (
-                  <BtnCommon
+                  <button
                     type="button"
-                    size="sm"
-                    variant="teritary"
                     onClick={() => loginGuardAction(handleShare)}
                     className="group rounded-full p-2 transition hover:bg-slate-50"
                   >
                     <Image
                       src={shareIcon}
                       alt="Share"
-                      width={22}
-                      height={22}
+                      width={16}
+                      height={16}
                       className="opacity-40 group-hover:opacity-100 sm:size-7"
                     />
-                  </BtnCommon>
+                  </button>
                 )}
 
                 {(menuConfig.showHost || menuConfig.showMember) && (

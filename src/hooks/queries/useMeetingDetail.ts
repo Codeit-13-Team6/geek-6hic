@@ -84,10 +84,13 @@ export function useMeetingDetailQueries(meetingId: number) {
 }
 
 // 추천 모임 조회
-export function useMeetingRecommendationsQuery(meetingId: number) {
+export function useMeetingRecommendationsQuery(
+  meetingId: number,
+  meetingType: string,
+) {
   return useQuery({
-    queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
-    queryFn: () => getMeetingRecommendations(meetingId),
+    queryKey: [...QUERY_KEYS.meetings.recommendations(meetingId), meetingType],
+    queryFn: () => getMeetingRecommendations(meetingId, meetingType),
     staleTime: 1000 * 60 * 10,
   });
 }

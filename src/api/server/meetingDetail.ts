@@ -4,7 +4,7 @@ import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,
   MeetingDetailApiData,
-  MeetingListResponse,
+  GetMeetingsResponse,
   MeetingParticipantsResponse,
 } from "@/types";
 
@@ -34,7 +34,7 @@ export async function getMeetingParticipants(meetingId: number) {
 }
 
 export async function getMeetingRecommendationCandidates() {
-  const response = await serverFetch<MeetingListResponse>({
+  const response = await serverFetch<GetMeetingsResponse>({
     url: "/meetings",
     method: "GET",
     params: {
