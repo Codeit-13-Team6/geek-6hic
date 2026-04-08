@@ -30,7 +30,7 @@ import GradeCard from "./_components/GridCard";
 
 const FAVORITES_PAGE_SIZE = 10;
 const MY_MEETINGS_PAGE_SIZE = 10;
-const MY_POSTS_PAGE_SIZE = 20;
+const MY_POSTS_PAGE_SIZE = 10;
 
 export const metadata: Metadata = {
   title: "마이 페이지",
@@ -84,24 +84,27 @@ export default async function Page({
       </div>
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
-      <aside className="custom-scrollbar flex w-full shrink-0 flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0 snap-x snap-mandatory">
-          <div className="min-w-[180%] lg:min-w-full flex items-stretch gap-4 lg:w-full lg:flex-col">
-            <div className="w-1/2 lg:w-full snap-center lg:min-w-full">
+        <aside className="custom-scrollbar flex w-full shrink-0 snap-x snap-mandatory flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0">
+          <div className="flex min-w-[180%] items-stretch gap-4 lg:w-full lg:min-w-full lg:flex-col">
+            <div className="w-1/2 snap-center lg:w-full lg:min-w-full">
               {/* 남 프로필이랑 내 프로필 구분 */}
-              <ProfileSection initialUser={profileUser} canEdit={isOwnProfile} />
+              <ProfileSection
+                initialUser={profileUser}
+                canEdit={isOwnProfile}
+              />
             </div>
-            <div className="w-1/2 lg:w-full snap-center">
+            <div className="w-1/2 snap-center lg:w-full">
               <GradeCard daysSinceJoin={42} />
             </div>
           </div>
 
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
-          <div className="min-w-[90%] lg:min-w-full snap-center">
+          <div className="min-w-[90%] snap-center lg:min-w-full">
             <StatGrid
               postCount={10}
               meetingCount={2}
               favoriteCount={5}
-            // insight="오늘도 즐거운 코딩 되세요! 🚀"
+              // insight="오늘도 즐거운 코딩 되세요! 🚀"
             />
           </div>
         </aside>
@@ -114,7 +117,10 @@ export default async function Page({
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
                       qc.prefetchQuery<FavoritesResponse>({
-                        queryKey: QUERY_KEYS.favorites.page(1, FAVORITES_PAGE_SIZE),
+                        queryKey: QUERY_KEYS.favorites.page(
+                          1,
+                          FAVORITES_PAGE_SIZE,
+                        ),
                         queryFn: () =>
                           getFavorites({
                             offset: 0,
@@ -135,7 +141,10 @@ export default async function Page({
                   prefetchFn={(qc) =>
                     isOwnProfile
                       ? qc.prefetchQuery<MyMeetingsResponse>({
-                          queryKey: QUERY_KEYS.meetings.myPage(1, MY_MEETINGS_PAGE_SIZE),
+                          queryKey: QUERY_KEYS.meetings.myPage(
+                            1,
+                            MY_MEETINGS_PAGE_SIZE,
+                          ),
                           queryFn: () =>
                             getMyMeetings({
                               offset: 0,
@@ -148,7 +157,10 @@ export default async function Page({
                             getUserMeetings({
                               userId: profileUserId,
                               ...(pageParam
-                                ? { cursor: pageParam, size: MY_MEETINGS_PAGE_SIZE }
+                                ? {
+                                    cursor: pageParam,
+                                    size: MY_MEETINGS_PAGE_SIZE,
+                                  }
                                 : { size: MY_MEETINGS_PAGE_SIZE }),
                             }),
                           initialPageParam: undefined,
@@ -174,7 +186,10 @@ export default async function Page({
                   prefetchFn={(qc) =>
                     isOwnProfile
                       ? qc.prefetchQuery<GetPostsResponse>({
-                          queryKey: QUERY_KEYS.posts.myPage(1, MY_POSTS_PAGE_SIZE),
+                          queryKey: QUERY_KEYS.posts.myPage(
+                            1,
+                            MY_POSTS_PAGE_SIZE,
+                          ),
                           queryFn: () =>
                             getMyPostsServer({
                               offset: 0,
@@ -187,7 +202,10 @@ export default async function Page({
                             getUserLoungePosts({
                               userId: profileUserId,
                               ...(pageParam
-                                ? { cursor: pageParam, size: MY_POSTS_PAGE_SIZE }
+                                ? {
+                                    cursor: pageParam,
+                                    size: MY_POSTS_PAGE_SIZE,
+                                  }
                                 : { size: MY_POSTS_PAGE_SIZE }),
                             }),
                           initialPageParam: undefined,
