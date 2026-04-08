@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
-import { InputCommon } from "@/components/ui/InputCommon";
 import {
   Select,
   SelectContent,
@@ -12,11 +10,13 @@ import {
   SelectGroup,
 } from "@/components/ui/SelectCommon";
 import PostList from "@/components/features/list/PostList";
+import SearchBarCommon from "@/components/ui/SearchBarCommon";
+import { useSearchParams } from "next/navigation";
 
-export default function LoungeContent() {
-  const [searchValue, setSearchValue] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
+export default function LoungeClient() {
   const [sortValue, setSortValue] = useState("latest");
+  const searchParams = useSearchParams();
+  const searchKeyword = searchParams.get("keyword") || "";
 
   const sortOptions = [
     { value: "latest", label: "최신순" },
@@ -29,34 +29,10 @@ export default function LoungeContent() {
     (opt) => opt.value === sortValue,
   )?.label;
 
-  const triggerSearch = () => setSearchKeyword(searchValue);
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") triggerSearch();
-  };
-
   return (
     <>
       <section className="animate-fade-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full items-center gap-0 sm:max-w-[480px]">
-          <div className="flex-1">
-            <InputCommon
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onClear={() => setSearchValue("")}
-              placeholder="검색어를 입력하세요."
-              className="!bg-white focus:!border-main-purple h-12 w-full !rounded-xl !border-slate-200  !pl-5 transition-all focus:!bg-white sm:h-14"
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-
-          <button
-            onClick={triggerSearch}
-            className="hover:text-main-purple flex h-12 w-12 shrink-0 items-center justify-center text-slate-400 transition-colors active:scale-90 sm:h-14 sm:w-14"
-          >
-            <Search size={24} strokeWidth={2.5} />
-          </button>
-        </div>
-
+        <SearchBarCommon placeholder="원하는 내용을 검색해보세요" />
         <div className="flex justify-end">
           <Select
             value={sortValue}

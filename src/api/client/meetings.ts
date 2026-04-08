@@ -4,12 +4,13 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
-  MeetingListItemApiData,
+  MeetingResponse,
   MyMeetingsResponse,
   FavoritesPageResponse,
   MeetingType,
   MeetingListResponse,
   MyMeetingsPageResponse,
+  GetMeetingsResponse,
 } from "@/types";
 
 export async function getMeetingList(
@@ -51,7 +52,7 @@ export async function getUserMeetings(params: {
   let hasMore = true;
 
   while (hasMore && collected.length < size) {
-    const { data } = await axiosInstance.get<MeetingListResponse>("/meetings", {
+    const { data } = await axiosInstance.get<GetMeetingsResponse>("/meetings", {
       params: {
         sortBy: "dateTime",
         sortOrder: "desc",
@@ -62,7 +63,7 @@ export async function getUserMeetings(params: {
 
     collected.push(
       ...data.data.filter(
-        (meeting: MeetingListItemApiData) =>
+        (meeting: MeetingResponse) =>
           meeting.hostId === userId ||
           meeting.host?.id === userId ||
           meeting.createdBy === userId,
@@ -124,8 +125,11 @@ export async function getFavorites(params?: {
   cursor?: string;
   size?: number;
 }): Promise<FavoritesPageResponse> {
-  const { data } = await axiosInstance.get<FavoritesPageResponse>("/favorites", {
-    params,
-  });
+  const { data } = await axiosInstance.get<FavoritesPageResponse>(
+    "/favorites",
+    {
+      params,
+    },
+  );
   return data;
 }

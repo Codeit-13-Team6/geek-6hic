@@ -30,12 +30,12 @@ import {
   useMeetingDetailFavoriteMutation,
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-import type {
-  MeetingHeaderSectionProps,
-  MeetingMember,
-} from "@/types";
+import type { MeetingHeaderSectionProps, MeetingMember } from "@/types";
 import { copyToClipboard } from "@/lib/utils";
 import { ToastCommon } from "@/components/ui/ToastCommon";
+import { extractSecretCode, isSecretMeeting, verifySecretCode } from "@/lib/meetingSecret";
+import ModalBase from "@/components/ui/ModalBase";
+import { InputCommon } from "@/components/ui/InputCommon";
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -84,6 +84,9 @@ export function MeetingHeaderSection({
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSecretModalOpen, setIsSecretModalOpen] = useState(false);
+  const [secretInput, setSecretInput] = useState("");
+  const [secretError, setSecretError] = useState("");
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [showReward, setShowReward] = useState({
@@ -118,18 +121,26 @@ export function MeetingHeaderSection({
     showMember: isJoined && !isHost,
   };
 
+  const isSecret = isSecretMeeting(detail.dateTime);
+
   const action = (() => {
     if (!isLoggedIn) {
-      return { label: "참여하기", disabled: false, handler: () => { } };
+      return { label: "참여하기", disabled: false, handler: () => {} };
     }
     if (!isParticipant) {
-      return { label: "참여하기", disabled: isCapacityFull, handler: handleJoinMeeting };
+      return {
+        label: "참여하기",
+        disabled: isCapacityFull,
+        handler: isSecret
+          ? () => { setSecretInput(""); setSecretError(""); setIsSecretModalOpen(true); }
+          : handleJoinMeeting,
+      };
     }
     if (isCheckingAttendance) {
-      return { label: "출석 확인 중", disabled: true, handler: () => { } };
+      return { label: "출석 확인 중", disabled: true, handler: () => {} };
     }
     if (hasAttended) {
-      return { label: "출석완료", disabled: true, handler: () => { } };
+      return { label: "출석완료", disabled: true, handler: () => {} };
     }
     return {
       label: "출석하기",
@@ -151,8 +162,12 @@ export function MeetingHeaderSection({
   const progressValue = (detail.participantCount / detail.capacity) * 100;
 
   const avatars = participants.map((p) => p.user);
-  const visibleParticipants = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
-  const hiddenParticipantCount = Math.max(0, detail.participantCount - visibleParticipants.length);
+  const visibleParticipants =
+    avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+  const hiddenParticipantCount = Math.max(
+    0,
+    detail.participantCount - visibleParticipants.length,
+  );
 
   const handleFavoriteClick = () => {
     if (isAuthLoading || isFavoritePending) return;
@@ -304,6 +319,29 @@ export function MeetingHeaderSection({
             </div>
           </div>
 
+          {isHost && isSecretMeeting(detail.dateTime) && (
+            <div className="mt-5 flex items-center justify-between rounded-[20px] bg-purple-50 px-5 py-4">
+              <div>
+                <p className="text-[10px] font-black tracking-widest text-purple-400 uppercase">
+                  Secret Code
+                </p>
+                <p className="mt-0.5 text-xl font-black tracking-widest text-purple-700">
+                  {extractSecretCode(detail.dateTime)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const ok = await copyToClipboard(extractSecretCode(detail.dateTime));
+                  ToastCommon({ message: ok ? "비밀 코드가 복사되었어요." : "복사에 실패했습니다." });
+                }}
+                className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-600 transition hover:bg-purple-200"
+              >
+                복사
+              </button>
+            </div>
+          )}
+
           <div className="mt-5 flex items-center gap-4 sm:mt-10">
             <BtnCommon
               type="button"
@@ -332,7 +370,7 @@ export function MeetingHeaderSection({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-0 left-0 inset-0 z-[999] flex justify-center items-start"
+            className="fixed inset-0 top-0 left-0 z-[999] flex items-start justify-center"
           >
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.96 }}
@@ -361,7 +399,7 @@ export function MeetingHeaderSection({
                 className="mt-2 text-center"
               >
                 <p className="text-lg font-black text-slate-900">출석 완료</p>
-                <p className="mt-2 text-base font-bold text-main-purple">
+                <p className="text-main-purple mt-2 text-base font-bold">
                   +{showReward.point} Points
                 </p>
               </motion.div>
@@ -387,6 +425,49 @@ export function MeetingHeaderSection({
           setIsDeleteModalOpen(false);
         }}
       />
+
+      <ModalBase
+        isOpen={isSecretModalOpen}
+        onOpenChange={(open) => {
+          setIsSecretModalOpen(open);
+          if (!open) { setSecretInput(""); setSecretError(""); }
+        }}
+        title="비밀 모임 참여"
+        contentClassName="max-w-[400px] rounded-[32px]"
+      >
+        <div className="flex flex-col gap-5 pb-4">
+          <p className="text-sm text-slate-500">
+            호스트에게 비밀 코드를 받아 입력해 주세요.
+          </p>
+          <InputCommon
+            label="비밀 코드"
+            placeholder="비밀 코드를 입력해 주세요"
+            value={secretInput}
+            onChange={(e) => {
+              setSecretInput(e.target.value);
+              setSecretError("");
+            }}
+            isDestructive={Boolean(secretError)}
+            hintText={secretError}
+          />
+          <BtnCommon
+            type="button"
+            size="md"
+            disabled={isJoinPending || !secretInput}
+            onClick={() => {
+              if (!verifySecretCode(secretInput, detail.dateTime)) {
+                setSecretError("비밀 코드가 올바르지 않아요.");
+                return;
+              }
+              setIsSecretModalOpen(false);
+              handleJoinMeeting();
+            }}
+            className="bg-main-purple hover:bg-main-purple/80 h-14 w-full !rounded-[20px] font-bold text-white"
+          >
+            참여하기
+          </BtnCommon>
+        </div>
+      </ModalBase>
     </>
   );
 }

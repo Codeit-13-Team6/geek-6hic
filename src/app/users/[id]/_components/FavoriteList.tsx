@@ -33,6 +33,7 @@ export default function FavoriteList() {
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.favorites.root });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.list });
     },
   });
 
