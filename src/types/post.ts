@@ -1,4 +1,4 @@
-import type { CursorResponse } from "./pagination";
+import type { CursorResponse, OffsetResponse } from "./pagination";
 
 export interface Post {
   id: number;
@@ -33,6 +33,7 @@ export interface GetPostsParams {
 }
 
 export type GetPostsResponse = CursorResponse<Post>;
+export type MyPostsPageResponse = OffsetResponse<Post>;
 
 export interface PostListProps {
   searchValue?: string;

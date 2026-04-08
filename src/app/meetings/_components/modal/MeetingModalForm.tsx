@@ -10,8 +10,9 @@ import {
 } from "@/components/shadcnOrigin/select";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
+import { CheckboxCommon } from "@/components/ui/CheckboxCommon";
 import {
-  MeetingBasicInfoSectionProps,
+  MeetingModalFormProps,
   type MeetingType,
 } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ export function MeetingModalForm({
   onChangeImage,
   onRemoveImage,
   showCategoryField = false,
-}: MeetingBasicInfoSectionProps) {
+}: MeetingModalFormProps) {
 
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
@@ -138,6 +139,14 @@ export function MeetingModalForm({
         }}
         isDestructive={Boolean(errors.capacity)}
         hintText={errors.capacity}
+      />
+
+      <CheckboxCommon
+        label="비밀 모임으로 생성"
+        checked={values.isPrivate}
+        onChange={(event) => {
+          onChange({ isPrivate: event.target.checked });
+        }}
       />
 
       <div className="space-y-2">

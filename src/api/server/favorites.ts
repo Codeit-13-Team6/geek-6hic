@@ -1,35 +1,46 @@
 import type {
-  FavoritesResponse,
+  FavoritesPageResponse,
   GetPostsResponse,
-  MyMeetingsResponse,
+  MyMeetingsPageResponse,
 } from "@/types";
 import { serverFetch } from "@/lib/serverFetcher";
+import { filterThreadPosts } from "@/lib/postUtils";
 
-export async function  getFavorites (
-  cursor?: string,
-): Promise<FavoritesResponse> {
+export async function getFavorites(
+  params: {
+    offset?: number;
+    limit?: number;
+    cursor?: string;
+    size?: number;
+  } = {},
+): Promise<FavoritesPageResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
+    params,
   });
   return data;
-};
+}
 
-export async function  getMyMeetings  (
-  cursor?: string,
-): Promise<MyMeetingsResponse> {
+export async function getMyMeetings(
+  params: {
+    offset?: number;
+    limit?: number;
+    cursor?: string;
+    size?: number;
+  } = {},
+): Promise<MyMeetingsPageResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/meetings/my",
-    params: cursor ? { cursor, size: 10 } : { size: 10 },
+    params,
   });
   return data;
-};
+}
 
-export async function  getLoungePosts (
+export async function getLoungePosts(
   cursor?: string,
-): Promise<GetPostsResponse>  {
+): Promise<GetPostsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/posts",
@@ -37,9 +48,9 @@ export async function  getLoungePosts (
       keyword: "",
       sortBy: "createdAt",
       sortOrder: "desc",
-      size: 20,
+      size: 10,
       ...(cursor ? { cursor } : {}),
     },
   });
-  return data;
-};
+  return filterThreadPosts(data);
+}

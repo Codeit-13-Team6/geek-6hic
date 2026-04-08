@@ -14,6 +14,12 @@ import {
   removeMeetingImage,
   revokeMeetingPreviewImageUrl,
 } from "@/lib/meetingFormImage";
+import {
+  buildNormalDateTime,
+  buildSecretDateTime,
+  generateSecretTime,
+  isSecretMeeting,
+} from "@/lib/meetingSecret";
 import { MeetingDetailApiData, MeetingDetailData, MeetingFormErrors, MeetingFormValues } from "@/types";
 import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
@@ -22,36 +28,46 @@ import { useQueryClient } from "@tanstack/react-query";
 import { threadKeyword } from "@/constans/post";
 
 
-export const toCreateMeetingPayload = (formValues: MeetingFormValues) => ({
-  name: formValues.name,
-  type: formValues.category,
-  region: "온라인",
-  address: getNormalizedMeetingLink(formValues.link),
-  latitude: 0,
-  longitude: 0,
-  dateTime: "2100-01-01T00:00:00.000Z",
-  registrationEnd: "2099-12-31T23:59:59.000Z",
-  capacity: Number(formValues.capacity),
-  image: formValues.imageUrl,
-  description: formValues.description,
-});
+export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
+  const secretTime = formValues.isPrivate ? generateSecretTime() : null;
+  return {
+    name: formValues.name,
+    type: formValues.category,
+    region: "온라인",
+    address: getNormalizedMeetingLink(formValues.link),
+    latitude: 0,
+    longitude: 0,
+    dateTime: secretTime ? buildSecretDateTime(secretTime) : buildNormalDateTime(),
+    registrationEnd: "2099-12-31T23:59:59.000Z",
+    capacity: Number(formValues.capacity),
+    image: formValues.imageUrl,
+    description: formValues.description,
+  };
+};
 
-export const toEditMeetingPayload = (formValues: MeetingFormValues) => ({
-  type: formValues.category,
-  name: formValues.name,
-  description: formValues.description,
-  link: formValues.link,
-  image: formValues.imageUrl || formValues.previewImageUrl || null,
-  dateTime: "2100-01-01T00:00:00.000Z",
-  registrationEnd: "2099-12-31T23:59:59.000Z",
-  capacity: Number(formValues.capacity),
-});
+export const toEditMeetingPayload = (formValues: MeetingFormValues, originalDateTime: string) => {
+  let dateTime: string;
+  if (!formValues.isPrivate) {
+    dateTime = buildNormalDateTime();
+  } else if (isSecretMeeting(originalDateTime)) {
+    dateTime = originalDateTime;
+  } else {
+    dateTime = buildSecretDateTime(generateSecretTime());
+  }
+  return {
+    type: formValues.category,
+    name: formValues.name,
+    description: formValues.description,
+    link: formValues.link,
+    image: formValues.imageUrl || formValues.previewImageUrl || null,
+    dateTime,
+    registrationEnd: "2099-12-31T23:59:59.000Z",
+    capacity: Number(formValues.capacity),
+  };
+};
 
 export const toMeetingFormValues = (
-  data: Pick<
-    MeetingDetailApiData,
-    "type" | "name" | "description" | "address" | "image" | "dateTime" | "registrationEnd" | "capacity"
-  >,
+  data: MeetingDetailApiData,
 ): MeetingFormValues => ({
   category: data.type,
   name: data.name,
@@ -61,6 +77,7 @@ export const toMeetingFormValues = (
   previewImageUrl: data.image ?? "",
   imageUrl: data.image ?? "",
   capacity: String(data.capacity),
+  isPrivate: isSecretMeeting(data.dateTime),
 });
 
 export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
@@ -72,6 +89,7 @@ export const INITIAL_MEETING_FORM_VALUES: MeetingFormValues = {
   previewImageUrl: "",
   imageUrl: null,
   capacity: "",
+  isPrivate: false,
 };
 
 export const createEmptyMeetingFormErrors = (): MeetingFormErrors => ({
@@ -200,6 +218,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
     description?: string;
     link?: string;
     capacity?: string;
+    isPrivate?: boolean;
   }) => {
     setFormValues((prev) => ({ ...prev, ...nextValues }));
   };
@@ -348,6 +367,7 @@ export function useEditMeetingForm({
     imageFile?: File | null;
     previewImageUrl?: string;
     imageUrl?: string;
+    isPrivate?: boolean;
   }) => {
     setFormValues((prev) => ({ ...prev, ...nextValues }));
     setErrors((prev) => ({
@@ -384,7 +404,7 @@ export function useEditMeetingForm({
     setIsSubmitting(true);
 
     try {
-      await onSubmit(toEditMeetingPayload(formValues));
+      await onSubmit(toEditMeetingPayload(formValues, detail.dateTime));
       onSuccess?.();
     } catch {
       // updateMeetingMutation toast handles the error

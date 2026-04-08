@@ -1,36 +1,35 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMeeting } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
-import { useIntersectionObserver } from "@/hooks";
 import { Loader2, PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+
+const MY_MEETINGS_PAGE_SIZE = 10;
 
 export default function MyMeetingList() {
   const router = useRouter();
+  const {
+    items: meetings,
+    isFetching,
+    isLoading,
+    page,
+    totalPages,
+    handlePageChange,
+  } = useOffsetPaginationQuery({
+    pageSize: MY_MEETINGS_PAGE_SIZE,
+    queryKey: QUERY_KEYS.meetings.myPage,
+    queryFn: getMeeting,
+  });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: QUERY_KEYS.meetings.my,
-      queryFn: ({ pageParam }) =>
-        getMeeting(pageParam ? { cursor: pageParam, size: 10 } : { size: 10 }),
-      initialPageParam: undefined as string | undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
-      staleTime: 1000 * 60 * 5,
-    });
+  if (isLoading) {
+    return null;
+  }
 
-  const bottomRef = useIntersectionObserver(
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  );
-
-  const allMeetings = data?.pages.flatMap((page) => page.data) ?? [];
-
-  if (allMeetings.length === 0 && !isFetchingNextPage) {
+  if (meetings.length === 0 && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
         <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
@@ -49,7 +48,7 @@ export default function MyMeetingList() {
   return (
     <div className="flex flex-col">
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {allMeetings.map((item) => (
+        {meetings.map((item) => (
           <UserCard
             key={item.id}
             title={item.name}
@@ -64,22 +63,22 @@ export default function MyMeetingList() {
         ))}
       </div>
 
-      <div ref={bottomRef} className="flex h-32 items-center justify-center">
-        {isFetchingNextPage ? (
+      <div className="mt-10 flex flex-col items-center gap-4">
+        {isFetching && (
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
               Updating Archive...
             </span>
           </div>
-        ) : (
-          !hasNextPage &&
-          allMeetings.length > 0 && (
-            <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
-              End of Archive.
-            </span>
-          )
         )}
+
+        <NumberPagination
+          href="#"
+          page={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

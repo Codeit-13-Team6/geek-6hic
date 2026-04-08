@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback } from "react";
-import type { SortBy } from "@/types";
+import type { SortValue } from "@/types";
 import type { DateRange } from "react-day-picker";
 
 export function useMeetingSearchParams() {
@@ -11,7 +11,7 @@ export function useMeetingSearchParams() {
   const pathname = usePathname();
 
   const tabValue = searchParams.get("type") ?? "";
-  const sortBy = (searchParams.get("sortBy") ?? "dateTime") as SortBy;
+  const sortBy = (searchParams.get("sortBy") ?? "dateTime") as SortValue;
   const sortOrder = (searchParams.get("sortOrder") ?? "desc") as
     | "asc"
     | "desc";
@@ -45,7 +45,7 @@ export function useMeetingSearchParams() {
       to: null,
     });
 
-  const setSortBy = (value: SortBy) => updateParams({ sortBy: value });
+  const setSortValue = (value: SortValue) => updateParams({ sortBy: value });
 
   const setSortOrder = () =>
     updateParams({ sortOrder: sortOrder === "desc" ? "asc" : "desc" });
@@ -71,7 +71,7 @@ export function useMeetingSearchParams() {
     sortOrder,
     dateRange,
     setTabValue,
-    setSortBy,
+    setSortValue,
     setSortOrder,
     setDateRange,
     resetFilter,

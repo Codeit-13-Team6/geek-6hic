@@ -23,8 +23,14 @@ const SORT_OPTIONS = [
 ] as const;
 
 export default function MeetingFilters() {
-  const { tabValue, sortBy, sortOrder, setTabValue, setSortBy, setSortOrder } =
-    useMeetingSearchParams();
+  const {
+    tabValue,
+    sortBy,
+    sortOrder,
+    setTabValue,
+    setSortValue,
+    setSortOrder,
+  } = useMeetingSearchParams();
 
   const [tabList, setTabList] = useState<{ value: string; label: string }[]>([
     { value: "", label: "전체" },
@@ -117,7 +123,7 @@ export default function MeetingFilters() {
           <Select
             value={sortBy}
             onValueChange={(value) => {
-              if (value !== null) setSortBy(value);
+              if (value !== null) setSortValue(value);
             }}
           >
             <SelectTrigger
