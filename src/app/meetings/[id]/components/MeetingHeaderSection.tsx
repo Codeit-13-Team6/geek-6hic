@@ -30,12 +30,9 @@ import {
   useMeetingDetailFavoriteMutation,
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-import type {
-  MeetingHeaderSectionProps,
-  MeetingMember,
-} from "@/types";
-import { copyToClipboard } from "@/lib/utils";
+import type { MeetingHeaderSectionProps, MeetingMember } from "@/types";
 import { ToastCommon } from "@/components/ui/ToastCommon";
+import { shareLink } from "@/lib/share";
 
 const hasUsableProfileImage = (
   value: string | null | undefined,
@@ -94,17 +91,29 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } = useMeetingJoinMutations(meetingId);
-  const { handleEditMeeting, handleDeleteMeeting } = useMeetingHostMutations(meetingId);
-  const { hasAttended, isCheckingAttendance, handleAttendMeeting } = useMeetingAttendMutation(meetingId);
-  const { isFavoritePending, handleToggleFavorite } = useMeetingDetailFavoriteMutation(meetingId);
+  const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
+    useMeetingJoinMutations(meetingId);
+  const { handleEditMeeting, handleDeleteMeeting } =
+    useMeetingHostMutations(meetingId);
+  const { hasAttended, isCheckingAttendance, handleAttendMeeting } =
+    useMeetingAttendMutation(meetingId);
+  const { isFavoritePending, handleToggleFavorite } =
+    useMeetingDetailFavoriteMutation(meetingId);
 
   const handleShare = async () => {
-    const isSuccess = await copyToClipboard(window.location.href);
-    if (isSuccess) {
+    const shareResult = await shareLink({
+      title: detail.name,
+      url: window.location.href,
+      text: `${detail.name} 모임을 공유해요.`,
+    });
+
+    if (shareResult.result === "copied-by-app") {
       ToastCommon({ message: "모임 링크가 복사되었어요." });
-    } else {
-      ToastCommon({ message: "링크 복사에 실패했습니다." });
+      return;
+    }
+
+    if (shareResult.result === "failed") {
+      ToastCommon({ message: "링크 복사에 실패했어요." });
     }
   };
 
@@ -120,16 +129,20 @@ export function MeetingHeaderSection({
 
   const action = (() => {
     if (!isLoggedIn) {
-      return { label: "참여하기", disabled: false, handler: () => { } };
+      return { label: "참여하기", disabled: false, handler: () => {} };
     }
     if (!isParticipant) {
-      return { label: "참여하기", disabled: isCapacityFull, handler: handleJoinMeeting };
+      return {
+        label: "참여하기",
+        disabled: isCapacityFull,
+        handler: handleJoinMeeting,
+      };
     }
     if (isCheckingAttendance) {
-      return { label: "출석 확인 중", disabled: true, handler: () => { } };
+      return { label: "출석 확인 중", disabled: true, handler: () => {} };
     }
     if (hasAttended) {
-      return { label: "출석완료", disabled: true, handler: () => { } };
+      return { label: "출석완료", disabled: true, handler: () => {} };
     }
     return {
       label: "출석하기",
@@ -151,8 +164,12 @@ export function MeetingHeaderSection({
   const progressValue = (detail.participantCount / detail.capacity) * 100;
 
   const avatars = participants.map((p) => p.user);
-  const visibleParticipants = avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
-  const hiddenParticipantCount = Math.max(0, detail.participantCount - visibleParticipants.length);
+  const visibleParticipants =
+    avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+  const hiddenParticipantCount = Math.max(
+    0,
+    detail.participantCount - visibleParticipants.length,
+  );
 
   const handleFavoriteClick = () => {
     if (isAuthLoading || isFavoritePending) return;
@@ -200,7 +217,7 @@ export function MeetingHeaderSection({
                     size="sm"
                     variant="teritary"
                     onClick={() => loginGuardAction(handleShare)}
-                    className="!rounded-2xl group rounded-full p-2 transition hover:bg-slate-50"
+                    className="group rounded-full p-2 transition hover:bg-slate-50"
                   >
                     <Image
                       src={shareIcon}
@@ -332,7 +349,7 @@ export function MeetingHeaderSection({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-0 left-0 inset-0 z-[999] flex justify-center items-start"
+            className="fixed inset-0 top-0 left-0 z-[999] flex items-start justify-center"
           >
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.96 }}
@@ -361,7 +378,7 @@ export function MeetingHeaderSection({
                 className="mt-2 text-center"
               >
                 <p className="text-lg font-black text-slate-900">출석 완료</p>
-                <p className="mt-2 text-base font-bold text-main-purple">
+                <p className="text-main-purple mt-2 text-base font-bold">
                   +{showReward.point} Points
                 </p>
               </motion.div>
