@@ -172,7 +172,7 @@ export default function LoginForm({
           onClick={handleGoogleLogin}
           disabled={!!isOAuthLoading}
         >
-          <Image src={googleIcon} width="20" height="20" alt="google" />
+          <Image src={googleIcon} width="20" height="20" alt="" />
           {isOAuthLoading === "google" ? (
             <span className="animate-pulse text-[13px] font-bold text-slate-400">
               로그인 중...
@@ -188,7 +188,7 @@ export default function LoginForm({
           onClick={handleKakaoLogin}
           disabled={!!isOAuthLoading}
         >
-          <Image src={kakaoIcon} width="20" height="20" alt="kakao" />
+          <Image src={kakaoIcon} width="20" height="20" alt="" />
           {isOAuthLoading === "kakao" ? (
             <span className="ml-2 animate-pulse text-[10px] font-bold text-slate-600">
               로그인 중...
@@ -205,7 +205,7 @@ export default function LoginForm({
         </p>
         <Link
           href="/signup"
-          className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900"
+          className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-main-purple"
         >
           Create Account
         </Link>

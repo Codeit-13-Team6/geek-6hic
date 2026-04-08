@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { Gnb } from "@/components/layout/Gnb";
+import { Footer } from "@/components/layout/Footer";
 import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
@@ -66,6 +67,7 @@ export default async function RootLayout({
               {children}
             </main>
             <BtnTop />
+            <Footer />
           </MemberProvider>
         </QueryProvider>
       </body>

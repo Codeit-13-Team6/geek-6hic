@@ -40,8 +40,14 @@ export default function SideBar({
         <span className="text-[11px] font-black tracking-[0.25em] text-slate-400 uppercase">
           Menu
         </span>
-        <SheetClose className="flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-white/50 active:scale-90">
-          <X className="size-5 text-slate-900" strokeWidth={2} />
+        <SheetClose
+          className="flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-white/50 active:scale-90"
+          aria-label="메뉴 닫기"
+        >
+          <X
+            className="size-5 text-slate-900" strokeWidth={2}
+            aria-hidden="true"
+          />
         </SheetClose>
       </div>
 
@@ -54,7 +60,7 @@ export default function SideBar({
               href={link.href}
               onClick={onClose}
               className={cn(
-                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98]",
+                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-main-purple",
                 isActive
                   ? "text-main-purple bg-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]"
                   : "text-slate-500 hover:text-slate-900",
