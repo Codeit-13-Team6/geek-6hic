@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import "react-quill-new/dist/quill.snow.css";
 import "./LoungeEditor.css";
 import { EditorProps } from "@/types";
-
-// hljs를 전역 객체로 등록 (Quill 내부 로직용)
-if (typeof window !== "undefined") {
-  window.hljs = hljs;
+declare global {
+  interface Window {
+    hljs: typeof hljs;
+  }
 }
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
@@ -23,6 +23,12 @@ export default function LoungeEditor({
   onChange,
   placeholder,
 }: EditorProps) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.hljs = hljs;
+    }
+  }, []);
+
   const modules = useMemo(
     () => ({
       syntax: {
