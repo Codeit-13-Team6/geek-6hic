@@ -16,7 +16,9 @@ export function HotPostCard({
   comment = 0,
 }: HotPostCardCommonProps & { rank?: number }) {
   return (
-    <div
+    <button
+      type="button"
+      aria-label={`${title} 게시물 상세 보기`}
       onClick={onDetailClick}
       className="group relative flex w-[180px] shrink-0 cursor-pointer flex-col gap-4 transition-all duration-500 sm:w-[280px] lg:w-[320px]"
     >
@@ -36,7 +38,10 @@ export function HotPostCard({
       <div className="flex flex-col px-1">
         <div className="px-1">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-main-purple text-[10px] font-black tracking-[0.2em] uppercase">
+            <span
+              className="text-main-purple text-[10px] font-black tracking-[0.2em] uppercase"
+              aria-hidden="true"
+            >
               Trending Now
             </span>
             <span className="text-xs font-bold tracking-widest text-slate-400 uppercase">
@@ -44,7 +49,7 @@ export function HotPostCard({
             </span>
           </div>
 
-          <h3 className="group-hover:text-main-purple truncate text-base font-bold tracking-tighter text-slate-900 transition-colors sm:text-lg lg:text-xl">
+          <h3 className="group-hover:text-main-purple truncate text-base font-bold tracking-tighter text-slate-900 transition-colors sm:text-lg lg:text-xl text-left">
             {title}
           </h3>
         </div>
@@ -53,12 +58,15 @@ export function HotPostCard({
           <div className="flex items-center gap-1.5">
             <Image
               src={thumbsUpIcon}
-              alt="like"
+              alt=""
               width={14}
               height={14}
               className="opacity-40"
+              aria-hidden="true"
             />
-            <span className="text-[11px] font-black tracking-tighter sm:text-xs">
+            <span
+              className="text-[11px] font-black tracking-tighter sm:text-xs"
+              aria-label={`좋아요 ${thumbsUp}개`}>
               {thumbsUp}
             </span>
           </div>
@@ -66,17 +74,21 @@ export function HotPostCard({
           <div className="flex items-center gap-1.5">
             <Image
               src={messageIcon}
-              alt="comment"
+              alt=""
               width={14}
               height={14}
               className="opacity-40"
+              aria-hidden="true"
             />
-            <span className="text-[11px] font-black tracking-tighter sm:text-xs">
+            <span
+              className="text-[11px] font-black tracking-tighter sm:text-xs"
+              aria-label={`댓글 ${comment}개`}
+            >
               {comment}
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

@@ -14,7 +14,10 @@ export default function HotPostList() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[200px] w-full flex-col items-center justify-center gap-3 rounded-[32px] border border-slate-100 bg-slate-50/50">
+      <div
+        className="flex h-[200px] w-full flex-col items-center justify-center gap-3 rounded-[32px] border border-slate-100 bg-slate-50/50"
+        role="status"
+        aria-live="polite">
         <Loader2 className="text-main-purple animate-spin" size={24} />
         <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
           Loading Trends...
@@ -25,7 +28,11 @@ export default function HotPostList() {
 
   if (hotList.length === 0) {
     return (
-      <div className="flex h-[200px] w-full flex-col items-center justify-center gap-2 rounded-[32px] border border-dashed border-slate-200 text-slate-400">
+      <div
+        className="flex h-[200px] w-full flex-col items-center justify-center gap-2 rounded-[32px] border border-dashed border-slate-200 text-slate-400"
+        role="status"
+        aria-label="인기 게시물 없음"
+      >
         <Flame size={24} className="opacity-20" />
         <p className="text-xs font-bold tracking-widest uppercase opacity-50">
           이번주의 HOT 게시물이 없습니다.
@@ -37,7 +44,9 @@ export default function HotPostList() {
   return (
     <div
       {...dragProps}
-      className="custom-scrollbar -mx-4 flex gap-5 overflow-x-auto px-4 pb-8 sm:-mx-6 sm:gap-8 sm:px-6 lg:-mx-8 lg:px-8"
+      className="custom-scrollbar flex gap-5 overflow-x-auto pb-8 sm:gap-8"
+      role="region"
+      aria-label="인기 게시물 목록"
     >
       {hotList.map((post: Post) => (
         <HotPostCard
