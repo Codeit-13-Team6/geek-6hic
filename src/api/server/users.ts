@@ -2,7 +2,8 @@ import { serverAxios, serverFetch } from "@/lib/serverFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
 import type {
   GetPostsResponse,
-  MeetingBaseData,
+  MeetingResponse,
+  MeetingListResponse,
   GetMeetingsResponse,
   MyMeetingsResponse,
   Post,
@@ -41,7 +42,7 @@ export async function getUserMeetings({
 
     collected.push(
       ...data.data.filter(
-        (meeting: MeetingBaseData) =>
+        (meeting: MeetingResponse) =>
           meeting.hostId === userId ||
           meeting.host?.id === userId ||
           meeting.createdBy === userId,

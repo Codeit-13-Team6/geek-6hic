@@ -29,7 +29,7 @@ export default function MeetingFilters() {
     sortBy,
     sortOrder,
     setTabValue,
-    setSortBy,
+    setSortValue,
     setSortOrder,
   } = useMeetingSearchParams();
 
@@ -125,7 +125,7 @@ export default function MeetingFilters() {
           <Select
             value={sortBy}
             onValueChange={(value) => {
-              if (value !== null) setSortBy(value);
+              if (value !== null) setSortValue(value);
             }}
           >
             <SelectTrigger

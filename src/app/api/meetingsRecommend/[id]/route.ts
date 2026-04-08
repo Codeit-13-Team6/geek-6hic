@@ -3,7 +3,7 @@ import { serverAxios } from "@/lib/serverFetcher";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,
-  MeetingBaseData,
+  MeetingResponse,
   RecommendedMeetingItem,
 } from "@/types";
 
@@ -15,7 +15,7 @@ const THREAD_MAX_COUNT = 300;
 
 // 현재 모임, 취소된 모임, 정원이 다 찬 모임은 추천 대상에서 제외합니다.
 function isRecommendableMeeting(
-  candidate: MeetingBaseData,
+  candidate: MeetingResponse,
   currentMeetingId: number,
 ) {
   if (candidate.id === currentMeetingId) return false;
@@ -51,8 +51,8 @@ function getStableWeight(currentMeetingId: number, candidateId: number) {
 // 같은 타입 / 다른 타입 / fallback 정렬을 하나의 비교 함수로 처리합니다.
 // 같은 타입은 참가율 위주, 다른 타입과 fallback은 활동도 + 참가율 위주로 비교합니다.
 function compareMeetingCandidate(
-  targetA: MeetingBaseData,
-  targetB: MeetingBaseData,
+  targetA: MeetingResponse,
+  targetB: MeetingResponse,
   currentMeetingId: number,
   threadActivityMap: Map<number, number>,
   compareMode: "sameType" | "otherType" | "fallback",
@@ -81,7 +81,7 @@ function compareMeetingCandidate(
 // participantCount 내림차순으로 가져와 인기 있는 모임을 우선 후보로 모읍니다.
 async function getMeetingCandidateList() {
   let cursor: string | undefined;
-  const meetingCandidateList: MeetingBaseData[] = [];
+  const meetingCandidateList: MeetingResponse[] = [];
 
   while (meetingCandidateList.length < MEETING_MAX_COUNT) {
     const response = await serverAxios.get<GetMeetingsResponse>("/meetings", {
@@ -152,7 +152,7 @@ async function getThreadActivityMap() {
 
 // 추천 API 응답에서 바로 내려줄 카드 형태로 변환합니다.
 function toRecommendedMeetingItem(
-  meeting: MeetingBaseData,
+  meeting: MeetingResponse,
 ): RecommendedMeetingItem {
   return {
     id: meeting.id,
@@ -178,10 +178,10 @@ function selectRecommendedMeetingList({
 }: {
   currentMeetingId: number;
   currentMeetingType: string;
-  meetingCandidateList: MeetingBaseData[];
+  meetingCandidateList: MeetingResponse[];
   threadActivityMap: Map<number, number>;
 }) {
-  const filteredCandidateList: MeetingBaseData[] = [];
+  const filteredCandidateList: MeetingResponse[] = [];
 
   for (const meeting of meetingCandidateList) {
     if (isRecommendableMeeting(meeting, currentMeetingId)) {
@@ -189,8 +189,8 @@ function selectRecommendedMeetingList({
     }
   }
 
-  const sameTypeCandidateList: MeetingBaseData[] = [];
-  const otherTypeCandidateList: MeetingBaseData[] = [];
+  const sameTypeCandidateList: MeetingResponse[] = [];
+  const otherTypeCandidateList: MeetingResponse[] = [];
 
   for (const candidate of filteredCandidateList) {
     if (candidate.type === currentMeetingType) {
@@ -227,7 +227,7 @@ function selectRecommendedMeetingList({
   const recommendedMeetingList: RecommendedMeetingItem[] = [];
   const selectedMeetingIdSet = new Set<number>();
 
-  function pushCandidate(candidate?: MeetingBaseData) {
+  function pushCandidate(candidate?: MeetingResponse) {
     if (!candidate) return;
     if (selectedMeetingIdSet.has(candidate.id)) return;
     if (recommendedMeetingList.length >= 4) return;

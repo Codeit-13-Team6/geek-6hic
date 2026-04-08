@@ -4,7 +4,7 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
-  MeetingBaseData,
+  MeetingResponse,
   MyMeetingsResponse,
   FavoritesResponse,
   MeetingType,
@@ -56,7 +56,7 @@ export async function getUserMeetings(params: {
 
     collected.push(
       ...data.data.filter(
-        (meeting: MeetingBaseData) =>
+        (meeting: MeetingResponse) =>
           meeting.hostId === userId ||
           meeting.host?.id === userId ||
           meeting.createdBy === userId,
