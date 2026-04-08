@@ -7,12 +7,9 @@ import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThre
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
 import { useMeetingDetailQueries } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-import type {
-  MeetingDetailContentProps,
-} from "@/types";
+import type { MeetingDetailContentProps } from "@/types";
 import { cn } from "@/lib/utils";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-
 
 export function MeetingDetailErrorView() {
   return (
@@ -94,7 +91,10 @@ function MeetingDetailContentInner({ meetingId }: MeetingDetailContentProps) {
         isLoggedIn={isLoggedIn}
       />
 
-      <RecommendedMeetingsSection meetingId={meetingId} />
+      <RecommendedMeetingsSection
+        meetingId={meetingId}
+        meetingType={detail.type}
+      />
     </div>
   );
 }

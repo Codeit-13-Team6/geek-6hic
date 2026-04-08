@@ -85,6 +85,7 @@ export interface MeetingDetailData extends MeetingResponse {
   threads: MeetingThreadItem[];
 }
 
+//내가 참여한 모임에 대한 추가 정보
 export interface JoinedMeeting extends Meeting {
   isFavorited: boolean;
   joinedAt: string;
@@ -118,6 +119,7 @@ export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
 export type MeetingListResponse = CursorResponse<MeetingResponse>;
+export type GetMeetingsResponse = CursorResponse<MeetingResponse>;
 
 export interface MeetingsRecommendResponse {
   data: RecommendedMeetingItem[];
@@ -203,6 +205,7 @@ export interface MeetingThreadSectionProps {
 
 export interface RecommendedMeetingsSectionProps {
   meetingId: number;
+  meetingType: string;
 }
 
 export interface MeetingDetailPageProps {
@@ -218,6 +221,12 @@ export interface EditMeetingModalProps {
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
 }
 
+// --- 모임 생성/수정 폼 ---
+
+export interface UploadImageResponse {
+  presignedUrl: string;
+  publicUrl: string;
+}
 
 export interface MeetingBasicInfoValues {
   category?: string;

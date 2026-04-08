@@ -10,7 +10,7 @@ import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
 import MeetingList from "@/components/features/list/MeetingList";
-
+import SearchBarCommon from "@/components/ui/SearchBarCommon";
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -58,7 +58,6 @@ export default async function Page({
     sortOrder?: string;
   }>;
 }) {
-
   const params = await searchParams;
   const type = params.type ?? "";
   const sortBy = params.sortBy ?? "dateTime";
@@ -121,7 +120,11 @@ export default async function Page({
               readonly unknown[],
               string | undefined
             >({
-              queryKey: QUERY_KEYS.meetings.listParams({ type, sortBy, sortOrder }),
+              queryKey: QUERY_KEYS.meetings.listParams({
+                type,
+                sortBy,
+                sortOrder,
+              }),
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
@@ -142,9 +145,13 @@ export default async function Page({
             })
           }
         >
-          <div className="mb-10 sm:mb-14">
+          <div className="mb-10 sm:mb-10">
             <MeetingFilters />
           </div>
+          <SearchBarCommon
+            placeholder="모임을 검색해보세요."
+            className="mb-10"
+          />
           <MeetingList variant="all" />
         </PrefetchBoundary>
       </Suspense>

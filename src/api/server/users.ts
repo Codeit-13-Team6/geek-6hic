@@ -4,6 +4,7 @@ import type {
   GetPostsResponse,
   MeetingResponse,
   MeetingListResponse,
+  GetMeetingsResponse,
   MyMeetingsResponse,
   Post,
   User,
@@ -28,7 +29,7 @@ export async function getUserMeetings({
   let hasMore = true;
 
   while (hasMore && collected.length < size) {
-    const { data } = await serverFetch<MeetingListResponse>({
+    const { data } = await serverFetch<GetMeetingsResponse>({
       method: "GET",
       url: "/meetings",
       params: {

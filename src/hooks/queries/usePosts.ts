@@ -58,10 +58,15 @@ export const useGetPostDetail = (postId: number) => {
 export const useGetPostForEdit = (postId: number) => {
   // 1. 포스트 원본 데이터 가져오기
   const { data: post, isLoading: isPostLoading } = useGetPostDetail(postId);
-
   // 2. 포스트가 도착하면 실행되는 종속 쿼리
   const { data: initialData, isLoading: isOgLoading } = useQuery({
-    queryKey: [...QUERY_KEYS.posts.detail(postId), "edit-og", post?.content],
+    queryKey: [
+      ...QUERY_KEYS.posts.detail(postId),
+      "edit-og",
+      post?.content,
+      post?.title,
+      post?.image,
+    ],
     queryFn: async () => {
       if (!post) return null;
 
@@ -101,7 +106,6 @@ export const useGetPostForEdit = (postId: number) => {
     enabled: !!post,
     staleTime: 1000 * 60 * 5,
   });
-
   return {
     initialData,
     post,
@@ -144,6 +148,9 @@ export const useUpdatePost = (postId: number) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.list });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.posts.detail(postId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.posts.hot,
       });
 
       router.back();
@@ -190,7 +197,8 @@ export const useToggleLike = (postId: number) => {
         isLiked: !old.isLiked,
         likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
       }),
-      invalidateKeys: [["post"]],
+      invalidateKeys: [QUERY_KEYS.posts.list, QUERY_KEYS.posts.detail(postId)],
+
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });
