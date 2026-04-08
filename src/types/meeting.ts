@@ -173,6 +173,7 @@ export interface UserCardProps {
   capacity?: number;
   defaultLiked?: boolean;
   showLikeBtn?: boolean;
+  showLockBtn?: boolean;
   onHeartClick?: (liked: boolean) => void;
   onDetailClick?: () => void;
 }

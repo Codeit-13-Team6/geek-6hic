@@ -181,7 +181,7 @@ export default function SignUp() {
             </p>
             <Link
               href="/login"
-              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900"
+              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-main-purple"
             >
               Back to Sign In
             </Link>

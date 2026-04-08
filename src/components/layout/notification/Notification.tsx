@@ -93,22 +93,29 @@ export default function Notification({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-10 right-[-77] z-[100] flex w-[320px] flex-col overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] sm:w-[360px]">
+    <div
+      className="absolute top-10 right-[-77] z-[100] flex w-[320px] flex-col overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] sm:w-[360px]"
+      role="dialog"
+      aria-labelledby="notification-title"
+    >
       <div className="flex items-center justify-between border-b border-slate-50 px-6 py-5">
-        <h2 className="text-base font-bold text-slate-900">알림 내역</h2>
+        <h2 id="notification-title" className="text-base font-bold text-slate-900">알림 내역</h2>
         <button
           type="button"
           onClick={isAllRead ? handleDeleteAll : handleMarkAllAsRead}
-          className="flex items-center gap-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase hover:text-slate-600"
+          className="flex gap-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase hover:text-slate-600"
         >
-          {isAllRead ? <Trash2 size={12} /> : <CheckCheck size={12} />}
+          {isAllRead ? <Trash2 size={12} aria-hidden="true" /> : <CheckCheck size={12} aria-hidden="true" />}
           {isAllRead ? "전체 삭제" : "모두 읽기"}
         </button>
       </div>
 
       <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain sm:max-h-[420px]">
         {isLoading ? (
-          <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300">
+          <div
+            className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300"
+            role="status"
+          >
             알림을 불러오는 중...
           </div>
         ) : notifications.length > 0 ? (
