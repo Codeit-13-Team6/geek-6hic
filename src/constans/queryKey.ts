@@ -11,6 +11,8 @@ export const QUERY_KEYS = {
       ["posts", "my", "page", `${page}`, `${limit}`] as const,
     user: (userId: number | string) =>
       ["posts", "user", `${String(userId)}`] as const,
+    userPage: (userId: number | string, page: number, limit: number) =>
+      ["posts", "user", `${String(userId)}`, "page", `${page}`, `${limit}`] as const,
     hot: ["posts", "hot"] as const,
     list: ["posts", "list"] as const,
     listParams: (params: {
@@ -31,6 +33,8 @@ export const QUERY_KEYS = {
       ["meetings", "my", "page", `${page}`, `${limit}`] as const,
     user: (userId: number | string) =>
       ["meetings", "user", `${String(userId)}`] as const,
+    userPage: (userId: number | string, page: number, limit: number) =>
+      ["meetings", "user", `${String(userId)}`, "page", `${page}`, `${limit}`] as const,
     joined: ["meetings", "joined"] as const,
     participants: (meetingId: number | string) =>
       ["meetings", "participants", `${String(meetingId)}`] as const,

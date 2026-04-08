@@ -23,50 +23,24 @@ export async function getPosts(
   return filterThreadPosts(res);
 }
 
-export async function getUserPosts(params: {
-  userId: number;
-  cursor?: string;
-  size?: number;
-}): Promise<GetPostsResponse> {
-  // 타유저 페이지는 아직 전용 API가 없어서 이 우회 로직이 계속 필요
-  // /posts 전체를 순회하면서 해당 userId 글만 모으는 임시 구현
-  // TODO: 타유저 전용 BFF 페이지네이션이 생기면 이 cursor 기반 우회 로직은 제거
-  const { userId, cursor, size = 20 } = params;
-  const collected: GetPostsResponse["data"] = [];
-  let nextCursor = cursor;
-  let hasMore = true;
-
-  while (hasMore && collected.length < size) {
-    const { data: res } = await axiosInstance.get("/posts", {
+export async function getUserPostsPage(
+  params: {
+    userId: number;
+    offset?: number;
+    limit?: number;
+  },
+): Promise<MyPostsPageResponse> {
+  const { data } = await axiosInstance.get<MyPostsPageResponse>(
+    `/users/${params.userId}/posts-visible`,
+    {
       params: {
-        keyword: "",
-        sortBy: "createdAt",
-        sortOrder: "desc",
-        size: 50,
-        ...(nextCursor ? { cursor: nextCursor } : {}),
+        offset: params.offset ?? 0,
+        limit: params.limit ?? 10,
       },
-    });
+    },
+  );
 
-    const filteredPage = filterThreadPosts(res);
-
-    collected.push(
-      ...filteredPage.data.filter((post: Post) => post.author.id === userId),
-    );
-    if (filteredPage.hasMore && !filteredPage.nextCursor) {
-      hasMore = false;
-      nextCursor = undefined;
-      break;
-    }
-
-    hasMore = filteredPage.hasMore;
-    nextCursor = filteredPage.nextCursor ?? undefined;
-  }
-
-  return {
-    data: collected,
-    hasMore,
-    nextCursor: nextCursor ?? null,
-  };
+  return data;
 }
 
 export async function getMyPosts(

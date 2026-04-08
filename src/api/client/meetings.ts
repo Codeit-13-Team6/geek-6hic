@@ -4,13 +4,9 @@ import {
   Meeting,
   GetMeetingListParams,
   CreateMeeting,
-  MeetingResponse,
-  MyMeetingsResponse,
   FavoritesPageResponse,
   MeetingType,
-  MeetingListResponse,
   MyMeetingsPageResponse,
-  GetMeetingsResponse,
 } from "@/types";
 
 export async function getMeetingList(
@@ -41,49 +37,22 @@ export async function getMeeting(params?: {
   return data;
 }
 
-export async function getUserMeetings(params: {
+export async function getUserMeetingsPage(params: {
   userId: number;
-  cursor?: string;
-  size?: number;
-}): Promise<MyMeetingsResponse> {
-  const { userId, cursor, size = 10 } = params;
-  const collected: MyMeetingsResponse["data"] = [];
-  let nextCursor = cursor;
-  let hasMore = true;
-
-  while (hasMore && collected.length < size) {
-    const { data } = await axiosInstance.get<GetMeetingsResponse>("/meetings", {
+  offset?: number;
+  limit?: number;
+}): Promise<MyMeetingsPageResponse> {
+  const { data } = await axiosInstance.get<MyMeetingsPageResponse>(
+    `/users/${params.userId}/meetings-visible`,
+    {
       params: {
-        sortBy: "dateTime",
-        sortOrder: "desc",
-        size: 50,
-        ...(nextCursor ? { cursor: nextCursor } : {}),
+        offset: params.offset ?? 0,
+        limit: params.limit ?? 10,
       },
-    });
+    },
+  );
 
-    collected.push(
-      ...data.data.filter(
-        (meeting: MeetingResponse) =>
-          meeting.hostId === userId ||
-          meeting.host?.id === userId ||
-          meeting.createdBy === userId,
-      ),
-    );
-    if (data.hasMore && !data.nextCursor) {
-      hasMore = false;
-      nextCursor = undefined;
-      break;
-    }
-
-    hasMore = data.hasMore;
-    nextCursor = data.nextCursor ?? undefined;
-  }
-
-  return {
-    data: collected,
-    hasMore,
-    nextCursor: nextCursor ?? null,
-  };
+  return data;
 }
 
 export async function getJoinedMeetings(params: {

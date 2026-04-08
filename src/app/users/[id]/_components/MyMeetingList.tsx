@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { getMeeting } from "@/api/client/meetings";
+import { getMeeting, getUserMeetingsPage } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { Loader2, PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -11,7 +11,15 @@ import { isSecretMeeting } from "@/lib/meetingSecret";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 
-export default function MyMeetingList() {
+interface MyMeetingListProps {
+  isOwnProfile?: boolean;
+  userId?: number;
+}
+
+export default function MyMeetingList({
+  isOwnProfile = true,
+  userId,
+}: MyMeetingListProps) {
   const router = useRouter();
   const {
     items: meetings,
@@ -22,8 +30,18 @@ export default function MyMeetingList() {
     handlePageChange,
   } = useOffsetPaginationQuery({
     pageSize: MY_MEETINGS_PAGE_SIZE,
-    queryKey: QUERY_KEYS.meetings.myPage,
-    queryFn: getMeeting,
+    queryKey: (pageNumber, limit) =>
+      isOwnProfile
+        ? QUERY_KEYS.meetings.myPage(pageNumber, limit)
+        : QUERY_KEYS.meetings.userPage(userId!, pageNumber, limit),
+    queryFn: ({ offset, limit }) =>
+      isOwnProfile
+        ? getMeeting({ offset, limit })
+        : getUserMeetingsPage({
+            userId: userId!,
+            offset,
+            limit,
+          }),
   });
 
   if (isLoading) {
@@ -37,10 +55,12 @@ export default function MyMeetingList() {
           <PlusCircle className="size-10 text-slate-200" strokeWidth={1.5} />
         </div>
         <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-          No Entries Created.
+          {isOwnProfile ? "No Entries Created." : "No Meetings Yet."}
         </h3>
         <p className="mt-2 text-sm font-medium text-slate-400">
-          아직 직접 개설한 모임이 없습니다. 새로운 모임을 시작해보세요.
+          {isOwnProfile
+            ? "아직 직접 개설한 모임이 없습니다. 새로운 모임을 시작해보세요."
+            : "아직 이 사용자가 개설한 모임이 없습니다."}
         </p>
       </div>
     );
