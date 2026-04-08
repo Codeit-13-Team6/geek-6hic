@@ -19,10 +19,15 @@ jobs:
       - name: PR Agent Action
         uses: Codium-ai/pr-agent@main
         env:
-          # 핵심 설정: Gemini 무료 모델 사용
           OPENAI_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+          # 1. 메인 모델을 Gemini로 설정
+          CONFIG.MODEL: "gemini/gemini-1.5-flash"
+          # 2. 리소스 그룹의 기본 모델도 Gemini로 강제 설정
           CONFIG.MODEL_RESOURCES__DEFAULT__MODEL: "gemini/gemini-1.5-flash"
+          # 3. (추가) litellm이 OpenAI로 착각하지 않게 하기 위함
+          LITELLM_MODEL_ALIAS_MAP: "openai/gpt-4:gemini/gemini-1.5-flash"
 
           PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
             반드시 '한국어' 구어체(~했습니다)로 작성하세요.
