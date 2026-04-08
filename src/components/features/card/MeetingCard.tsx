@@ -108,38 +108,41 @@ export default function MeetingCard({
                 {item.description || "모임 설명이 아직 등록되지 않았습니다."}
               </p>
 
-              <div className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
+              <section className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
                 <div className="flex w-full items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className="relative h-3.5 w-3.5 opacity-30">
-                      <Image src={person} fill alt="인원" />
+                  <div className="flex w-full items-center justify-between gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <div className="relative h-3.5 w-3.5 opacity-30">
+                        <Image src={person} fill alt="인원" />
+                      </div>
+                      <p className="flex items-baseline gap-0.5">
+                        <span
+                          className={cn(
+                            "text-sm font-bold",
+                            isFull ? "text-slate-400" : "text-main-purple",
+                          )}
+                        >
+                          {item.participantCount}
+                        </span>
+                        <span className="text-[11px] font-medium text-slate-400">
+                          /{item.capacity}
+                        </span>
+                      </p>
                     </div>
-                    <p className="flex items-baseline gap-0.5">
-                      <span
+
+                    <div className="w-full">
+                      <Progress
                         className={cn(
-                          "text-sm font-bold",
-                          isFull ? "text-slate-400" : "text-main-purple",
+                          "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
+                          isFull || isClosed
+                            ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
+                            : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
                         )}
-                      >
-                        {item.participantCount}
-                      </span>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        /{item.capacity}
-                      </span>
-                    </p>
+                        value={(item.participantCount / item.capacity) * 100}
+                      />
+                    </div>
                   </div>
 
-                  <div className="w-full">
-                    <Progress
-                      className={cn(
-                        "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
-                        isFull || isClosed
-                          ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
-                          : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
-                      )}
-                      value={(item.participantCount / item.capacity) * 100}
-                    />
-                  </div>
                   <div className="flex items-center gap-1.5">
                     <Calendar size={14} className="text-slate-300" />
                     <span className="text-xs font-medium text-slate-400">
@@ -154,7 +157,7 @@ export default function MeetingCard({
                     </span>
                   </div>
                 </div>
-              </div>
+              </section>
             </div>
           </div>
         );
