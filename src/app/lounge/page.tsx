@@ -23,13 +23,25 @@ export const metadata: Metadata = {
   },
 };
 
-const LOUNGE_DEFAULT_PARAMS = {
-  keyword: "",
-  sortBy: "createdAt" as const,
-  sortOrder: "desc" as const,
-};
+type SortBy = "createdAt" | "likeCount" | "commentCount" | "viewCount";
+type SortOrder = "desc" | "asc";
 
-export default async function LoungePage() {
+export default async function LoungePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    keyword?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const keyword = params.keyword ?? "";
+  const sortBy = params.sortBy ?? ("createdAt" as SortBy);
+  const sortOrder = params.sortOrder ?? ("desc" as SortOrder);
+
+  const currentParams = { keyword, sortBy, sortOrder };
+
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up">
@@ -93,7 +105,10 @@ export default async function LoungePage() {
         </div>
       </section>
 
-      <Suspense fallback={<LoungeSkeleton />}>
+      <Suspense
+        key={`${keyword}-${sortBy}-${sortOrder}`}
+        fallback={<LoungeSkeleton />}
+      >
         <PrefetchBoundary
           prefetchFn={(qc) =>
             qc.prefetchInfiniteQuery({

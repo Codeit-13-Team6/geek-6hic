@@ -11,6 +11,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
 import MeetingList from "@/components/features/list/MeetingList";
 import SearchBarCommon from "@/components/ui/SearchBarCommon";
+import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -155,6 +156,7 @@ export default async function Page({
           <MeetingList variant="all" />
         </PrefetchBoundary>
       </Suspense>
+      <CreateMeetingModal />
     </div>
   );
 }

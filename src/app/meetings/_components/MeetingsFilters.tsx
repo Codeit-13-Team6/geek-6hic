@@ -24,14 +24,8 @@ const SORT_OPTIONS = [
 ] as const;
 
 export default function MeetingFilters() {
-  const {
-    tabValue,
-    sortBy,
-    sortOrder,
-    setTabValue,
-    setSortBy,
-    setSortOrder,
-  } = useMeetingSearchParams();
+  const { tabValue, sortBy, sortOrder, setTabValue, setSortBy, setSortOrder } =
+    useMeetingSearchParams();
 
   const [tabList, setTabList] = useState<{ value: string; label: string }[]>([
     { value: "", label: "전체" },
@@ -71,7 +65,6 @@ export default function MeetingFilters() {
 
   return (
     <>
-      <CreateMeetingModal />
       <div className="animate-fade-up flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
           {tabList.map(({ value, label }) => (
@@ -95,7 +88,7 @@ export default function MeetingFilters() {
           ))}
         </ul>
 
-        <div className="flex gap-4 shrink-0 items-center justify-end">
+        <div className="flex shrink-0 items-center justify-end gap-4">
           {/* 날짜 선택 */}
 
           {/* <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -166,14 +159,8 @@ export default function MeetingFilters() {
               height="24"
               alt="드롭다운 아이콘"
             />
-            <span className="text-main-purple text-[12px] font-black tracking-[1.2px] gap-2">
-              {
-                sortOrder === "desc"
-                  ?
-                  "최신순"
-                  :
-                  "오래된 순"
-              }
+            <span className="text-main-purple gap-2 text-[12px] font-black tracking-[1.2px]">
+              {sortOrder === "desc" ? "최신순" : "오래된 순"}
             </span>
           </button>
         </div>
