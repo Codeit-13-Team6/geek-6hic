@@ -21,7 +21,7 @@ jobs:
         env:
           OPENAI_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          
           # 1. 메인 모델을 Gemini로 설정
           CONFIG.MODEL: "gemini/gemini-1.5-flash"
           # 2. 리소스 그룹의 기본 모델도 Gemini로 강제 설정
