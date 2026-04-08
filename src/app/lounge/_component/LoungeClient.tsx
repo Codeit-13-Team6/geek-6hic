@@ -31,14 +31,20 @@ export default function LoungeClient() {
 
   return (
     <>
-      <section className="animate-fade-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <SearchBarCommon placeholder="원하는 내용을 검색해보세요" />
+      <section
+        className="animate-fade-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        aria-label="게시물 목록"
+      >
+        <SearchBarCommon
+          placeholder="원하는 내용을 검색해보세요"
+        />
         <div className="flex justify-end">
           <Select
             value={sortValue}
             onValueChange={(value) => value && setSortValue(value)}
+            aria-label="게시물 정렬 기준 선택"
           >
-            <SelectTrigger>
+            <SelectTrigger aria-label={`정렬 기준: ${currentSortLabel}`}>
               <SelectValue>{currentSortLabel}</SelectValue>
             </SelectTrigger>
             <SelectContent

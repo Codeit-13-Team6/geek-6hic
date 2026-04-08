@@ -33,8 +33,8 @@ const inputVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-red-500 focus:border-error focus:ring-[4px] focus:ring-error/20",
-        false: "border-gray-300 focus:border-main-purple focus:ring-[4px] focus:ring-main-purple",
+        true: "border-red-500 focus:border-error focus:ring-[2px] focus:ring-error/20",
+        false: "border-gray-300 focus:border-main-purple focus:ring-[2px] focus:ring-main-purple focus-visible:ring-[2px] focus-visible:ring-main-purple",
       },
       inputSize: {
         sm: "h-10 px-3 py-2 text-sm sm:text-base sm:h-12 sm:p-3",
