@@ -1,39 +1,33 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteFavorites, getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
-import { useIntersectionObserver } from "@/hooks";
 import { Loader2, HeartOff } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
+import { useEffect } from "react";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+
+const FAVORITES_PAGE_SIZE = 10;
 
 export default function FavoriteList() {
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: QUERY_KEYS.favorites.root,
-      queryFn: ({ pageParam }) =>
-        getFavorites(
-          pageParam ? { cursor: pageParam, size: 10 } : { size: 10 },
-        ),
-      initialPageParam: undefined as string | undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
-      staleTime: 1000 * 60 * 5,
-    });
-
-  const bottomRef = useIntersectionObserver(
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  );
+  const {
+    items: favorites,
+    isFetching,
+    isLoading,
+    page,
+    totalPages,
+    handlePageChange,
+    setPage,
+  } = useOffsetPaginationQuery({
+    pageSize: FAVORITES_PAGE_SIZE,
+    queryKey: QUERY_KEYS.favorites.page,
+    queryFn: getFavorites,
+  });
 
   const { mutate: toggleFavorite } = useMutation({
     mutationFn: (meetingId: number) => deleteFavorites(meetingId),
@@ -43,9 +37,17 @@ export default function FavoriteList() {
     },
   });
 
-  const allFavorites = data?.pages.flatMap((page) => page.data) ?? [];
+  useEffect(() => {
+    if (!isFetching && favorites.length === 0 && page > 1) {
+      setPage(totalPages);
+    }
+  }, [favorites.length, isFetching, page, setPage, totalPages]);
 
-  if (allFavorites.length === 0 && !isFetchingNextPage) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (favorites.length === 0 && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
         <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
@@ -64,7 +66,7 @@ export default function FavoriteList() {
   return (
     <div className="flex flex-col">
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {allFavorites.map((item) => (
+        {favorites.map((item) => (
           <UserCard
             key={item.id}
             title={item.meeting.name}
@@ -80,22 +82,22 @@ export default function FavoriteList() {
         ))}
       </div>
 
-      <div ref={bottomRef} className="flex h-32 items-center justify-center">
-        {isFetchingNextPage ? (
+      <div className="mt-10 flex flex-col items-center gap-4">
+        {isFetching && (
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
               Updating Archive...
             </span>
           </div>
-        ) : (
-          !hasNextPage &&
-          allFavorites.length > 0 && (
-            <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
-              End of Archive.
-            </span>
-          )
         )}
+
+        <NumberPagination
+          href="#"
+          page={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

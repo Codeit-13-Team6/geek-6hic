@@ -1,6 +1,11 @@
 import axiosInstance from "@/lib/clientFetcher";
 import { filterThreadPosts } from "@/lib/postUtils";
-import { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import {
+  GetPostsParams,
+  GetPostsResponse,
+  MyPostsPageResponse,
+  Post,
+} from "@/types";
 import { threadKeyword } from "@/constans/post";
 
 export async function getHotPosts(): Promise<Post[]> {
@@ -23,6 +28,9 @@ export async function getUserPosts(params: {
   cursor?: string;
   size?: number;
 }): Promise<GetPostsResponse> {
+  // 타유저 페이지는 아직 전용 API가 없어서 이 우회 로직이 계속 필요
+  // /posts 전체를 순회하면서 해당 userId 글만 모으는 임시 구현
+  // TODO: 타유저 전용 BFF 페이지네이션이 생기면 이 cursor 기반 우회 로직은 제거
   const { userId, cursor, size = 20 } = params;
   const collected: GetPostsResponse["data"] = [];
   let nextCursor = cursor;
@@ -59,6 +67,26 @@ export async function getUserPosts(params: {
     hasMore,
     nextCursor: nextCursor ?? null,
   };
+}
+
+export async function getMyPosts(
+  params: {
+    offset?: number;
+    limit?: number;
+  } = {},
+): Promise<MyPostsPageResponse> {
+  const { data } = await axiosInstance.get<MyPostsPageResponse>(
+    "/users/me/posts-visible",
+    {
+      params: {
+        offset: params.offset ?? 0,
+        limit: params.limit ?? 20,
+        // BFF가 내부에서 /users/me/posts 정렬/필터링을 처리 -> 클라이언트에서는 offset/limit만 넘기면 됩니다.
+      },
+    },
+  );
+
+  return data;
 }
 
 export async function getPostDetail(postId: number): Promise<Post> {

@@ -9,6 +9,16 @@ export interface ShareLinkParams {
 export interface ShareLinkResult {
   result: "opened-share-sheet" | "copied-by-app" | "cancelled" | "failed";
 }
+// 공유 시트 닫기처럼 사용자 취소는 isShareCancelError 구분합니다.
+// 일부 환경에서는 DOMException이 아닐 수 있어 name 값으로 판별합니다.
+function isShareCancelError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    error.name === "AbortError"
+  );
+}
 
 export async function shareLink({
   title,
@@ -30,9 +40,12 @@ export async function shareLink({
       return { result: "opened-share-sheet" };
     } catch (error) {
       // 사용자가 공유창만 닫은 경우는 실패가 아니라 취소로 처리합니다.
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (isShareCancelError(error)) {
         return { result: "cancelled" };
       }
+
+      // AbortError 이외의 공유 실패는 원인 파악을 위해 로그를 남깁니다.
+      console.error("navigator.share failed", error);
     }
   }
 
