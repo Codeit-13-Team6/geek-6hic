@@ -14,6 +14,7 @@ const MY_POSTS_PAGE_SIZE = 10;
 
 export default function MyPostList() {
   const router = useRouter();
+  //기존에는 user 객체만 가져와서 유저정보 없을때도 api 요청 발생할 수 있음 -> 유저 인증 후에만 가능하도록
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const {
     items: posts,
@@ -25,8 +26,8 @@ export default function MyPostList() {
   } = useOffsetPaginationQuery({
     pageSize: MY_POSTS_PAGE_SIZE,
     queryKey: QUERY_KEYS.posts.myPage,
-    queryFn: getMyPosts,
-    enabled: !isAuthLoading,
+    queryFn: getMyPosts, //쓰레드 글 필터링 된 데이터를 라우터에서 바로 받아옴
+    enabled: !isAuthLoading, //유저 인증 완료된 시점에만 데이터 요청 시작 for 안정성
   });
 
   if (isAuthLoading || isLoading) {
