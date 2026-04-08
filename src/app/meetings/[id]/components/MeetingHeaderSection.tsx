@@ -118,13 +118,43 @@ export function MeetingHeaderSection({
       text: `${detail.name} 모임을 공유해요.`,
     });
 
+    if (shareResult.result === "failed") {
+      return ToastCommon({ message: "링크 복사에 실패했어요." });
+    }
+
     if (shareResult.result === "copied-by-app") {
-      ToastCommon({ message: "모임 링크가 복사되었어요." });
+      ToastCommon({
+        message: isSecret ? (
+          <>
+            비밀방입니다
+            <br />
+            Secret Code
+            <br />
+            함께 전달해 주세요
+          </>
+        ) : (
+          "모임 링크가 복사되었어요."
+        ),
+        size: "sm",
+        duration: 3000,
+      });
       return;
     }
 
-    if (shareResult.result === "failed") {
-      ToastCommon({ message: "링크 복사에 실패했어요." });
+    if (isSecret) {
+      return ToastCommon({
+        message: (
+          <>
+            비밀방입니다
+            <br />
+            Secret Code
+            <br />
+            함께 전달해 주세요
+          </>
+        ),
+
+        duration: 3000,
+      });
     }
   };
 
@@ -231,12 +261,10 @@ export function MeetingHeaderSection({
 
               <div className="flex shrink-0 items-center gap-2">
                 {menuConfig.showShare && (
-                  <BtnCommon
+                  <button
                     type="button"
-                    size="sm"
-                    variant="teritary"
                     onClick={() => loginGuardAction(handleShare)}
-                    className="group !rounded-2xl rounded-full p-2 transition hover:bg-slate-50"
+                    className="group rounded-full p-2 transition hover:bg-slate-50"
                   >
                     <Image
                       src={shareIcon}
@@ -245,7 +273,7 @@ export function MeetingHeaderSection({
                       height={22}
                       className="opacity-40 group-hover:opacity-100 sm:size-7"
                     />
-                  </BtnCommon>
+                  </button>
                 )}
 
                 {(menuConfig.showHost || menuConfig.showMember) && (
