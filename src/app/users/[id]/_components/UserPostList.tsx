@@ -60,6 +60,7 @@ export default function UserPostList({ userId }: { userId: number }) {
           >
             <PostCard
               {...post}
+              authorImage={post.author.image}
               authorName={post.author.name}
               authorId={post.author.id}
               commentCount={post._count.comments}

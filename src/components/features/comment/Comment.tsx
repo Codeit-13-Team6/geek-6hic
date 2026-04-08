@@ -14,6 +14,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function Comment({
   id,
@@ -68,8 +69,9 @@ export default function Comment({
           className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-80"
         >
           <div className="relative size-6 overflow-hidden rounded-full bg-slate-100">
-            <Image
-              src={img ?? profileImg}
+            <FallbackImage
+              src={img}
+              type="user"
               alt="profile"
               fill
               className="object-cover"

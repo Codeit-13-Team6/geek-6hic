@@ -1,7 +1,6 @@
 "use client";
 
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
 
@@ -27,7 +26,7 @@ export default function RankCard({
 
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[14px] bg-slate-100 sm:h-[60px] sm:w-[60px]">
           <FallbackImage
-            src={image || mainFallback}
+            src={image}
             alt="thumb"
             fill
             className="object-cover grayscale-[20%] transition-transform duration-500 group-hover:scale-110 group-hover:grayscale-0"

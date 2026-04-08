@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import mainFallback from "@/assets/img/fallback/mainFallback.png";
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
@@ -32,7 +30,7 @@ export default function TopRankMobileCard({
       )}
     >
       <FallbackImage
-        src={item?.image || mainFallback}
+        src={item?.image}
         alt="mob"
         fill
         className="object-cover opacity-40 grayscale-[20%]"

@@ -8,7 +8,6 @@ import parse, {
 } from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
 import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
-import profileImg from "@/assets/img/profile/female1-m.jpg";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import {
@@ -26,6 +25,7 @@ import { PostDetailCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import { CodeBlock } from "./CodeBlock";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
@@ -34,7 +34,7 @@ export function PostDetailCard({
   onAuthorClick,
   content = "본문내용 ",
   linkObjects = [],
-  avatar = "https://avatar.vercel.sh/shadcn1",
+  authorImg = "",
   thumbsUp = 0,
   comment = 0,
   isLiked = false,
@@ -116,9 +116,10 @@ export function PostDetailCard({
           className="mb-3 flex items-center gap-3 text-sm font-medium text-slate-400 transition-opacity hover:opacity-80"
         >
           <div className="relative size-5 overflow-hidden rounded-full bg-slate-100">
-            <Image
-              src={avatar || profileImg}
-              alt="profile"
+            <FallbackImage
+              src={authorImg}
+              type="user"
+              alt="프로필"
               fill
               className="object-cover"
             />

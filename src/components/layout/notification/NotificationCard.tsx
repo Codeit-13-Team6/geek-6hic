@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import profileSm from "@/assets/img/profile/female1-sm.jpg";
 
 import { NotificationItem, NotificationCardProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",
@@ -63,25 +64,15 @@ export default function NotificationCard({
       onClick={() => onClick?.(notification)}
     >
       <div className="shrink-0">
-        {notification.data.image ? (
-          <Image
-            src={notification.data.image}
-            alt={title}
-            width={40}
-            height={40}
-            className="size-10 rounded-xl object-cover shadow-sm"
-            unoptimized
-          />
-        ) : (
-          <Image
-            src={profileSm}
-            alt="프로필"
-            width={40}
-            height={40}
-            className="size-10 rounded-full object-cover shadow-sm"
-            unoptimized
-          />
-        )}
+        <FallbackImage
+          src={notification.data.image}
+          type="user"
+          alt={title}
+          width={40}
+          height={40}
+          className="size-10 rounded-xl object-cover shadow-sm"
+          unoptimized
+        />
       </div>
 
       <div className="min-w-0 flex-1">

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
@@ -57,13 +56,13 @@ export default function MeetingCard({
           >
             <div className="relative h-44 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[200px]">
               <FallbackImage
-                src={item.image || defaultImage}
+                src={item.image}
                 fill
                 className={cn(
                   "object-cover transition-transform duration-500 group-hover:scale-105",
                   statusLabel ? "grayscale-[40%]" : "",
                 )}
-                alt="이미지"
+                alt="모임 이미지"
                 unoptimized
               />
               {statusLabel && (

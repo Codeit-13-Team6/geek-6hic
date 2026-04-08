@@ -13,6 +13,7 @@ import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
+import FallbackImage from "@/components/img/FallbackImage";
 
 interface ProfileSectionProps {
   initialUser?: {
@@ -33,7 +34,7 @@ export default function ProfileSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const storeUser = useAuthStore((state) => state.user);
   const setUser = useAuthStore((s) => s.setUser);
-  const user = canEdit ? storeUser ?? initialUser : initialUser;
+  const user = canEdit ? (storeUser ?? initialUser) : initialUser;
 
   const profileForm = useForm<UserProfileUpdateProps>({
     defaultValues: { name: "", email: "", companyName: "", image: null },
@@ -67,9 +68,10 @@ export default function ProfileSection({
       <article className="flex h-full w-full flex-row items-center gap-8 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs sm:gap-8 lg:flex-col lg:p-8">
         {/* 이미지 크기 축소 (size-24 -> size-20) */}
         <div className="relative size-20 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 lg:size-24">
-          <Image
-            src={user?.image ?? profileImg}
-            alt="profile"
+          <FallbackImage
+            src={user?.image}
+            type="user"
+            alt="프로필"
             fill
             className="object-cover"
           />
@@ -99,7 +101,7 @@ export default function ProfileSection({
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 Contact
               </p>
-              <p className="text-sm font-semibold break-all text-slate-600 line-clamp-2 break-all">
+              <p className="line-clamp-2 text-sm font-semibold break-all text-slate-600">
                 {user?.email}
               </p>
             </div>
