@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import defaultImage from "@/assets/img/fallback/mainFallback.png";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/ProgressCommon";
 import { JoinedMeeting, MeetingListProps } from "@/types";
@@ -47,7 +46,6 @@ export default function MeetingCard({
           statusLabel = "참여중";
         }
 
-
         return (
           <div
             key={item.id}
@@ -61,13 +59,13 @@ export default function MeetingCard({
           >
             <div className="relative h-44 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[200px]">
               <FallbackImage
-                src={item.image || defaultImage}
+                src={item.image}
                 fill
                 className={cn(
                   "object-cover transition-transform duration-500 group-hover:scale-105",
                   statusLabel ? "grayscale-[40%]" : "",
                 )}
-                alt="이미지"
+                alt="모임 이미지"
                 unoptimized
               />
               {isSecret && (
@@ -93,7 +91,6 @@ export default function MeetingCard({
                     meetingStatusBadgeVisible ? "" : "hidden",
                   )}
                 >
-
                   {isUserJoined && (
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                   )}
@@ -109,14 +106,12 @@ export default function MeetingCard({
                   {item.type}
                 </span>
                 <div className="flex flex-row items-center gap-1">
-
                   <h3 className="line-clamp-1 text-lg leading-snug font-extrabold tracking-tight text-slate-900">
                     {item.name}
                   </h3>
                 </div>
               </div>
               <div className="flex flex-row gap-1">
-
                 <HeartIcon
                   liked={item.isFavorited}
                   onClick={(e) => {
@@ -139,7 +134,7 @@ export default function MeetingCard({
                   <div className="flex w-full items-center justify-between gap-3">
                     <div className="flex items-center gap-1.5">
                       <div className="relative h-3.5 w-3.5 opacity-30">
-                        <Image src={person} fill alt="인원" />
+                        <Image src={person} fill alt="인원 아이콘" />
                       </div>
                       <p className="flex items-baseline gap-0.5">
                         <span

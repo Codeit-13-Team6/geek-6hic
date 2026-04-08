@@ -25,7 +25,7 @@ export function HotPostCard({
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] bg-slate-100 shadow-xl shadow-slate-200/40">
         <img
           src={imageSrc || defaultImg.src}
-          alt={title}
+          alt={`${title} 썸네일`}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {
             (e.target as HTMLImageElement).src = defaultImg.src;
@@ -49,7 +49,7 @@ export function HotPostCard({
             </span>
           </div>
 
-          <h3 className="group-hover:text-main-purple truncate text-base font-bold tracking-tighter text-slate-900 transition-colors sm:text-lg lg:text-xl text-left">
+          <h3 className="group-hover:text-main-purple truncate text-left text-base font-bold tracking-tighter text-slate-900 transition-colors sm:text-lg lg:text-xl">
             {title}
           </h3>
         </div>
@@ -58,7 +58,7 @@ export function HotPostCard({
           <div className="flex items-center gap-1.5">
             <Image
               src={thumbsUpIcon}
-              alt=""
+              alt="좋아요 아이콘"
               width={14}
               height={14}
               className="opacity-40"
@@ -66,7 +66,8 @@ export function HotPostCard({
             />
             <span
               className="text-[11px] font-black tracking-tighter sm:text-xs"
-              aria-label={`좋아요 ${thumbsUp}개`}>
+              aria-label={`좋아요 ${thumbsUp}개`}
+            >
               {thumbsUp}
             </span>
           </div>
@@ -74,7 +75,7 @@ export function HotPostCard({
           <div className="flex items-center gap-1.5">
             <Image
               src={messageIcon}
-              alt=""
+              alt="댓글 아이콘"
               width={14}
               height={14}
               className="opacity-40"

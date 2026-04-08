@@ -1,22 +1,44 @@
 "use client";
-import Image, { ImageProps } from "next/image";
+import Image, { ImageProps, StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
-import defaultImg from "@/assets/img/empty/img-default.png";
+import defaultMeetingImg from "@/assets/img/fallback/fallback-meeting-02.png";
+import defaultPostImg from "@/assets/img/fallback/fallback-post-01.webp";
+import defaultUserImg from "@/assets/img/fallback/fallback-user.png";
+
+type FallbackImageType = "meeting" | "post" | "user";
+
+interface FallbackImageProps extends Omit<ImageProps, "src"> {
+  src?: string | null; // null 받을 수 있도록 허용
+  type?: FallbackImageType;
+  fallbackSrc?: ImageProps["src"];
+}
+
+const FALLBACK_MAP: Record<FallbackImageType, StaticImageData> = {
+  meeting: defaultMeetingImg,
+  post: defaultPostImg,
+  user: defaultUserImg,
+};
 
 export default function FallbackImage({
   src,
-  fallbackSrc = defaultImg,
+  type = "meeting",
+  fallbackSrc,
   ...props
-}: ImageProps & { fallbackSrc?: ImageProps["src"] }) {
-  const [imgSrc, setImgSrc] = useState(src || fallbackSrc);
+}: FallbackImageProps) {
+  const targetFallback = fallbackSrc || FALLBACK_MAP[type];
+  const [imgSrc, setImgSrc] = useState(src || targetFallback);
 
-  // src prop이 바뀌면 내부 state도 새 값으로 동기화한다.
-  // (예: 모임 수정으로 이미지가 변경되어 부모가 새 src를 내려줄 때)
   useEffect(() => {
-    setImgSrc(src || fallbackSrc);
-  }, [src, fallbackSrc]);
+    setImgSrc(src || targetFallback);
+  }, [src, targetFallback]);
 
   return (
-    <Image {...props} alt={props.alt || 'fallback'} src={imgSrc} onError={() => setImgSrc(fallbackSrc)} unoptimized />
+    <Image
+      {...props}
+      alt={props.alt || `${type} 기본 이미지`}
+      src={imgSrc as string}
+      onError={() => setImgSrc(targetFallback)}
+      unoptimized
+    />
   );
 }

@@ -33,8 +33,7 @@ const inputVariants = cva(
   {
     variants: {
       isDestructive: {
-        true:
-          "border-red-500 focus-visible:border-error focus-visible:ring-1 focus-visible:ring-0",
+        true: "border-red-500 focus-visible:border-error focus-visible:ring-1 focus-visible:ring-0",
         false:
           "border-gray-300 focus-visible:border-main-purple focus-visible:ring-1",
       },
@@ -113,7 +112,7 @@ export function InputCommon({
         </label>
       )}
 
-      <div className="relative flex items-center w-full">
+      <div className="relative flex w-full items-center">
         <Input
           id={inputId}
           type={type}
@@ -141,7 +140,7 @@ export function InputCommon({
           >
             <Image
               src={inputSize === "sm" ? deleteSmIcon : deleteLgIcon}
-              alt=""
+              alt="삭제 아이콘"
               width={inputSize === "sm" ? 20 : 24}
               height={inputSize === "sm" ? 20 : 24}
             />

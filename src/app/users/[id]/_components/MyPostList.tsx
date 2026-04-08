@@ -86,6 +86,7 @@ export default function MyPostList({
               {...post}
               authorName={post.author.name}
               authorId={post.author.id}
+              authorImage={post.author.image}
               commentCount={post._count.comments}
               date={new Date(post.createdAt).toLocaleDateString("ko-KR", {
                 month: "long",

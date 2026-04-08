@@ -1,13 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import mainFallback from "@/assets/img/fallback/mainFallback.png";
-import { Card, CardAction, CardContent } from "@/components/shadcnOrigin/card";
+import { Card } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
-import { inherits } from "node:util";
 
 export default function TopRankCard({
   rank,
@@ -31,8 +28,8 @@ export default function TopRankCard({
       )}
     >
       <FallbackImage
-        src={item?.image || mainFallback}
-        alt="rank-bg"
+        src={item?.image}
+        alt="모임 이미지"
         fill
         className="object-cover transition-transform duration-1000 select-none group-hover:scale-105"
       />

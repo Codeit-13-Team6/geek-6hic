@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import profileSm from "@/assets/img/profile/female1-sm.jpg";
 
 import { NotificationItem, NotificationCardProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",
@@ -64,31 +65,20 @@ export default function NotificationCard({
       className={cn(
         "flex w-full gap-4 px-5 py-4 transition-colors",
         notification.isRead ? "bg-white" : "bg-slate-50",
-        "hover:bg-slate-50 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-main-purple focus-visible:outline-none",
+        "focus-visible:ring-main-purple hover:bg-slate-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
         className,
       )}
       onClick={() => onClick?.(notification)}
     >
       <div className="shrink-0">
-        {notification.data.image ? (
-          <Image
-            src={notification.data.image}
-            alt={title}
-            width={40}
-            height={40}
-            className="size-10 rounded-xl object-cover shadow-sm"
-            unoptimized
-          />
-        ) : (
-          <Image
-            src={profileSm}
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 rounded-full object-cover shadow-sm"
-            unoptimized
-          />
-        )}
+        <FallbackImage
+          src={notification.data.image}
+          alt="모임 이미지"
+          width={40}
+          height={40}
+          className="size-10 rounded-xl object-cover shadow-sm"
+          unoptimized
+        />
       </div>
 
       <div className="min-w-0 flex-1">

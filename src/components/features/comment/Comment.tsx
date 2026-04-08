@@ -14,6 +14,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export default function Comment({
   id,
@@ -68,9 +69,10 @@ export default function Comment({
           className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-80"
         >
           <div className="relative size-6 overflow-hidden rounded-full bg-slate-100">
-            <Image
-              src={img ?? profileImg}
-              alt="profile"
+            <FallbackImage
+              src={img}
+              type="user"
+              alt="작성자 프로필 이미지"
               fill
               className="object-cover"
               onError={(e) => {
@@ -101,7 +103,12 @@ export default function Comment({
           <div className="">
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer rounded-full p-1 hover:bg-slate-200/80 focus:outline-none">
-                <Image src={meatballsIcon} alt="menu" width={20} height={20} />
+                <Image
+                  src={meatballsIcon}
+                  alt="메뉴 아이콘"
+                  width={20}
+                  height={20}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent size="sm" align="end">
                 <DropdownMenuItem onClick={() => setIsEditing(true)}>

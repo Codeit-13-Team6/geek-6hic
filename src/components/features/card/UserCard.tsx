@@ -12,7 +12,7 @@ export function UserCard({
   title = "제목이 없습니다.",
   type = "유형이 없습니다.",
   date = new Date(),
-  imageSrc = "https://example.com/image.jpg",
+  imageSrc,
   defaultLiked = false,
   participantCount = 0,
   capacity = 20,
@@ -43,7 +43,7 @@ export function UserCard({
       <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-50 sm:h-32 sm:w-32 sm:rounded-2xl">
         <FallbackImage
           src={imageSrc}
-          alt={title}
+          alt="모임 이미지"
           fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

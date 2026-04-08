@@ -44,6 +44,7 @@ export interface PostCardProps {
   id: number;
   title: string;
   content: string;
+  authorImage: string | null;
   authorName: string;
   authorId?: number;
   date: string;
@@ -60,14 +61,13 @@ export interface PostDetailCardProps {
   date?: Date;
   name?: string;
   authorId?: number;
-  img?: string;
+  authorImg?: string;
   linkObjects?: {
     id: string;
     title: string;
     url: string;
   }[];
   content?: string;
-  avatar?: string;
   thumbsUp?: number;
   comment?: number;
   isLiked?: boolean;

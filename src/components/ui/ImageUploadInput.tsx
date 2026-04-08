@@ -95,7 +95,7 @@ export function ImageUploadInput({
         <>
           <Image
             src={imageSrc}
-            alt="Preview"
+            alt="미리보기 이미지"
             fill
             className="object-cover"
             // blob URL은 Next Image 최적화 대상이 아니므로 비활성화
@@ -109,13 +109,18 @@ export function ImageUploadInput({
             }}
             className="absolute top-[8px] right-[8px] z-10 flex h-[24px] w-[24px] items-center justify-center rounded-full bg-black/80 transition-transform active:scale-90"
           >
-            <Image src={deleteIconPath} alt="Delete" width={16} height={16} />
+            <Image
+              src={deleteIconPath}
+              alt="삭제 아이콘"
+              width={16}
+              height={16}
+            />
           </button>
         </>
       ) : type === "profile" ? (
         <Image
           src={profileFallbackImg}
-          alt="Default profile"
+          alt="기본 프로필 이미지"
           fill
           className="object-cover"
         />
@@ -127,7 +132,7 @@ export function ImageUploadInput({
               size === "sm" ? "h-[24px] w-[24px]" : "h-[32px] w-[32px]",
             )}
           >
-            <Image src={imagePlusIcon} alt="Add image" fill />
+            <Image src={imagePlusIcon} alt="이미지 추가 아이콘" fill />
           </div>
           <span
             className={cn(

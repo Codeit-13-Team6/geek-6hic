@@ -42,9 +42,7 @@ import { InputCommon } from "@/components/ui/InputCommon";
 import { shareLink } from "@/lib/share";
 import { copyToClipboard } from "@/lib/utils";
 
-const hasUsableProfileImage = (
-  value: string | null | undefined,
-): value is string =>
+const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
@@ -59,7 +57,7 @@ const ParticipantAvatar = ({
   const displayName = participant.name || "참여자";
   const profileImage = hasUsableProfileImage(participant.image)
     ? participant.image
-    : profileFemaleSm;
+    : null;
 
   return (
     <button
@@ -67,9 +65,10 @@ const ParticipantAvatar = ({
       onClick={onClick}
       className="rounded-full transition-transform hover:scale-105"
     >
-      <Image
+      <FallbackImage
         src={profileImage}
-        alt={displayName}
+        type="user"
+        alt={`${displayName} 프로필 이미지`}
         width={36}
         height={36}
         className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
@@ -212,9 +211,9 @@ export function MeetingHeaderSection({
 
   const progressValue = (detail.participantCount / detail.capacity) * 100;
 
-  const avatars = participants.map((p) => p.user);
+  const users = participants.map((p) => p.user);
   const visibleParticipants =
-    avatars.length > 0 ? avatars.slice(0, 3) : [detail.host];
+    users.length > 0 ? users.slice(0, 3) : [detail.host];
   const hiddenParticipantCount = Math.max(
     0,
     detail.participantCount - visibleParticipants.length,
@@ -230,8 +229,8 @@ export function MeetingHeaderSection({
       <section className="flex flex-col gap-6 md:flex-row md:items-stretch xl:gap-10">
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
-            src={detail.image ?? ""}
-            alt={detail.name}
+            src={detail.image}
+            alt="모임 썸네일"
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
@@ -249,7 +248,7 @@ export function MeetingHeaderSection({
                     <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
                       <Image
                         src={crownLgIcon}
-                        alt="Host"
+                        alt="호스트 이미지"
                         width={20}
                         height={20}
                         className="xl:size-6"
@@ -268,7 +267,7 @@ export function MeetingHeaderSection({
                   >
                     <Image
                       src={shareIcon}
-                      alt="Share"
+                      alt="공유하기 아이콘"
                       width={22}
                       height={22}
                       className="opacity-40 group-hover:opacity-100 sm:size-7"
@@ -286,7 +285,7 @@ export function MeetingHeaderSection({
                         >
                           <Image
                             src={meatballsLgIcon}
-                            alt="Menu"
+                            alt="메뉴 아이콘"
                             width={22}
                             height={22}
                             className="opacity-40 group-hover:opacity-100 sm:size-7"
@@ -381,11 +380,11 @@ export function MeetingHeaderSection({
               <button
                 type="button"
                 onClick={async () => {
-                  const ok = await copyToClipboard(
+                  const isCopied = await copyToClipboard(
                     extractSecretCode(detail.dateTime),
                   );
                   ToastCommon({
-                    message: ok
+                    message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
                   });
