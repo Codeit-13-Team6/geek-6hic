@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverAxios } from "@/lib/serverFetcher";
 import { getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
-import type { GetPostsResponse } from "@/types";
+import type { MyPostsPageResponse } from "@/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         limit: safeLimit,
       },
       async ({ offset: pageOffset, limit: pageLimit }) => {
-        const response = await serverAxios.get<GetPostsResponse>(
+        const response = await serverAxios.get<MyPostsPageResponse>(
           "/users/me/posts",
           {
             params: {
