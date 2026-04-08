@@ -111,7 +111,7 @@ export default function MeetingCard({
                 <div className="flex w-full items-center justify-between gap-3">
                   <div className="flex items-center gap-1.5">
                     <div className="relative h-3.5 w-3.5 opacity-30">
-                      <Image src={person} fill alt="인원" />
+                      <Image src={person} fill alt="인원 아이콘" />
                     </div>
                     <p className="flex items-baseline gap-0.5">
                       <span

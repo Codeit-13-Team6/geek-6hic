@@ -72,7 +72,7 @@ export default function Comment({
             <FallbackImage
               src={img}
               type="user"
-              alt="profile"
+              alt="작성자 프로필 이미지"
               fill
               className="object-cover"
               onError={(e) => {
@@ -103,7 +103,12 @@ export default function Comment({
           <div className="">
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer rounded-full p-1 hover:bg-slate-200/80 focus:outline-none">
-                <Image src={meatballsIcon} alt="menu" width={20} height={20} />
+                <Image
+                  src={meatballsIcon}
+                  alt="메뉴 아이콘"
+                  width={20}
+                  height={20}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent size="sm" align="end">
                 <DropdownMenuItem onClick={() => setIsEditing(true)}>

@@ -31,7 +31,7 @@ export default function TopRankMobileCard({
     >
       <FallbackImage
         src={item?.image}
-        alt="mob"
+        alt="모임 이미지"
         fill
         className="object-cover opacity-40 grayscale-[20%]"
       />

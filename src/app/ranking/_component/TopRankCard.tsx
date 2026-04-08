@@ -29,7 +29,7 @@ export default function TopRankCard({
     >
       <FallbackImage
         src={item?.image}
-        alt="rank-bg"
+        alt="모임 이미지"
         fill
         className="object-cover transition-transform duration-1000 select-none group-hover:scale-105"
       />

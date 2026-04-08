@@ -26,7 +26,7 @@ export default function PostCard({
         <FallbackImage
           src={thumbnailUrl}
           type="post"
-          alt="title"
+          alt="게시물 이미지"
           fill
           className="h-full w-full object-cover transition-transform duration-700 sm:group-hover:scale-105"
           onError={(e) => {
@@ -66,7 +66,7 @@ export default function PostCard({
               <FallbackImage
                 src={authorImage}
                 type="user"
-                alt="author"
+                alt="주최자 이미지"
                 fill
                 className="object-cover"
                 unoptimized

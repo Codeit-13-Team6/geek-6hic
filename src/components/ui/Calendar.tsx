@@ -36,7 +36,7 @@ function Calendar({
   const defaultClassNames = getDefaultClassNames();
 
   return (
-    <div className="absolute left-[-40] z-20 box-border w-[300px]  rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)] lg:top-full lg:translate-x-0">
+    <div className="absolute left-[-40] z-20 box-border w-[300px] rounded-[12px] border border-gray-100 bg-white p-6 shadow-[0_10px_10px_-5px_rgba(0,0,0,0.04)] lg:top-full lg:translate-x-0">
       <DayPicker
         showOutsideDays={showOutsideDays}
         className={cn(
@@ -158,7 +158,7 @@ function Calendar({
               return (
                 <Image
                   src={ArrowLeft}
-                  alt="Previous month"
+                  alt="이전 달 아이콘"
                   width={24}
                   height={24}
                   className={className}
@@ -170,7 +170,7 @@ function Calendar({
               return (
                 <Image
                   src={ArrowRight}
-                  alt="Next month"
+                  alt="다음 달 아이콘"
                   width={24}
                   height={24}
                   className={className}
@@ -181,7 +181,7 @@ function Calendar({
             return (
               <Image
                 src={ArrowDown}
-                alt="Open select"
+                alt="셀렉트 열기"
                 width={24}
                 height={24}
                 className={className}
@@ -254,10 +254,10 @@ function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         "data-[range-middle=true]:bg-main-purple-light data[-range-middle=true]:text-foreground hover:bg-main-purple-light data-[range-end=true]:bg-main-purple-light " +
-        "data-[range-end=true]:text-main-purple data-[range-start=true]:bg-main-purple-light " +
-        "data-[range-start=true]:text-main-purple relative isolate z-10 flex size-auto w-9 min-w-(--cell-size) cursor-pointer flex-col gap-1 rounded-l-(--cell-radius) border-0 py-[9px] leading-none data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) " +
-        "data-[range-middle=true]:rounded-(--cell-radius) " +
-        "data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-gray-800 [&>span]:text-xs [&>span]:opacity-70",
+          "data-[range-end=true]:text-main-purple data-[range-start=true]:bg-main-purple-light " +
+          "data-[range-start=true]:text-main-purple relative isolate z-10 flex size-auto w-9 min-w-(--cell-size) cursor-pointer flex-col gap-1 rounded-l-(--cell-radius) border-0 py-[9px] leading-none data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) " +
+          "data-[range-middle=true]:rounded-(--cell-radius) " +
+          "data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[selected-single=true]:font-medium data-[selected-single=true]:text-gray-800 [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className,
       )}

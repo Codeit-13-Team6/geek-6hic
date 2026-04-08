@@ -68,7 +68,7 @@ const ParticipantAvatar = ({
       <FallbackImage
         src={profileImage}
         type="user"
-        alt={displayName}
+        alt={`${displayName} 프로필 이미지`}
         width={36}
         height={36}
         className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
@@ -200,7 +200,7 @@ export function MeetingHeaderSection({
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden rounded-[32px] bg-slate-50 shadow-sm md:h-auto md:w-[320px] xl:w-[540px]">
           <FallbackImage
             src={detail.image}
-            alt={detail.name}
+            alt="모임 썸네일"
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
@@ -218,7 +218,7 @@ export function MeetingHeaderSection({
                     <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
                       <Image
                         src={crownLgIcon}
-                        alt="Host"
+                        alt="호스트 이미지"
                         width={20}
                         height={20}
                         className="xl:size-6"
@@ -239,7 +239,7 @@ export function MeetingHeaderSection({
                   >
                     <Image
                       src={shareIcon}
-                      alt="Share"
+                      alt="공유하기 아이콘"
                       width={22}
                       height={22}
                       className="opacity-40 group-hover:opacity-100 sm:size-7"
@@ -257,7 +257,7 @@ export function MeetingHeaderSection({
                         >
                           <Image
                             src={meatballsLgIcon}
-                            alt="Menu"
+                            alt="메뉴 아이콘"
                             width={22}
                             height={22}
                             className="opacity-40 group-hover:opacity-100 sm:size-7"

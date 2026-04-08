@@ -81,7 +81,7 @@ export function RecommendedMeetingsSection({
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[28px] bg-slate-100 shadow-sm transition-shadow group-hover:shadow-md">
                   <FallbackImage
                     src={meeting.image}
-                    alt={meeting.name}
+                    alt="모임 이미지"
                     fill
                     className="pointer-events-none object-cover transition-transform duration-500 group-hover:scale-110"
                   />

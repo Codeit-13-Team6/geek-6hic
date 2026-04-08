@@ -119,7 +119,7 @@ export function PostDetailCard({
             <FallbackImage
               src={authorImg}
               type="user"
-              alt="프로필"
+              alt="프로필 이미지"
               fill
               className="object-cover"
             />
@@ -163,11 +163,21 @@ export function PostDetailCard({
             <span>{getRelativeTime(date)}</span>
             <div className="flex items-center gap-3 opacity-60">
               <div className="flex items-center gap-1">
-                <Image src={thumbsUpIcon} alt="like" width={16} height={16} />
+                <Image
+                  src={thumbsUpIcon}
+                  alt="좋아요 아이콘"
+                  width={16}
+                  height={16}
+                />
                 <span>{thumbsUp}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Image src={messageIcon} alt="comment" width={16} height={16} />
+                <Image
+                  src={messageIcon}
+                  alt="댓글 아이콘"
+                  width={16}
+                  height={16}
+                />
                 <span>{comment}</span>
               </div>
             </div>

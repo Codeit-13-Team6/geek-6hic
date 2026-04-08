@@ -66,8 +66,7 @@ export default function NotificationCard({
       <div className="shrink-0">
         <FallbackImage
           src={notification.data.image}
-          type="user"
-          alt={title}
+          alt="모임 이미지"
           width={40}
           height={40}
           className="size-10 rounded-xl object-cover shadow-sm"
