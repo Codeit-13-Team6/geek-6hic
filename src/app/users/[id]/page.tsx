@@ -6,22 +6,20 @@ import ProfileSection from "@/app/users/[id]/_components/ProfileSection";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
 import MyPostList from "@/app/users/[id]/_components/MyPostList";
-import UserMeetingList from "@/app/users/[id]/_components/UserMeetingList";
-import UserPostList from "@/app/users/[id]/_components/UserPostList";
 import { Suspense } from "react";
 import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type {
-  FavoritesResponse,
-  GetPostsResponse,
-  MyMeetingsResponse,
+  FavoritesPageResponse,
+  MyMeetingsPageResponse,
+  MyPostsPageResponse,
 } from "@/types";
 import {
   getFavorites,
   getMyMeetings,
   getMyPostsServer,
   getPublicUserProfile,
-  getUserLoungePosts,
-  getUserMeetings,
+  getUserMeetingsPageServer,
+  getUserPostsPageServer,
 } from "@/api/server";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -116,7 +114,7 @@ export default async function Page({
                 <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
                   <PrefetchBoundary
                     prefetchFn={(qc) =>
-                      qc.prefetchQuery<FavoritesResponse>({
+                      qc.prefetchQuery<FavoritesPageResponse>({
                         queryKey: QUERY_KEYS.favorites.page(
                           1,
                           FAVORITES_PAGE_SIZE,
@@ -139,43 +137,32 @@ export default async function Page({
               <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
                 <PrefetchBoundary
                   prefetchFn={(qc) =>
-                    isOwnProfile
-                      ? qc.prefetchQuery<MyMeetingsResponse>({
-                          queryKey: QUERY_KEYS.meetings.myPage(
+                    qc.prefetchQuery<MyMeetingsPageResponse>({
+                      queryKey: isOwnProfile
+                        ? QUERY_KEYS.meetings.myPage(1, MY_MEETINGS_PAGE_SIZE)
+                        : QUERY_KEYS.meetings.userPage(
+                            profileUserId,
                             1,
                             MY_MEETINGS_PAGE_SIZE,
                           ),
-                          queryFn: () =>
-                            getMyMeetings({
+                      queryFn: () =>
+                        isOwnProfile
+                          ? getMyMeetings({
+                              offset: 0,
+                              limit: MY_MEETINGS_PAGE_SIZE,
+                            })
+                          : getUserMeetingsPageServer({
+                              userId: profileUserId,
                               offset: 0,
                               limit: MY_MEETINGS_PAGE_SIZE,
                             }),
-                        })
-                      : qc.prefetchInfiniteQuery({
-                          queryKey: QUERY_KEYS.meetings.user(profileUserId),
-                          queryFn: ({ pageParam }) =>
-                            getUserMeetings({
-                              userId: profileUserId,
-                              ...(pageParam
-                                ? {
-                                    cursor: pageParam,
-                                    size: MY_MEETINGS_PAGE_SIZE,
-                                  }
-                                : { size: MY_MEETINGS_PAGE_SIZE }),
-                            }),
-                          initialPageParam: undefined,
-                          getNextPageParam: (lastPage: MyMeetingsResponse) =>
-                            lastPage.hasMore
-                              ? (lastPage.nextCursor ?? undefined)
-                              : undefined,
-                        })
+                    })
                   }
                 >
-                  {isOwnProfile ? (
-                    <MyMeetingList />
-                  ) : (
-                    <UserMeetingList userId={profileUserId} />
-                  )}
+                  <MyMeetingList
+                    isOwnProfile={isOwnProfile}
+                    userId={profileUserId}
+                  />
                 </PrefetchBoundary>
               </Suspense>
             </TabsContent>
@@ -184,43 +171,32 @@ export default async function Page({
               <Suspense fallback={<UserTabSkeleton variant="post" />}>
                 <PrefetchBoundary
                   prefetchFn={(qc) =>
-                    isOwnProfile
-                      ? qc.prefetchQuery<GetPostsResponse>({
-                          queryKey: QUERY_KEYS.posts.myPage(
+                    qc.prefetchQuery<MyPostsPageResponse>({
+                      queryKey: isOwnProfile
+                        ? QUERY_KEYS.posts.myPage(1, MY_POSTS_PAGE_SIZE)
+                        : QUERY_KEYS.posts.userPage(
+                            profileUserId,
                             1,
                             MY_POSTS_PAGE_SIZE,
                           ),
-                          queryFn: () =>
-                            getMyPostsServer({
+                      queryFn: () =>
+                        isOwnProfile
+                          ? getMyPostsServer({
+                              offset: 0,
+                              limit: MY_POSTS_PAGE_SIZE,
+                            })
+                          : getUserPostsPageServer({
+                              userId: profileUserId,
                               offset: 0,
                               limit: MY_POSTS_PAGE_SIZE,
                             }),
-                        })
-                      : qc.prefetchInfiniteQuery({
-                          queryKey: QUERY_KEYS.posts.user(profileUserId),
-                          queryFn: ({ pageParam }) =>
-                            getUserLoungePosts({
-                              userId: profileUserId,
-                              ...(pageParam
-                                ? {
-                                    cursor: pageParam,
-                                    size: MY_POSTS_PAGE_SIZE,
-                                  }
-                                : { size: MY_POSTS_PAGE_SIZE }),
-                            }),
-                          initialPageParam: undefined,
-                          getNextPageParam: (lastPage: GetPostsResponse) =>
-                            lastPage.hasMore
-                              ? (lastPage.nextCursor ?? undefined)
-                              : undefined,
-                        })
+                    })
                   }
                 >
-                  {isOwnProfile ? (
-                    <MyPostList />
-                  ) : (
-                    <UserPostList userId={profileUserId} />
-                  )}
+                  <MyPostList
+                    isOwnProfile={isOwnProfile}
+                    userId={profileUserId}
+                  />
                 </PrefetchBoundary>
               </Suspense>
             </TabsContent>
