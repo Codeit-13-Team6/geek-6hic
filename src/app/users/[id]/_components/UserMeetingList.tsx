@@ -7,6 +7,7 @@ import { UserCard } from "@/components/features/card/UserCard";
 import { useIntersectionObserver } from "@/hooks";
 import { Loader2, PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { isSecretMeeting } from "@/lib/meetingSecret";
 
 export default function UserMeetingList({ userId }: { userId: number }) {
   const router = useRouter();
@@ -62,6 +63,7 @@ export default function UserMeetingList({ userId }: { userId: number }) {
             capacity={item.capacity}
             participantCount={item.participantCount}
             showLikeBtn={false}
+            showLockBtn={isSecretMeeting(item.dateTime)}
             onDetailClick={() => router.push(`/meetings/${item.id}`)}
           />
         ))}
