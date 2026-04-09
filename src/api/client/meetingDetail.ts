@@ -114,10 +114,13 @@ export async function attendMeeting(region: string) {
     throw new Error("INVALID_ATTENDANCE_POST_ID");
   }
 
-  await createComment(
+  const attendScore = Math.floor(Math.random() * 5) + 1;
+
+  const comment = await createComment(
     postId,
-    `onlyScore_${region}_${Math.floor(Math.random() * 5) + 1}`,
+    `onlyScore_${region}_${attendScore}`,
   );
+  return { comment, attendScore };
 }
 
 export async function uploadMeetingImage(file: File) {
