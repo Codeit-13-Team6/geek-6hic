@@ -1,8 +1,9 @@
-import { serverAxios, serverFetch } from "@/lib/serverFetcher";
+import { serverFetch, serverAxios } from "@/lib/serverFetcher";
 import type {
   GetCommentsResponse,
   GetPostsResponse,
   Post,
+
   VisiblePostsPageResponse,
 } from "@/types";
 import { filterThreadPosts } from "@/lib/postUtils";

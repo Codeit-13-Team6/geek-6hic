@@ -1,13 +1,13 @@
 import { serverAxios } from "@/lib/serverFetcher";
-import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
 import type {
+  GetMeetingsResponse,
   GetPostsResponse,
   MeetingResponse,
-  GetMeetingsResponse,
   MyMeetingsPageResponse,
   User,
   VisiblePostsPageResponse,
 } from "@/types";
+import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
 import { getVisiblePostsPage } from "@/lib/myVisiblePosts";
 
 export async function getPublicUserProfile({ userId }: { userId: number }) {
