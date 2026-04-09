@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverAxios } from "@/lib/serverFetcher";
 import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
+import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
 import type {
   GetMeetingsResponse,
   MeetingResponse,
@@ -30,16 +31,22 @@ export async function GET(request: Request, { params }: RouteParams) {
       offset: safeOffset,
       limit: safeLimit,
       fetchPage: async ({ cursor, size }) => {
-        const response = await serverAxios.get<GetMeetingsResponse>("/meetings", {
-          params: {
-            sortBy: "dateTime",
-            sortOrder: "desc",
-            size,
-            ...(cursor ? { cursor } : {}),
+        const response = await serverAxios.get<GetMeetingsResponse>(
+          "/meetings",
+          {
+            params: {
+              sortBy: "dateTime",
+              sortOrder: "desc",
+              size,
+              ...(cursor ? { cursor } : {}),
+            },
           },
-        });
+        );
 
-        return response.data;
+        return {
+          ...response.data,
+          data: sortByCreatedAtDesc(response.data.data),
+        };
       },
       filter: (meeting) =>
         meeting.hostId === userId ||
@@ -47,7 +54,12 @@ export async function GET(request: Request, { params }: RouteParams) {
         meeting.createdBy === userId,
     });
 
-    return NextResponse.json<MyMeetingsPageResponse>(data);
+    const sortedData = {
+      ...data,
+      data: sortByCreatedAtDesc(data.data),
+    };
+
+    return NextResponse.json<MyMeetingsPageResponse>(sortedData);
   } catch (error) {
     console.error("[Visible User Meetings BFF Error]", error);
     return NextResponse.json(

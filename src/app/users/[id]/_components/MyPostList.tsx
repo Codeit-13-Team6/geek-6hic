@@ -9,6 +9,7 @@ import { Loader2, FileText } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 
 const MY_POSTS_PAGE_SIZE = 10;
 
@@ -49,7 +50,7 @@ export default function MyPostList({
   });
 
   if ((isOwnProfile && isAuthLoading) || isLoading) {
-    return null;
+    return <UserTabSkeleton variant="post" />;
   }
 
   if (posts.length === 0 && !isFetching) {
