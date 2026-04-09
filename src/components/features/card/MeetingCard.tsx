@@ -10,6 +10,8 @@ import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar } from "lucide-react";
 import { isSecretMeeting } from "@/lib/meetingSecret";
+import { useAuthStore } from "@/store/useAuthStore";
+import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 
 export default function MeetingCard({
   meetingList,
@@ -19,7 +21,7 @@ export default function MeetingCard({
   meetingStatusBadgeVisible = true,
 }: MeetingListProps) {
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
-
+  const user = useAuthStore((s) => s.user);
   function isMeetingClosed(item: JoinedMeeting) {
     return item.participantCount >= item.capacity;
   }
@@ -34,24 +36,37 @@ export default function MeetingCard({
       {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
+        console.log(item);
+        const isHost = user?.id === item.hostId;
 
-        const isUserJoined =
-          item.isJoined || (!!item.joinedAt && !item.isCompleted);
+        const isUserJoined = item.isJoined || !!item.joinedAt;
 
         const isSecret = isSecretMeeting(item.dateTime);
 
         let statusLabel = null;
 
         if (isUserJoined) {
-          statusLabel = "참여중";
+          if (isHost) {
+            statusLabel = "모임장";
+          } else {
+            statusLabel = "참여중";
+          }
         }
 
         return (
           <div
+            tabIndex={0}
+            onKeyDown={(e) => {
+              // 엔터 키 입력시 이동
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onItemClick(item)
+              }
+            }}
             key={item.id}
             onClick={() => onItemClick(item)}
             className={cn(
-              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0",
+              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0 focus-visible:ring-main-purple focus-visible:ring-2 focus-visible:outline-none",
               "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
               "hover:shadow-[0_20px_45px_-10px_rgba(38,6,86,0.12)]",
               statusLabel ? "opacity-95" : "",
@@ -81,22 +96,25 @@ export default function MeetingCard({
                   </div>
                 </div>
               )}
-              {statusLabel && (
-                <span
-                  className={cn(
-                    "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg py-1.5 text-[11px] font-bold shadow-sm backdrop-blur-md",
-                    isUserJoined
-                      ? "bg-slate-900/80 px-3 text-slate-100"
-                      : "bg-slate-100 px-1.5 text-slate-500",
-                    meetingStatusBadgeVisible ? "" : "hidden",
-                  )}
-                >
-                  {isUserJoined && (
+              {statusLabel === "참여중" ? (
+                meetingStatusBadgeVisible && (
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold text-slate-100 shadow-sm backdrop-blur-md">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                  )}
-
-                  {statusLabel}
-                </span>
+                    {statusLabel}
+                  </span>
+                )
+              ) : statusLabel === "모임장" ? (
+                <div className="absolute top-3 left-3 z-10 shrink-0 rounded-full bg-amber-100 p-1.5 shadow-sm">
+                  <Image
+                    src={crownLgIcon}
+                    alt="호스트 이미지"
+                    width={20}
+                    height={20}
+                    className="xl:size-6"
+                  />
+                </div>
+              ) : (
+                <span></span>
               )}
             </div>
 
@@ -139,8 +157,8 @@ export default function MeetingCard({
                       <p className="flex items-baseline gap-0.5">
                         <span
                           className={cn(
-                            "text-sm font-bold",
-                            isFull ? "text-slate-400" : "text-main-purple",
+                            "text-sm font-bold text-main-purple",
+                            // isFull ? "text-slate-400" : "text-main-purple",
                           )}
                         >
                           {item.participantCount}
@@ -154,10 +172,10 @@ export default function MeetingCard({
                     <div className="w-full">
                       <Progress
                         className={cn(
-                          "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
-                          isFull || isClosed
-                            ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
-                            : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
+                          "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100 [&_[data-slot=progress-indicator]]:!bg-main-purple",
+                          // isFull || isClosed
+                          //   ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
+                          //   : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
                         )}
                         value={(item.participantCount / item.capacity) * 100}
                       />

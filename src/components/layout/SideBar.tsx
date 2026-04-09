@@ -117,7 +117,10 @@ export default function SideBar({
           </div>
         ) : (
           <button
-            onClick={handleLogin}
+            onClick={() => {
+              handleLogin()
+              onClose()
+            }}
             className="bg-main-purple shadow-main-purple/20 flex w-full items-center justify-center rounded-xl py-4 shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
           >
             <span className="text-sm font-bold tracking-tight text-white">

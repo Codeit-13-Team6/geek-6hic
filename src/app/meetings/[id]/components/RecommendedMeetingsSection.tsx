@@ -86,13 +86,13 @@ export function RecommendedMeetingsSection({
                     className="pointer-events-none object-cover transition-transform duration-500 group-hover:scale-110"
                   />
 
-                  <div className="group-hover:blur-0 absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/20 opacity-0 blur-sm backdrop-blur-md transition-all group-hover:opacity-100">
-                    <ArrowUpRight
-                      className="text-white"
-                      size={22}
-                      strokeWidth={3}
-                    />
-                  </div>
+                  {/*<div className="group-hover:blur-0 absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/20 opacity-0 blur-sm backdrop-blur-md transition-all group-hover:opacity-100">*/}
+                  {/*  <ArrowUpRight*/}
+                  {/*    className="text-white"*/}
+                  {/*    size={22}*/}
+                  {/*    strokeWidth={3}*/}
+                  {/*  />*/}
+                  {/*</div>*/}
                 </div>
 
                 <div className="flex flex-col px-2 pt-4 pb-2">

@@ -26,7 +26,10 @@ export const metadata: Metadata = {
 
 function MeetingFilterSkeleton() {
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-0">
+    <div
+      className="mx-auto w-full max-w-[1280px] px-6 lg:px-0"
+      aria-hidden="true"
+    >
       <div className="mt-6 mb-4 flex flex-col">
         <div className="flex gap-2">
           {["전체", "팀미팅", "스터디", "프로젝트", "취준생", "기타"].map(
@@ -76,7 +79,10 @@ export default async function Page({
         <div className="flex flex-col gap-10 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col gap-6 sm:gap-8">
             <div className="flex items-center gap-4 sm:gap-5">
-              <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
+              <div
+                className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16"
+                aria-hidden="true"
+              >
                 <GitBranchIcon />
               </div>
               <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">

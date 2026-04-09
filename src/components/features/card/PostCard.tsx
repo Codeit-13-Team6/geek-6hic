@@ -17,12 +17,16 @@ const PostCard = memo(function PostCard({
   likeCount,
   commentCount,
   thumbnailUrl,
+  onDetailClick,
 }: PostCardProps) {
   const pureContent = useMemo(() => getPlainText(content), [content]);
   const router = useRouter();
 
   return (
-    <div className="group flex flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50">
+    <div
+      onClick={onDetailClick}
+      className="cursor-pointer group flex flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50"
+    >
       {/* 모바일에서 좌우/상단 여백 없이 꽉 차게 보이도록 설정 */}
       <div className="relative aspect-video w-full shrink-0 overflow-hidden sm:aspect-square sm:h-28 sm:w-28 sm:rounded-xl lg:h-32 lg:w-32">
         <FallbackImage
