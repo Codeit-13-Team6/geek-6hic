@@ -23,7 +23,7 @@ import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CommentSectionProps, GetCommentsResponse } from "@/types";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
-import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { DeleteModal } from "@/components/ui/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import {
@@ -327,7 +327,7 @@ export default function CommentSection({
         </Pagination>
       )}
 
-      <ConfirmDeleteModal
+      <DeleteModal
         isOpen={deleteTargetId !== null}
         onOpenChange={(isOpen) => !isOpen && setDeleteTargetId(null)}
         title="DELETE COMMENT"

@@ -15,7 +15,7 @@ interface ConfirmDeleteModalProps {
   isLoading?: boolean;
 }
 
-export function ConfirmDeleteModal({
+export function DeleteModal({
   isOpen,
   onOpenChange,
   title = "DELETE",

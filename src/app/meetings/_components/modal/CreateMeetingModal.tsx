@@ -12,6 +12,7 @@ import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
@@ -67,8 +68,8 @@ export function CreateMeetingModal() {
     <>
       <BtnCommon
         className={cn(
-          "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
-          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2",
+          "bg-main-purple fixed right-6 bottom-6 z-99 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
+          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:gap-2 sm:rounded-2xl",
           "lg:right-16 lg:bottom-16",
           "group !p-0 sm:!p-6",
         )}
@@ -133,16 +134,24 @@ export function CreateMeetingModal() {
                           type.name === "기타" ? "col-span-2" : undefined,
                         )}
                       >
-                        <div className={cn(
-                          "mb-3 flex size-12 items-center justify-center rounded-full bg-white transition-transform group-hover:scale-110",
-                          isSelected ? "text-main-purple shadow-sm" : "text-slate-300",
-                        )}>
+                        <div
+                          className={cn(
+                            "mb-3 flex size-12 items-center justify-center rounded-full bg-white transition-transform group-hover:scale-110",
+                            isSelected
+                              ? "text-main-purple shadow-sm"
+                              : "text-slate-300",
+                          )}
+                        >
                           <Icon size={24} strokeWidth={1.5} />
                         </div>
-                        <span className={cn(
-                          "text-sm font-bold tracking-tight transition-colors",
-                          isSelected ? "text-main-purple" : "text-slate-600 group-hover:text-slate-900",
-                        )}>
+                        <span
+                          className={cn(
+                            "text-sm font-bold tracking-tight transition-colors",
+                            isSelected
+                              ? "text-main-purple"
+                              : "text-slate-600 group-hover:text-slate-900",
+                          )}
+                        >
                           {type.name}
                         </span>
                         {isSelected && (
@@ -157,7 +166,7 @@ export function CreateMeetingModal() {
               </div>
             )}
             {currentStep === 2 && (
-              <div className="pt-6 space-y-6">
+              <div className="space-y-6 pt-6">
                 <MeetingModalForm
                   values={formValues}
                   errors={errors}
@@ -196,45 +205,16 @@ export function CreateMeetingModal() {
         </div>
       </ModalBase>
 
-      <ModalBase
-        disablePointerDismissal
+      <ConfirmModal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
-        contentClassName="w-full sm:w-[400px] max-w-[calc(100vw-32px)] rounded-[32px] border-none p-8 shadow-2xl"
-        title=""
-      >
-        <div className="flex flex-col items-center pt-4 text-center">
-          <div className="mb-6 flex size-14 items-center justify-center rounded-full bg-red-50 text-red-500">
-            <AlertCircle size={28} />
-          </div>
-          <p className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
-            취소하시겠습니까?
-          </p>
-          <p className="mt-2 text-sm font-medium text-slate-400">
-            저장하지 않은 내용은 사라집니다.
-          </p>
-        </div>
+        onConfirm={() => setIsCloseConfirmOpen(false)}
+        onCancel={() => {
+          setIsCloseConfirmOpen(false);
+          setIsOpen(false);
+        }}
+      />
 
-        <div className="mt-10 flex flex-col gap-2 sm:gap-3">
-          <BtnCommon
-            type="button"
-            className="bg-main-purple h-14 w-full rounded-2xl font-black text-white transition-all hover:bg-slate-950"
-            onClick={() => setIsCloseConfirmOpen(false)}
-          >
-            <span className="text-base">계속 작성</span>
-          </BtnCommon>
-          <BtnCommon
-            type="button"
-            className="h-14 w-full rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
-            onClick={() => {
-              setIsCloseConfirmOpen(false);
-              setIsOpen(false);
-            }}
-          >
-            <span className="text-base">나가기</span>
-          </BtnCommon>
-        </div>
-      </ModalBase>
     </>
   );
 }

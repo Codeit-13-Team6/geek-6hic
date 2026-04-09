@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownCommon";
-import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { DeleteModal } from "@/components/ui/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
@@ -463,7 +463,7 @@ export function MeetingHeaderSection({
         onSubmit={handleEditMeeting}
       />
 
-      <ConfirmDeleteModal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
         title="DELETE ARCHIVE"

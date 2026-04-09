@@ -11,7 +11,7 @@ import {
 } from "@/hooks/queries/usePosts";
 import { useState } from "react";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
-import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { DeleteModal } from "@/components/ui/DeleteModal";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
@@ -77,7 +77,7 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
         />
       </section>
 
-      <ConfirmDeleteModal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
         title="DELETE POST"
