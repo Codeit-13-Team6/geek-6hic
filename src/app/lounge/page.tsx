@@ -151,7 +151,6 @@ export default async function LoungePage({
           <section className="mt-10 sm:mt-12">
             <PostList />
           </section>
-          {/* <LoungeClient /> */}
         </PrefetchBoundary>
       </Suspense>
 

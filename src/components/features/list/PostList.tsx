@@ -3,13 +3,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/client/posts";
-import {
-  GetPostsParams,
-  GetPostsResponse,
-  LoungeSortBy,
-  Post,
-  SortOrder,
-} from "@/types";
+import { GetPostsResponse, LoungeSortBy, Post, SortOrder } from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX, Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
@@ -46,7 +40,6 @@ export default function PostList() {
       staleTime: 1000 * 60,
     });
 
-  console.log(data);
   const postList = data?.pages.flatMap((page) => page.data) || [];
   const bottomRef = useIntersectionObserver(
     fetchNextPage,
@@ -98,7 +91,6 @@ export default function PostList() {
                   })}
                   timeAgo={post.createdAt}
                   thumbnailUrl={post.image}
-                  onAuthorClick={() => router.push(`/users/${post.author.id}`)}
                 />
               </article>
             ))}

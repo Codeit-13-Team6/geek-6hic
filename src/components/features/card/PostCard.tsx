@@ -1,23 +1,25 @@
 "use client";
 
 import { ThumbsUp, MessageSquare } from "lucide-react";
-import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
+import { memo, useMemo } from "react";
+import { useRouter } from "next/navigation";
 
-export default function PostCard({
+const PostCard = memo(function PostCard({
   title,
   content,
   authorImage,
   authorName,
-  onAuthorClick,
+  authorId,
   date,
   likeCount,
   commentCount,
   thumbnailUrl,
 }: PostCardProps) {
-  const pureContent = getPlainText(content);
+  const pureContent = useMemo(() => getPlainText(content), [content]);
+  const router = useRouter();
 
   return (
     <div className="group flex flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50">
@@ -29,9 +31,6 @@ export default function PostCard({
           alt="게시물 이미지"
           fill
           className="h-full w-full object-cover transition-transform duration-700 sm:group-hover:scale-105"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = defaultImg.src;
-          }}
         />
       </div>
 
@@ -58,7 +57,7 @@ export default function PostCard({
             type="button"
             onClick={(event) => {
               event.stopPropagation();
-              onAuthorClick?.();
+              if (authorId) router.push(`/users/${authorId}`);
             }}
             className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80"
           >
@@ -101,4 +100,5 @@ export default function PostCard({
       </div>
     </div>
   );
-}
+});
+export default PostCard;
