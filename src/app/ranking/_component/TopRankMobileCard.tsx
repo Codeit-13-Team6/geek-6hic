@@ -19,7 +19,7 @@ export default function TopRankMobileCard({
   const suffix = ["st", "nd", "rd"][rank - 1] || "th";
 
   return (
-    <div
+    <li
       onClick={onDetailClick}
       className={cn(
         "relative flex w-full cursor-pointer flex-col justify-end overflow-hidden rounded-[24px] border-none shadow-none transition-all active:scale-[0.98]",
@@ -86,6 +86,6 @@ export default function TopRankMobileCard({
           </span>
         </p>
       </div>
-    </div>
+    </li>
   );
 }

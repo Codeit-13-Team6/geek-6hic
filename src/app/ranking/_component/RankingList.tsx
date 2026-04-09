@@ -31,41 +31,47 @@ export default function RankingList() {
   return (
     <div className="animate-fade-up">
     {/* <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000"> */}
-      <div className="animate-fade-up mb-12 flex items-center gap-3">
-        <div className="bg-main-purple h-[6px] w-8 rounded-full" />
-        <span className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
+      <div className="animate-fade-up mb-20 flex items-center gap-3">
+        <div
+          className="bg-main-purple h-[6px] w-8 rounded-full"
+          aria-hidden="true"
+        />
+        <h2 id="ranking-top3-title" className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
           TOP 3
-        </span>
+        </h2>
       </div>
 
-      <section className="mb-10 md:mb-15">
+      <section
+        className="mb-10 md:mb-15"
+        aria-labelledby="ranking-top3-title"
+      >
         {/* 1데스크톱 & 태블릿 */}
-        <div className="hidden items-end gap-6 md:flex lg:gap-10">
-          <div className="flex-1">
+        <ul className="hidden items-end gap-6 md:flex lg:gap-10">
+          <li className="flex-1">
             <TopRankCard
               rank={2}
               item={top3List[1]}
               onDetailClick={() => router.push(`/meetings/${top3List[1]?.id}`)}
             />
-          </div>
-          <div className="flex-[1.15] -translate-y-8">
+          </li>
+          <li className="flex-1 -translate-y-8">
             <TopRankCard
               rank={1}
               item={top3List[0]}
               onDetailClick={() => router.push(`/meetings/${top3List[0]?.id}`)}
             />
-          </div>
-          <div className="flex-1">
+          </li>
+          <li className="flex-1">
             <TopRankCard
               rank={3}
               item={top3List[2]}
               onDetailClick={() => router.push(`/meetings/${top3List[2]?.id}`)}
             />
-          </div>
-        </div>
+          </li>
+        </ul>
 
         {/* 모바일 */}
-        <div className="flex flex-col gap-3 md:hidden">
+        <ul className="flex flex-col gap-3 md:hidden">
           {top3List.map((item, idx) => (
             <TopRankMobileCard
               key={item.id || idx}
@@ -74,7 +80,7 @@ export default function RankingList() {
               onDetailClick={() => router.push(`/meetings/${item.id}`)}
             />
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="flex flex-col gap-1 sm:gap-2">
