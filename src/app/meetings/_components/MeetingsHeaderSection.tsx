@@ -8,8 +8,8 @@ import SearchBar from "@/components/ui/SearchBar";
 
 const MEETING_SORT_OPTIONS = [
   { value: "createdAt_desc", label: "최신순" },
-  { value: "createdAt_asc", label: "오래된순" },
   { value: "participantCount_desc", label: "참여인원순" },
+  { value: "createdAt_asc", label: "오래된순" },
 ];
 
 export default function MeetingsHeaderSection() {
