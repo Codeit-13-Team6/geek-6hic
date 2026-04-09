@@ -9,7 +9,7 @@ interface Props {
   placeholder?: string;
   queryKey?: string;
   className?: string;
-  onSearch?: (keyword: string) => void; // 필요한가?
+  onSearch?: (keyword: string) => void;
 }
 
 export default function SearchBarCommon({

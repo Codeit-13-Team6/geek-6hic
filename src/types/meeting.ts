@@ -138,8 +138,8 @@ export interface MeetingActionErrorResponse {
 export interface GetMeetingListParams {
   type?: string;
   keyword?: string;
-  sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
-  sortOrder?: "asc" | "desc";
+  sortBy?: SortValue;
+  sortOrder?: SortOrder;
   cursor?: string;
   size?: number;
 }
@@ -150,10 +150,12 @@ export interface UploadImageResponse {
 }
 
 export type SortValue =
-  | ""
+  | "createdAt"
   | "dateTime"
   | "registrationEnd"
   | "participantCount";
+
+export type SortOrder = "asc" | "desc";
 
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];

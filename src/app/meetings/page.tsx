@@ -8,9 +8,9 @@ import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
 import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
 import { QUERY_KEYS } from "@/constans/queryKey";
-import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
 import MeetingList from "@/components/features/list/MeetingList";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
+import MeetingSearchSection from "./_components/MeetingSearchSection";
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -55,14 +55,14 @@ export default async function Page({
   searchParams: Promise<{
     type?: string;
     keyword?: string;
-    sortBy?: string;
-    sortOrder?: string;
+    sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
+    sortOrder?: "desc" | "asc";
   }>;
 }) {
   const params = await searchParams;
   const type = params.type || "";
   const keyword = params.keyword || "";
-  const sortBy = params.sortBy || "dateTime";
+  const sortBy = params.sortBy || "createdAt";
   const sortOrder = params.sortOrder || "desc";
 
   const currentParams = { type, keyword, sortBy, sortOrder };
@@ -106,9 +106,7 @@ export default async function Page({
         </div>
       </div>
 
-      <div className="mb-10 sm:mb-10">
-        <MeetingFilters />
-      </div>
+      <MeetingSearchSection />
 
       <Suspense
         key={`${type}-${sortBy}-${sortOrder}-${keyword}`}
