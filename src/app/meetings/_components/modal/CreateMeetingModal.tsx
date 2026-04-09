@@ -6,7 +6,18 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
 import { type MeetingType } from "@/types";
-import { AlertCircle, Plus, StepForwardIcon, Sparkles, BookOpen, Coffee, MoreHorizontal, Check, FolderKanban, Briefcase } from "lucide-react";
+import {
+  AlertCircle,
+  Plus,
+  StepForwardIcon,
+  Sparkles,
+  BookOpen,
+  Coffee,
+  MoreHorizontal,
+  Check,
+  FolderKanban,
+  Briefcase,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { useQuery } from "@tanstack/react-query";
@@ -15,12 +26,18 @@ import { getMeetingTypes } from "@/api/client";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
-    case "팀미팅": return Sparkles;
-    case "스터디": return BookOpen;
-    case "프로젝트": return FolderKanban;
-    case "취준생": return Briefcase;
-    case "기타": return MoreHorizontal;
-    default: return Coffee;
+    case "팀미팅":
+      return Sparkles;
+    case "스터디":
+      return BookOpen;
+    case "프로젝트":
+      return FolderKanban;
+    case "취준생":
+      return Briefcase;
+    case "기타":
+      return MoreHorizontal;
+    default:
+      return Coffee;
   }
 }
 
@@ -67,8 +84,8 @@ export function CreateMeetingModal() {
     <>
       <BtnCommon
         className={cn(
-          "fixed right-6 bottom-6 z-99 flex items-center justify-center bg-main-purple text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
-          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:rounded-2xl sm:gap-2",
+          "bg-main-purple fixed right-6 bottom-6 z-99 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
+          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:gap-2 sm:rounded-2xl",
           "lg:right-16 lg:bottom-16",
           "group !p-0 sm:!p-6",
         )}
@@ -91,11 +108,11 @@ export function CreateMeetingModal() {
         onOpenChange={(nextIsOpen) => {
           if (!nextIsOpen) requestCloseModal();
         }}
-        contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full  sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="px-6 py-10 sm:px-8 sm:py-10">
-          <div className="-mt-4 mb-8 flex flex-col items-center">
+          <div className="mb-8 flex flex-col items-center">
             <div className="text-main-purple flex items-center gap-2 text-sm font-black tracking-[0.2em] uppercase">
               <StepForwardIcon size={14} strokeWidth={3} />
               <span>
@@ -133,16 +150,24 @@ export function CreateMeetingModal() {
                           type.name === "기타" ? "col-span-2" : undefined,
                         )}
                       >
-                        <div className={cn(
-                          "mb-3 flex size-12 items-center justify-center rounded-full bg-white transition-transform group-hover:scale-110",
-                          isSelected ? "text-main-purple shadow-sm" : "text-slate-300",
-                        )}>
+                        <div
+                          className={cn(
+                            "mb-3 flex size-12 items-center justify-center rounded-full bg-white transition-transform group-hover:scale-110",
+                            isSelected
+                              ? "text-main-purple shadow-sm"
+                              : "text-slate-300",
+                          )}
+                        >
                           <Icon size={24} strokeWidth={1.5} />
                         </div>
-                        <span className={cn(
-                          "text-sm font-bold tracking-tight transition-colors",
-                          isSelected ? "text-main-purple" : "text-slate-600 group-hover:text-slate-900",
-                        )}>
+                        <span
+                          className={cn(
+                            "text-sm font-bold tracking-tight transition-colors",
+                            isSelected
+                              ? "text-main-purple"
+                              : "text-slate-600 group-hover:text-slate-900",
+                          )}
+                        >
                           {type.name}
                         </span>
                         {isSelected && (
@@ -157,7 +182,7 @@ export function CreateMeetingModal() {
               </div>
             )}
             {currentStep === 2 && (
-              <div className="pt-6 space-y-6">
+              <div className="space-y-6 pt-6">
                 <MeetingModalForm
                   values={formValues}
                   errors={errors}
