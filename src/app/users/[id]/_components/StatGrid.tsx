@@ -44,7 +44,7 @@ export default function StatGrid({
 
       <div className="col-span-3 lg:col-span-1">
         <StatBox
-          label="Favs"
+          label="Favorites"
           val={favoriteCount}
           icon="💖"
           color="bg-rose-50"
