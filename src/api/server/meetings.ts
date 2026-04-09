@@ -1,5 +1,5 @@
 import { serverFetch } from "@/lib/serverFetcher";
-import type { JoinedMeetingsResponse, SortOrder, SortBy } from "@/types";
+import type { JoinedMeetingsResponse, SortOrder, MeetingSortBy } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {
   cursor?: string;
@@ -20,7 +20,7 @@ export async function getJoinedMeetingsServer(params: {
 export async function getMeetingList(params: {
   type: string;
   keyword: string;
-  sortBy: SortBy;
+  sortBy: MeetingSortBy;
   sortOrder: SortOrder;
   size: number;
 }): Promise<JoinedMeetingsResponse> {

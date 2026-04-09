@@ -12,11 +12,10 @@ export interface ParticipantStats {
   etc: number;
 }
 
-export interface ProfileStats {
+export interface BasicProfileStats {
   postCount: number;
   meetingCount: number;
   favoriteCount: number;
-  participantStats: ParticipantStats;
 }
 
 const MEETING_SCAN_SIZE = 100;
@@ -122,38 +121,48 @@ async function getUserMeetingParticipantStats(
   return stats;
 }
 
-export async function getProfileStats({
+export async function getBasicProfileStats({
   isOwnProfile,
   userId,
 }: {
   isOwnProfile: boolean;
   userId: number;
-}): Promise<ProfileStats> {
+}): Promise<BasicProfileStats> {
   if (isOwnProfile) {
-    const [meetings, posts, participantStats] = await Promise.all([
+    const [meetings, posts] = await Promise.all([
       getMyMeetings({ offset: 0, limit: 1 }),
       getMyPostsServer({ offset: 0, limit: 1 }),
-      getOwnMeetingParticipantStats(),
     ]);
 
     return {
       postCount: posts.totalCount,
       meetingCount: meetings.totalCount,
       favoriteCount: posts.totalLikeCount,
-      participantStats,
     };
   }
 
-  const [meetings, posts, participantStats] = await Promise.all([
+  const [meetings, posts] = await Promise.all([
     getUserMeetingsPageServer({ userId, offset: 0, limit: 1 }),
     getUserPostsPageServer({ userId, offset: 0, limit: 1 }),
-    getUserMeetingParticipantStats(userId),
   ]);
 
   return {
     postCount: posts.totalCount,
     meetingCount: meetings.totalCount,
     favoriteCount: posts.totalLikeCount,
-    participantStats,
   };
+}
+
+export async function getDetailedParticipantStats({
+  isOwnProfile,
+  userId,
+}: {
+  isOwnProfile: boolean;
+  userId: number;
+}): Promise<ParticipantStats> {
+  if (isOwnProfile) {
+    return getOwnMeetingParticipantStats();
+  }
+
+  return getUserMeetingParticipantStats(userId);
 }

@@ -1,3 +1,6 @@
+import { MeetingSortBy, SortOrder } from "@/types";
+import { LoungeSortBy } from "@/types/post";
+
 export const QUERY_KEYS = {
   favorites: {
     root: ["favorites"] as const,
@@ -12,13 +15,20 @@ export const QUERY_KEYS = {
     user: (userId: number | string) =>
       ["posts", "user", `${String(userId)}`] as const,
     userPage: (userId: number | string, page: number, limit: number) =>
-      ["posts", "user", `${String(userId)}`, "page", `${page}`, `${limit}`] as const,
+      [
+        "posts",
+        "user",
+        `${String(userId)}`,
+        "page",
+        `${page}`,
+        `${limit}`,
+      ] as const,
     hot: ["posts", "hot"] as const,
     list: ["posts", "list"] as const,
     listParams: (params: {
       keyword: string;
-      sortBy: "createdAt" | "likeCount" | "commentCount";
-      sortOrder: "desc" | "asc";
+      sortBy: LoungeSortBy;
+      sortOrder: SortOrder;
     }) => ["posts", "list", params] as const,
     detail: (postId: number | string) => [
       "posts",
@@ -34,7 +44,14 @@ export const QUERY_KEYS = {
     user: (userId: number | string) =>
       ["meetings", "user", `${String(userId)}`] as const,
     userPage: (userId: number | string, page: number, limit: number) =>
-      ["meetings", "user", `${String(userId)}`, "page", `${page}`, `${limit}`] as const,
+      [
+        "meetings",
+        "user",
+        `${String(userId)}`,
+        "page",
+        `${page}`,
+        `${limit}`,
+      ] as const,
     joined: ["meetings", "joined"] as const,
     participants: (meetingId: number | string) =>
       ["meetings", "participants", `${String(meetingId)}`] as const,
@@ -51,8 +68,8 @@ export const QUERY_KEYS = {
     listParams: (params: {
       type: string;
       keyword: string;
-      sortBy: string;
-      sortOrder: string;
+      sortBy: MeetingSortBy;
+      sortOrder: SortOrder;
     }) => ["meetings", "list", params] as const,
     meetingType: ["meetings", "meetingType"] as const,
   },

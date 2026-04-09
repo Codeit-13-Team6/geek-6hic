@@ -5,18 +5,17 @@ import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
-  SortBy,
   SortOrder,
+  MeetingSortBy,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
-import { useUrlQuery } from "@/hooks/useUrlQuery";
 import type { QueryKey } from "@tanstack/react-query";
 
 interface UseMeetingListProps {
   type?: string;
   keyword?: string;
-  sortBy?: SortBy;
+  sortBy?: MeetingSortBy;
   sortOrder?: SortOrder;
   enabled?: boolean;
 }
@@ -27,7 +26,7 @@ export interface InfiniteListResult {
   fetchNextPage: () => void;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
-  sortValue?: SortBy;
+  sortValue?: MeetingSortBy;
   favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
 }
 
