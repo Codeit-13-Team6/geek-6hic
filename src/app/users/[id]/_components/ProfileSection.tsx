@@ -125,6 +125,7 @@ export default function ProfileSection({
         title="프로필 수정"
         contentClassName="-mt-10 sm:max-w-[520px] rounded-[32px]"
         titleClassName="text-2xl font-black tracking-tighter text-slate-950 uppercase"
+        disablePointerDismissal={true}
       >
         <form onSubmit={onSubmitProfile} className="mt-8 flex flex-col gap-6">
           <Controller
