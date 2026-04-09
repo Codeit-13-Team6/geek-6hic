@@ -27,10 +27,8 @@ import profileFallbackImg from "@/assets/img/profile/female1-m.jpg";
  * />
  */
 
-// 공용 이미지 업로드 입력 스타일입니다.
-// type variant에 따라 피그마 기준 스타일을 적용합니다.
 const fileInputVariants = cva(
-  "relative flex flex-col items-center justify-center cursor-pointer overflow-hidden border-none bg-gray-50 p-[12px] transition-all hover:bg-gray-100",
+  "relative flex flex-col items-center justify-center cursor-pointer overflow-hidden border-none bg-gray-50 transition-all hover:bg-gray-100",
   {
     variants: {
       size: {
@@ -56,8 +54,6 @@ interface ImageUploadInputProps extends VariantProps<typeof fileInputVariants> {
   className?: string;
 }
 
-// 공용 이미지 업로드 컴포넌트입니다.
-// 파일 선택, 미리보기, 삭제 기능을 함께 제공합니다.
 export function ImageUploadInput({
   size = "lg",
   type = "image",
@@ -67,47 +63,76 @@ export function ImageUploadInput({
   className,
 }: ImageUploadInputProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
   const deleteIconPath = size === "sm" ? deleteSmIcon : deleteLgIcon;
 
-  return (
-    <div
-      className={cn(fileInputVariants({ size, type }), className)}
-      onClick={() => fileInputRef.current?.click()}
-    >
-      {/* 실제 파일 선택 input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        className="hidden"
-        accept="image/*"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            onFileSelect?.(file);
-            // 같은 파일을 다시 선택할 수 있도록 value 초기화
-            e.currentTarget.value = "";
-          }
-        }}
-      />
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onFileSelect?.(file);
+      e.currentTarget.value = "";
+    }
+  };
 
-      {imageSrc ? (
-        <>
-          <Image
-            src={imageSrc}
-            alt="미리보기 이미지"
-            fill
-            className="object-cover"
-            // blob URL은 Next Image 최적화 대상이 아니므로 비활성화
-            unoptimized
+  return (
+      <div className="relative w-fit">
+        <button
+          type="button"
+          aria-label="이미지 선택"
+          onClick={() => fileInputRef.current?.click()}
+          className={cn(fileInputVariants({ size, type }), className)}
+        >
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileChange}
           />
+
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt="미리보기 이미지"
+              fill
+              className="object-cover"
+              // blob URL은 Next Image 최적화 대상이 아니므로 비활성화
+              unoptimized
+            />
+          ) : type === "profile" ? (
+            <Image
+              src={profileFallbackImg}
+              alt="기본 프로필 이미지"
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="pointer-events-none flex flex-col items-center justify-center gap-[10px]">
+              <div
+                className={cn(
+                  "relative",
+                  size === "sm" ? "h-[24px] w-[24px]" : "h-[32px] w-[32px]",
+                )}
+              >
+                <Image src={imagePlusIcon} alt="이미지 추가 아이콘" fill />
+              </div>
+              <span
+                className={cn(
+                  "font-medium text-gray-500",
+                  size === "sm" ? "text-[12px]" : "text-[14px]",
+                )}
+              >
+                파일 첨부
+              </span>
+            </div>
+          )}
+        </button>
+
+        {imageSrc && (
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove?.();
-            }}
-            className="absolute top-[8px] right-[8px] z-10 flex h-[24px] w-[24px] items-center justify-center rounded-full bg-black/80 transition-transform active:scale-90"
+            aria-label="이미지 삭제"
+            onClick={onRemove}
+            className="absolute top-3 right-3 z-10 flex h-[24px] w-[24px] translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/80 transition-transform active:scale-90"
           >
             <Image
               src={deleteIconPath}
@@ -116,34 +141,7 @@ export function ImageUploadInput({
               height={16}
             />
           </button>
-        </>
-      ) : type === "profile" ? (
-        <Image
-          src={profileFallbackImg}
-          alt="기본 프로필 이미지"
-          fill
-          className="object-cover"
-        />
-      ) : (
-        <div className="pointer-events-none flex flex-col items-center justify-center gap-[10px]">
-          <div
-            className={cn(
-              "relative",
-              size === "sm" ? "h-[24px] w-[24px]" : "h-[32px] w-[32px]",
-            )}
-          >
-            <Image src={imagePlusIcon} alt="이미지 추가 아이콘" fill />
-          </div>
-          <span
-            className={cn(
-              "font-medium text-gray-500",
-              size === "sm" ? "text-[12px]" : "text-[14px]",
-            )}
-          >
-            파일 첨부
-          </span>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
   );
 }

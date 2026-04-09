@@ -128,23 +128,25 @@ export default function ProfileSection({
         disablePointerDismissal={true}
       >
         <form onSubmit={onSubmitProfile} className="mt-8 flex flex-col gap-6">
-          <Controller
-            name="image"
-            control={profileForm.control}
-            render={({ field }) => (
-              <ImageUploadInput
-                type="profile"
-                size="sm"
-                className="mx-auto"
-                imageSrc={field.value ?? undefined}
-                onFileSelect={(file) => {
-                  const url = URL.createObjectURL(file);
-                  field.onChange(url);
-                }}
-                onRemove={() => field.onChange(null)}
-              />
-            )}
-          />
+          <div className="w-full flex items-center justify-center">
+            <Controller
+              name="image"
+              control={profileForm.control}
+              render={({ field }) => (
+                <ImageUploadInput
+                  type="profile"
+                  size="sm"
+                  className="mx-auto"
+                  imageSrc={field.value ?? undefined}
+                  onFileSelect={(file) => {
+                    const url = URL.createObjectURL(file);
+                    field.onChange(url);
+                  }}
+                  onRemove={() => field.onChange(null)}
+                />
+              )}
+            />
+          </div>
 
           <div className="space-y-5">
             <Controller
