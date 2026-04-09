@@ -63,8 +63,8 @@ export interface PostDetailCardProps {
   title?: string;
   date?: Date;
   name?: string;
+  avatar?: string;
   authorId?: number;
-  authorImg?: string;
   linkObjects?: {
     id: string;
     title: string;

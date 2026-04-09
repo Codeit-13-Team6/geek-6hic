@@ -34,7 +34,7 @@ export function PostDetailCard({
   onAuthorClick,
   content = "본문내용 ",
   linkObjects = [],
-  authorImg = "",
+  avatar = "",
   thumbsUp = 0,
   comment = 0,
   isLiked = false,
@@ -117,7 +117,7 @@ export function PostDetailCard({
         >
           <div className="relative size-5 overflow-hidden rounded-full bg-slate-100">
             <FallbackImage
-              src={authorImg}
+              src={avatar}
               type="user"
               alt="프로필 이미지"
               fill
