@@ -11,7 +11,6 @@ export default function PostCard({
   content,
   authorImage,
   authorName,
-  onAuthorClick,
   date,
   likeCount,
   commentCount,
@@ -58,14 +57,7 @@ export default function PostCard({
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 text-xs font-medium text-slate-400">
-          <button
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              onAuthorClick?.();
-            }}
-            className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80"
-          >
+          <div className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80">
             <div className="relative size-5 overflow-hidden rounded-full ring-2 ring-slate-50">
               <FallbackImage
                 src={authorImage}
@@ -77,7 +69,7 @@ export default function PostCard({
               />
             </div>
             <span className="text-slate-700">{authorName}</span>
-          </button>
+          </div>
 
           <div className="flex items-center gap-3.5 opacity-80 transition-opacity sm:group-hover:opacity-100">
             <div className="flex items-center gap-1.5" aria-hidden="true">

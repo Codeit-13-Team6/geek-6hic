@@ -48,7 +48,7 @@ export interface PostCardProps {
   id: number;
   title: string;
   content: string;
-  authorImage: string | null;
+  authorImage?: string | null;
   authorName: string;
   authorId?: number;
   date: string;
@@ -57,7 +57,6 @@ export interface PostCardProps {
   commentCount: number;
   thumbnailUrl?: string | null;
   onDetailClick?: () => void;
-  onAuthorClick?: () => void;
 }
 
 export interface PostDetailCardProps {
