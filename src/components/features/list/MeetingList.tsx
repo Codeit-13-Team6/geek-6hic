@@ -5,9 +5,11 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingCard from "../card/MeetingCard";
 import { useMeetingFavoriteMutation } from "@/hooks";
 import {
-  useAllMeetingList,
+  useMeetingList,
   useJoinedMeetingList,
 } from "@/hooks/queries/useMeetingInfiniteList";
+import { useUrlQuery } from "@/hooks/useUrlQuery";
+import { SortOrder, SortBy } from "@/types";
 
 interface MeetingsClientProps {
   variant?: "all" | "joined";
@@ -20,8 +22,22 @@ export default function MeetingList({
 }: MeetingsClientProps) {
   const router = useRouter();
 
-  const allResult = useAllMeetingList(variant === "all");
+  const { getParam } = useUrlQuery();
+  const type = getParam("type");
+  const keyword = getParam("keyword");
+  const sortBy = (getParam("sortBy") || "createdAt") as SortBy;
+  const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
+
+  const allResult = useMeetingList({
+    type,
+    keyword,
+    sortBy,
+    sortOrder,
+    enabled: variant === "all",
+  });
+
   const joinedResult = useJoinedMeetingList(variant === "joined");
+
   const {
     meetingList,
     isLoading,
