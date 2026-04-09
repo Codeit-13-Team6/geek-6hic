@@ -196,15 +196,15 @@ export function MeetingHeaderSection({
       label: "출석하기",
       disabled: false,
       handler: () => {
-        handleAttendMeeting(detail.region);
-
-        const earnedPoint = Math.floor(Math.random() * 3) + 1;
-
-        setShowReward({
-          show: true,
-          point: earnedPoint,
+        handleAttendMeeting(detail.region, {
+          onSuccess: (result) => {
+            setShowReward({
+              show: true,
+              point: result.attendScore,
+            });
+            setIsAnimating(true);
+          },
         });
-        setIsAnimating(true);
       },
     };
   })();
@@ -401,11 +401,11 @@ export function MeetingHeaderSection({
               type="button"
               size="md"
               disabled={action.disabled || isActionPending || isAuthLoading}
-              onClick={() => loginGuardAction(action.handler)}
+              onClick={() => loginGuardAction(() => void action.handler())}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
             >
               <span className="tracking-widest sm:text-sm">
-                {isActionPending ? "PROCESSING..." : action.label}
+                {isActionPending ? "진행중..." : action.label}
               </span>
             </BtnCommon>
             <HeartIcon
