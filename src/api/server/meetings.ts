@@ -1,10 +1,10 @@
 import { serverFetch } from "@/lib/serverFetcher";
-import type { JoinedMeetingsResponse } from "@/types";
+import type { JoinedMeetingsResponse, SortOrder, SortBy } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {
   cursor?: string;
   size?: number;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: SortOrder;
   sortBy?: "dateTime" | "registrationEnd" | "joinedAt";
   completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
@@ -20,8 +20,8 @@ export async function getJoinedMeetingsServer(params: {
 export async function getMeetingList(params: {
   type: string;
   keyword: string;
-  sortBy: "dateTime" | "registrationEnd" | "participantCount" | "createdAt";
-  sortOrder: "asc" | "desc";
+  sortBy: SortBy;
+  sortOrder: SortOrder;
   size: number;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await serverFetch<JoinedMeetingsResponse>({
