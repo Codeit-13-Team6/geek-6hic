@@ -97,6 +97,7 @@ export default async function Page({
               postCount={stats.postCount}
               meetingCount={stats.meetingCount}
               favoriteCount={stats.favoriteCount}
+              participantStats={stats.participantStats}
               // insight="오늘도 즐거운 코딩 되세요! 🚀"
             />
           </div>
