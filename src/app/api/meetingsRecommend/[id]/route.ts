@@ -6,6 +6,7 @@ import type {
   MeetingResponse,
   RecommendedMeetingItem,
 } from "@/types";
+import { isSecretMeeting } from "@/lib/meetingSecret";
 
 const THREAD_KEYWORD = "isThread_";
 const MEETING_PAGE_SIZE = 50;
@@ -21,6 +22,7 @@ function isRecommendableMeeting(
   if (candidate.id === currentMeetingId) return false;
   if (candidate.canceledAt) return false;
   if (candidate.participantCount >= candidate.capacity) return false;
+  if (isSecretMeeting(candidate.dateTime)) return false;
   return true;
 }
 
