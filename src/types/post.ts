@@ -1,3 +1,4 @@
+import { SortOrder } from "./meeting";
 import type { CursorResponse, OffsetResponse } from "./pagination";
 
 export interface Post {
@@ -23,25 +24,33 @@ export interface Post {
   isLiked: boolean;
 }
 
+export type LoungeSortBy =
+  | "createdAt"
+  | "viewCount"
+  | "likeCount"
+  | "commentCount";
+
 export interface GetPostsParams {
   type?: "all" | "best";
   keyword?: string;
-  sortBy?: "createdAt" | "viewCount" | "likeCount" | "commentCount";
-  sortOrder?: "asc" | "desc";
+  sortBy?: LoungeSortBy;
+  sortOrder?: SortOrder;
   cursor?: string;
   size?: number;
 }
 
 export type GetPostsResponse = CursorResponse<Post>;
 export type MyPostsPageResponse = OffsetResponse<Post>;
+
 // 이건 BFF가 계산한 추가 정보가 붙은 응답
 export interface VisiblePostsPageResponse extends MyPostsPageResponse {
   totalLikeCount: number;
 }
 
 export interface PostListProps {
-  searchValue?: string;
-  sortValue?: string;
+  keyword?: string;
+  sortBy?: LoungeSortBy;
+  sortOrder?: SortOrder;
 }
 
 export interface PostCardProps {
@@ -63,8 +72,8 @@ export interface PostDetailCardProps {
   title?: string;
   date?: Date;
   name?: string;
+  avatar?: string;
   authorId?: number;
-  authorImg?: string;
   linkObjects?: {
     id: string;
     title: string;

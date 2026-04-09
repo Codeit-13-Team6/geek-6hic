@@ -42,8 +42,12 @@ export async function GET() {
       //   },
       // );
 
-      const response = await getPosts(cursor);
-
+      const response = await getPosts({
+        cursor: cursor,
+        size: 20,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      });
       const posts = response.data || [];
 
       // 가져온 데이터가 일주일보다 오래된지 하나씩 검사
