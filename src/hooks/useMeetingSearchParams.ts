@@ -3,22 +3,16 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback } from "react";
 import type { SortValue } from "@/types";
-import type { DateRange } from "react-day-picker";
 
 export function useMeetingSearchParams() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const tabValue = searchParams.get("type") ?? "";
-  const keyword = searchParams.get("keyword") ?? "";
-
-  const sortBy = (searchParams.get("sortBy") ?? "dateTime") as SortValue;
-  const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
-  const from = searchParams.get("from");
-  const to = searchParams.get("to");
-  const dateRange: DateRange | undefined =
-    from && to ? { from: new Date(from), to: new Date(to) } : undefined;
+  const tabValue = searchParams.get("type") || "";
+  const keyword = searchParams.get("keyword") || "";
+  const sortBy = (searchParams.get("sortBy") || "dateTime") as SortValue;
+  const sortOrder = (searchParams.get("sortOrder") || "desc") as "asc" | "desc";
 
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -30,8 +24,11 @@ export function useMeetingSearchParams() {
           params.set(key, value);
         }
       });
+      params.delete("page");
+      params.delete("cursor");
+
       const qs = params.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname);
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
     [searchParams, router, pathname],
   );
@@ -39,32 +36,17 @@ export function useMeetingSearchParams() {
   const setTabValue = (type: string) =>
     updateParams({
       type,
-      keyword: null,
-      sortBy: null,
-      sortOrder: null,
-      from: null,
-      to: null,
     });
 
   const setKeyword = (keyword: string) =>
     updateParams({
-      type: null,
       keyword,
-      sortBy: null,
-      sortOrder: null,
-      from: null,
-      to: null,
     });
+
   const setSortValue = (value: SortValue) => updateParams({ sortBy: value });
 
   const setSortOrder = () =>
     updateParams({ sortOrder: sortOrder === "desc" ? "asc" : "desc" });
-
-  const setDateRange = (range: DateRange | undefined) =>
-    updateParams({
-      from: range?.from?.toISOString().split("T")[0] ?? null,
-      to: range?.to?.toISOString().split("T")[0] ?? null,
-    });
 
   const resetFilter = () =>
     updateParams({
@@ -72,8 +54,6 @@ export function useMeetingSearchParams() {
       keyword: null,
       sortBy: null,
       sortOrder: null,
-      from: null,
-      to: null,
     });
 
   return {
@@ -81,12 +61,11 @@ export function useMeetingSearchParams() {
     keyword,
     sortBy,
     sortOrder,
-    dateRange,
     setKeyword,
     setTabValue,
     setSortValue,
     setSortOrder,
-    setDateRange,
     resetFilter,
+    updateParams,
   };
 }

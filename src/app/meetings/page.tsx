@@ -10,7 +10,6 @@ import { GitBranchIcon } from "@/components/icon/GitBranchIcon";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingFilters from "@/app/meetings/_components/MeetingsFilters";
 import MeetingList from "@/components/features/list/MeetingList";
-import SearchBarCommon from "@/components/ui/SearchBarCommon";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
 
 export const metadata: Metadata = {
@@ -61,10 +60,12 @@ export default async function Page({
   }>;
 }) {
   const params = await searchParams;
-  const type = params.type ?? "";
-  const keyword = params.keyword ?? "";
-  const sortBy = params.sortBy ?? "dateTime";
-  const sortOrder = params.sortOrder ?? "desc";
+  const type = params.type || "";
+  const keyword = params.keyword || "";
+  const sortBy = params.sortBy || "dateTime";
+  const sortOrder = params.sortOrder || "desc";
+
+  const currentParams = { type, keyword, sortBy, sortOrder };
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
@@ -105,6 +106,10 @@ export default async function Page({
         </div>
       </div>
 
+      <div className="mb-10 sm:mb-10">
+        <MeetingFilters />
+      </div>
+
       <Suspense
         key={`${type}-${sortBy}-${sortOrder}-${keyword}`}
         fallback={
@@ -133,13 +138,7 @@ export default async function Page({
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
                 return getMeetingList({
-                  type,
-                  keyword,
-                  sortBy: sortBy as
-                    | "dateTime"
-                    | "registrationEnd"
-                    | "participantCount",
-                  sortOrder: sortOrder as "asc" | "desc",
+                  ...currentParams,
                   size: 10,
                   ...(cursor ? { cursor } : {}),
                 });
@@ -150,13 +149,6 @@ export default async function Page({
             })
           }
         >
-          <div className="mb-10 sm:mb-10">
-            <MeetingFilters />
-          </div>
-          <SearchBarCommon
-            placeholder="모임을 검색해보세요."
-            className="mb-10"
-          />
           <MeetingList variant="all" />
         </PrefetchBoundary>
       </Suspense>

@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
+import SearchBarCommon from "@/components/ui/SearchBarCommon";
 import {
   Select,
   SelectContent,
@@ -10,75 +12,70 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/SelectCommon";
+import { useQuery } from "@tanstack/react-query"; // ✅ 다시 추가
+import { QUERY_KEYS } from "@/constans/queryKey"; // ✅ 다시 추가
+import { getMeetingTypes } from "@/api/client"; // ✅ 다시 추가
 import type { MeetingType } from "@/types";
-import Image from "next/image";
-import downIcon from "@/assets/icon/chevron/chevron-down.svg";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { getMeetingTypes } from "@/api/client";
-import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
 
-const SORT_OPTIONS = [
-  { value: "participantCount", label: "참여인원 순" },
+const SORT_UI_OPTIONS = [
+  { id: "latest", label: "최신순", sortBy: "dateTime", sortOrder: "desc" },
+  { id: "oldest", label: "오래된순", sortBy: "dateTime", sortOrder: "asc" },
+  {
+    id: "participant",
+    label: "참여인원순",
+    sortBy: "participantCount",
+    sortOrder: "desc",
+  },
 ] as const;
 
 export default function MeetingFilters() {
   const {
     tabValue,
+    keyword,
     sortBy,
     sortOrder,
     setTabValue,
-    setSortValue,
-    setSortOrder,
+    setKeyword,
+    updateParams,
   } = useMeetingSearchParams();
 
-  const [tabList, setTabList] = useState<{ value: string; label: string }[]>([
-    { value: "", label: "전체" },
-  ]);
-
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [draftDate, setDraftDate] = useState<DateRange | undefined>(dateRange);
-
-  const currentSortLabel = SORT_OPTIONS.find(
-    (opt) => opt.value === sortBy,
-  )?.label;
-
+  // ✅ [복구] 서버에서 탭(모임 유형) 데이터 가져오기
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
     staleTime: 1000 * 60 * 5,
   });
-  // const handleCalendarReset = () => {
-  //   setDraftDate(undefined);
-  //   setDateRange(undefined);
-  //   setIsOpen(false);
-  // };
-  //
-  // const handleCalendarApply = () => {
-  //   setDateRange(draftDate);
-  //   setIsOpen(false);
-  // };
 
-  useEffect(() => {
-    if (meetingTypes.length > 0) {
-      setTabList([
-        { value: "", label: "전체" },
-        ...meetingTypes.map((t) => ({ value: String(t.name), label: t.name })),
-      ]);
-    }
-  }, [meetingTypes]);
+  // ✅ [복구] 가져온 데이터를 탭 리스트 형식으로 변환
+  const tabList = useMemo(
+    () => [
+      { value: "", label: "전체" },
+      ...meetingTypes.map((t) => ({ value: String(t.name), label: t.name })),
+    ],
+    [meetingTypes],
+  );
+
+  const currentOption =
+    SORT_UI_OPTIONS.find(
+      (opt) => opt.sortBy === sortBy && opt.sortOrder === sortOrder,
+    ) || SORT_UI_OPTIONS[0];
 
   return (
-    <>
-      <div className="animate-fade-up flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <ul className="custom-scrollbar flex gap-6 overflow-x-auto sm:gap-8">
+    <div className="flex flex-col gap-10">
+      <SearchBarCommon
+        placeholder="어떤 모임을 찾으시나요?"
+        onSearch={(val) => setKeyword(val)}
+      />
+
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        {/* ✅ 다시 풍성해진 탭 리스트 */}
+        <ul className="custom-scrollbar flex gap-6 overflow-x-auto border-b border-slate-100 pb-1">
           {tabList.map(({ value, label }) => (
-            <li key={value} className="relative shrink-0 pb-2">
+            <li key={label} className="relative shrink-0">
               <button
-                type="button"
                 onClick={() => setTabValue(value)}
                 className={cn(
-                  "text-sm font-black tracking-tight transition-all sm:text-base",
+                  "pb-3 text-sm font-black transition-all sm:text-base",
                   tabValue === value
                     ? "text-main-purple"
                     : "text-slate-400 hover:text-slate-500",
@@ -87,89 +84,47 @@ export default function MeetingFilters() {
                 {label}
               </button>
               {tabValue === value && (
-                <div className="bg-main-purple absolute bottom-0 left-0 h-1 w-full" />
+                <div className="bg-main-purple absolute bottom-0 left-0 h-[3px] w-full" />
               )}
             </li>
           ))}
         </ul>
 
-        <div className="flex shrink-0 items-center justify-end gap-4">
-          {/* 날짜 선택 */}
-
-          {/* <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger>
-              <div
-                className={cn(
-                  "flex cursor-pointer align-bottom text-xs font-black tracking-widest uppercase transition-colors sm:text-xs",
-                  dateRange
-                    ? "text-main-purple"
-                    : "hover:text-main-purple text-slate-900",
-                )}
-              >
-                Select Date
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="absolute left-[-90] w-auto p-0">
-              <Calendar
-                mode="range"
-                selected={draftDate}
-                onSelect={setDraftDate}
-                onReset={handleCalendarReset}
-                onApply={handleCalendarApply}
-              />
-            </PopoverContent>
-          </Popover> */}
-
+        <div className="flex shrink-0 items-center gap-3">
           <Select
-            value={sortBy}
-            onValueChange={(value) => {
-              if (value !== null) setSortValue(value);
+            value={currentOption.id}
+            onValueChange={(id) => {
+              const selected = SORT_UI_OPTIONS.find((opt) => opt.id === id);
+              if (selected) {
+                updateParams({
+                  sortBy: selected.sortBy,
+                  sortOrder: selected.sortOrder,
+                });
+              }
             }}
           >
-            <SelectTrigger
-              suppressHydrationWarning
-              className="h-auto w-auto cursor-pointer gap-2 border-none bg-transparent p-0 text-xs font-black tracking-widest text-slate-400 uppercase shadow-none hover:text-slate-900 focus:ring-0 sm:text-xs"
-            >
-              {currentSortLabel ? (
-                <span className="text-main-purple">{currentSortLabel}</span>
-              ) : (
-                <SelectValue placeholder="SORT BY" />
-              )}
+            <SelectTrigger className="text-main-purple w-[120px] border-none bg-transparent font-black focus:ring-0">
+              <SelectValue>{currentOption.label}</SelectValue>
             </SelectTrigger>
-            <SelectContent
-              alignItemWithTrigger={false}
-              sideOffset={2}
-              align="end"
-              className="z-50 min-w-[120px] overflow-hidden rounded-xl border-0 bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 outline-none"
-            >
-              <SelectGroup className="p-1">
-                {SORT_OPTIONS.map((item) => (
-                  <SelectItem
-                    key={item.value}
-                    value={item.value}
-                    className="focus:text-main-purple cursor-pointer rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-slate-50"
-                  >
-                    {item.label}
+            <SelectContent align="end">
+              <SelectGroup>
+                {SORT_UI_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.id} value={opt.id} className="font-bold">
+                    {opt.label}
                   </SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
-
-          <button onClick={setSortOrder} className="flex items-center">
-            <Image
-              className={sortOrder === "desc" ? "" : "rotate-180"}
-              src={downIcon}
-              width="24"
-              height="24"
-              alt="드롭다운 아이콘"
-            />
-            <span className="text-main-purple gap-2 text-[12px] font-black tracking-[1.2px]">
-              {sortOrder === "desc" ? "최신순" : "오래된 순"}
-            </span>
-          </button>
         </div>
       </div>
-    </>
+
+      {keyword && (
+        <div className="text-sm text-slate-500">
+          <span className="text-main-purple font-bold">"{keyword}"</span> 검색
+          결과입니다.
+        </div>
+      )}
+    </div>
   );
 }
