@@ -1,4 +1,4 @@
-import type { GetPostsResponse, MyPostsPageResponse, Post } from "@/types";
+import type { GetPostsResponse, Post, VisiblePostsPageResponse } from "@/types";
 import { filterThreadPosts } from "@/lib/postUtils";
 
 interface FetchMyPostsPageParams {
@@ -18,14 +18,18 @@ type FetchMyPostsPage = (
 
 const SCAN_PAGE_SIZE = 100;
 
-export async function getVisibleMyPostsPage(
+export async function getVisiblePostsPage(
   params: FetchMyPostsPageParams,
   fetchPage: FetchMyPostsPage,
-): Promise<MyPostsPageResponse> {
+  options: {
+    filter?: (post: Post) => boolean;
+  } = {},
+): Promise<VisiblePostsPageResponse> {
   const targetOffset = params.offset;
   const targetLimit = params.limit;
   const visiblePosts: Post[] = [];
   let visibleTotalCount = 0;
+  let visibleTotalLikeCount = 0;
   let sourceOffset = 0;
   let hasMoreSource = true;
   let expectedSourceTotal = Number.POSITIVE_INFINITY;
@@ -37,18 +41,24 @@ export async function getVisibleMyPostsPage(
     });
 
     const filtered = filterThreadPosts(response);
-    visibleTotalCount += filtered.data.length;
+    const scopedPosts = options.filter
+      ? filtered.data.filter(options.filter)
+      : filtered.data;
+
+    visibleTotalCount += scopedPosts.length;
+    visibleTotalLikeCount += scopedPosts.reduce(
+      (sum, post) => sum + post.likeCount,
+      0,
+    );
 
     if (visibleTotalCount > targetOffset && visiblePosts.length < targetLimit) {
       const startIndex = Math.max(
         0,
-        targetOffset - (visibleTotalCount - filtered.data.length),
+        targetOffset - (visibleTotalCount - scopedPosts.length),
       );
       const remaining = targetLimit - visiblePosts.length;
 
-      visiblePosts.push(
-        ...filtered.data.slice(startIndex, startIndex + remaining),
-      );
+      visiblePosts.push(...scopedPosts.slice(startIndex, startIndex + remaining));
     }
 
     const sourcePageSize =
@@ -67,9 +77,17 @@ export async function getVisibleMyPostsPage(
   return {
     data: visiblePosts,
     totalCount: visibleTotalCount,
+    totalLikeCount: visibleTotalLikeCount,
     currentOffset: targetOffset,
     limit: targetLimit,
     hasMore: currentPageEnd < visibleTotalCount,
     nextCursor: null,
   };
+}
+
+export async function getVisibleMyPostsPage(
+  params: FetchMyPostsPageParams,
+  fetchPage: FetchMyPostsPage,
+): Promise<VisiblePostsPageResponse> {
+  return getVisiblePostsPage(params, fetchPage);
 }

@@ -34,6 +34,10 @@ export interface GetPostsParams {
 
 export type GetPostsResponse = CursorResponse<Post>;
 export type MyPostsPageResponse = OffsetResponse<Post>;
+// 이건 BFF가 계산한 추가 정보가 붙은 응답
+export interface VisiblePostsPageResponse extends MyPostsPageResponse {
+  totalLikeCount: number;
+}
 
 export interface PostListProps {
   searchValue?: string;

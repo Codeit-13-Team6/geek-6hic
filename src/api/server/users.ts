@@ -1,15 +1,14 @@
 import { serverAxios } from "@/lib/serverFetcher";
-import { filterThreadPosts } from "@/lib/postUtils";
 import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
 import type {
   GetPostsResponse,
   MeetingResponse,
   GetMeetingsResponse,
   MyMeetingsPageResponse,
-  MyPostsPageResponse,
-  Post,
   User,
+  VisiblePostsPageResponse,
 } from "@/types";
+import { getVisiblePostsPage } from "@/lib/myVisiblePosts";
 
 export async function getPublicUserProfile({ userId }: { userId: number }) {
   const response = await serverAxios.get<User>(`/users/${userId}`);
@@ -55,23 +54,24 @@ export async function getUserPostsPageServer({
   userId: number;
   offset?: number;
   limit?: number;
-}): Promise<MyPostsPageResponse> {
-  return getVisibleCursorPage<Post>({
-    offset,
-    limit,
-    fetchPage: async ({ cursor, size }) => {
+}): Promise<VisiblePostsPageResponse> {
+  return getVisiblePostsPage(
+    { offset, limit },
+    async ({ offset: pageOffset, limit: pageLimit }) => {
       const { data } = await serverAxios.get<GetPostsResponse>("/posts", {
         params: {
           keyword: "",
           sortBy: "createdAt",
           sortOrder: "desc",
-          size,
-          ...(cursor ? { cursor } : {}),
+          offset: pageOffset,
+          limit: pageLimit,
         },
       });
 
-      return filterThreadPosts(data);
+      return data;
     },
-    filter: (post) => post.author.id === userId,
-  });
+    {
+      filter: (post) => post.author.id === userId,
+    },
+  );
 }

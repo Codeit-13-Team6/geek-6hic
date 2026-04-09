@@ -1,6 +1,9 @@
-import { getFavorites, getMyMeetings } from "./favorites";
+import { getMyMeetings } from "./favorites";
 import { getMyPostsServer } from "./posts";
-import { getUserMeetingsPageServer, getUserPostsPageServer } from "./users";
+import {
+  getUserMeetingsPageServer,
+  getUserPostsPageServer,
+} from "./users";
 
 export interface ProfileStats {
   postCount: number;
@@ -16,8 +19,7 @@ export async function getProfileStats({
   userId: number;
 }): Promise<ProfileStats> {
   if (isOwnProfile) {
-    const [favorites, meetings, posts] = await Promise.all([
-      getFavorites({ offset: 0, limit: 1 }),
+    const [meetings, posts] = await Promise.all([
       getMyMeetings({ offset: 0, limit: 1 }),
       getMyPostsServer({ offset: 0, limit: 1 }),
     ]);
@@ -25,7 +27,7 @@ export async function getProfileStats({
     return {
       postCount: posts.totalCount,
       meetingCount: meetings.totalCount,
-      favoriteCount: favorites.totalCount,
+      favoriteCount: posts.totalLikeCount,
     };
   }
 
@@ -37,6 +39,6 @@ export async function getProfileStats({
   return {
     postCount: posts.totalCount,
     meetingCount: meetings.totalCount,
-    favoriteCount: 0,
+    favoriteCount: posts.totalLikeCount,
   };
 }
