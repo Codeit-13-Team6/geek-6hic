@@ -22,7 +22,7 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Users2 } from "lucide-react";
+import { Users2, Lock } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -234,6 +234,11 @@ export function MeetingHeaderSection({
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
+          {isSecret && !isHost && !isJoined && (
+            <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 backdrop-blur-sm text-[32px]">
+              🔒
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">
