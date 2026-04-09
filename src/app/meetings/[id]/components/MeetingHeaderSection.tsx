@@ -39,6 +39,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { shareLink } from "@/lib/share";
 import { copyToClipboard } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
@@ -76,6 +77,7 @@ export function MeetingHeaderSection({
   isJoined,
   isLoggedIn,
 }: MeetingHeaderSectionProps) {
+  const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSecretModalOpen, setIsSecretModalOpen] = useState(false);
@@ -371,10 +373,15 @@ export function MeetingHeaderSection({
               {participants.map((participant) => (
                 <div
                   key={participant.user.id}
-                  className="flex items-center justify-between rounded-2xl py-1 transition-colors hover:bg-slate-50 sm:py-3"
+                  className="flex items-center justify-between rounded-2xl px-2 py-1 transition-colors hover:bg-slate-50 sm:py-3"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="relative size-10 overflow-hidden rounded-full border border-slate-100">
+                    <button
+                      onClick={() =>
+                        router.push(`/users/${participant.user.id}`)
+                      }
+                      className="relative size-10 overflow-hidden rounded-full border border-slate-100"
+                    >
                       <FallbackImage
                         src={
                           hasUsableProfileImage(participant.user.image)
@@ -386,7 +393,7 @@ export function MeetingHeaderSection({
                         fill
                         className="object-cover"
                       />
-                    </div>
+                    </button>
                     <span className="text-base font-bold text-slate-700">
                       {participant.user.name || "사용자"}
                     </span>
