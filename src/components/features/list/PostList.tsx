@@ -5,13 +5,14 @@ import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/client/posts";
 import { GetPostsResponse, LoungeSortBy, Post, SortOrder } from "@/types";
 import { useRouter } from "next/navigation";
-import { SearchX, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { cn } from "@/lib/utils";
 import PostCardListSkeleton from "@/components/skeleton/PostCardListSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getNextPageParam } from "@/lib/pagination";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
+import { NoResultFound } from "@/components/ui/NoResultFound";
 
 export default function PostList() {
   const router = useRouter();
@@ -96,17 +97,7 @@ export default function PostList() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center border-t border-slate-100 py-32">
-            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-slate-50">
-              <SearchX className="size-10 text-slate-200" strokeWidth={1.5} />
-            </div>
-            <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-              No Results found.
-            </h3>
-            <p className="mt-2 text-sm font-medium text-slate-400">
-              다른 키워드로 아카이브를 탐색해보세요.
-            </p>
-          </div>
+          <NoResultFound />
         )}
       </div>
 

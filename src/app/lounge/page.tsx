@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "@/app/lounge/_component/HotPostList";
-import LoungeClient from "@/app/lounge/_component/LoungeClient";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
@@ -99,7 +98,7 @@ export default async function LoungePage({
         </div>
       </div>
 
-      <section className="mb-20" aria-labelledby="hot-posts-heading">
+      <section className="mb-10 sm:mb-12" aria-labelledby="hot-posts-heading">
         <div className="animate-fade-up mt-10 mb-4 flex items-center gap-3">
           <div
             className="bg-main-purple h-[6px] w-8 rounded-full"
