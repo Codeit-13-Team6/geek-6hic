@@ -1,10 +1,13 @@
-import { serverFetch } from "@/lib/serverFetcher";
+import { serverFetch, serverAxios } from "@/lib/serverFetcher";
 import type {
   GetCommentsResponse,
   GetPostsResponse,
   Post,
+
+  VisiblePostsPageResponse,
 } from "@/types";
 import { filterThreadPosts } from "@/lib/postUtils";
+import { getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
 
 export async function getPostDetail(postId: number): Promise<Post> {
   const { data } = await serverFetch({
@@ -49,3 +52,31 @@ export async function getPosts(cursor?: string): Promise<GetPostsResponse> {
   return filterThreadPosts(data);
 }
 
+export async function getMyPostsServer(
+  params: {
+    offset?: number;
+    limit?: number;
+  } = {},
+): Promise<VisiblePostsPageResponse> {
+  return getVisibleMyPostsPage(
+    {
+      offset: params.offset ?? 0,
+      limit: params.limit ?? 10,
+    },
+    async ({ offset, limit }) => {
+      const { data } = await serverAxios.get<GetPostsResponse>(
+        "/users/me/posts",
+        {
+          params: {
+            sortBy: "createdAt",
+            sortOrder: "desc",
+            offset,
+            limit,
+          },
+        },
+      );
+
+      return data;
+    },
+  );
+}

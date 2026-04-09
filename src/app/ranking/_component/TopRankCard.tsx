@@ -29,7 +29,7 @@ export default function TopRankCard({
     >
       <FallbackImage
         src={item?.image}
-        alt="모임 이미지"
+        alt={item?.meetName ? `${item.meetName} 모임 이미지` : '모임 이미지'}
         fill
         className="object-cover transition-transform duration-1000 select-none group-hover:scale-105"
       />
@@ -41,6 +41,7 @@ export default function TopRankCard({
             "px-4 py-1.5 text-[10px] font-black tracking-[0.3em] shadow-2xl",
             isFirst ? "bg-[#FFB900] text-slate-950" : "bg-white text-slate-950",
           )}
+          aria-label={`${rank}위`}
         >
           {rank}
           {suffix}
@@ -90,11 +91,12 @@ export default function TopRankCard({
 
           <BtnCommon
             onClick={onDetailClick}
+            aria-label={`${rank}위 ${item?.meetName || '모임'} 상세 보기`}
             className={cn(
-              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95",
+              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple focus-visible:ring-offset-2 focus-visible:ring-offset-white",
               isFirst
-                ? "bg-[#FFB900] text-slate-950 hover:bg-[#e5a700]"
-                : "bg-slate-950/30 text-white hover:bg-slate-800",
+                ? "bg-[#FFB900] text-main-purple hover:bg-[#e5a700]"
+                : "bg-main-purple/30 text-white hover:bg-slate-800",
             )}
           >
             <span className="text-[11px] tracking-[0.2em] uppercase">

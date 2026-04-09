@@ -9,7 +9,11 @@ import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
 import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type { FavoritesPageResponse } from "@/types";
-import { getFavorites, getPublicUserProfile } from "@/api/server";
+import {
+  getFavorites,
+  getProfileStats,
+  getPublicUserProfile,
+} from "@/api/server";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
@@ -45,6 +49,10 @@ export default async function Page({
         userId: profileUserId,
       })
     : initialUser;
+  const stats = await getProfileStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
 
   const tabs = isOwnProfile
     ? [
@@ -86,9 +94,9 @@ export default async function Page({
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
           <div className="min-w-[90%] snap-center lg:min-w-full">
             <StatGrid
-              postCount={10}
-              meetingCount={2}
-              favoriteCount={5}
+              postCount={stats.postCount}
+              meetingCount={stats.meetingCount}
+              favoriteCount={stats.favoriteCount}
               // insight="오늘도 즐거운 코딩 되세요! 🚀"
             />
           </div>

@@ -10,14 +10,25 @@ export default function RankCard({
   rank = 0,
   meetType = "스터디",
   image,
-  onDetailClick = () => {},
+  onDetailClick = () => { },
 }: RankCardProps & { image?: string }) {
   return (
     <article
+      role="button"
+      tabIndex={0}
       onClick={() => {
         if (window.innerWidth < 640) onDetailClick();
       }}
-      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4"
+      onKeyDown={(e) => {
+        if (window.innerWidth >= 640) return;
+
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onDetailClick();
+        }
+      }}
+      aria-label={`랭킹 ${rank}위 ${title} 상세 보기`}
+      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple"
     >
       <div className="flex min-w-0 items-center gap-4 sm:gap-6">
         <div className="min-w-6 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:min-w-8 sm:text-2xl">
@@ -27,7 +38,7 @@ export default function RankCard({
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[14px] bg-slate-100 sm:h-[60px] sm:w-[60px]">
           <FallbackImage
             src={image}
-            alt="좋아요 아이콘"
+            alt={`${title} 썸네일`}
             fill
             className="object-cover grayscale-[20%] transition-transform duration-500 group-hover:scale-110 group-hover:grayscale-0"
           />

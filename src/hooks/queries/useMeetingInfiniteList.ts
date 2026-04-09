@@ -1,15 +1,25 @@
+"use client";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
-  SortValue,
+  SortBy,
+  SortOrder,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
-import { useMeetingSearchParams } from "@/hooks/useMeetingSearchParams";
+import { useUrlQuery } from "@/hooks/useUrlQuery";
 import type { QueryKey } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+
+interface UseMeetingListProps {
+  type?: string;
+  keyword?: string;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+  enabled?: boolean;
+}
 
 export interface InfiniteListResult {
   meetingList: JoinedMeetingsResponse["data"];
@@ -17,30 +27,31 @@ export interface InfiniteListResult {
   fetchNextPage: () => void;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
-  sortValue?: SortValue;
-  favoriteQueryKey: QueryKey;
+  sortValue?: SortBy;
+  favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
 }
 
-export function useAllMeetingList(enabled = true): InfiniteListResult {
-  const { tabValue, keyword, sortBy, sortOrder, dateRange } =
-    useMeetingSearchParams();
+export function useMeetingList({
+  type = "",
+  keyword = "",
+  sortBy = "createdAt",
+  sortOrder = "desc",
+  enabled = true,
+}: UseMeetingListProps = {}): InfiniteListResult {
+  const currentParams = { type, keyword, sortBy, sortOrder };
+  const listQueryKey = QUERY_KEYS.meetings.listParams(currentParams);
 
   const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
-      queryKey: QUERY_KEYS.meetings.listParams({
-        type: tabValue,
-        keyword: keyword ?? "",
-        sortBy: sortBy ?? "",
-        sortOrder,
-      }),
+      queryKey: listQueryKey,
       queryFn: ({ pageParam }) => {
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
         const params: GetMeetingListParams = {
-          type: tabValue,
-          keyword: keyword ?? "",
           size: 10,
+          type: type || undefined,
+          keyword: keyword || undefined,
+          sortBy,
           sortOrder,
-          ...(sortBy ? { sortBy } : {}),
           ...(cursor ? { cursor } : {}),
         };
         return getMeetingList(params);
@@ -51,17 +62,7 @@ export function useAllMeetingList(enabled = true): InfiniteListResult {
       enabled,
     });
 
-  const rawList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
-
-  const meetingList =
-    dateRange?.from && dateRange?.to
-      ? rawList.filter((m) => {
-          const t = new Date(m.dateTime).getTime();
-          const from = new Date(dateRange.from!).setHours(0, 0, 0, 0);
-          const to = new Date(dateRange.to!).setHours(23, 59, 59, 999);
-          return t >= from && t <= to;
-        })
-      : rawList;
+  const meetingList = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
   return {
     meetingList,
@@ -70,7 +71,7 @@ export function useAllMeetingList(enabled = true): InfiniteListResult {
     hasNextPage,
     isFetchingNextPage,
     sortValue: sortBy || undefined,
-    favoriteQueryKey: ["meetings", tabValue, keyword, sortBy, sortOrder],
+    favoriteQueryKey: listQueryKey,
   };
 }
 

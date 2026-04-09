@@ -25,10 +25,7 @@ export default function StatGrid({
             {meetingCount}개
           </dd>
         </div>
-        <div
-          className="text-xl sm:text-2xl"
-          aria-hidden="true"
-        >
+        <div className="text-xl sm:text-2xl" aria-hidden="true">
           🏗️
         </div>
       </div>

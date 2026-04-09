@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverAxios } from "@/lib/serverFetcher";
 import { getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
-import type { MyPostsPageResponse } from "@/types";
+import type { GetPostsResponse, VisiblePostsPageResponse } from "@/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         limit: safeLimit,
       },
       async ({ offset: pageOffset, limit: pageLimit }) => {
-        const response = await serverAxios.get<MyPostsPageResponse>(
+        const response = await serverAxios.get<GetPostsResponse>(
           "/users/me/posts",
           {
             params: {
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       },
     );
 
-    return NextResponse.json(data);
+    return NextResponse.json<VisiblePostsPageResponse>(data);
   } catch (error) {
     console.error("[Visible My Posts BFF Error]", error);
     return NextResponse.json(

@@ -26,7 +26,7 @@ export default function RankingListSkeleton() {
               key={i}
               className={`relative w-full overflow-hidden rounded-2xl bg-slate-200 ${
                 isFirst
-                  ? "flex-[1.15] -translate-y-8 aspect-[3/4.2]"
+                  ? "flex-1 -translate-y-8 aspect-[3/4.2]"
                   : "flex-1 aspect-[3/4.2]"
               }`}
             >

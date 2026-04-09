@@ -10,7 +10,7 @@ import {
   SelectGroup,
 } from "@/components/ui/SelectCommon";
 import PostList from "@/components/features/list/PostList";
-import SearchBarCommon from "@/components/ui/SearchBarCommon";
+import SearchBarCommon from "@/components/ui/SearchBar";
 import { useSearchParams } from "next/navigation";
 
 export default function LoungeClient() {
@@ -35,9 +35,7 @@ export default function LoungeClient() {
         className="animate-fade-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
         aria-label="게시물 목록"
       >
-        <SearchBarCommon
-          placeholder="원하는 내용을 검색해보세요"
-        />
+        <SearchBarCommon placeholder="원하는 내용을 검색해보세요" />
         <div className="flex justify-end">
           <Select
             value={sortValue}
