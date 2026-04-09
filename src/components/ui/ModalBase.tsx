@@ -29,7 +29,6 @@ export default function ModalBase({
         <DialogContent
           className={cn(
             "fixed left-[50%] z-30 w-full max-w-[90%] translate-x-[-50%]",
-            "top-[calc(50%+40px)]",
             "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
