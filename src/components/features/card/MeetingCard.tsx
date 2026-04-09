@@ -10,6 +10,8 @@ import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar } from "lucide-react";
 import { isSecretMeeting } from "@/lib/meetingSecret";
+import { useAuthStore } from "@/store/useAuthStore";
+import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 
 export default function MeetingCard({
   meetingList,
@@ -19,7 +21,7 @@ export default function MeetingCard({
   meetingStatusBadgeVisible = true,
 }: MeetingListProps) {
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
-
+  const user = useAuthStore((s) => s.user);
   function isMeetingClosed(item: JoinedMeeting) {
     return item.participantCount >= item.capacity;
   }
@@ -34,16 +36,21 @@ export default function MeetingCard({
       {visibleMeetingList.map((item) => {
         const isClosed = isMeetingClosed(item);
         const isFull = item.participantCount >= item.capacity;
+        console.log(item);
+        const isHost = user?.id === item.hostId;
 
-        const isUserJoined =
-          item.isJoined || (!!item.joinedAt && !item.isCompleted);
+        const isUserJoined = item.isJoined || !!item.joinedAt;
 
         const isSecret = isSecretMeeting(item.dateTime);
 
         let statusLabel = null;
 
         if (isUserJoined) {
-          statusLabel = "참여중";
+          if (isHost) {
+            statusLabel = "모임장";
+          } else {
+            statusLabel = "참여중";
+          }
         }
 
         return (
@@ -81,22 +88,25 @@ export default function MeetingCard({
                   </div>
                 </div>
               )}
-              {statusLabel && (
-                <span
-                  className={cn(
-                    "absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg py-1.5 text-[11px] font-bold shadow-sm backdrop-blur-md",
-                    isUserJoined
-                      ? "bg-slate-900/80 px-3 text-slate-100"
-                      : "bg-slate-100 px-1.5 text-slate-500",
-                    meetingStatusBadgeVisible ? "" : "hidden",
-                  )}
-                >
-                  {isUserJoined && (
+              {statusLabel === "참여중" ? (
+                meetingStatusBadgeVisible && (
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold text-slate-100 shadow-sm backdrop-blur-md">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                  )}
-
-                  {statusLabel}
-                </span>
+                    {statusLabel}
+                  </span>
+                )
+              ) : statusLabel === "모임장" ? (
+                <div className="absolute top-3 left-3 z-10 shrink-0 rounded-full bg-amber-100 p-1.5 shadow-sm">
+                  <Image
+                    src={crownLgIcon}
+                    alt="호스트 이미지"
+                    width={20}
+                    height={20}
+                    className="xl:size-6"
+                  />
+                </div>
+              ) : (
+                <span></span>
               )}
             </div>
 

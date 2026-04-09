@@ -91,6 +91,7 @@ export interface JoinedMeeting extends Meeting {
   isJoined: boolean;
   isCompleted: boolean;
   createdAt: string;
+  hostId?: number;
 }
 
 export interface FavoritesResponseData {
