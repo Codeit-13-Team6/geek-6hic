@@ -12,6 +12,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface ProfileSectionProps {
   initialUser?: {
@@ -52,6 +53,18 @@ export default function ProfileSection({
     // 이미지 업로드는 ImageUploadInput 내부에서 완료됨 — image는 S3 publicUrl
     updateProfile({ ...data, ...(image && { image }) });
   });
+
+
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
+  const requestCloseModal = () => {
+    if (profileForm.formState.isDirty) {
+      setIsCloseConfirmOpen(true);
+    } else {
+      setIsEditModalOpen(false);
+    }
+  };
+
 
   // 모달 열릴 때마다 최신 displayUser로 폼 동기화
   useEffect(() => {
@@ -121,7 +134,9 @@ export default function ProfileSection({
       {canEdit && (
         <ModalBase
           isOpen={isEditModalOpen}
-          onOpenChange={setIsEditModalOpen}
+          onOpenChange={(nextIsOpen) => {
+            if (!nextIsOpen) requestCloseModal();
+          }}
           title="프로필 수정"
           contentClassName="-mt-10 sm:max-w-[520px] rounded-[32px]"
           titleClassName="text-2xl font-black tracking-tighter text-slate-950 uppercase"
@@ -201,7 +216,7 @@ export default function ProfileSection({
               <BtnCommon
                 variant="teritary"
                 className="flex-1 rounded-2xl border-slate-200 font-black"
-                onClick={() => setIsEditModalOpen(false)}
+                onClick={requestCloseModal}
               >
                 취소
               </BtnCommon>
@@ -217,6 +232,15 @@ export default function ProfileSection({
           </form>
         </ModalBase>
       )}
+      <ConfirmModal
+        isOpen={isCloseConfirmOpen}
+        onOpenChange={setIsCloseConfirmOpen}
+        onConfirm={() => setIsCloseConfirmOpen(false)}
+        onCancel={() => {
+          setIsCloseConfirmOpen(false);
+          setIsEditModalOpen(false);
+        }}
+      />
     </>
   );
 }
