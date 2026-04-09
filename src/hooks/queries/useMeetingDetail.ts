@@ -213,6 +213,7 @@ export function useMeetingAttendMutation(meetingId: number) {
     mutationFn: attendMeeting,
     onSuccess: () => {
       setHasAttended(true);
+
       ToastCommon({ message: "출석이 완료되었습니다.", size: "sm" });
     },
     onError: () => {
@@ -220,11 +221,22 @@ export function useMeetingAttendMutation(meetingId: number) {
     },
   });
 
+  // 공통 성공/실패 처리는 mutation에서 담당하고,
+  //  UI(보상/애니메이션)만 호출 시 onSuccess로 분리
   return {
     hasAttended,
     isCheckingAttendance: attendMutation.isPending,
-    handleAttendMeeting: (region: string) => {
-      attendMutation.mutate(region);
+    handleAttendMeeting: (
+      region: string,
+      options?: {
+        onSuccess?: (result: Awaited<ReturnType<typeof attendMeeting>>) => void;
+      },
+    ) => {
+      attendMutation.mutate(region, {
+        onSuccess: (result) => {
+          options?.onSuccess?.(result);
+        },
+      });
     },
   };
 }
