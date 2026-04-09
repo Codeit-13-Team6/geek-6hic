@@ -96,7 +96,6 @@ export default function MyPostList({
               timeAgo={post.createdAt}
               thumbnailUrl={post.image}
               onDetailClick={() => router.push(`/lounge/${post.id}`)}
-              onAuthorClick={() => router.push(`/users/${post.author.id}`)}
             />
           </li>
         ))}
