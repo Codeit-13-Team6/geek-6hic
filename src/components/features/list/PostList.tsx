@@ -88,10 +88,10 @@ export default function PostList({
                   }
                 }}
                 className={cn(
-                  "animate-fade-up group overflow-hidden cursor-pointer rounded-[24px] bg-white transition-all duration-300",
+                  "animate-fade-up group cursor-pointer overflow-hidden rounded-[24px] bg-white transition-all duration-300",
                   "border border-slate-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
                   "sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple"
+                  "focus-visible:ring-main-purple focus-visible:ring-2 focus-visible:outline-none",
                 )}
               >
                 <PostCard
@@ -105,7 +105,6 @@ export default function PostList({
                   })}
                   timeAgo={post.createdAt}
                   thumbnailUrl={post.image}
-                  onAuthorClick={() => router.push(`/users/${post.author.id}`)}
                 />
               </article>
             ))}
