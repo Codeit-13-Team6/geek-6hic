@@ -159,6 +159,7 @@ export function Gnb({ initialUser }: GnbProps) {
                 onClick={() => router.push(`/users/${user.id}`)}
                 aria-label="프로필 페이지 이동"
               >
+
                 {user?.image && !isBlobUrl ? (
                   <Image
                     src={user.image}

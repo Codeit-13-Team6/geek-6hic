@@ -123,6 +123,7 @@ export async function attendMeeting(region: string) {
   return { comment, attendScore };
 }
 
+
 export async function uploadMeetingImage(file: File) {
   const fileName = file.name;
   const contentType = file.type || "image/jpeg";
