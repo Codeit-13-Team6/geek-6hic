@@ -78,7 +78,7 @@ export default async function Page({
       <div className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
-          <h1 className="text-3xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-5xl">
+          <h1 className="text-xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-4xl">
             MY <span className="text-main-purple">PAGE.</span>
           </h1>
         </div>
@@ -95,7 +95,7 @@ export default async function Page({
               />
             </div>
             <div className="w-1/2 snap-center lg:w-full">
-              <GradeCard daysSinceJoin={42} />
+              <GradeCard />
             </div>
           </div>
 
@@ -159,10 +159,7 @@ export default async function Page({
             </TabsContent>
 
             <TabsContent value="lounge" className="mt-8 md:mt-12">
-              <MyPostList
-                isOwnProfile={isOwnProfile}
-                userId={profileUserId}
-              />
+              <MyPostList isOwnProfile={isOwnProfile} userId={profileUserId} />
             </TabsContent>
           </Tab>
         </section>

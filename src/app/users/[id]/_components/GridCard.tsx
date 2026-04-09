@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 
 interface GradeCardProps {
-  daysSinceJoin?: number;
   level?: number;
 }
 
@@ -39,58 +38,46 @@ const TIER_CONFIG = [
   },
 ];
 
-export default function GradeCard({
-  daysSinceJoin = 1,
-  level = 100,
-}: GradeCardProps) {
+export default function GradeCard({ level = 80 }: GradeCardProps) {
   const tier = TIER_CONFIG.find((t) => level <= t.max) || TIER_CONFIG[0];
 
   return (
     <div
       className={cn(
-        "relative h-full overflow-hidden rounded-[40px] p-8 text-white shadow-lg transition-all duration-700 lg:mt-4 lg:p-10",
+        "duration-700lg:mt-4 relative h-full overflow-hidden rounded-[40px] p-10 text-white shadow-lg transition-all lg:p-7",
         tier.bg, // 레벨에 따라 배경색 변경
       )}
     >
-      <div className="absolute -right-6 -bottom-6 text-9xl font-black italic opacity-10 select-none">
+      <div className="absolute -right-5 -bottom-4 text-9xl font-black italic opacity-10 select-none">
         CG
       </div>
 
       {/* 상단 텍스트 영역 */}
-      <div className="relative z-10 mb-10 flex flex-col gap-1.5">
+      <div className="relative z-10 mb-6 flex flex-col gap-1.5 lg:mb-7">
         <span className="text-[11px] font-bold tracking-[0.3em] text-white/40 uppercase">
           Sprint Grade
         </span>
-        <h3 className="text-3xl font-black tracking-tighter sm:text-4xl">
+        <h3 className="text-2xl font-black tracking-tighter sm:text-3xl lg:text-[34px]">
           {tier.label}
         </h3>
       </div>
 
       {/* 하단 정보 영역 */}
-      <div className="relative z-10 mt-auto flex items-end justify-between">
-        <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-medium tracking-wider text-white/50 uppercase">
-            Stayed with us
+      <div className="relative z-10 mt-auto flex items-end justify-start">
+        {/* 레벨 배지 (좌측 정렬) */}
+        <div className="flex flex-col items-start">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-white/45 uppercase">
+            Current Level
           </span>
-          <div className="flex items-baseline gap-1">
-            <span className="font-mono text-3xl font-black">
-              {daysSinceJoin}
-            </span>
-            <span className="text-sm font-bold text-white/40 uppercase italic">
-              Days
-            </span>
-          </div>
-        </div>
-
-        {/* 레벨 배지 */}
-        <div className="flex flex-col items-center">
           <div
             className={cn(
-              "rounded-2xl bg-white/10 px-4 py-2 text-[13px] font-black tracking-widest italic ring-1 ring-white/20 backdrop-blur-md transition-colors duration-500",
+              "py-2.5 text-4xl font-black tracking-[0.12em] italic transition-colors duration-500 md:text-5xl lg:text-2xl",
+              // "rounded-2xl bg-white/10 px-4 py-2 text-[13px] font-black tracking-widest italic ring-1 ring-white/20 backdrop-blur-md transition-colors duration-500",
+
               tier.color, // 레벨 숫자의 색상도 변경
             )}
           >
-            LV.{level}
+            LV. {level}
           </div>
         </div>
       </div>
