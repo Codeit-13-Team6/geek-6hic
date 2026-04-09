@@ -1,9 +1,8 @@
 "use client";
 
 import { useUrlQuery } from "@/hooks/useUrlQuery";
-
 import SelectFilter from "@/components/ui/SelectFilter";
-import { GitBranchIcon } from "lucide-react"; // 사용하시는 아이콘에 맞게 수정해주세요
+import { GitBranchIcon } from "lucide-react";
 import MeetingTypeTabs from "./MettingTypeTabs";
 import SearchBar from "@/components/ui/SearchBar";
 

@@ -9,7 +9,7 @@ import { Suspense } from "react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
-import { MeetingFilterSkeleton } from "@/components/skeleton/MeetingFilterSkeleton";
+import { MeetingsHeaderSkeleton } from "@/components/skeleton/MeetingsHeaderSkeleton";
 import MeetingsHeaderSection from "./_components/MeetingsHeaderSection";
 
 export const metadata: Metadata = {
@@ -44,13 +44,14 @@ export default async function Page({
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
-      <MeetingsHeaderSection />
+      <Suspense fallback={<MeetingsHeaderSkeleton />}>
+        <MeetingsHeaderSection />
+      </Suspense>
 
       <Suspense
         key={`${type}-${sortBy}-${sortOrder}-${keyword}`}
         fallback={
           <div className="mx-auto max-w-[1280px]">
-            <MeetingFilterSkeleton />
             <MeetingCardSkeleton />
           </div>
         }
