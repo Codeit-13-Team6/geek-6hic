@@ -1,22 +1,25 @@
 "use client";
 
 import { ThumbsUp, MessageSquare } from "lucide-react";
-import defaultImg from "@/assets/img/empty/img-default.png";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
+import { memo, useMemo } from "react";
+import { useRouter } from "next/navigation";
 
-export default function PostCard({
+const PostCard = memo(function PostCard({
   title,
   content,
   authorImage,
   authorName,
+  authorId,
   date,
   likeCount,
   commentCount,
   thumbnailUrl,
 }: PostCardProps) {
-  const pureContent = getPlainText(content);
+  const pureContent = useMemo(() => getPlainText(content), [content]);
+  const router = useRouter();
 
   return (
     <div className="group flex flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50">
@@ -28,9 +31,6 @@ export default function PostCard({
           alt="게시물 이미지"
           fill
           className="h-full w-full object-cover transition-transform duration-700 sm:group-hover:scale-105"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = defaultImg.src;
-          }}
         />
       </div>
 
@@ -53,7 +53,14 @@ export default function PostCard({
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 text-xs font-medium text-slate-400">
-          <div className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              if (authorId) router.push(`/users/${authorId}`);
+            }}
+            className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80"
+          >
             <div className="relative size-5 overflow-hidden rounded-full ring-2 ring-slate-50">
               <FallbackImage
                 src={authorImage}
@@ -65,7 +72,7 @@ export default function PostCard({
               />
             </div>
             <span className="text-slate-700">{authorName}</span>
-          </div>
+          </button>
 
           <div className="flex items-center gap-3.5 opacity-80 transition-opacity sm:group-hover:opacity-100">
             <div className="flex items-center gap-1.5" aria-hidden="true">
@@ -93,4 +100,5 @@ export default function PostCard({
       </div>
     </div>
   );
-}
+});
+export default PostCard;

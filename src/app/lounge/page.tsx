@@ -11,6 +11,11 @@ import { getNextPageParam } from "@/lib/pagination";
 import { MessageSquareText } from "lucide-react";
 import LoginGuard from "@/components/modal/LoginGuard";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import LoungeSearchSection from "./_component/LoungeSearchSection";
+import PostList from "@/components/features/list/PostList";
+import { GetPostsResponse, LoungeSortBy } from "@/types/post";
+import { SortOrder } from "@/types";
+import { InfiniteData } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",
@@ -23,19 +28,31 @@ export const metadata: Metadata = {
   },
 };
 
-const LOUNGE_DEFAULT_PARAMS = {
-  keyword: "",
-  sortBy: "createdAt" as const,
-  sortOrder: "desc" as const,
-};
+export default async function LoungePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    keyword?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const keyword = params.keyword || "";
+  const sortBy = (params.sortBy || "createdAt") as LoungeSortBy;
+  const sortOrder = (params.sortOrder || "desc") as SortOrder;
 
-export default async function LoungePage() {
+  const currentParams = { keyword, sortBy, sortOrder };
+
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="animate-fade-up flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-8">
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16" aria-hidden="true">
+            <div
+              className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16"
+              aria-hidden="true"
+            >
               <MessageSquareText className="text-white" size={24} />
             </div>
             <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
@@ -44,8 +61,7 @@ export default async function LoungePage() {
           </div>
           <div className="space-y-2">
             <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
-              SPRINT{" "}
-              <span className="text-main-purple uppercase">Lounge.</span>
+              SPRINT <span className="text-main-purple uppercase">Lounge.</span>
             </h1>
           </div>
         </div>
@@ -64,7 +80,11 @@ export default async function LoungePage() {
                 </BtnCommon>
               }
             >
-              <Link href="/lounge/create" className="hidden sm:block" aria-label="게시글 작성 페이지로 이동">
+              <Link
+                href="/lounge/create"
+                className="hidden sm:block"
+                aria-label="게시글 작성 페이지로 이동"
+              >
                 <BtnCommon className="group bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
                   <div className="flex items-center gap-2 text-xs tracking-widest uppercase">
                     <span className="text-base transition-transform duration-300 group-hover:rotate-180">
@@ -81,8 +101,14 @@ export default async function LoungePage() {
 
       <section className="mb-20" aria-labelledby="hot-posts-heading">
         <div className="animate-fade-up mt-10 mb-4 flex items-center gap-3">
-          <div className="bg-main-purple h-[6px] w-8 rounded-full" aria-hidden="true" />
-          <h2 id="hot-posts-heading" className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+          <div
+            className="bg-main-purple h-[6px] w-8 rounded-full"
+            aria-hidden="true"
+          />
+          <h2
+            id="hot-posts-heading"
+            className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase"
+          >
             Weekly HOT Posts
           </h2>
         </div>
@@ -91,19 +117,40 @@ export default async function LoungePage() {
         </div>
       </section>
 
-      <Suspense fallback={<LoungeSkeleton />}>
+      <LoungeSearchSection />
+
+      <Suspense
+        key={`${sortBy}-${sortOrder}-${keyword}`}
+        fallback={<LoungeSkeleton />}
+      >
         <PrefetchBoundary
           prefetchFn={(qc) =>
-            qc.prefetchInfiniteQuery({
-              queryKey: QUERY_KEYS.posts.listParams(LOUNGE_DEFAULT_PARAMS),
-              queryFn: ({ pageParam }) => getPosts(pageParam),
-              initialPageParam: undefined as string | undefined,
+            qc.prefetchInfiniteQuery<
+              GetPostsResponse,
+              Error,
+              InfiniteData<GetPostsResponse>,
+              readonly unknown[],
+              string | undefined
+            >({
+              queryKey: QUERY_KEYS.posts.listParams(currentParams),
+              queryFn: ({ pageParam }) => {
+                const cursor =
+                  typeof pageParam === "string" ? pageParam : undefined;
+                return getPosts({
+                  ...currentParams,
+                  size: 30,
+                  ...(cursor ? { cursor } : {}),
+                });
+              },
+              initialPageParam: undefined,
               getNextPageParam,
               staleTime: 1000 * 60,
             })
           }
         >
-          <LoungeClient />
+          <section className="mt-10 sm:mt-12">
+            <PostList />
+          </section>
         </PrefetchBoundary>
       </Suspense>
 
