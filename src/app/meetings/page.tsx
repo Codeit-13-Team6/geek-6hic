@@ -41,11 +41,14 @@ function MeetingFilterSkeleton() {
             ),
           )}
         </div>
-        <div className="mt-2 flex items-center justify-end gap-2">
-          <div className="h-[38px] w-[70px] rounded-md bg-gray-100" />
-          <div className="h-[50px] w-[140px] rounded-[12px] bg-gray-100" />
-        </div>
       </div>
+      <section className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex w-full items-center sm:max-w-[480px]">
+          <div className="h-12 flex-1 rounded-xl bg-gray-100 sm:h-14" />
+          <div className="ml-4 h-6 w-6 shrink-0 rounded-full bg-gray-100" />
+        </div>
+        <div className="h-12 w-[140px] rounded-[12px] bg-gray-100 sm:h-14" />
+      </section>
     </div>
   );
 }
