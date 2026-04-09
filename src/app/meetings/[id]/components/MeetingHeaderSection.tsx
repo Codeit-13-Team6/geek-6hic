@@ -119,11 +119,9 @@ export function MeetingHeaderSection({
       ToastCommon({
         message: isSecret ? (
           <>
-            비밀방입니다
+            비밀방입니다.
             <br />
-            Secret Code
-            <br />
-            함께 전달해 주세요
+            Secret Code를 함께 전달해 주세요
           </>
         ) : (
           "모임 링크가 복사되었어요."
@@ -132,22 +130,6 @@ export function MeetingHeaderSection({
         duration: 3000,
       });
       return;
-    }
-
-    if (isSecret) {
-      return ToastCommon({
-        message: (
-          <>
-            비밀방입니다
-            <br />
-            Secret Code
-            <br />
-            함께 전달해 주세요
-          </>
-        ),
-
-        duration: 3000,
-      });
     }
   };
 
