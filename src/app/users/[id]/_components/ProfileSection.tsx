@@ -65,9 +65,9 @@ export default function ProfileSection({
 
   return (
     <>
-      <article className="flex h-full w-full flex-row items-center gap-8 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs sm:gap-8 lg:flex-col lg:p-8">
-        {/* 이미지 크기 축소 (size-24 -> size-20) */}
-        <div className="relative size-20 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 lg:size-24">
+      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs sm:flex-row sm:gap-8 lg:flex-col lg:p-8">
+        {/* 이미지: 모바일에서 상단 중앙, sm에서 왼쪽, lg에서 다시 상단 */}
+        <div className="relative size-24 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 sm:size-20 lg:size-24">
           <FallbackImage
             src={user?.image}
             type="user"
@@ -77,6 +77,7 @@ export default function ProfileSection({
           />
         </div>
 
+        {/* 정보 컨텐츠 영역 */}
         <div className="flex w-full flex-1 flex-col items-center gap-5 sm:items-start lg:items-center">
           <div className="flex flex-col items-center gap-2 sm:items-start lg:items-center">
             <div className="flex items-center gap-4">
@@ -96,7 +97,8 @@ export default function ProfileSection({
 
           <div className="h-[1px] w-full bg-slate-50" />
 
-          <div className="w-full space-y-3 text-left lg:text-center">
+          {/* 텍스트 정렬: 모바일 중앙, sm 왼쪽, lg 중앙 */}
+          <div className="w-full space-y-3 text-center sm:text-left lg:text-center">
             <div>
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 Contact
