@@ -41,6 +41,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { shareLink } from "@/lib/share";
 import { copyToClipboard } from "@/lib/utils";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
@@ -94,8 +95,14 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
+
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
+
   const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
     useMeetingJoinMutations(meetingId);
+
+
   const { handleEditMeeting, handleDeleteMeeting } =
     useMeetingHostMutations(meetingId);
   const { hasAttended, isCheckingAttendance, handleAttendMeeting } =
@@ -310,7 +317,7 @@ export function MeetingHeaderSection({
 
                       {menuConfig.showMember ? (
                         <DropdownMenuItem
-                          onClick={handleCancelJoinMeeting}
+                          onClick={() => setIsCloseConfirmOpen(true)}
                           className="font-bold text-red-500"
                         >
                           모임 탈퇴하기
@@ -321,6 +328,7 @@ export function MeetingHeaderSection({
                 )}
               </div>
             </div>
+
 
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
@@ -519,6 +527,21 @@ export function MeetingHeaderSection({
           </BtnCommon>
         </div>
       </ModalBase>
+
+      <ConfirmModal
+        isOpen={isCloseConfirmOpen}
+        onOpenChange={setIsCloseConfirmOpen}
+        onConfirm={() => setIsCloseConfirmOpen(false)}
+        onCancel={() => {
+          setIsCloseConfirmOpen(false);
+          handleCancelJoinMeeting();
+        }}
+        description='모임에서 탈퇴하시겠습니까?'
+        subDescription=''
+        confirmButtonLabel='취소하기'
+        cancelButtonLabel='탈퇴하기'
+      />
+
     </>
   );
 }

@@ -43,7 +43,7 @@ export default function SignUp() {
 
       if (result.ok) {
         setIsOpenModal(true);
-        ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
+        // ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
 
       } else {
         setIsLoading(false);
