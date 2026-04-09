@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ProfileSection from "@/app/users/[id]/_components/ProfileSection";
+import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
 import MyPostList from "@/app/users/[id]/_components/MyPostList";
@@ -55,12 +56,11 @@ export default async function Page({
     isOwnProfile,
     userId: profileUserId,
   });
-
-  const profileUser = Number.isFinite(Number(id))
-    ? await getPublicUserProfile({
+  const profileUserPromise = Number.isFinite(profileUserId)
+    ? getPublicUserProfile({
         userId: profileUserId,
       })
-    : initialUser;
+    : Promise.resolve(initialUser);
 
   const tabs = isOwnProfile
     ? [
@@ -89,10 +89,16 @@ export default async function Page({
           <div className="flex min-w-[180%] items-stretch gap-4 lg:w-full lg:min-w-full lg:flex-col">
             <div className="w-1/2 snap-center lg:w-full lg:min-w-full">
               {/* 남 프로필이랑 내 프로필 구분 */}
-              <ProfileSection
-                initialUser={profileUser}
-                canEdit={isOwnProfile}
-              />
+              <Suspense
+                fallback={
+                  <ProfileSection initialUser={initialUser} canEdit={isOwnProfile} />
+                }
+              >
+                <ProfileSectionContainer
+                  profileUserPromise={profileUserPromise}
+                  canEdit={isOwnProfile}
+                />
+              </Suspense>
             </div>
             <div className="w-1/2 snap-center lg:w-full">
               <GradeCard />
