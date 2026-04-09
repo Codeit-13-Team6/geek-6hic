@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
-import type { JoinedMeetingsResponse, SortBy, SortOrder } from "@/types";
+import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
@@ -55,15 +55,15 @@ export default async function Page({
   searchParams: Promise<{
     type?: string;
     keyword?: string;
-    sortBy?: SortBy;
+    sortBy?: MeetingSortBy;
     sortOrder?: SortOrder;
   }>;
 }) {
   const params = await searchParams;
   const type = params.type || "";
   const keyword = params.keyword || "";
-  const sortBy = params.sortBy || "createdAt";
-  const sortOrder = params.sortOrder || "desc";
+  const sortBy = params.sortBy || ("createdAt" as MeetingSortBy);
+  const sortOrder = params.sortOrder || ("desc" as SortOrder);
 
   const currentParams = { type, keyword, sortBy, sortOrder };
 
@@ -126,12 +126,7 @@ export default async function Page({
               readonly unknown[],
               string | undefined
             >({
-              queryKey: QUERY_KEYS.meetings.listParams({
-                type,
-                keyword,
-                sortBy,
-                sortOrder,
-              }),
+              queryKey: QUERY_KEYS.meetings.listParams(currentParams),
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;

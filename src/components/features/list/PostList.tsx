@@ -3,64 +3,56 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
 import { getPosts } from "@/api/client/posts";
-import { Post } from "@/types";
+import {
+  GetPostsParams,
+  GetPostsResponse,
+  LoungeSortBy,
+  Post,
+  SortOrder,
+} from "@/types";
 import { useRouter } from "next/navigation";
 import { SearchX, Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { PostListProps } from "@/types";
 import { cn } from "@/lib/utils";
 import PostCardListSkeleton from "@/components/skeleton/PostCardListSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getNextPageParam } from "@/lib/pagination";
+import { useUrlQuery } from "@/hooks/useUrlQuery";
 
-export default function PostList({
-  searchValue = "",
-  sortValue = "latest",
-}: PostListProps) {
+export default function PostList() {
   const router = useRouter();
 
-  const getSortParams = () => {
-    switch (sortValue) {
-      case "popular":
-        return { sortBy: "likeCount" as const, sortOrder: "desc" as const };
-      case "comment":
-        return { sortBy: "commentCount" as const, sortOrder: "desc" as const };
-      case "oldest":
-        return { sortBy: "createdAt" as const, sortOrder: "asc" as const };
-      default: // latest
-        return { sortBy: "createdAt" as const, sortOrder: "desc" as const };
-    }
-  };
+  const { getParam } = useUrlQuery();
+  const keyword = getParam("keyword") || "";
+  const sortBy = (getParam("sortBy") || "createdAt") as LoungeSortBy;
+  const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
-  const { sortBy, sortOrder } = getSortParams();
+  const currentParams = { keyword, sortBy, sortOrder };
+  const listQueryKey = QUERY_KEYS.posts.listParams(currentParams);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: QUERY_KEYS.posts.listParams({
-        keyword: searchValue,
-        sortBy: sortBy,
-        sortOrder: sortOrder,
-      }),
-      queryFn: ({ pageParam }) =>
-        getPosts({
-          keyword: searchValue,
-          sortBy: sortBy,
-          sortOrder: sortOrder,
-          size: 20,
-          ...(pageParam ? { cursor: pageParam } : {}),
-        }),
-      initialPageParam: undefined as string | undefined,
+    useInfiniteQuery<GetPostsResponse>({
+      queryKey: listQueryKey,
+      queryFn: ({ pageParam }) => {
+        const cursor = typeof pageParam === "string" ? pageParam : undefined;
+        return getPosts({
+          ...currentParams,
+          size: 30,
+          ...(cursor ? { cursor } : {}),
+        });
+      },
+      initialPageParam: undefined,
       getNextPageParam,
       staleTime: 1000 * 60,
     });
 
+  console.log(data);
+  const postList = data?.pages.flatMap((page) => page.data) || [];
   const bottomRef = useIntersectionObserver(
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   );
-
-  const postList = data?.pages.flatMap((page) => page.data) || [];
 
   if (isLoading) return <PostCardListSkeleton />;
 
@@ -88,14 +80,15 @@ export default function PostList({
                   }
                 }}
                 className={cn(
-                  "animate-fade-up group overflow-hidden cursor-pointer rounded-[24px] bg-white transition-all duration-300",
+                  "animate-fade-up group cursor-pointer overflow-hidden rounded-[24px] bg-white transition-all duration-300",
                   "border border-slate-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
                   "sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple"
+                  "focus-visible:ring-main-purple focus-visible:ring-2 focus-visible:outline-none",
                 )}
               >
                 <PostCard
                   {...post}
+                  authorImage={post.author.image}
                   authorName={post.author.name}
                   authorId={post.author.id}
                   commentCount={post._count.comments}

@@ -1,6 +1,7 @@
 import { serverAxios, serverFetch } from "@/lib/serverFetcher";
 import type {
   GetCommentsResponse,
+  GetPostsParams,
   GetPostsResponse,
   Post,
   VisiblePostsPageResponse,
@@ -35,16 +36,18 @@ export async function getPostCommentsServer(
   return data;
 }
 
-export async function getPosts(cursor?: string): Promise<GetPostsResponse> {
+export async function getPosts(
+  params: GetPostsParams = {},
+): Promise<GetPostsResponse> {
   const { data } = await serverFetch({
     method: "GET",
     url: "/posts",
     params: {
-      keyword: "",
-      sortBy: "createdAt",
-      sortOrder: "desc",
-      size: 20,
-      ...(cursor ? { cursor } : {}),
+      keyword: params.keyword,
+      sortBy: params.sortBy || "createdAt",
+      sortOrder: params.sortOrder || "desc",
+      size: params.size || 10,
+      ...(params.cursor ? { cursor: params.cursor } : {}),
     },
   });
 
