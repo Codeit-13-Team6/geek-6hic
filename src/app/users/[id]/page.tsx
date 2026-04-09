@@ -11,12 +11,14 @@ import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type { FavoritesPageResponse } from "@/types";
 import {
   getFavorites,
-  getProfileStats,
+  getBasicProfileStats,
+  getDetailedParticipantStats,
   getPublicUserProfile,
 } from "@/api/server";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
+import StatGridContainer from "./_components/StatGridContainer";
 import GradeCard from "./_components/GridCard";
 
 const FAVORITES_PAGE_SIZE = 10;
@@ -44,15 +46,21 @@ export default async function Page({
   const initialUser = raw ? JSON.parse(raw) : null;
   const isOwnProfile = initialUser?.id === Number(id);
   const profileUserId = Number(id);
+
+  const basicStatsPromise = getBasicProfileStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
+  const participantStatsPromise = getDetailedParticipantStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
+
   const profileUser = Number.isFinite(Number(id))
     ? await getPublicUserProfile({
         userId: profileUserId,
       })
     : initialUser;
-  const stats = await getProfileStats({
-    isOwnProfile,
-    userId: profileUserId,
-  });
 
   const tabs = isOwnProfile
     ? [
@@ -93,13 +101,27 @@ export default async function Page({
 
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
           <div className="min-w-[90%] snap-center lg:min-w-full">
-            <StatGrid
-              postCount={stats.postCount}
-              meetingCount={stats.meetingCount}
-              favoriteCount={stats.favoriteCount}
-              participantStats={stats.participantStats}
-              // insight="오늘도 즐거운 코딩 되세요! 🚀"
-            />
+            <Suspense
+              fallback={
+                <StatGrid
+                  postCount={0}
+                  meetingCount={0}
+                  favoriteCount={0}
+                  participantStats={{
+                    team: 0,
+                    study: 0,
+                    project: 0,
+                    jobPrep: 0,
+                    etc: 0,
+                  }}
+                />
+              }
+            >
+              <StatGridContainer
+                basicStatsPromise={basicStatsPromise}
+                participantStatsPromise={participantStatsPromise}
+              />
+            </Suspense>
           </div>
         </aside>
 
