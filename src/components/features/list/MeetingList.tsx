@@ -9,7 +9,7 @@ import {
   useJoinedMeetingList,
 } from "@/hooks/queries/useMeetingInfiniteList";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
-import { SortOrder, SortBy } from "@/types";
+import { SortOrder, MeetingSortBy } from "@/types";
 
 interface MeetingsClientProps {
   variant?: "all" | "joined";
@@ -25,7 +25,7 @@ export default function MeetingList({
   const { getParam } = useUrlQuery();
   const type = getParam("type");
   const keyword = getParam("keyword");
-  const sortBy = (getParam("sortBy") || "createdAt") as SortBy;
+  const sortBy = (getParam("sortBy") || "createdAt") as MeetingSortBy;
   const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
   const allResult = useMeetingList({
