@@ -10,9 +10,10 @@ export function BtnTop() {
   const pathname = usePathname();
   const lastScrollY = useRef(0);
 
-  // 라우트 변경 시 상태 초기화
+  // 라우트 변경 시 상태 초기화 및 스크롤 리셋
   useEffect(() => {
-    lastScrollY.current = window.scrollY;
+    window.scrollTo(0, 0);
+    lastScrollY.current = 0;
     setVisible(false); // 페이지 이동 시 항상 숨김
   }, [pathname]);
 
