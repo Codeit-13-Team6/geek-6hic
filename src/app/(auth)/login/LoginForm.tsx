@@ -12,6 +12,7 @@ import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
 import { loginUser } from "@/api/client";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -30,6 +31,8 @@ export default function LoginForm({
     "google" | "kakao" | null
   >(null);
   const [error, setError] = useState<string | null>(null);
+
+  const closeModal = useLoginModalStore((s) => s.closeLoginModal);
 
   const {
     register,
@@ -143,8 +146,7 @@ export default function LoginForm({
           size={"md"}
           type="submit"
           disabled={isLoading}
-          onClick={() => {
-          }}
+          onClick={() => {}}
           className="mt-2 h-12 rounded-xl! font-black tracking-widest transition-transform active:scale-95"
         >
           로그인
@@ -205,7 +207,8 @@ export default function LoginForm({
         </p>
         <Link
           href="/signup"
-          className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-main-purple"
+          onClick={closeModal}
+          className="text-main-purple focus-visible:ring-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
         >
           Create Account
         </Link>

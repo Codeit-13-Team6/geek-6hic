@@ -8,6 +8,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { isSecretMeeting } from "@/lib/meetingSecret";
+import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 
@@ -45,7 +46,7 @@ export default function MyMeetingList({
   });
 
   if (isLoading) {
-    return null;
+    return <UserTabSkeleton variant="meeting" />;
   }
 
   if (meetings.length === 0 && !isFetching) {
@@ -74,7 +75,7 @@ export default function MyMeetingList({
             key={item.id}
             title={item.name}
             type={item.type}
-            date={new Date(item.dateTime)}
+            date={new Date(item.createdAt)}
             imageSrc={item.image ?? undefined}
             capacity={item.capacity}
             participantCount={item.participantCount}

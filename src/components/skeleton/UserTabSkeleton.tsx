@@ -13,7 +13,7 @@ export function UserTabSkeleton({ variant = "meeting" }: UserTabSkeletonProps) {
   if (variant === "post") {
     return (
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className={cardBaseStyle}>
             <div className="relative aspect-video w-full shrink-0 bg-slate-100 sm:aspect-square sm:h-28 sm:w-28 sm:rounded-xl lg:h-32 lg:w-32" />
 
@@ -46,7 +46,7 @@ export function UserTabSkeleton({ variant = "meeting" }: UserTabSkeletonProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:gap-6">
-      {Array.from({ length: 4 }).map((_, i) => (
+      {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className={cardBaseStyle}>
           <div className="relative aspect-video w-full shrink-0 bg-slate-100 sm:h-32 sm:w-32 sm:rounded-2xl" />
 

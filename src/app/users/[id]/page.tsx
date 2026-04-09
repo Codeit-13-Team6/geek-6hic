@@ -8,28 +8,20 @@ import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
 import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
 import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
-import type {
-  FavoritesPageResponse,
-  MyMeetingsPageResponse,
-  MyPostsPageResponse,
-} from "@/types";
+import type { FavoritesPageResponse } from "@/types";
 import {
   getFavorites,
-  getMyMeetings,
-  getMyPostsServer,
-  getProfileStats,
+  getBasicProfileStats,
+  getDetailedParticipantStats,
   getPublicUserProfile,
-  getUserMeetingsPageServer,
-  getUserPostsPageServer,
 } from "@/api/server";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
+import StatGridContainer from "./_components/StatGridContainer";
 import GradeCard from "./_components/GridCard";
 
 const FAVORITES_PAGE_SIZE = 10;
-const MY_MEETINGS_PAGE_SIZE = 10;
-const MY_POSTS_PAGE_SIZE = 10;
 
 export const metadata: Metadata = {
   title: "마이 페이지",
@@ -54,15 +46,21 @@ export default async function Page({
   const initialUser = raw ? JSON.parse(raw) : null;
   const isOwnProfile = initialUser?.id === Number(id);
   const profileUserId = Number(id);
+
+  const basicStatsPromise = getBasicProfileStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
+  const participantStatsPromise = getDetailedParticipantStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
+
   const profileUser = Number.isFinite(Number(id))
     ? await getPublicUserProfile({
         userId: profileUserId,
       })
     : initialUser;
-  const stats = await getProfileStats({
-    isOwnProfile,
-    userId: profileUserId,
-  });
 
   const tabs = isOwnProfile
     ? [
@@ -103,12 +101,27 @@ export default async function Page({
 
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
           <div className="min-w-[90%] snap-center lg:min-w-full">
-            <StatGrid
-              postCount={stats.postCount}
-              meetingCount={stats.meetingCount}
-              favoriteCount={stats.favoriteCount}
-              // insight="오늘도 즐거운 코딩 되세요! 🚀"
-            />
+            <Suspense
+              fallback={
+                <StatGrid
+                  postCount={0}
+                  meetingCount={0}
+                  favoriteCount={0}
+                  participantStats={{
+                    team: 0,
+                    study: 0,
+                    project: 0,
+                    jobPrep: 0,
+                    etc: 0,
+                  }}
+                />
+              }
+            >
+              <StatGridContainer
+                basicStatsPromise={basicStatsPromise}
+                participantStatsPromise={participantStatsPromise}
+              />
+            </Suspense>
           </div>
         </aside>
 
@@ -139,71 +152,17 @@ export default async function Page({
             )}
 
             <TabsContent value="created" className="mt-8 !border-none md:mt-12">
-              <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
-                <PrefetchBoundary
-                  prefetchFn={(qc) =>
-                    qc.prefetchQuery<MyMeetingsPageResponse>({
-                      queryKey: isOwnProfile
-                        ? QUERY_KEYS.meetings.myPage(1, MY_MEETINGS_PAGE_SIZE)
-                        : QUERY_KEYS.meetings.userPage(
-                            profileUserId,
-                            1,
-                            MY_MEETINGS_PAGE_SIZE,
-                          ),
-                      queryFn: () =>
-                        isOwnProfile
-                          ? getMyMeetings({
-                              offset: 0,
-                              limit: MY_MEETINGS_PAGE_SIZE,
-                            })
-                          : getUserMeetingsPageServer({
-                              userId: profileUserId,
-                              offset: 0,
-                              limit: MY_MEETINGS_PAGE_SIZE,
-                            }),
-                    })
-                  }
-                >
-                  <MyMeetingList
-                    isOwnProfile={isOwnProfile}
-                    userId={profileUserId}
-                  />
-                </PrefetchBoundary>
-              </Suspense>
+              <MyMeetingList
+                isOwnProfile={isOwnProfile}
+                userId={profileUserId}
+              />
             </TabsContent>
 
             <TabsContent value="lounge" className="mt-8 md:mt-12">
-              <Suspense fallback={<UserTabSkeleton variant="post" />}>
-                <PrefetchBoundary
-                  prefetchFn={(qc) =>
-                    qc.prefetchQuery<MyPostsPageResponse>({
-                      queryKey: isOwnProfile
-                        ? QUERY_KEYS.posts.myPage(1, MY_POSTS_PAGE_SIZE)
-                        : QUERY_KEYS.posts.userPage(
-                            profileUserId,
-                            1,
-                            MY_POSTS_PAGE_SIZE,
-                          ),
-                      queryFn: () =>
-                        isOwnProfile
-                          ? getMyPostsServer({
-                              offset: 0,
-                              limit: MY_POSTS_PAGE_SIZE,
-                            })
-                          : getUserPostsPageServer({
-                              userId: profileUserId,
-                              offset: 0,
-                              limit: MY_POSTS_PAGE_SIZE,
-                            }),
-                    })
-                  }
-                >
-                  <MyPostList
-                    isOwnProfile={isOwnProfile}
-                    userId={profileUserId}
-                  />
-                </PrefetchBoundary>
-              </Suspense>
+              <MyPostList
+                isOwnProfile={isOwnProfile}
+                userId={profileUserId}
+              />
             </TabsContent>
           </Tab>
         </section>

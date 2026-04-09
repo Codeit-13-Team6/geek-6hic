@@ -115,7 +115,7 @@ export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
 export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
 export type MyMeetingsResponse = CursorResponse<Meeting>;
 export type FavoritesPageResponse = OffsetResponse<FavoritesResponseData>;
-export type MyMeetingsPageResponse = OffsetResponse<Meeting>;
+export type MyMeetingsPageResponse = OffsetResponse<MeetingResponse>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
@@ -172,6 +172,7 @@ export interface UserCardProps {
   date?: Date;
   imageSrc?: string;
   participantCount?: number;
+  createdAt?: string;
   capacity?: number;
   defaultLiked?: boolean;
   showLikeBtn?: boolean;

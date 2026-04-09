@@ -22,7 +22,7 @@ import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Users2 } from "lucide-react";
+import { Users2, Lock } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -47,13 +47,7 @@ const hasUsableProfileImage = (value: string | null): value is string =>
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
 
-const ParticipantAvatar = ({
-  participant,
-  onClick,
-}: {
-  participant: MeetingMember;
-  onClick: () => void;
-}) => {
+const ParticipantAvatar = ({ participant }: { participant: MeetingMember }) => {
   const displayName = participant.name || "참여자";
   const profileImage = hasUsableProfileImage(participant.image)
     ? participant.image
@@ -62,7 +56,6 @@ const ParticipantAvatar = ({
   return (
     <button
       type="button"
-      onClick={onClick}
       className="rounded-full transition-transform hover:scale-105"
     >
       <FallbackImage
@@ -234,6 +227,11 @@ export function MeetingHeaderSection({
             fill
             className="object-cover transition-transform duration-700 hover:scale-105"
           />
+          {isSecret && !isHost && !isJoined && (
+            <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
+              🔒
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">
@@ -344,11 +342,7 @@ export function MeetingHeaderSection({
                 </div>
                 <div className="flex -space-x-2.5">
                   {visibleParticipants.map((p, idx) => (
-                    <ParticipantAvatar
-                      key={p.id || idx}
-                      participant={p}
-                      onClick={() => router.push(`/users/${p.id}`)}
-                    />
+                    <ParticipantAvatar key={p.id || idx} participant={p} />
                   ))}
                   {hiddenParticipantCount > 0 && (
                     <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">

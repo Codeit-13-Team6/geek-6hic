@@ -7,7 +7,7 @@ export default function RankingListSkeleton() {
         <div className="flex flex-col items-center gap-3">
           <div className="border-t-main-purple size-8 animate-spin rounded-full border-4 border-gray-200" />
           <p className="text-base font-medium text-gray-600">
-            랭킹을 산정하는 중입니다. 잠시만 기다려주세요.
+            실시간으로 랭킹을 산정하는 중입니다. 잠시만 기다려주세요.
           </p>
         </div>
       </div>
