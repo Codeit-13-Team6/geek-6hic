@@ -27,7 +27,7 @@ export default function StatGrid({
       <div className="col-span-6 flex items-center justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm lg:col-span-2">
         <div className="flex flex-col">
           <dt className="text-[10px] font-bold tracking-tight text-slate-400 uppercase sm:text-[11px]">
-            Created Meetings
+            만든 모임
           </dt>
           <dd className="text-xl font-black text-slate-900 sm:text-2xl">
             {meetingCount}개
@@ -39,12 +39,17 @@ export default function StatGrid({
       </div>
 
       <div className="col-span-3 lg:col-span-1">
-        <StatBox label="Posts" val={postCount} icon="✍️" color="bg-blue-50" />
+        <StatBox
+          label="작성한 게시글"
+          val={postCount}
+          icon="✍️"
+          color="bg-blue-50"
+        />
       </div>
 
       <div className="col-span-3 lg:col-span-1">
         <StatBox
-          label="Favorites"
+          label="받은 좋아요"
           val={favoriteCount}
           icon="💖"
           color="bg-rose-50"
@@ -54,7 +59,7 @@ export default function StatGrid({
       <div className="col-span-6 rounded-3xl border border-slate-100 bg-white p-5 shadow-sm lg:col-span-2">
         <div className="mb-4 flex items-center justify-between">
           <dt className="text-[10px] font-bold tracking-tight text-slate-400 uppercase">
-            Participant Stats
+            모임별 참여 현황
           </dt>
           <span className="text-lg" aria-hidden="true">
             👥
@@ -63,31 +68,31 @@ export default function StatGrid({
 
         <div className="flex w-full items-center justify-between gap-1 overflow-x-hidden">
           <PartItem
-            label="Team"
+            label="팀미팅"
             val={participantStats.team}
             color="text-cyan-600"
           />
           <div className="h-4 w-[1px] bg-slate-100" />
           <PartItem
-            label="Study"
+            label="스터디"
             val={participantStats.study}
             color="text-indigo-500"
           />
           <div className="h-4 w-[1px] bg-slate-100" />
           <PartItem
-            label="Project"
+            label="프로젝트"
             val={participantStats.project}
             color="text-violet-500"
           />
           <div className="h-4 w-[1px] bg-slate-100" />
           <PartItem
-            label="Job"
+            label="취준생"
             val={participantStats.jobPrep}
             color="text-rose-400"
           />
           <div className="h-4 w-[1px] bg-slate-100" />
           <PartItem
-            label="Etc"
+            label="기타"
             val={participantStats.etc}
             color="text-slate-400"
           />
