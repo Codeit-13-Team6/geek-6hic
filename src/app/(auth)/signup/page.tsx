@@ -9,7 +9,9 @@ import { signupUser } from "@/api/client/auth";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useForm } from "react-hook-form";
 import type { SignUpFormValues } from "@/types";
-import { useState } from "react";
+import React, { useState } from "react";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import ModalBase from "@/components/ui/ModalBase";
 
 export default function SignUp() {
   const router = useRouter();
@@ -39,8 +41,9 @@ export default function SignUp() {
       const result = await signupUser(data);
 
       if (result.ok) {
+        setIsOpenModal(true);
         ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
-        router.push("/login");
+
       } else {
         setIsLoading(false);
       }
@@ -60,9 +63,17 @@ export default function SignUp() {
     }
   };
 
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+    router.push("/login");
+  };
+
+
   return (
     <section
-      className="flex items-center my-10 xl:my-0 px-6 2xl:px-0 h-[calc(100dvh-63px)] lg:h-[calc(100dvh-72px)]"
+      className="my-10 flex h-[calc(100dvh-63px)] items-center px-6 lg:h-[calc(100dvh-72px)] xl:my-0 2xl:px-0"
       aria-labelledby="sign-up-header"
     >
       <div className="w-full sm:mx-auto sm:max-w-[540px]">
@@ -181,13 +192,32 @@ export default function SignUp() {
             </p>
             <Link
               href="/login"
-              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-main-purple"
+              className="text-main-purple focus-visible:ring-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
             >
               Back to Sign In
             </Link>
           </div>
         </div>
       </div>
+
+      <ModalBase
+        isOpen={isOpenModal}
+        onOpenChange={handleCloseModal}
+        title="회원가입이 완료되었습니다."
+        titleClassName="text-lg mx-auto mb-4 font-black tracking-tighter text-slate-900 uppercase"
+        disablePointerDismissal={true}
+      >
+        <div>
+          <BtnCommon
+            variant="teritary"
+            onClick={handleCloseModal}
+            disabled={isLoading}
+            className="h-12 !w-full !rounded-2xl font-black tracking-widest text-slate-400 transition-all hover:bg-slate-50 sm:h-14"
+          >
+            로그인페이지로
+          </BtnCommon>
+        </div>
+      </ModalBase>
     </section>
   );
 }

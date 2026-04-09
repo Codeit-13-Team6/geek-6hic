@@ -17,7 +17,7 @@ export default function ModalBase({
   title,
   contentClassName,
   titleClassName,
-  disablePointerDismissal = false,
+  disablePointerDismissal = true,
 }: ModalCommonProps) {
   return (
     <Dialog
