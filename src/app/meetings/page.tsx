@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
-import type { JoinedMeetingsResponse } from "@/types";
+import type { JoinedMeetingsResponse, SortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
 import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
@@ -55,8 +55,8 @@ export default async function Page({
   searchParams: Promise<{
     type?: string;
     keyword?: string;
-    sortBy?: "createdAt" | "dateTime" | "registrationEnd" | "participantCount";
-    sortOrder?: "desc" | "asc";
+    sortBy?: SortBy;
+    sortOrder?: SortOrder;
   }>;
 }) {
   const params = await searchParams;
