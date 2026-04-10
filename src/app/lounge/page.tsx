@@ -55,7 +55,7 @@ export default async function LoungePage({
             id="hot-posts-heading"
             className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase"
           >
-            주간 인기글
+            Weekly HOT Posts
           </h2>
         </div>
         <div className="animate-fade-up">

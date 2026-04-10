@@ -118,7 +118,7 @@ export default function ProfileSection({
           <div className="w-full space-y-3 text-center sm:text-left lg:text-center">
             <div>
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
-                연락처
+                contact
               </p>
               <p className="line-clamp-2 text-sm font-semibold break-all text-slate-600">
                 {displayUser?.email}
@@ -126,7 +126,7 @@ export default function ProfileSection({
             </div>
             <div>
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
-                한줄소개
+                Intro
               </p>
               <p className="line-clamp-2 text-sm leading-relaxed font-semibold text-slate-600">
                 {displayUser?.companyName || "자기소개가 없습니다."}

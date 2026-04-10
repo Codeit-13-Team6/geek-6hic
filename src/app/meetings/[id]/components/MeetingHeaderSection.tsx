@@ -212,7 +212,7 @@ export function MeetingHeaderSection({
             src={detail.image}
             alt="모임 썸네일"
             fill
-            className="object-cover transition-transform duration-700 hover:scale-105"
+            className="object-cover transition-transform duration-700"
           />
           {isSecret && !isHost && !isJoined && (
             <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
@@ -386,7 +386,7 @@ export function MeetingHeaderSection({
                   </div>
                   {participant.userId === detail.hostId && (
                     <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      주최자
+                      호스트
                     </span>
                   )}
                 </div>

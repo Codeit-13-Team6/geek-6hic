@@ -108,7 +108,7 @@ export function MeetingModalForm({
         label="모임 링크"
         isRequired
         value={values.link}
-        placeholder="discord.gg/example"
+        placeholder="모임에 사용될 링크를 입력해주세요"
         onChange={(event) => {
           onChange({ link: event.target.value });
         }}

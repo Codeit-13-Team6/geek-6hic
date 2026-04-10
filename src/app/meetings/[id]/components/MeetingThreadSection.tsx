@@ -52,7 +52,7 @@ export function MeetingThreadSection({
           </h2>
         </div>
         <p className="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">
-          소통 공간
+          Community Thread
         </p>
       </div>
 
