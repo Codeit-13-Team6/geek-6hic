@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverAxios } from "@/lib/serverFetcher";
+import { setUserDisplayCookie } from "@/lib/authCookies";
 import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {
@@ -197,6 +198,10 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
     const { data, status } = await serverAxios(axiosOptions);
 
     const response = NextResponse.json(data, { status });
+
+    if (targetPath === "/users/me" && request.method === "PATCH") {
+      setUserDisplayCookie(response, data);
+    }
 
     return response;
   } catch (err) {
