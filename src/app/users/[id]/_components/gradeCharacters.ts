@@ -19,6 +19,17 @@ export interface GradeCharacter {
   glowColor: string;
 }
 
+export type UserType =
+  | "LPI"
+  | "LPA"
+  | "LSI"
+  | "LSA"
+  | "WPI"
+  | "WPA"
+  | "WSI"
+  | "WSA"
+  | "SEED";
+
 export const gradeCharacters: GradeCharacter[] = [
   {
     title: "열정적인 캡틴",
@@ -112,7 +123,10 @@ export const gradeCharacters: GradeCharacter[] = [
   },
 ];
 
-export const CHARACTER_MAP: Record<string, GradeCharacter> =
-  gradeCharacters.reduce((acc, char) => ({ ...acc, [char.type]: char }), {});
+export const CHARACTER_MAP: Record<UserType, GradeCharacter> =
+  gradeCharacters.reduce(
+    (acc, char) => ({ ...acc, [char.type]: char }),
+    {} as Record<UserType, GradeCharacter>,
+  );
 
 export const DEFAULT_CHARACTER = CHARACTER_MAP["SEED"];

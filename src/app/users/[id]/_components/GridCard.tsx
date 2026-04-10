@@ -1,16 +1,22 @@
+"use client";
+
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import {
   CHARACTER_MAP,
   DEFAULT_CHARACTER,
+  type UserType,
 } from "@/app/users/[id]/_components/gradeCharacters";
 
 interface GradeCardProps {
-  userType?: string; // 유저 분석 로직에서 도출된 타입 (LPI, WSA 등)
+  userType?: UserType;
 }
 
 export default function GradeCard({ userType }: GradeCardProps) {
-  // 1. 전달받은 타입이 유효하면 해당 데이터를, 없으면 기본 캐릭터(WSA)를 선택
-  const character = (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER;
+  const character = useMemo(
+    () => (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER,
+    [userType],
+  );
 
   return (
     <div
