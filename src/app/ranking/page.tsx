@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="lg:py-202xl:px-0 relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 2xl:px-0">
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
       <RankingHeroSection />
 
       <div className="animate-fade-up mb-10 flex items-center gap-3 md:mb-15">

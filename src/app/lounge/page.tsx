@@ -1,20 +1,18 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import { BtnCommon } from "@/components/ui/BtnCommon";
 import HotPostList from "@/app/lounge/_component/HotPostList";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import { getPosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
-import { MessageSquareText } from "lucide-react";
-import LoginGuard from "@/components/modal/LoginGuard";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import LoungeSearchSection from "./_component/LoungeSearchSection";
 import PostList from "@/components/features/list/PostList";
 import { GetPostsResponse, LoungeSortBy } from "@/types/post";
 import { SortOrder } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
+import { LoungeHeroSection } from "./_component/LoungeHeroSection";
+import { BtnCreatePost } from "./BtnCreatePost";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",
@@ -44,62 +42,11 @@ export default async function LoungePage({
   const currentParams = { keyword, sortBy, sortOrder };
 
   return (
-    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
-      <div className="animate-fade-up flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div
-              className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16"
-              aria-hidden="true"
-            >
-              <MessageSquareText className="text-white" size={24} />
-            </div>
-            <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
-              Community / Lounge
-            </span>
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
-              SPRINT <span className="text-main-purple uppercase">Lounge.</span>
-            </h1>
-          </div>
-        </div>
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
+      <LoungeHeroSection />
 
-        <div className="hidden items-end self-end text-right sm:flex sm:flex-col">
-          <div className="max-w-[420px]">
-            <LoginGuard
-              fallback={
-                <BtnCommon className="group bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
-                  <div className="flex items-center gap-2 text-xs tracking-widest uppercase">
-                    <span className="text-bases transition-transform duration-300 group-hover:rotate-180">
-                      +
-                    </span>
-                    <span>Create Post</span>
-                  </div>
-                </BtnCommon>
-              }
-            >
-              <Link
-                href="/lounge/create"
-                className="hidden sm:block"
-                aria-label="게시글 작성 페이지로 이동"
-              >
-                <BtnCommon className="group bg-main-purple h-12 w-[90%] rounded-2xl border-none px-10 font-black text-white transition-all hover:bg-slate-950">
-                  <div className="flex items-center gap-2 text-xs tracking-widest uppercase">
-                    <span className="text-base transition-transform duration-300 group-hover:rotate-180">
-                      +
-                    </span>
-                    <span>Create Post</span>
-                  </div>
-                </BtnCommon>
-              </Link>
-            </LoginGuard>
-          </div>
-        </div>
-      </div>
-
-      <section className="mb-10 sm:mb-12" aria-labelledby="hot-posts-heading">
-        <div className="animate-fade-up mt-10 mb-4 flex items-center gap-3">
+      <section className="mb-1 sm:mb-12" aria-labelledby="hot-posts-heading">
+        <div className="animate-fade-up mt-10 mb-8 flex items-center gap-3">
           <div
             className="bg-main-purple h-[6px] w-8 rounded-full"
             aria-hidden="true"
@@ -153,11 +100,7 @@ export default async function LoungePage({
         </PrefetchBoundary>
       </Suspense>
 
-      <Link href="/lounge/create" aria-label="게시글 작성 페이지로 이동">
-        <BtnCommon className="bg-main-purple fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border-none text-white shadow-2xl transition-transform hover:scale-110 sm:hidden">
-          <span className="pb-1 text-3xl font-light">+</span>
-        </BtnCommon>
-      </Link>
+      <BtnCreatePost />
     </div>
   );
 }
