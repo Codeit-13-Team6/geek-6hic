@@ -7,6 +7,7 @@ import wpaCharacterImg from "@/assets/img/character/WPA.png";
 import wpiCharacterImg from "@/assets/img/character/WPI.png";
 import wsaCharacterImg from "@/assets/img/character/WSA.png";
 import wsiCharacterImg from "@/assets/img/character/WSI.png";
+import seedCharacterImg from "@/assets/img/character/SEED.png";
 
 export interface GradeCharacter {
   title: string;
@@ -99,9 +100,19 @@ export const gradeCharacters: GradeCharacter[] = [
     accentColor: "text-yellow-700",
     glowColor: "rgba(234, 179, 8, 0.2)",
   },
+  {
+    title: "씨앗 스프린터",
+    type: "SEED",
+    description:
+      "아직 정원이 비어있네요! 첫 게시글을 남기거나 모임을 열어 나만의 정원을 가꾸기 시작해 보세요. 당신은 어떤 성장의 꽃을 피우게 될까요?",
+    imgUrl: seedCharacterImg, // 씨앗 전용 이미지 (없다면 가장 기본이 되는 캐릭터 이미지)
+    bgClass: "bg-[#c7b4a3]", // 아주 연한 인디고 (시작의 순수함)
+    accentColor: "text-indigo-1000",
+    glowColor: "rgba(245, 230, 200, 90)",
+  },
 ];
 
 export const CHARACTER_MAP: Record<string, GradeCharacter> =
   gradeCharacters.reduce((acc, char) => ({ ...acc, [char.type]: char }), {});
 
-export const DEFAULT_CHARACTER = CHARACTER_MAP["LPI"];
+export const DEFAULT_CHARACTER = CHARACTER_MAP["SEED"];
