@@ -104,4 +104,4 @@ export const gradeCharacters: GradeCharacter[] = [
 export const CHARACTER_MAP: Record<string, GradeCharacter> =
   gradeCharacters.reduce((acc, char) => ({ ...acc, [char.type]: char }), {});
 
-export const DEFAULT_CHARACTER = CHARACTER_MAP["LPA"];
+export const DEFAULT_CHARACTER = CHARACTER_MAP["LPI"];
