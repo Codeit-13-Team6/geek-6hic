@@ -99,6 +99,16 @@ export async function likePost(postId: number): Promise<void> {
 export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
+
+export async function getLoungePostsBFF(
+  params: GetPostsParams,
+): Promise<GetPostsResponse> {
+  const { data } = await axiosInstance.get<GetPostsResponse>("/lounge/posts", {
+    params,
+  });
+  return data;
+}
+
 export async function getThreadPost(meetingId: number): Promise<Post> {
   const { data } = await axiosInstance.get("/posts", {
     params: { keyword: threadKeyword.build(meetingId) },
