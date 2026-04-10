@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -9,6 +9,12 @@ import type { MeetingType } from "@/types";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 
 export default function MeetingTypeTabs() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
@@ -24,6 +30,10 @@ export default function MeetingTypeTabs() {
     ],
     [meetingTypes],
   );
+
+  if (!isMounted) {
+    return <div className="mb-6 h-[40px] w-full md:mb-8" />;
+  }
 
   return (
     <div className="mb-6 flex flex-col md:mb-8">
