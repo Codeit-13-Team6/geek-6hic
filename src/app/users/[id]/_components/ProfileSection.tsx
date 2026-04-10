@@ -54,7 +54,6 @@ export default function ProfileSection({
     updateProfile({ ...data, ...(image && { image }) });
   });
 
-
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
   const requestCloseModal = () => {
@@ -65,6 +64,8 @@ export default function ProfileSection({
     }
   };
 
+<<<<<<< HEAD
+=======
 
   // 서버에서 가져온 최신 initialUser로 store 동기화 (stale 쿠키 덮어쓰기 방지)
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function ProfileSection({
     }
   }, [initialUser]);
 
+>>>>>>> 0c20f2149cadc22f068c665415ad035aafca6774
   // 모달 열릴 때마다 최신 displayUser로 폼 동기화
   useEffect(() => {
     if (!displayUser) return;
@@ -86,7 +88,8 @@ export default function ProfileSection({
 
   return (
     <>
-      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-xs sm:flex-row sm:gap-8 lg:flex-col lg:p-8">
+      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-sm sm:flex-row sm:gap-8 lg:flex-col lg:p-8">
+        {/* <article className="relative flex h-full w-full flex-col items-center gap-6 overflow-hidden rounded-[40px] border border-slate-100 bg-slate-50 p-8 shadow-md sm:flex-row sm:gap-8 lg:flex-col lg:p-8"> */}
         <div className="relative size-24 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 sm:size-20 lg:size-24">
           <FallbackImage
             src={displayUser?.image}
@@ -97,7 +100,7 @@ export default function ProfileSection({
           />
         </div>
 
-        <div className="flex w-full flex-1 flex-col items-center gap-5 sm:items-start lg:items-center">
+        <div className="flex w-full flex-1 flex-col items-center gap-3 sm:items-start lg:items-center">
           <div className="flex flex-col items-center gap-2 sm:items-start lg:items-center">
             <div className="flex items-center gap-4">
               <h2 className="text-2xl font-bold tracking-tight break-all text-slate-950 sm:text-3xl">
@@ -135,6 +138,7 @@ export default function ProfileSection({
             </div>
           </div>
         </div>
+        {/* <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(168,85,247,0.1),transparent_70%)]" /> */}
       </article>
 
       {/* 편집 모달은 canEdit일 때만 의미 있음 */}
