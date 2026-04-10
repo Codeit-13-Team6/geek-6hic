@@ -3,6 +3,7 @@ import type { CursorResponse } from "./pagination";
 export type NotificationType =
   | "MEETING_CONFIRMED"
   | "MEETING_CANCELED"
+  | "MEETING_DELETED"
   | "COMMENT";
 
 export interface NotificationPayloadData {
@@ -11,6 +12,7 @@ export interface NotificationPayloadData {
   postId?: number;
   postTitle?: string;
   commentId?: number;
+  commentContent?: string;
   image?: string;
 }
 
@@ -37,4 +39,9 @@ export interface NotificationCardProps {
   notification: NotificationItem;
   onClick?: (notification: NotificationItem) => void;
   className?: string;
+}
+
+export interface ThreadMeetingDisplayInfo {
+  meetingName?: string;
+  image?: string;
 }

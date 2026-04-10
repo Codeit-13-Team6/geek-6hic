@@ -8,10 +8,26 @@ import {
   markNotificationAsRead,
 } from "@/api/client/notifications";
 import NotificationCard from "@/components/layout/notification/NotificationCard";
-import type { NotificationItem } from "@/types";
+import type { ThreadMeetingDisplayInfo, NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 import { Trash2, CheckCheck } from "lucide-react";
 import { threadKeyword } from "@/constans/post";
+import { getMeetingDetail } from "@/api/client/meetingDetail";
+
+const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";
+
+// onlyScore_* 출석 댓글은 스레드 UI에서도 숨기고 있어서,
+// 알림까지 노출하면 눌렀을 때 비어 보일 수 있어 제외합니다.
+const isAttendanceComment = (notification: NotificationItem) =>
+  notification.type === "COMMENT" &&
+  notification.data.commentContent?.startsWith(ATTENDANCE_COMMENT_PREFIX);
+
+const getThreadMeetingId = (postTitle?: string) => {
+  if (!postTitle || !threadKeyword.is(postTitle)) return null;
+
+  const meetingId = Number(postTitle.split("_")[1]);
+  return Number.isFinite(meetingId) ? meetingId : null;
+};
 
 export default function Notification({
   isOpen,
@@ -19,6 +35,9 @@ export default function Notification({
   onUnreadChange,
 }: NotificationProps) {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [meetingMap, setMeetingMap] = useState<
+    Map<number, ThreadMeetingDisplayInfo>
+  >(new Map());
   const [isLoading, setIsLoading] = useState(false);
   // 모든 알림이 읽음 처리됐는지 여부
   const isAllRead =
@@ -40,7 +59,11 @@ export default function Notification({
       }
     }
 
-    if (notification.type === "COMMENT") {
+    const threadMeetingId = getThreadMeetingId(notification.data.postTitle);
+
+    if (notification.type === "COMMENT" && threadMeetingId) {
+      router.push(`/meetings/${threadMeetingId}`);
+    } else if (notification.type === "COMMENT") {
       router.push(`/lounge/${notification.data.postId}`);
     } else {
       router.push(`/meetings/${notification.data.meetingId}`);
@@ -59,6 +82,7 @@ export default function Notification({
       console.error("모든 알림 읽음 처리 실패:", error);
     }
   };
+
   // 전체 삭제 버튼(모두 읽음 처리된 경우에만 보이도록)
   const handleDeleteAll = async () => {
     try {
@@ -76,7 +100,32 @@ export default function Notification({
       try {
         setIsLoading(true);
         const data = await getNotifications();
-        setNotifications(data);
+        const visibleNotifications = data.filter(
+          (notification) => !isAttendanceComment(notification),
+        );
+
+        setNotifications(visibleNotifications);
+        const threadMeetingIds = [
+          ...new Set(
+            visibleNotifications
+              .map((notification) =>
+                getThreadMeetingId(notification.data.postTitle),
+              )
+              .filter((id): id is number => id !== null),
+          ),
+        ];
+        // 스레드 댓글 알림은 postTitle이 isThread_{meetingId} 형태라
+        // 화면 표시용 모임 제목/이미지를 따로 조회해 매핑합니다.
+        const meetingEntries = await Promise.all(
+          threadMeetingIds.map(async (meetingId) => {
+            const meeting = await getMeetingDetail(meetingId);
+            return [
+              meetingId,
+              { meetingName: meeting.name, image: meeting.image ?? undefined },
+            ] as const;
+          }),
+        );
+        setMeetingMap(new Map(meetingEntries));
       } catch (error) {
         console.error("알림 조회 실패:", error);
       } finally {
@@ -99,13 +148,22 @@ export default function Notification({
       aria-labelledby="notification-title"
     >
       <div className="flex items-center justify-between border-b border-slate-50 px-6 py-5">
-        <h2 id="notification-title" className="text-base font-bold text-slate-900">알림 내역</h2>
+        <h2
+          id="notification-title"
+          className="text-base font-bold text-slate-900"
+        >
+          알림 내역
+        </h2>
         <button
           type="button"
           onClick={isAllRead ? handleDeleteAll : handleMarkAllAsRead}
           className="flex gap-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase hover:text-slate-600"
         >
-          {isAllRead ? <Trash2 size={12} aria-hidden="true" /> : <CheckCheck size={12} aria-hidden="true" />}
+          {isAllRead ? (
+            <Trash2 size={12} aria-hidden="true" />
+          ) : (
+            <CheckCheck size={12} aria-hidden="true" />
+          )}
           {isAllRead ? "전체 삭제" : "모두 읽기"}
         </button>
       </div>
@@ -120,17 +178,37 @@ export default function Notification({
           </div>
         ) : notifications.length > 0 ? (
           <div className="flex flex-col divide-y divide-slate-50">
-            {notifications.map((notification) =>
-              threadKeyword.is(notification?.message) ? (
-                <div key={notification.id}></div>
-              ) : (
+            {notifications.map((notification) => {
+              const meetingId = getThreadMeetingId(notification.data.postTitle);
+
+              if (meetingId) {
+                const meeting = meetingMap.get(meetingId);
+
+                return (
+                  <NotificationCard
+                    key={notification.id}
+                    notification={{
+                      ...notification,
+                      data: {
+                        ...notification.data,
+                        meetingId,
+                        meetingName: meeting?.meetingName,
+                        image: meeting?.image ?? undefined,
+                      },
+                    }}
+                    onClick={() => handleNotificationClick(notification)}
+                  />
+                );
+              }
+
+              return (
                 <NotificationCard
                   key={notification.id}
                   notification={notification}
                   onClick={() => handleNotificationClick(notification)}
                 />
-              ),
-            )}
+              );
+            })}
           </div>
         ) : (
           <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300">

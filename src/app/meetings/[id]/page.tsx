@@ -16,6 +16,7 @@ import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { BtnBack } from "@/components/features/btn/BtnBack";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -25,17 +26,24 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const meetingId = Number(id);
-  const meetingDetail = await getMeetingDetail(meetingId);
+  if (!Number.isFinite(meetingId)) {
+    notFound();
+  }
+  try {
+    const meetingDetail = await getMeetingDetail(meetingId);
 
-  return {
-    title: meetingDetail.name,
-    description: meetingDetail.description,
-    openGraph: {
-      title: `${meetingDetail.name} | co-git`,
-      description: meetingDetail.description.slice(0, 100),
-      images: meetingDetail.image ? [meetingDetail.image] : undefined,
-    },
-  };
+    return {
+      title: meetingDetail.name,
+      description: meetingDetail.description,
+      openGraph: {
+        title: `${meetingDetail.name} | co-git`,
+        description: meetingDetail.description.slice(0, 100),
+        images: meetingDetail.image ? [meetingDetail.image] : undefined,
+      },
+    };
+  } catch {
+    notFound();
+  }
 }
 
 export default async function MeetingDetailPage({
@@ -43,6 +51,18 @@ export default async function MeetingDetailPage({
 }: MeetingDetailPageProps) {
   const { id } = await params;
   const resolvedMeetingId = Number(id);
+  if (!Number.isFinite(resolvedMeetingId)) {
+    notFound();
+  }
+  // 상세 데이터가 없으면 not-found로 보내야 해서
+  // PrefetchBoundary에 들어가기 전에 먼저 모임 존재 여부를 확인합니다.
+  let detail;
+  try {
+    detail = await getMeetingDetail(resolvedMeetingId);
+  } catch {
+    notFound();
+  }
+
   const user = await getCurrentUserOnServer();
 
   return (
@@ -51,11 +71,11 @@ export default async function MeetingDetailPage({
       <Suspense fallback={<DetailSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
-            const [detail] = await Promise.all([
-              qc.fetchQuery({
-                queryKey: QUERY_KEYS.meetings.detail(resolvedMeetingId),
-                queryFn: () => getMeetingDetail(resolvedMeetingId),
-              }),
+            qc.setQueryData(
+              QUERY_KEYS.meetings.detail(resolvedMeetingId),
+              detail,
+            );
+            await Promise.all([
               qc.prefetchQuery({
                 queryKey: QUERY_KEYS.meetings.participants(resolvedMeetingId),
                 queryFn: () => getMeetingParticipants(resolvedMeetingId),
