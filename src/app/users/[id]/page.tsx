@@ -13,6 +13,7 @@ import type { FavoritesPageResponse } from "@/types";
 import {
   getFavorites,
   getBasicProfileStats,
+  getCreatedMeetingsByUser,
   getDetailedParticipantStats,
   getPublicUserProfile,
 } from "@/api/server";
@@ -21,6 +22,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCard from "./_components/GridCard";
+import GradeCardContainer from "./_components/GradeCardContainer";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -53,6 +55,10 @@ export default async function Page({
     userId: profileUserId,
   });
   const participantStatsPromise = getDetailedParticipantStats({
+    isOwnProfile,
+    userId: profileUserId,
+  });
+  const createdMeetingsPromise = getCreatedMeetingsByUser({
     isOwnProfile,
     userId: profileUserId,
   });
@@ -91,7 +97,10 @@ export default async function Page({
               {/* 남 프로필이랑 내 프로필 구분 */}
               <Suspense
                 fallback={
-                  <ProfileSection initialUser={initialUser} canEdit={isOwnProfile} />
+                  <ProfileSection
+                    initialUser={initialUser}
+                    canEdit={isOwnProfile}
+                  />
                 }
               >
                 <ProfileSectionContainer
@@ -101,7 +110,12 @@ export default async function Page({
               </Suspense>
             </div>
             <div className="w-1/2 snap-center lg:w-full">
-              <GradeCard />
+              <Suspense fallback={<GradeCard />}>
+                <GradeCardContainer
+                  basicStatsPromise={basicStatsPromise}
+                  createdMeetingsPromise={createdMeetingsPromise}
+                />
+              </Suspense>
             </div>
           </div>
 

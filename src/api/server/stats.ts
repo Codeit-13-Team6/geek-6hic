@@ -18,7 +18,27 @@ export interface BasicProfileStats {
   favoriteCount: number;
 }
 
+export interface CreatedMeetingSummary {
+  category: "PROJECT" | "STUDY";
+}
+
 const MEETING_SCAN_SIZE = 100;
+
+function normalizeCreatedMeetingCategory(
+  type?: string,
+): CreatedMeetingSummary["category"] | null {
+  const normalized = type?.trim().toLowerCase();
+
+  if (normalized === "project" || type === "프로젝트") {
+    return "PROJECT";
+  }
+
+  if (normalized === "study" || type === "스터디") {
+    return "STUDY";
+  }
+
+  return null;
+}
 
 function createEmptyParticipantStats(): ParticipantStats {
   return {
@@ -165,4 +185,81 @@ export async function getDetailedParticipantStats({
   }
 
   return getUserMeetingParticipantStats(userId);
+}
+
+export async function getCreatedMeetingsByUser({
+  isOwnProfile,
+  userId,
+}: {
+  isOwnProfile: boolean;
+  userId: number;
+}): Promise<CreatedMeetingSummary[]> {
+  const createdMeetings: CreatedMeetingSummary[] = [];
+
+  if (isOwnProfile) {
+    let offset = 0;
+    let totalCount = Number.POSITIVE_INFINITY;
+
+    while (offset < totalCount) {
+      const response = await getMyMeetings({
+        offset,
+        limit: MEETING_SCAN_SIZE,
+      });
+
+      response.data.forEach((meeting) => {
+        const category = normalizeCreatedMeetingCategory(meeting.type);
+        if (category) {
+          createdMeetings.push({ category });
+        }
+      });
+
+      totalCount = response.totalCount;
+      offset += response.limit;
+
+      if (response.data.length === 0) {
+        break;
+      }
+    }
+
+    return createdMeetings;
+  }
+
+  let cursor: string | undefined;
+  let hasMore = true;
+  const seenCursors = new Set<string>();
+
+  while (hasMore) {
+    const { data } = await serverAxios.get<GetMeetingsResponse>("/meetings", {
+      params: {
+        sortBy: "dateTime",
+        sortOrder: "desc",
+        size: MEETING_SCAN_SIZE,
+        ...(cursor ? { cursor } : {}),
+      },
+    });
+
+    data.data
+      .filter(
+        (meeting: MeetingResponse) =>
+          meeting.hostId === userId ||
+          meeting.host?.id === userId ||
+          meeting.createdBy === userId,
+      )
+      .forEach((meeting) => {
+        const category = normalizeCreatedMeetingCategory(meeting.type);
+        if (category) {
+          createdMeetings.push({ category });
+        }
+      });
+
+    if (!data.hasMore || !data.nextCursor || seenCursors.has(data.nextCursor)) {
+      break;
+    }
+
+    seenCursors.add(data.nextCursor);
+    cursor = data.nextCursor;
+    hasMore = data.hasMore;
+  }
+
+  return createdMeetings;
 }
