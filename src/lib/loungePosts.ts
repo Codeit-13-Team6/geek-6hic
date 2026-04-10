@@ -21,16 +21,12 @@ export async function fetchLoungePostsPage(
       size,
     });
 
-    for (const post of response.data) {
-      collected.push(post);
-      if (collected.length >= size) break;
-    }
+    collected.push(...response.data);
 
     lastHasMore = response.hasMore;
     lastNextCursor = response.nextCursor;
 
     if (!response.hasMore || !response.nextCursor) break;
-    if (collected.length >= size) break;
 
     currentCursor = response.nextCursor;
   }
