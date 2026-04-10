@@ -6,7 +6,18 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
 import { type MeetingType } from "@/types";
-import { AlertCircle, Plus, StepForwardIcon, Sparkles, BookOpen, Coffee, MoreHorizontal, Check, FolderKanban, Briefcase } from "lucide-react";
+import {
+  AlertCircle,
+  Plus,
+  StepForwardIcon,
+  Sparkles,
+  BookOpen,
+  Coffee,
+  MoreHorizontal,
+  Check,
+  FolderKanban,
+  Briefcase,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { useQuery } from "@tanstack/react-query";
@@ -16,12 +27,18 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
-    case "팀미팅": return Sparkles;
-    case "스터디": return BookOpen;
-    case "프로젝트": return FolderKanban;
-    case "취준생": return Briefcase;
-    case "기타": return MoreHorizontal;
-    default: return Coffee;
+    case "팀미팅":
+      return Sparkles;
+    case "스터디":
+      return BookOpen;
+    case "프로젝트":
+      return FolderKanban;
+    case "취준생":
+      return Briefcase;
+    case "기타":
+      return MoreHorizontal;
+    default:
+      return Coffee;
   }
 }
 
@@ -92,11 +109,11 @@ export function CreateMeetingModal() {
         onOpenChange={(nextIsOpen) => {
           if (!nextIsOpen) requestCloseModal();
         }}
-        contentClassName="w-full -mt-10 sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full  sm:max-w-[540px] rounded-[32px] border-none py-2 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="px-6 py-10 sm:px-8 sm:py-10">
-          <div className="-mt-4 mb-8 flex flex-col items-center">
+          <div className="mb-8 flex flex-col items-center">
             <div className="text-main-purple flex items-center gap-2 text-sm font-black tracking-[0.2em] uppercase">
               <StepForwardIcon size={14} strokeWidth={3} />
               <span>

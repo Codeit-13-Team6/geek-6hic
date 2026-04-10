@@ -5,11 +5,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
-import { useRouter } from "next/navigation";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import shareIcon from "@/assets/icon/share/share.svg";
-import profileFemaleSm from "@/assets/img/profile/female1-sm.jpg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
@@ -22,7 +20,7 @@ import { DeleteModal } from "@/components/ui/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Users2, Lock } from "lucide-react";
+import { ChessQueenIcon, Share2Icon, Users2 } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -41,6 +39,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { shareLink } from "@/lib/share";
 import { copyToClipboard } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
@@ -83,6 +82,8 @@ export function MeetingHeaderSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSecretModalOpen, setIsSecretModalOpen] = useState(false);
+  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
+
   const [secretInput, setSecretInput] = useState("");
   const [secretError, setSecretError] = useState("");
 
@@ -125,11 +126,9 @@ export function MeetingHeaderSection({
       ToastCommon({
         message: isSecret ? (
           <>
-            비밀방입니다
+            비밀방입니다.
             <br />
-            Secret Code
-            <br />
-            함께 전달해 주세요
+            Secret Code를 함께 전달해 주세요
           </>
         ) : (
           "모임 링크가 복사되었어요."
@@ -138,22 +137,6 @@ export function MeetingHeaderSection({
         duration: 3000,
       });
       return;
-    }
-
-    if (isSecret) {
-      return ToastCommon({
-        message: (
-          <>
-            비밀방입니다
-            <br />
-            Secret Code
-            <br />
-            함께 전달해 주세요
-          </>
-        ),
-
-        duration: 3000,
-      });
     }
   };
 
@@ -250,35 +233,20 @@ export function MeetingHeaderSection({
                     {detail.name}
                   </h1>
                   {isHost && (
-                    <div className="mt-1 shrink-0 rounded-xl bg-amber-100 p-1.5 shadow-sm">
-                      <Image
-                        src={crownLgIcon}
-                        alt="호스트 이미지"
-                        width={20}
-                        height={20}
-                        className="xl:size-6"
-                      />
+                    <div className="mt-1 shrink-0 rounded-xl bg-emerald-100 p-2 shadow-sm">
+                      <ChessQueenIcon className="h-4 w-4 text-emerald-400" />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2">
-                {menuConfig.showShare && (
-                  <button
-                    type="button"
-                    onClick={() => loginGuardAction(handleShare)}
-                    className="group rounded-full p-2 transition hover:bg-slate-50"
-                  >
-                    <Image
-                      src={shareIcon}
-                      alt="공유하기 아이콘"
-                      width={22}
-                      height={22}
-                      className="opacity-40 group-hover:opacity-100 sm:size-7"
-                    />
-                  </button>
-                )}
+              <div className="flex shrink-0 items-center gap-0">
+                <HeartIcon
+                  liked={detail.isFavorited}
+                  onClick={() => loginGuardAction(handleFavoriteClick)}
+                  size={24}
+                  disabled={isFavoritePending}
+                />
 
                 {(menuConfig.showHost || menuConfig.showMember) && (
                   <DropdownMenu>
@@ -286,7 +254,7 @@ export function MeetingHeaderSection({
                       render={
                         <button
                           type="button"
-                          className="group rounded-full p-2 transition hover:bg-slate-50"
+                          className="group rounded-full p-1.5 transition hover:bg-slate-50"
                         >
                           <Image
                             src={meatballsLgIcon}
@@ -348,16 +316,31 @@ export function MeetingHeaderSection({
                     </p>
                   </div>
                 </div>
-                <div className="flex -space-x-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsParticipantsModalOpen(true)}
+                  className="flex -space-x-2.5 rounded-full transition-all hover:scale-105"
+                >
                   {visibleParticipants.map((p, idx) => (
-                    <ParticipantAvatar key={p.id || idx} participant={p} />
+                    <div
+                      key={p.id || idx}
+                      className="relative size-8 overflow-hidden rounded-full border-2 border-white bg-slate-200"
+                    >
+                      <FallbackImage
+                        src={hasUsableProfileImage(p.image) ? p.image : null}
+                        type="user"
+                        alt={`${p.name || "참여자"} 프로필`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   ))}
                   {hiddenParticipantCount > 0 && (
-                    <div className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:size-11 xl:text-xs">
+                    <div className="z-10 flex size-8 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-black text-slate-500 xl:text-xs">
                       +{hiddenParticipantCount}
                     </div>
                   )}
-                </div>
+                </button>
               </div>
 
               <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
@@ -369,13 +352,58 @@ export function MeetingHeaderSection({
             </div>
           </div>
 
+          <ModalBase
+            isOpen={isParticipantsModalOpen}
+            onOpenChange={setIsParticipantsModalOpen}
+            title={`참여자 목록 (${detail.participantCount})`}
+            contentClassName="max-w-[310px] rounded-[32px]"
+            titleClassName="text-lg font-bold "
+          >
+            <div className="custom-scrollbar flex max-h-[400px] flex-col gap-2 overflow-y-auto pr-2">
+              {participants.map((participant) => (
+                <div
+                  key={participant.user.id}
+                  className="flex items-center justify-between rounded-2xl px-2 py-1 transition-colors hover:bg-slate-50 sm:py-3"
+                >
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() =>
+                        router.push(`/users/${participant.user.id}`)
+                      }
+                      className="relative size-10 overflow-hidden rounded-full border border-slate-100"
+                    >
+                      <FallbackImage
+                        src={
+                          hasUsableProfileImage(participant.user.image)
+                            ? participant.user.image
+                            : null
+                        }
+                        type="user"
+                        alt="프로필"
+                        fill
+                        className="object-cover"
+                      />
+                    </button>
+                    <span className="text-base font-bold text-slate-700">
+                      {participant.user.name || "사용자"}
+                    </span>
+                  </div>
+                  {participant.userId === detail.hostId && (
+                    <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
+                      HOST
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </ModalBase>
           {isHost && isSecretMeeting(detail.dateTime) && (
             <div className="mt-5 flex items-center justify-between rounded-[20px] bg-purple-50 px-5 py-4">
               <div>
-                <p className="text-[10px] font-black tracking-widest text-purple-400 uppercase">
+                <p className="text-main-purple-light text-[10px] font-black tracking-widest uppercase">
                   Secret Code
                 </p>
-                <p className="mt-0.5 text-xl font-black tracking-widest text-purple-700">
+                <p className="text-main-purple-point mt-0.5 text-xl font-black tracking-widest">
                   {extractSecretCode(detail.dateTime)}
                 </p>
               </div>
@@ -391,7 +419,7 @@ export function MeetingHeaderSection({
                       : "복사에 실패했습니다.",
                   });
                 }}
-                className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-600 transition hover:bg-purple-200"
+                className="text-main-purple-point rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold transition hover:bg-purple-200"
               >
                 복사
               </button>
@@ -410,12 +438,15 @@ export function MeetingHeaderSection({
                 {isActionPending ? "진행중..." : action.label}
               </span>
             </BtnCommon>
-            <HeartIcon
-              liked={detail.isFavorited}
-              onClick={() => loginGuardAction(handleFavoriteClick)}
-              size={28}
-              disabled={isFavoritePending}
-            />
+            {menuConfig.showShare && (
+              <button
+                type="button"
+                onClick={() => loginGuardAction(handleShare)}
+                className="group rounded-full p-2 transition hover:bg-slate-50"
+              >
+                <Share2Icon className="h-6 w-6 opacity-20 group-hover:opacity-70" />
+              </button>
+            )}
           </div>
         </div>
       </section>

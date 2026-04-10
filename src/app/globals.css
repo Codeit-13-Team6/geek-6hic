@@ -25,8 +25,8 @@
 @theme {
   /* 보라색 명칭 통일 */
   --color-main-purple: #260656;
-  --color-main-purple-light: #a580ca;
-  --color-point-purple: #4a1985;
+  --color-main-purple-light: #c27aff;
+  --color-main-purple-point: #8200db;
 
   /* 그레이톤 정리 */
   --color-slate-100: #f1f5f9;
@@ -90,7 +90,7 @@ footer {
   * {
     border-color: var(--border);
   }
-  
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -131,7 +131,6 @@ footer {
   background-color: #ddd;
   border-radius: 8px;
 }
-
 
 /* globals.css */
 
