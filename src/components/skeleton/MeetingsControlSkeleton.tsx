@@ -1,7 +1,5 @@
 export function MeetingsControlSkeleton() {
   return (
-    // 부모(page.tsx)에 이미 레이아웃 래퍼가 있으므로, 여기선 내용물만 그립니다!
-    // 전체에 깜빡임 효과(animate-pulse) 추가
     <div className="w-full animate-pulse" aria-hidden="true">
       {/* 1. 탭 목록 스켈레톤 (실제 UI처럼 밑줄이 있는 텍스트 형태로 변경) */}
       <div className="mb-6 flex flex-col md:mb-8">
