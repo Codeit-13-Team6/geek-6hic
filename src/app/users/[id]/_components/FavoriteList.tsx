@@ -10,7 +10,7 @@ import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 
-const FAVORITES_PAGE_SIZE = 10;
+const FAVORITES_PAGE_SIZE = 3;
 
 export default function FavoriteList() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export default function FavoriteList() {
             key={item.id}
             title={item.meeting.name}
             type={item.meeting.type}
-            date={new Date(item.meeting.dateTime)}
+            date={new Date(item.meeting.createdAt)}
             imageSrc={item.meeting.image ?? undefined}
             capacity={item.meeting.capacity}
             participantCount={item.meeting.participantCount}
