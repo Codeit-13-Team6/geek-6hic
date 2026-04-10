@@ -93,7 +93,7 @@ export default function TopRankCard({
             onClick={onDetailClick}
             aria-label={`${rank}위 ${item?.meetName || '모임'} 상세 보기`}
             className={cn(
-              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white",
               isFirst
                 ? "bg-[#FFB900] text-main-purple hover:bg-[#e5a700]"
                 : "bg-main-purple/30 text-white hover:bg-slate-800",

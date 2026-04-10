@@ -32,13 +32,12 @@ export default function ModalBase({
             "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
-            "overflow-y-auto border border-slate-100 bg-white px-6 py-10 shadow-2xl outline-none",
+            "overflow-y-auto border border-slate-100 bg-white shadow-2xl outline-none p-12",
             contentClassName,
             "gap-0!",
           )}
           showCloseButton={false}
         >
-          <div className="flex items-center justify-between px-4 py-4">
             <DialogTitle className={cn("text-slate-950", titleClassName)}>
               {title}
             </DialogTitle>
@@ -47,16 +46,15 @@ export default function ModalBase({
                 <Button
                   variant="ghost"
                   size="icon-lg"
-                  className="fixed top-5 right-4 cursor-pointer rounded-full bg-slate-100 hover:bg-slate-200"
+                  className="fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200"
                 />
               }
             >
               <XIcon size={20} />
               <span className="sr-only">Close</span>
             </DialogClose>
-          </div>
 
-          <div className="px-4">{children}</div>
+          <div>{children}</div>
         </DialogContent>
       </DialogPortal>
     </Dialog>

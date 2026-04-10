@@ -357,13 +357,13 @@ export function MeetingHeaderSection({
             onOpenChange={setIsParticipantsModalOpen}
             title={`참여자 목록 (${detail.participantCount})`}
             contentClassName="max-w-[310px] rounded-[32px]"
-            titleClassName="text-lg font-bold "
+            titleClassName="text-lg font-bold mb-5"
           >
             <div className="custom-scrollbar flex max-h-[400px] flex-col gap-2 overflow-y-auto pr-2">
               {participants.map((participant) => (
                 <div
                   key={participant.user.id}
-                  className="flex items-center justify-between rounded-2xl px-2 py-1 transition-colors hover:bg-slate-50 sm:py-3"
+                  className="flex items-center justify-between rounded-2xl transition-colors hover:bg-slate-50 sm:py-3"
                 >
                   <div className="flex items-center gap-4">
                     <button
