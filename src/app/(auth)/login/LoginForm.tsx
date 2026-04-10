@@ -208,7 +208,7 @@ export default function LoginForm({
         <Link
           href="/signup"
           onClick={closeModal}
-          className="text-main-purple focus-visible:ring-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
+          className="text-main-purple focus-visible:ring-black text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
         >
           Create Account
         </Link>

@@ -65,7 +65,7 @@ export default function NotificationCard({
       className={cn(
         "flex w-full gap-4 px-5 py-4 transition-colors",
         notification.isRead ? "bg-white" : "bg-slate-50",
-        "focus-visible:ring-main-purple hover:bg-slate-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
+        "focus-visible:ring-black hover:bg-slate-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
         className,
       )}
       onClick={() => onClick?.(notification)}
