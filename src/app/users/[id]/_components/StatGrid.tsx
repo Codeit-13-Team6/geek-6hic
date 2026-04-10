@@ -59,7 +59,7 @@ export default function StatGrid({
       <div className="col-span-6 rounded-3xl border border-slate-100 bg-white p-5 shadow-sm lg:col-span-2">
         <div className="mb-4 flex items-center justify-between">
           <dt className="text-[10px] font-bold tracking-tight text-slate-400 uppercase">
-            만든 모임별 참여자 현황
+            만든 모임별 참여자 수
           </dt>
           <span className="text-lg" aria-hidden="true">
             👥
