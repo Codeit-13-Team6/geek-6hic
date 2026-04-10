@@ -53,3 +53,5 @@ jobs:
           # 자동화 옵션
           PR_DESCRIPTION__PUBLISH_DESCRIPTION_AS_COMMENT: "false"
           PR_REVIEWER__ENABLE_REVIEW_LABELS_SECURITY: "false"
+          GITHUB_ACTION__AUTO_REVIEW: "true"
+          GITHUB_ACTION__AUTO_IMPROVE: "true"
