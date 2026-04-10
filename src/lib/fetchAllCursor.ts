@@ -4,6 +4,7 @@ interface FetchAllCursorOptions<T> {
   fetchPage: (cursor?: string) => Promise<CursorResponse<T>>;
   maxItems?: number;
   earlyExit?: (item: T) => boolean;
+  // ex) isThread 거를 떄  용도만 생각해서 만들긴했는데 필요시 좀 수정
   filter?: (item: T) => boolean;
 }
 
