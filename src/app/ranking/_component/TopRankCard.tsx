@@ -29,7 +29,7 @@ export default function TopRankCard({
     >
       <FallbackImage
         src={item?.image}
-        alt={item?.meetName ? `${item.meetName} 모임 이미지` : '모임 이미지'}
+        alt={item?.meetName ? `${item.meetName} 모임 이미지` : "모임 이미지"}
         fill
         className="object-cover transition-transform duration-1000 select-none group-hover:scale-105"
       />
@@ -38,7 +38,7 @@ export default function TopRankCard({
       <div className="absolute top-7 right-0 z-20">
         <div
           className={cn(
-            "px-4 py-1.5 text-[10px] font-black tracking-[0.3em] shadow-2xl",
+            "px-4 py-1.5 text-xs font-black tracking-[0.3em] shadow-2xl",
             isFirst ? "bg-[#FFB900] text-slate-950" : "bg-white text-slate-950",
           )}
           aria-label={`${rank}위`}
@@ -91,11 +91,11 @@ export default function TopRankCard({
 
           <BtnCommon
             onClick={onDetailClick}
-            aria-label={`${rank}위 ${item?.meetName || '모임'} 상세 보기`}
+            aria-label={`${rank}위 ${item?.meetName || "모임"} 상세 보기`}
             className={cn(
-              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+              "h-12 w-full rounded-2xl border-none font-black shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none active:scale-95",
               isFirst
-                ? "bg-[#FFB900] text-main-purple hover:bg-[#e5a700]"
+                ? "text-main-purple bg-[#FFB900] hover:bg-[#e5a700]"
                 : "bg-main-purple/30 text-white hover:bg-slate-800",
             )}
           >

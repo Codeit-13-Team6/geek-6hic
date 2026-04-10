@@ -2,7 +2,6 @@ export default function RankingListSkeleton() {
   return (
     <div className="relative animate-pulse">
       {/* 오버레이 + 스피너 */}
-      <div className="absolute inset-0 z-10 bg-white/60" />
       <div className="absolute inset-0 z-20 flex items-start justify-center pt-[30%]">
         <div className="flex flex-col items-center gap-3">
           <div className="border-t-main-purple size-8 animate-spin rounded-full border-4 border-gray-200" />
@@ -10,12 +9,6 @@ export default function RankingListSkeleton() {
             실시간으로 랭킹을 산정하는 중입니다. 잠시만 기다려주세요.
           </p>
         </div>
-      </div>
-
-      {/* Weekly Top 3 라벨 */}
-      <div className="mb-12 flex items-center gap-3">
-        <div className="bg-main-purple h-[6px] w-8 rounded-full" />
-        <div className="h-3 w-24 rounded bg-slate-200" />
       </div>
 
       {/* 데스크톱 Top 3 카드 */}
@@ -26,15 +19,15 @@ export default function RankingListSkeleton() {
               key={i}
               className={`relative w-full overflow-hidden rounded-2xl bg-slate-200 ${
                 isFirst
-                  ? "flex-1 -translate-y-8 aspect-[3/4.2]"
-                  : "flex-1 aspect-[3/4.2]"
+                  ? "aspect-[3/4.2] flex-1 -translate-y-8"
+                  : "aspect-[3/4.2] flex-1"
               }`}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-slate-400/40 via-transparent to-transparent" />
               <div className="absolute top-7 right-0">
                 <div className="h-6 w-14 bg-slate-300" />
               </div>
-              <div className="absolute bottom-7 left-7 right-7 lg:bottom-10 lg:left-10 lg:right-10 space-y-3">
+              <div className="absolute right-7 bottom-7 left-7 space-y-3 lg:right-10 lg:bottom-10 lg:left-10">
                 <div className="h-3 w-16 rounded bg-slate-300" />
                 <div className="h-8 w-3/4 rounded bg-slate-300" />
                 <div className="flex items-end gap-1">

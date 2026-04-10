@@ -13,7 +13,6 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 export default function RankingList() {
   const router = useRouter();
 
-
   const { data: rankedList, isLoading } = useQuery<RankedItem[]>({
     queryKey: QUERY_KEYS.ranking.root,
     queryFn: async () => {
@@ -30,22 +29,8 @@ export default function RankingList() {
 
   return (
     <div className="animate-fade-up">
-    {/* <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000"> */}
-      <div className="animate-fade-up mb-20 flex items-center gap-3">
-        <div
-          className="bg-main-purple h-[6px] w-8 rounded-full"
-          aria-hidden="true"
-        />
-        <h2 id="ranking-top3-title" className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase">
-          TOP 3
-        </h2>
-      </div>
-
-      <section
-        className="mb-10 md:mb-15"
-        aria-labelledby="ranking-top3-title"
-      >
-        {/* 1데스크톱 & 태블릿 */}
+      <section className="mb-10 md:mb-15" aria-labelledby="ranking-top3-title">
+        {/* 데스크톱 & 태블릿 */}
         <ul className="hidden items-end gap-6 md:flex lg:gap-10">
           <li className="flex-1">
             <TopRankCard
@@ -84,6 +69,7 @@ export default function RankingList() {
       </section>
 
       <section className="flex flex-col gap-1 sm:gap-2">
+        {/* 10위까지 랭킹 */}
         {top10List.map((item, index) => (
           <RankCard
             key={item.id}
