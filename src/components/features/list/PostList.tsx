@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
-import { getPosts } from "@/api/client/posts";
+import { getLoungePostsBFF } from "@/api/client/posts";
 import { GetPostsResponse, LoungeSortBy, Post, SortOrder } from "@/types";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -30,9 +30,9 @@ export default function PostList() {
       queryKey: listQueryKey,
       queryFn: ({ pageParam }) => {
         const cursor = typeof pageParam === "string" ? pageParam : undefined;
-        return getPosts({
+        return getLoungePostsBFF({
           ...currentParams,
-          size: 30,
+          size: 10,
           ...(cursor ? { cursor } : {}),
         });
       },
