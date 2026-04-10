@@ -3,9 +3,10 @@
 import Image from "next/image";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
-import defaultImg from "@/assets/img/empty/img-default.png";
+import fallbackImg from "@/assets/img/fallback/fallback-post-01.webp";
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { HotPostCardCommonProps } from "@/types";
+import FallbackImage from "@/components/img/FallbackImage";
 
 export function HotPostCard({
   title = "제목이 없습니다.",
@@ -15,6 +16,7 @@ export function HotPostCard({
   thumbsUp = 0,
   comment = 0,
 }: HotPostCardCommonProps & { rank?: number }) {
+  const finalImageSrc = imageSrc || fallbackImg.src;
   return (
     <button
       type="button"
@@ -23,13 +25,12 @@ export function HotPostCard({
       className="group relative flex w-[180px] shrink-0 cursor-pointer flex-col gap-4 transition-all duration-500 sm:w-[280px] lg:w-[320px]"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] bg-slate-100 shadow-xl shadow-slate-200/40">
-        <img
-          src={imageSrc || defaultImg.src}
+        <FallbackImage
+          src={finalImageSrc}
+          type="post"
           alt={`${title} 썸네일`}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = defaultImg.src;
-          }}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
 
         <div className="absolute inset-0 bg-slate-950/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

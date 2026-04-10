@@ -10,6 +10,7 @@ import {
 } from "@/hooks/queries/useMeetingInfiniteList";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { SortOrder, MeetingSortBy } from "@/types";
+import { NoResultFound } from "@/components/ui/NoResultFound";
 
 interface MeetingsClientProps {
   variant?: "all" | "joined";
@@ -58,14 +59,18 @@ export default function MeetingList({
   return (
     <div className="w-full">
       <div className="flex flex-col gap-6 sm:gap-8 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-12">
-        <MeetingCard
-          meetingList={meetingList}
-          isLoading={isLoading}
-          onItemClick={(item) => router.push(`/meetings/${item.id}`)}
-          sortValue={sortValue}
-          onHeartClick={(item) => toggleFavorite(item)}
-          meetingStatusBadgeVisible={meetingStatusBadgeVisible}
-        />
+        {meetingList.length > 0 ? (
+          <MeetingCard
+            meetingList={meetingList}
+            isLoading={isLoading}
+            onItemClick={(item) => router.push(`/meetings/${item.id}`)}
+            sortValue={sortValue}
+            onHeartClick={(item) => toggleFavorite(item)}
+            meetingStatusBadgeVisible={meetingStatusBadgeVisible}
+          />
+        ) : (
+          <NoResultFound />
+        )}
       </div>
 
       <div

@@ -98,7 +98,7 @@ export default async function LoungePage({
         </div>
       </div>
 
-      <section className="mb-20" aria-labelledby="hot-posts-heading">
+      <section className="mb-10 sm:mb-12" aria-labelledby="hot-posts-heading">
         <div className="animate-fade-up mt-10 mb-4 flex items-center gap-3">
           <div
             className="bg-main-purple h-[6px] w-8 rounded-full"
