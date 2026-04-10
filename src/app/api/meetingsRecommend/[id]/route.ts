@@ -7,6 +7,7 @@ import type {
   RecommendedMeetingItem,
 } from "@/types";
 import { isSecretMeeting } from "@/lib/meetingSecret";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
 
 const THREAD_KEYWORD = "isThread_";
 const MEETING_PAGE_SIZE = 50;
@@ -82,65 +83,45 @@ function compareMeetingCandidate(
 // 추천 후보군을 넉넉히 확보하기 위해 meetings 목록을 cursor 기반으로 여러 번 조회합니다.
 // participantCount 내림차순으로 가져와 인기 있는 모임을 우선 후보로 모읍니다.
 async function getMeetingCandidateList() {
-  let cursor: string | undefined;
-  const meetingCandidateList: MeetingResponse[] = [];
-
-  while (meetingCandidateList.length < MEETING_MAX_COUNT) {
-    const response = await serverAxios.get<GetMeetingsResponse>("/meetings", {
-      params: {
-        sortBy: "participantCount",
-        sortOrder: "desc",
-        size: MEETING_PAGE_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    for (const meeting of response.data.data) {
-      meetingCandidateList.push(meeting);
-    }
-
-    if (!response.data.hasMore || !response.data.nextCursor) {
-      break;
-    }
-
-    cursor = response.data.nextCursor;
-  }
-
-  return meetingCandidateList.slice(0, MEETING_MAX_COUNT);
+  return fetchAllCursor<MeetingResponse>({
+    fetchPage: (cursor) =>
+      serverAxios
+        .get<GetMeetingsResponse>("/meetings", {
+          params: {
+            sortBy: "participantCount",
+            sortOrder: "desc",
+            size: MEETING_PAGE_SIZE,
+            ...(cursor ? { cursor } : {}),
+          },
+        })
+        .then((r) => r.data),
+    maxItems: MEETING_MAX_COUNT,
+  });
 }
 
 // 다른 타입 추천에서 활동도 기준을 쓰기 위해 스레드 댓글 수를 모임별로 수집합니다.
 // isThread_{meetingId} 제목 규칙을 가진 post를 찾아 meetingId -> 댓글 수 맵으로 만듭니다.
 async function getThreadActivityMap() {
-  let cursor: string | undefined;
-  const threadPostList: GetPostsResponse["data"] = [];
-
-  while (threadPostList.length < THREAD_MAX_COUNT) {
-    const response = await serverAxios.get<GetPostsResponse>("/posts", {
-      params: {
-        type: "all",
-        keyword: THREAD_KEYWORD,
-        sortBy: "commentCount",
-        sortOrder: "desc",
-        size: THREAD_PAGE_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    for (const post of response.data.data) {
-      threadPostList.push(post);
-    }
-
-    if (!response.data.hasMore || !response.data.nextCursor) {
-      break;
-    }
-
-    cursor = response.data.nextCursor;
-  }
+  const threadPostList = await fetchAllCursor<GetPostsResponse["data"][number]>({
+    fetchPage: (cursor) =>
+      serverAxios
+        .get<GetPostsResponse>("/posts", {
+          params: {
+            type: "all",
+            keyword: THREAD_KEYWORD,
+            sortBy: "commentCount",
+            sortOrder: "desc",
+            size: THREAD_PAGE_SIZE,
+            ...(cursor ? { cursor } : {}),
+          },
+        })
+        .then((r) => r.data),
+    maxItems: THREAD_MAX_COUNT,
+  });
 
   const threadActivityMap = new Map<number, number>();
 
-  for (const post of threadPostList.slice(0, THREAD_MAX_COUNT)) {
+  for (const post of threadPostList) {
     if (!post.title.startsWith(THREAD_KEYWORD)) continue;
 
     const meetingId = Number(post.title.replace(THREAD_KEYWORD, ""));
