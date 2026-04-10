@@ -12,10 +12,12 @@ import {
 import { useState } from "react";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import { DeleteModal } from "@/components/ui/DeleteModal";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
   const userId = useAuthStore((state) => state.user?.id);
+  const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { data: post, isLoading, isError } = useGetPostDetail(postId);
   const { mutate: removePost } = useDeletePost(postId);
@@ -72,7 +74,9 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
           isLiked={post.isLiked}
           onEdit={handlePostEdit}
           onDelete={handlePostDelete}
-          onLike={handleLikeClick}
+          onLike={() => {
+            loginGuardAction(handleLikeClick)
+          }}
           onAuthorClick={() => router.push(`/users/${post.author.id}`)}
         />
       </section>
