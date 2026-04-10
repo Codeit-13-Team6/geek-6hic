@@ -1,6 +1,7 @@
 import { serverAxios } from "@/lib/serverFetcher";
 import { NextResponse } from "next/server";
 import { CursorResponse } from "@/types";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
 
 interface MeetingRankData {
   commentLeng: number;
@@ -43,29 +44,27 @@ export async function GET() {
     // meeting 수집이 현재 api 스펙 상의 제한으로 인해 체인형식으로 진행
     // 미리 준비한 미팅맵에 값들을 바인딩하는 형태
     const meetingMap: MeetingRankMap = {};
-    let cursor: string | null | undefined = undefined;
 
-    while (true) {
-      const { data: meetRes }: { data: CursorResponse<MeetingItem> } =
-        await serverAxios.get("/meetings", { params: { cursor } });
+    const meetings = await fetchAllCursor<MeetingItem>({
+      fetchPage: (cursor) =>
+        serverAxios
+          .get<CursorResponse<MeetingItem>>("/meetings", { params: { cursor } })
+          .then((r) => r.data),
+    });
 
-      meetRes.data.forEach((item) => {
-        meetingMap[item.id] = {
-          totalUserLeng: item.participantCount,
-          commentLeng: 0,
-          checkScore: 0,
-          commentingUserList: [],
-          meetType: item.type,
-          meetName: item.name,
-          image: item.image,
-          rankScore: 0,
-          linkPostId: Number(item.region),
-        };
-      });
-
-      if (!meetRes.hasMore) break;
-      cursor = meetRes.nextCursor;
-    }
+    meetings.forEach((item) => {
+      meetingMap[item.id] = {
+        totalUserLeng: item.participantCount,
+        commentLeng: 0,
+        checkScore: 0,
+        commentingUserList: [],
+        meetType: item.type,
+        meetName: item.name,
+        image: item.image,
+        rankScore: 0,
+        linkPostId: Number(item.region),
+      };
+    });
 
     // 2. 전체 reviews cursor pagination 수집 후 meetingMap에 반영
     // 마찬가지로 체인형식으로 진행
@@ -73,34 +72,31 @@ export async function GET() {
     // 모임과 연결된 게시물 양식 , 댓글 출석체크용 양식
     // 'isThread_1332'
     // 'onlyScore_3'
-    cursor = undefined;
 
     await Promise.all(
-      Object.entries(meetingMap).map(async ([id, meeting]) => {
+      Object.entries(meetingMap).map(async ([, meeting]) => {
         if (!meeting.linkPostId) return;
 
-        let cursor: string | null | undefined = undefined;
-
         try {
-          while (true) {
-            const { data: commentRes }: { data: CursorResponse<CommentItem> } =
-              await serverAxios.get(`/posts/${meeting.linkPostId}/comments`, {
-                params: { cursor },
-              });
+          const comments = await fetchAllCursor<CommentItem>({
+            fetchPage: (cursor) =>
+              serverAxios
+                .get<CursorResponse<CommentItem>>(
+                  `/posts/${meeting.linkPostId}/comments`,
+                  { params: { cursor } },
+                )
+                .then((r) => r.data),
+          });
 
-            for (const item of commentRes.data) {
-              if (item.content.startsWith("onlyScore_")) {
-                meeting.checkScore += Number(item.content.split("_")[2]);
-              } else {
-                meeting.commentLeng += 1;
-                if (!meeting.commentingUserList.includes(item.authorId)) {
-                  meeting.commentingUserList.push(item.authorId);
-                }
+          for (const item of comments) {
+            if (item.content.startsWith("onlyScore_")) {
+              meeting.checkScore += Number(item.content.split("_")[2]);
+            } else {
+              meeting.commentLeng += 1;
+              if (!meeting.commentingUserList.includes(item.authorId)) {
+                meeting.commentingUserList.push(item.authorId);
               }
             }
-
-            if (!commentRes.hasMore) break;
-            cursor = commentRes.nextCursor;
           }
         } catch {
           // 존재하지 않는 postId → 스킵

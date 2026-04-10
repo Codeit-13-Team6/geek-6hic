@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Post } from "@/types";
 import { getPosts } from "@/api/server";
 import { AxiosError } from "axios";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
 
 interface AxiosErrorLike {
   response?: {
@@ -18,63 +19,15 @@ export async function GET() {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    let cursor: string | undefined = undefined;
-    const allValidPosts: Post[] = [];
-    let isOlderThanAWeek = false;
-
-    let loopCount = 0;
-    const MAX_LOOP = 20; // 최대 요청 제한 (백엔드 에러 대비)
-
     // 체인 방식(Cursor)으로 데이터 뽑아오기
-    while (loopCount < MAX_LOOP) {
-      loopCount++;
-
-      // const params: GetPostsParams = {
-      //   sortBy: "createdAt",
-      //   sortOrder: "desc", // 최신순
-      //   size: 20,
-      // };
-      // if (cursor) params.cursor = cursor;
-      // const { data: response } = await serverAxios.get(
-      //   `${API_BASE_URL}/posts`,
-      //   {
-      //     params,
-      //   },
-      // );
-
-      const response = await getPosts({
-        cursor: cursor,
-        size: 20,
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      });
-      const posts = response.data || [];
-
-      // 가져온 데이터가 일주일보다 오래된지 하나씩 검사
-      for (const post of posts) {
-        const postDate = new Date(post.createdAt);
-
-        if (postDate < oneWeekAgo) {
-          // 최신순 정렬이므로 이 뒤로는 안봐도 됨
-          isOlderThanAWeek = true;
-          break;
-        }
-
-        // 스레드 게시물은 점수 계산 후보에서 아예 제외
-        const title = post?.title;
-        if (title.split("_")[0] === "isThread") {
-          continue;
-        }
-
-        allValidPosts.push(post);
-      }
-
-      if (isOlderThanAWeek || !response.hasMore || !response.nextCursor) {
-        break;
-      }
-
-      cursor = response.nextCursor;
-    }
+    // 최신순 정렬이므로 일주일 이전 게시글을 만나면 조기 종료
+    // 스레드 게시물은 점수 계산 후보에서 제외
+    const allValidPosts = await fetchAllCursor<Post>({
+      fetchPage: (cursor) =>
+        getPosts({ cursor, size: 20, sortBy: "createdAt", sortOrder: "desc" }),
+      earlyExit: (post) => new Date(post.createdAt) < oneWeekAgo,
+      filter: (post) => post.title.split("_")[0] !== "isThread",
+    });
 
     // 수집된 '일주일치 전체' 데이터로 시간 가중치 알고리즘 실행
     const GRAVITY = 0.8; // 중력 계수 (높을수록 빠르게 최신화)

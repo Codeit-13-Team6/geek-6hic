@@ -3,7 +3,7 @@ import HotPostList from "@/app/lounge/_component/HotPostList";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { getPosts } from "@/api/server";
+import { fetchLoungePostsPage } from "@/lib/loungePosts";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import LoungeSearchSection from "./_component/LoungeSearchSection";
@@ -82,9 +82,9 @@ export default async function LoungePage({
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
-                return getPosts({
+                return fetchLoungePostsPage({
                   ...currentParams,
-                  size: 30,
+                  size: 10,
                   ...(cursor ? { cursor } : {}),
                 });
               },

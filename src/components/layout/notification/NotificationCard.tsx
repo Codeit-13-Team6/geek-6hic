@@ -1,7 +1,5 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
-import profileSm from "@/assets/img/profile/female1-sm.jpg";
-
+import { threadKeyword } from "@/constans/post";
 import { NotificationItem, NotificationCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
 
@@ -9,15 +7,50 @@ const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",
   MEETING_CANCELED: "모임 취소",
   COMMENT: "새로운 댓글",
+  MEETING_DELETED: "모임 삭제",
 };
 
 function getNotificationTitle(notification: NotificationItem) {
+  if (isThreadComment(notification)) {
+    return "새로운 스레드";
+  }
+
+  if (notification.type === "COMMENT") {
+    return "새로운 댓글";
+  }
+
   return (
     NOTIFICATION_TITLE[notification.type] ??
     notification.data.meetingName ??
     notification.data.postTitle ??
     "알림"
   );
+}
+function isThreadComment(notification: NotificationItem) {
+  return (
+    notification.type === "COMMENT" &&
+    threadKeyword.is(notification.data.postTitle)
+  );
+}
+
+function getNotificationMessage(notification: NotificationItem) {
+  if (isThreadComment(notification)) {
+    const meetingName = notification.data.meetingName;
+    if (meetingName) {
+      return `"${meetingName}" 모임에 새 댓글이 달렸습니다.`;
+    }
+    return `모임에 새 댓글이 달렸습니다.`;
+  }
+
+  if (notification.type === "COMMENT") {
+    const postTitle = notification.data.postTitle;
+    if (postTitle) {
+      return `"${postTitle}" 게시글에 새 댓글이 달렸습니다.`;
+    }
+    return "게시글에 새 댓글이 달렸습니다.";
+  }
+
+  return notification.message;
 }
 
 function formatRelativeTime(createdAt: string) {
@@ -52,6 +85,7 @@ export default function NotificationCard({
 }: NotificationCardProps) {
   const title = getNotificationTitle(notification);
   const relativeTime = formatRelativeTime(notification.createdAt);
+  const message = getNotificationMessage(notification);
 
   return (
     <button
@@ -107,11 +141,11 @@ export default function NotificationCard({
 
         <p
           className={cn(
-            "mt-1 text-[13px] leading-snug break-words",
+            "mt-1 text-left text-[13px] leading-snug break-words",
             notification.isRead ? "text-slate-400" : "text-slate-600",
           )}
         >
-          {notification.message}
+          {message}
         </p>
       </div>
     </button>
