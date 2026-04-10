@@ -103,7 +103,7 @@ export function Gnb({ initialUser }: GnbProps) {
         <div className="flex items-center gap-10 lg:gap-14">
           <Link
             href="/"
-            className="flex items-center transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-main-purple"
+            className="flex items-center transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-black"
           >
             <span className="text-main-purple text-2xl font-black tracking-tighter sm:text-3xl">
               co-git.
@@ -126,7 +126,7 @@ export function Gnb({ initialUser }: GnbProps) {
                   }, isNavActive(pathname, link.href, link.exact) ? 500 : 100);
                 }}
                 className={cn(
-                  "relative py-2 px-4 text-sm font-bold tracking-tight transition-all focus-visible:ring-2 focus-visible:ring-main-purple",
+                  "relative py-2 px-4 text-sm font-bold tracking-tight transition-all focus-visible:ring-2 focus-visible:ring-black",
                   isNavActive(pathname, link.href, link.exact)
                     ? "text-main-purple after:bg-main-purple after:absolute after:-bottom-1 after:left-1/2 after:h-[3px] after:w-5 after:-translate-x-1/2 after:rounded-full"
                     : "text-slate-400 hover:text-slate-900",

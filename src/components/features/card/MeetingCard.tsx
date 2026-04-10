@@ -61,7 +61,7 @@ export default function MeetingCard({
             key={item.id}
             onClick={() => onItemClick(item)}
             className={cn(
-              "animate-fade-up group focus-visible:ring-main-purple relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-stretch sm:gap-0",
+              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none sm:flex-row sm:items-stretch sm:gap-0",
               "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
               "hover:shadow-[0_20px_45px_-10px_rgba(38,6,86,0.12)]",
               statusLabel ? "opacity-95" : "",

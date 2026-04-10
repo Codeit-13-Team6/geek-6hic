@@ -132,7 +132,7 @@ export default function Comment({
             ref={textareaRef}
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
-            className="focus:border-main-purple focus:ring-main-purple/10 w-full resize-none rounded-xl border border-slate-200 bg-white p-4 text-[14px] leading-relaxed text-slate-700 focus:ring-1 focus:outline-none"
+            className="focus:border-main-purple focus:ring-black/10 w-full resize-none rounded-xl border border-slate-200 bg-white p-4 text-[14px] leading-relaxed text-slate-700 focus:ring-1 focus:outline-none"
             rows={3}
           />
           <div className="mt-3 flex justify-end gap-2">

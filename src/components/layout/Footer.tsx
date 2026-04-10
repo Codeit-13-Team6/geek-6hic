@@ -16,7 +16,7 @@ export function Footer() {
         <div className="flex px-4 2xl:px-0 h-full mx-auto w-full max-w-[1280px] items-center justify-between">
           <Link
             href="/"
-            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple"
+            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
           >
             <span className="text-main- text-2xl font-black tracking-tighter sm:text-3xl">
               co-git.

@@ -24,7 +24,7 @@ const textareaVariants = cva(
       isDestructive: {
         true: "border-red-500 focus:border-error focus:ring-[2px] focus:ring-error/20",
         false:
-          "border-gray-300 focus-visible:border-main-green-500 focus-visible:ring-[2px] focus-visible:ring-main-purple",
+          "border-gray-300 focus-visible:border-main-green-500 focus-visible:ring-[2px] focus-visible:ring-black",
       },
       size: {
         sm: "min-h-[118px] text-[14px]",
