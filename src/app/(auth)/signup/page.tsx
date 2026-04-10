@@ -10,8 +10,9 @@ import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useForm } from "react-hook-form";
 import type { SignUpFormValues } from "@/types";
 import React, { useState } from "react";
-import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { DeleteModal } from "@/components/ui/DeleteModal";
 import ModalBase from "@/components/ui/ModalBase";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function SignUp() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function SignUp() {
 
       if (result.ok) {
         setIsOpenModal(true);
-        ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
+        // ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
 
       } else {
         setIsLoading(false);
@@ -200,24 +201,15 @@ export default function SignUp() {
         </div>
       </div>
 
-      <ModalBase
+      <ConfirmModal
         isOpen={isOpenModal}
         onOpenChange={handleCloseModal}
-        title="회원가입이 완료되었습니다."
-        titleClassName="text-lg mx-auto mb-4 font-black tracking-tighter text-slate-900 uppercase"
-        disablePointerDismissal={true}
-      >
-        <div>
-          <BtnCommon
-            variant="teritary"
-            onClick={handleCloseModal}
-            disabled={isLoading}
-            className="h-12 !w-full !rounded-2xl font-black tracking-widest text-slate-400 transition-all hover:bg-slate-50 sm:h-14"
-          >
-            로그인페이지로
-          </BtnCommon>
-        </div>
-      </ModalBase>
+        onConfirm={handleCloseModal}
+        confirmButtonLabel="확인"
+        description="회원가입이 완료되었습니다."
+        subDescription=" "
+      />
+
     </section>
   );
 }
