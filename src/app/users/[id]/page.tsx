@@ -22,7 +22,7 @@ import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCard from "./_components/GridCard";
 
-const FAVORITES_PAGE_SIZE = 3;
+const FAVORITES_PAGE_SIZE = 10;
 
 export const metadata: Metadata = {
   title: "마이 페이지",

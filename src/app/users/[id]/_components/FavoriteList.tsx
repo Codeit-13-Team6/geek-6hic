@@ -10,7 +10,7 @@ import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 
-const FAVORITES_PAGE_SIZE = 3;
+const FAVORITES_PAGE_SIZE = 10;
 
 export default function FavoriteList() {
   const router = useRouter();
