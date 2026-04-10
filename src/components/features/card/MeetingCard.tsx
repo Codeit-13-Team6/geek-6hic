@@ -26,6 +26,8 @@ export default function MeetingCard({
   onHeartClick,
   meetingStatusBadgeVisible = true,
 }: MeetingCardProps) {
+  "use memo";
+
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const user = useAuthStore((s) => s.user);
 
