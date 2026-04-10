@@ -12,6 +12,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import { getNextPageParam } from "@/lib/pagination";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { NoResultFound } from "@/components/ui/NoResultFound";
+import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";
 
 export default function PostList() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function PostList() {
     });
 
   const postList = data?.pages.flatMap((page) => page.data) || [];
+
   const bottomRef = useIntersectionObserver(
     fetchNextPage,
     hasNextPage,
@@ -98,21 +100,12 @@ export default function PostList() {
         )}
       </div>
 
-      <div ref={bottomRef} className="flex h-32 items-center justify-center">
-        {isFetchingNextPage && (
-          <div className="flex items-center gap-3">
-            <Loader2 className="text-main-purple animate-spin" size={20} />
-            <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-              Updating Archive...
-            </span>
-          </div>
-        )}
-        {!hasNextPage && postList.length > 0 && (
-          <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
-            End of Archive.
-          </span>
-        )}
-      </div>
+      <InfiniteScrollTrigger
+        ref={bottomRef}
+        isFetchingNextPage={isFetchingNextPage}
+        hasNextPage={hasNextPage}
+        hasData={postList.length > 0}
+      />
     </div>
   );
 }
