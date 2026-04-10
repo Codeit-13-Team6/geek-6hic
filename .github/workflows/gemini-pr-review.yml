@@ -9,7 +9,7 @@ on:
 jobs:
   pr_agent:
     # 봇이 쓴 글에는 반응하지 않음 (무한 루프 방지)
-    if: ${{ github.event.issue.pull_request || github.event.pull_request }}
+    if: ${{ github.actor != 'github-actions[bot]' && (github.event.issue.pull_request || github.event.pull_request) }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -20,22 +20,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Gemini PR Reviewer
-        uses: Codium-ai/pr-agent@main
+        uses: qodo-ai/pr-agent@main
         env:
-          # 🚨 핵심: Gemini 전용 API 키 맵핑 (OPENAI_KEY가 아닙니다!)
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # 🧠 두뇌 설정: 메인 모델과 대체 모델을 모두 Gemini로 고정
-          CONFIG.MODEL: "gemini/gemini-1.5-flash"
-          CONFIG.FALLBACK_MODELS: "gemini/gemini-1.5-flash"
+          # 모델 설정 (계층 구분자는 __ 언더스코어 2개)
+          CONFIG__MODEL: "gemini/gemini-2.0-flash"
+          CONFIG__FALLBACK_MODELS: '["gemini/gemini-2.0-flash"]'
 
-          # 🇰🇷 언어 설정: Gemini가 딴소리 못하게 시스템 단에서 한국어로 꽉 묶어줍니다.
-          PR_DESCRIPTION.LANGUAGE: "ko-KR"
-          PR_REVIEWER.LANGUAGE: "ko-KR"
+          # 언어 설정
+          PR_DESCRIPTION__LANGUAGE: "ko-KR"
+          PR_REVIEWER__LANGUAGE: "ko-KR"
 
-          # 📝 PR 요약 지시사항 (Gemini 맞춤형 프롬프트)
-          PR_DESCRIPTION.EXTRA_INSTRUCTIONS: |
+          # PR 요약 지시사항
+          PR_DESCRIPTION__EXTRA_INSTRUCTIONS: |
             1. 무조건 '한국어 구어체(~했습니다, ~합니다)'로 작성하세요. AI 서명이나 영어는 절대 금지.
             2. 주요 변경 사항을 요약한 후, '### ⚡ Tech Stack & Patterns' 섹션을 만들고 다음 항목의 체크박스(✅/❌)를 작성하세요:
                - 아키텍처 규칙 준수
@@ -43,13 +42,13 @@ jobs:
                - 스타일링 규칙 준수
             3. 응답 마지막에 Mermaid.js 문법을 사용하여 데이터 흐름이나 컴포넌트 구조를 나타내는 다이어그램을 1개 포함하세요.
 
-          # 🧐 코드 리뷰 지시사항 (Gemini 맞춤형 프롬프트)
-          PR_REVIEWER.EXTRA_INSTRUCTIONS: |
+          # 코드 리뷰 지시사항
+          PR_REVIEWER__EXTRA_INSTRUCTIONS: |
             1. 무조건 '한국어'로 작성하세요.
             2. 컴포넌트가 200줄이 넘는다는 이유로 분리하라는 잔소리는 절대 하지 마세요.
             3. 코드 리뷰 항목마다 [위험도: 높음/중간/낮음]을 반드시 표시하세요.
             4. 코드 컨벤션 위반 사항이 있다면 '🎨 컨벤션 위반' 이라는 제목으로 따로 묶어서 설명하세요.
 
-          # ⚙️ 자동화 옵션 (리뷰 라벨링 등)
-          PR_DESCRIPTION.PUBLISH_DESCRIPTION_AS_COMMENT: false
-          PR_REVIEWER.ENABLE_REVIEW_LABELS_SECURITY: false
+          # 자동화 옵션
+          PR_DESCRIPTION__PUBLISH_DESCRIPTION_AS_COMMENT: "false"
+          PR_REVIEWER__ENABLE_REVIEW_LABELS_SECURITY: "false"
