@@ -32,7 +32,18 @@ export default function MeetingTypeTabs() {
   );
 
   if (!isMounted) {
-    return <div className="mb-6 h-[40px] w-full md:mb-8" />;
+    return (
+      <div className="mb-6 flex flex-col md:mb-8">
+        <ul className="custom-scrollbar flex gap-6 overflow-x-auto border-b border-slate-100 pb-1">
+          <li className="relative shrink-0">
+            <button className="text-main-purple pb-3 text-sm font-black transition-all sm:text-base">
+              전체
+            </button>
+            <div className="bg-main-purple absolute bottom-0 left-0 h-[3px] w-full" />
+          </li>
+        </ul>
+      </div>
+    );
   }
 
   return (
