@@ -150,10 +150,7 @@ export function MeetingModalForm({
       />
 
       <div className="space-y-2">
-        <p className="text-[14px] font-medium text-gray-800">
-          이미지
-          <span className="ml-1 text-purple-500">*</span>
-        </p>
+        <p className="text-[14px] font-medium text-gray-800">이미지</p>
 
         <ImageUploadInput
           size="sm"
