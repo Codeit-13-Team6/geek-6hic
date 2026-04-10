@@ -64,6 +64,17 @@ export default function ProfileSection({
     }
   };
 
+<<<<<<< HEAD
+=======
+
+  // 서버에서 가져온 최신 initialUser로 store 동기화 (stale 쿠키 덮어쓰기 방지)
+  useEffect(() => {
+    if (canEdit && initialUser) {
+      setUser(initialUser as User);
+    }
+  }, [initialUser]);
+
+>>>>>>> 0c20f2149cadc22f068c665415ad035aafca6774
   // 모달 열릴 때마다 최신 displayUser로 폼 동기화
   useEffect(() => {
     if (!displayUser) return;
