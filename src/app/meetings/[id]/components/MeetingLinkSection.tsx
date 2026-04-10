@@ -33,7 +33,7 @@ export function MeetingLinkSection({
           </h2>
         </div>
         <p className="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">
-          Private Access Link
+          참여 링크
         </p>
       </div>
 

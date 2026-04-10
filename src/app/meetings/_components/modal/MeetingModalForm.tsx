@@ -11,10 +11,7 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CheckboxCommon } from "@/components/ui/CheckboxCommon";
-import {
-  MeetingModalFormProps,
-  type MeetingType,
-} from "@/types";
+import { MeetingModalFormProps, type MeetingType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { getMeetingTypes } from "@/api/client";
@@ -28,7 +25,6 @@ export function MeetingModalForm({
   onRemoveImage,
   showCategoryField = false,
 }: MeetingModalFormProps) {
-
   const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
     queryKey: QUERY_KEYS.meetings.meetingType,
     queryFn: getMeetingTypes,
@@ -112,7 +108,7 @@ export function MeetingModalForm({
         label="모임 링크"
         isRequired
         value={values.link}
-        placeholder="https://discord.gg/example"
+        placeholder="discord.gg/example"
         onChange={(event) => {
           onChange({ link: event.target.value });
         }}

@@ -1,10 +1,10 @@
-import * as React from "react"
+import * as React from "react";
 
-import arrowLeft from "@/assets/icon/arrow/arrow-left.svg"
-import arrowRight from "@/assets/icon/arrow/arrow-right.svg"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/shadcnOrigin/button"
-import { MoreHorizontalIcon } from "lucide-react"
+import arrowLeft from "@/assets/icon/arrow/arrow-left.svg";
+import arrowRight from "@/assets/icon/arrow/arrow-right.svg";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/shadcnOrigin/button";
+import { MoreHorizontalIcon } from "lucide-react";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -15,7 +15,7 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationContent({
@@ -28,40 +28,42 @@ function PaginationContent({
       className={cn("flex items-center gap-0.5", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />
+  return <li data-slot="pagination-item" {...props} />;
 }
 
-type PaginationArrowDirection = 'left' | 'right'
+type PaginationArrowDirection = "left" | "right";
 
 // 페이지 링크 타입
 interface PaginationLinkProps
-  extends Pick<React.ComponentProps<typeof Button>, 'size'>,
-    React.ComponentProps<'a'> {
+  extends
+    Pick<React.ComponentProps<typeof Button>, "size">,
+    React.ComponentProps<"a"> {
   // 현재 페이지 여부
-  isActive?: boolean
+  isActive?: boolean;
   // 비활성화 상태 여부
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 // 화살표 아이콘 타입
 interface PaginationArrowIconProps {
   // 화살표 방향
-  direction: PaginationArrowDirection
+  direction: PaginationArrowDirection;
   // 비활성화 상태 여부
-  disabled?: boolean
+  disabled?: boolean;
   // 아이콘 크기 스타일
-  className?: string
+  className?: string;
 }
 
 // 이전/다음 버튼 타입
-interface PaginationArrowButtonProps
-  extends React.ComponentProps<typeof PaginationLink> {
+interface PaginationArrowButtonProps extends React.ComponentProps<
+  typeof PaginationLink
+> {
   // 아이콘 크기 스타일
-  iconClassName?: string
+  iconClassName?: string;
 }
 
 // 화살표 모양만 담당하는 아이콘
@@ -70,7 +72,7 @@ function PaginationArrowIcon({
   direction,
   disabled = false,
 }: PaginationArrowIconProps) {
-  const icon = direction === "left" ? arrowLeft : arrowRight
+  const icon = direction === "left" ? arrowLeft : arrowRight;
 
   return (
     <span
@@ -79,7 +81,7 @@ function PaginationArrowIcon({
         "size-6 transition-colors",
         !disabled && "bg-gray-800 group-hover/button:bg-gray-600",
         disabled && "bg-gray-400",
-        className
+        className,
       )}
       style={{
         WebkitMaskImage: `url(${icon.src})`,
@@ -92,7 +94,7 @@ function PaginationArrowIcon({
         maskSize: "contain",
       }}
     />
-  )
+  );
 }
 
 // 페이지 링크 UI
@@ -111,7 +113,7 @@ function PaginationLink({
         "bg-transparent text-gray-500 hover:bg-transparent hover:text-gray-600",
         disabled && "pointer-events-none text-gray-300 hover:text-gray-300",
         isActive && "text-main-green-600 hover:text-main-green-600",
-        className
+        className,
       )}
       nativeButton={false}
       render={
@@ -125,7 +127,7 @@ function PaginationLink({
         />
       }
     />
-  )
+  );
 }
 
 // 클릭 가능한 이전 페이지 버튼
@@ -148,7 +150,7 @@ function PaginationPrevious({
         className={iconClassName}
       />
     </PaginationLink>
-  )
+  );
 }
 
 // 클릭 가능한 다음 페이지 버튼
@@ -171,7 +173,7 @@ function PaginationNext({
         className={iconClassName}
       />
     </PaginationLink>
-  )
+  );
 }
 
 // 페이지 생략 표시 UI
@@ -184,15 +186,15 @@ function PaginationEllipsis({
       aria-hidden
       data-slot="pagination-ellipsis"
       className={cn(
-        "text-gray-500 flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
-        className
+        "flex size-8 items-center justify-center text-gray-500 [&_svg:not([class*='size-'])]:size-4",
+        className,
       )}
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More pages</span>
+      <span className="sr-only">다음 페이지 더보기</span>
     </span>
-  )
+  );
 }
 
 export {
@@ -203,4 +205,4 @@ export {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-}
+};

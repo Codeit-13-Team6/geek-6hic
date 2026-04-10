@@ -54,7 +54,7 @@ export default function FavoriteList() {
           <HeartOff className="size-10 text-slate-200" strokeWidth={1.5} />
         </div>
         <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-          Your Archive is Empty.
+          찜한 모임이 없어요
         </h3>
         <p className="mt-2 text-sm font-medium text-slate-400">
           관심 있는 모임을 찜하여 나만의 리스트를 완성해보세요.
@@ -87,7 +87,7 @@ export default function FavoriteList() {
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-              Updating Archive...
+              목록을 불러오는 중...
             </span>
           </div>
         )}

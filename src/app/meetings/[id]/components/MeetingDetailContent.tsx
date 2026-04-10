@@ -62,7 +62,7 @@ function MeetingDetailContentInner({ meetingId }: MeetingDetailContentProps) {
             </h2>
           </div>
           <p className="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">
-            Archive Description
+            모임 소개
           </p>
         </div>
 

@@ -38,7 +38,7 @@ export default function Page() {
 
       <section className="mt-6 flex flex-row-reverse">
         <p className="text-xs font-medium text-slate-400 sm:text-xs">
-          랭킹은 참여율, 스레드, 출석체크 등을 기반으로 산정됩니다.
+          랭킹은 참여율 , 댓글 , 출석체크등을 기반으로 산정됩니다.
         </p>
       </section>
     </div>
