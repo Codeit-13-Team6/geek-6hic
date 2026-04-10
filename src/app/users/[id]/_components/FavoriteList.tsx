@@ -71,7 +71,7 @@ export default function FavoriteList() {
             key={item.id}
             title={item.meeting.name}
             type={item.meeting.type}
-            date={new Date(item.meeting.dateTime)}
+            date={new Date(item.meeting.createdAt)}
             imageSrc={item.meeting.image ?? undefined}
             capacity={item.meeting.capacity}
             participantCount={item.meeting.participantCount}

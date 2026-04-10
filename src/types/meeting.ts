@@ -99,7 +99,7 @@ export interface FavoritesResponseData {
   teamId: string;
   meetingId: number;
   userId: number;
-  createdAt: string;
+  createdAt?: string;
   meeting: MeetingDetailApiData;
 }
 

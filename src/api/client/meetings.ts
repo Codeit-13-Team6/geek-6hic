@@ -97,7 +97,7 @@ export async function getFavorites(params?: {
   const { data } = await axiosInstance.get<FavoritesPageResponse>(
     "/favorites",
     {
-      params,
+      params: { ...params, sortBy: "createdAt", sortOrder: "desc" },
     },
   );
   return data;
