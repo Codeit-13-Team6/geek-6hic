@@ -112,7 +112,7 @@ export function MeetingModalForm({
         label="모임 링크"
         isRequired
         value={values.link}
-        placeholder="모임 링크를 입력해 주세요"
+        placeholder="https://discord.gg/example"
         onChange={(event) => {
           onChange({ link: event.target.value });
         }}
@@ -180,8 +180,6 @@ export function MeetingModalForm({
           <p className="text-error text-sm">{errors.imageUrl}</p>
         ) : null}
       </div>
-
-
     </div>
   );
 }

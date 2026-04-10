@@ -7,6 +7,7 @@ import ModalBase from "@/components/ui/ModalBase";
 import { useEditMeetingForm } from "@/hooks/useMeetingForm";
 import { EditMeetingModalProps } from "@/types";
 import { AlertCircle } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export function EditMeetingModal({
   isOpen,
@@ -92,45 +93,16 @@ export function EditMeetingModal({
         </div>
       </ModalBase>
 
-      <ModalBase
-        disablePointerDismissal
+      <ConfirmModal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
-        contentClassName="w-full sm:w-[400px] max-w-[calc(100vw-32px)] rounded-[32px] border-none p-8 shadow-2xl"
-        title=""
-      >
-        <div className="flex flex-col items-center pt-4 text-center">
-          <div className="mb-6 flex size-14 items-center justify-center rounded-full bg-red-50 text-red-500">
-            <AlertCircle size={28} />
-          </div>
-          <p className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
-            취소하시겠습니까?
-          </p>
-          <p className="mt-2 text-sm font-medium text-slate-400">
-            저장하지 않은 내용은 사라집니다.
-          </p>
-        </div>
+        onConfirm={() => setIsCloseConfirmOpen(false)}
+        onCancel={() => {
+          setIsCloseConfirmOpen(false);
+          onOpenChange(false);
+        }}
+      />
 
-        <div className="mt-10 flex flex-col gap-3">
-          <BtnCommon
-            type="button"
-            className="bg-main-purple h-14 w-full rounded-2xl font-black text-white transition-all hover:bg-slate-950"
-            onClick={() => setIsCloseConfirmOpen(false)}
-          >
-            계속 수정
-          </BtnCommon>
-          <BtnCommon
-            type="button"
-            className="h-14 w-full rounded-2xl bg-transparent font-bold text-slate-300 transition-all hover:bg-slate-50"
-            onClick={() => {
-              setIsCloseConfirmOpen(false);
-              onOpenChange(false);
-            }}
-          >
-            나가기
-          </BtnCommon>
-        </div>
-      </ModalBase>
     </>
   );
 }
