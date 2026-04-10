@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import {
   CHARACTER_MAP,
@@ -13,10 +12,9 @@ interface GradeCardProps {
 }
 
 export default function GradeCard({ userType }: GradeCardProps) {
-  const character = useMemo(
-    () => (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER,
-    [userType],
-  );
+  "use memo";
+
+  const character = (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER;
 
   return (
     <div
