@@ -33,12 +33,12 @@ export default function TopRankMobileCard({
         src={item?.image}
         alt="모임 이미지"
         fill
-        className="object-cover opacity-40 grayscale-[20%]"
+        className="object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-700 via-slate-950/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-700 via-slate-700/50 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
 
-      <span className="absolute right-4 -bottom-1 text-[110px] leading-none font-black text-white/[0.04] italic select-none">
+      <span className="absolute right-5 -bottom-1 text-[110px] leading-none font-black text-white/[0.08] italic select-none">
         {rank}
       </span>
 

@@ -38,11 +38,12 @@ export function BtnTop() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const positionClass = pathname === "/meetings"
-    ? "lg:bottom-34 lg:right-16 sm:right-6 bottom-[92px] right-6"
-    : pathname === "/lounge"
-      ? "sm:bottom-6 bottom-[92px] right-6"
-      : "bottom-6 right-6";
+  const positionClass =
+    pathname === "/meetings"
+      ? "lg:bottom-34 lg:right-16 sm:right-6 bottom-[92px] right-[32px]"
+      : pathname === "/lounge"
+        ? "lg:bottom-34 lg:right-16 sm:right-6 bottom-[92px] right-[32px]"
+        : "bottom-6 right-6";
 
   return (
     <button
@@ -51,15 +52,14 @@ export function BtnTop() {
       tabIndex={visible ? 0 : -1}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+        "fixed z-50 flex h-10 w-10 items-center justify-center rounded-full border border-slate-950/20 bg-slate-50 text-slate-950 shadow-lg transition-all duration-300 hover:bg-slate-200 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white",
         positionClass,
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        visible
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
-      <ChevronUp
-        className="h-5 w-5"
-        aria-hidden="true"
-      />
+      <ChevronUp className="h-5 w-5" aria-hidden="true" />
     </button>
   );
 }

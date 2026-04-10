@@ -17,7 +17,7 @@ export async function getFavorites(
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
-    params,
+    params: { ...params, sortBy: "createdAt", sortOrder: "desc" },
   });
   return data;
 }

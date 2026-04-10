@@ -33,23 +33,32 @@ export function UserCard({
   return (
     <Card
       className={cn(
-        "group relative flex w-full cursor-pointer flex-col overflow-hidden transition-all duration-300",
+        "group relative flex w-full cursor-pointer flex-col overflow-hidden transition-all duration-300 focus-visible:ring-2 focus-visible:ring-black",
         "border border-slate-100/50 bg-white p-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
         "hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(38,6,86,0.08)]",
         "sm:h-[180px] sm:flex-row sm:items-center sm:gap-8 sm:rounded-[24px] sm:px-8 sm:hover:bg-slate-50",
       )}
       onClick={onDetailClick}
+      tabIndex={0}
+      role="button"
+      aria-label={`${title} 상세 보기`}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onDetailClick?.();
+        }
+      }}
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-50 sm:h-32 sm:w-32 sm:rounded-2xl">
         <FallbackImage
           src={imageSrc}
-          alt="모임 이미지"
+          alt={`${title} 모임 이미지`}
           fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
-      <section className="flex flex-1 flex-row items-start justify-between pt-0 pr-4 pb-6 pl-6 sm:p-0">
+      <div className="flex flex-1 flex-row items-start justify-between pt-0 pr-4 pb-6 pl-6 sm:p-0">
         <div className="flex h-25 flex-1 flex-col justify-between">
           <div>
             <div className="text-main-purple mb-1 text-xs font-bold tracking-[0.2em] uppercase">
@@ -87,17 +96,16 @@ export function UserCard({
               liked={isLiked}
               onClick={handleHeartClick}
               size={22}
-              className=""
             />
           )}
           {showLockBtn && (
             <LucideLock
               size={22}
-              className=""
+              aria-hidden="true"
             />
           )}
         </div>
-      </section>
+      </div>
     </Card>
   );
 }

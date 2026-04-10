@@ -1,4 +1,4 @@
-export default function MeetingCardSkeleton() {
+export default function MeetingsSkeleton() {
   return (
     <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
       {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (

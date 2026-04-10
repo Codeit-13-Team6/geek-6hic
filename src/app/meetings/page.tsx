@@ -4,13 +4,15 @@ import { getMeetingList } from "@/api/server";
 import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
-import MeetingCardSkeleton from "@/components/skeleton/MeetingCardSkeleton";
 import { Suspense } from "react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
-import { MeetingsHeaderSkeleton } from "@/components/skeleton/MeetingsHeaderSkeleton";
-import MeetingsHeaderSection from "./_components/MeetingsHeaderSection";
+import { MeetingsControlSkeleton } from "@/components/skeleton/MeetingsControlSkeleton";
+import { MeetingsHeroSection } from "./_components/MeetingsHeroSection";
+import SearchFilterBar from "@/components/features/composite/SearchFilterBar";
+import MeetingTypeTabs from "./_components/MettingTypeTabs";
+import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";
 
 export const metadata: Metadata = {
   title: "모임 찾기",
@@ -23,6 +25,12 @@ export const metadata: Metadata = {
     images: ["/img/logo/cogit.png"],
   },
 };
+
+const MEETING_SORT_OPTIONS = [
+  { value: "createdAt_desc", label: "최신순" },
+  { value: "participantCount_desc", label: "참여인원순" },
+  { value: "createdAt_asc", label: "오래된순" },
+];
 
 export default async function Page({
   searchParams,
@@ -43,16 +51,25 @@ export default async function Page({
   const currentParams = { type, keyword, sortBy, sortOrder };
 
   return (
-    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
-      <Suspense fallback={<MeetingsHeaderSkeleton />}>
-        <MeetingsHeaderSection />
+    <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
+      <MeetingsHeroSection />
+
+      <Suspense fallback={<MeetingsControlSkeleton />}>
+        <div className="animate-fade-up">
+          <MeetingTypeTabs />
+
+          <SearchFilterBar
+            sortOptions={MEETING_SORT_OPTIONS}
+            searchPlaceholder={"어떤 모임을 찾으시나요?"}
+          />
+        </div>
       </Suspense>
 
       <Suspense
         key={`${type}-${sortBy}-${sortOrder}-${keyword}`}
         fallback={
           <div className="mx-auto max-w-[1280px]">
-            <MeetingCardSkeleton />
+            <MeetingsSkeleton />
           </div>
         }
       >
