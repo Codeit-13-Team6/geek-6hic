@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -23,13 +23,10 @@ export default function MeetingTypeTabs() {
   const { getParam, updateParams } = useUrlQuery();
   const currentTab = getParam("type") || "";
 
-  const tabList = useMemo(
-    () => [
-      { value: "", label: "전체" },
-      ...meetingTypes.map((t) => ({ value: String(t.name), label: t.name })),
-    ],
-    [meetingTypes],
-  );
+  const tabList = [
+    { value: "", label: "전체" },
+    ...meetingTypes.map((t) => ({ value: String(t.name), label: t.name })),
+  ];
 
   if (!isMounted) {
     return (

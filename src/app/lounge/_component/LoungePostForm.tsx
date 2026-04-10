@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link2, Loader2 } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
@@ -18,6 +18,8 @@ export default function LoungePostForm({
   isSubmitting,
   submitButtonText = "등록",
 }: LoungePostFormProps) {
+  "use memo";
+
   const TITLE_MAX_LENGTH = 30;
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
@@ -47,13 +49,12 @@ export default function LoungePostForm({
     setThumbnailImage,
   } = useLoungeLink();
 
-  const { content: parsedContent, links: parsedLinks } = useMemo(
-    () => parsePostData(String(initialData?.content)),
-    [initialData?.content],
+  const { content: parsedContent, links: parsedLinks } = parsePostData(
+    String(initialData?.content),
   );
 
   // 글자 수 계산
-  const plainText = useMemo(() => {
+  const plainText = (() => {
     if (!content) return "";
 
     const text = content.replace(/<[^>]*>?/gm, "");
@@ -66,7 +67,7 @@ export default function LoungePostForm({
       "&#39;": "'",
     };
     return text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || " ");
-  }, [content]);
+  })();
 
   const contentWithSpaces = plainText.length;
   const contentWithoutSpaces = plainText.replace(/\s/g, "").length;

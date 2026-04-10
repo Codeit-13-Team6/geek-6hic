@@ -4,10 +4,9 @@ import { ThumbsUp, MessageSquare } from "lucide-react";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
-import { memo, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-const PostCard = memo(function PostCard({
+export default function PostCard({
   title,
   content,
   authorImage,
@@ -19,7 +18,9 @@ const PostCard = memo(function PostCard({
   thumbnailUrl,
   onDetailClick,
 }: PostCardProps) {
-  const pureContent = useMemo(() => getPlainText(content), [content]);
+  "use memo";
+
+  const pureContent = getPlainText(content);
   const router = useRouter();
 
   return (
@@ -33,7 +34,7 @@ const PostCard = memo(function PostCard({
           onDetailClick?.();
         }
       }}
-      className="cursor-pointer group flex flex-col items-stretch rounded-2xl bg-transparent transition-all sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-black"
+      className="group flex cursor-pointer flex-col items-stretch rounded-2xl bg-transparent transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset sm:flex-row sm:items-start sm:gap-8 sm:px-6 sm:py-6 sm:hover:bg-slate-50"
     >
       {/* 모바일에서 좌우/상단 여백 없이 꽉 차게 보이도록 설정 */}
       <div className="relative aspect-video w-full shrink-0 overflow-hidden sm:aspect-square sm:h-28 sm:w-28 sm:rounded-xl lg:h-32 lg:w-32">
@@ -112,5 +113,4 @@ const PostCard = memo(function PostCard({
       </div>
     </article>
   );
-});
-export default PostCard;
+}

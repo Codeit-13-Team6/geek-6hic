@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  experimental: {
+    reactCompiler: {
+      compilationMode: "annotation",
+    },
+  } as any,
   images: {
     domains: [
       "images.unsplash.com",
