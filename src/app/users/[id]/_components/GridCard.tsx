@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import type { UserType } from "@/lib/userType";
 import {
   CHARACTER_MAP,
   DEFAULT_CHARACTER,
-  type UserType,
 } from "@/app/users/[id]/_components/gradeCharacters";
 
 interface GradeCardProps {

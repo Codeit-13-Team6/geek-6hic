@@ -1,6 +1,6 @@
 import type { BasicProfileStats, CreatedMeetingSummary } from "@/api/server";
+import { deriveUserType } from "@/lib/userType";
 import GradeCard from "./GridCard";
-import { deriveUserType } from "./gradeType";
 
 interface GradeCardContainerProps {
   basicStatsPromise: Promise<BasicProfileStats>;

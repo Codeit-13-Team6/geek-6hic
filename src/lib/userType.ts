@@ -1,11 +1,21 @@
-import type { CreatedMeetingSummary } from "@/api/server";
-import type { UserType } from "./gradeCharacters";
+export type UserType =
+  | "LPI"
+  | "LPA"
+  | "LSI"
+  | "LSA"
+  | "WPI"
+  | "WPA"
+  | "WSI"
+  | "WSA"
+  | "SEED";
 
 interface DeriveUserTypeParams {
   postCount: number;
   meetingCount: number;
   favoriteCount: number;
-  createdMeetings: CreatedMeetingSummary[];
+  createdMeetings: Array<{
+    category: "PROJECT" | "STUDY";
+  }>;
 }
 
 const LEADERSHIP_THRESHOLD = 0.3;

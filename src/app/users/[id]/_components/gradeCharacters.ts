@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import type { UserType } from "@/lib/userType";
 import lpiCharacterImg from "@/assets/img/character/LPI.png";
 import lpaCharacterImg from "@/assets/img/character/LPA.png";
 import lsaCharacterImg from "@/assets/img/character/LSA.png";
@@ -18,17 +19,6 @@ export interface GradeCharacter {
   accentColor: string;
   glowColor: string;
 }
-
-export type UserType =
-  | "LPI"
-  | "LPA"
-  | "LSI"
-  | "LSA"
-  | "WPI"
-  | "WPA"
-  | "WSI"
-  | "WSA"
-  | "SEED";
 
 export const gradeCharacters: GradeCharacter[] = [
   {
