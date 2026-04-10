@@ -4,9 +4,7 @@
 
 ## 📝 Change Log
 
-> 본 PR에서 작업한 내용을 적어주세요.
-
--
+pr_agent:summary
 
 ## 💬 Reviewer's Guide
 
