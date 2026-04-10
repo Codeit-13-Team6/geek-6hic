@@ -41,6 +41,7 @@ export function UserCard({
       onClick={onDetailClick}
       tabIndex={0}
       role="button"
+      aria-label={`${title} 상세 보기`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -100,7 +101,7 @@ export function UserCard({
           {showLockBtn && (
             <LucideLock
               size={22}
-              aria-label="비공개 모임"
+              aria-hidden="true"
             />
           )}
         </div>
