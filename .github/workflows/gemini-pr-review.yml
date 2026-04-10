@@ -9,7 +9,7 @@ on:
 jobs:
   pr_agent:
     # 봇이 쓴 글에는 반응하지 않음 (무한 루프 방지)
-    if: ${{ github.actor != 'github-actions[bot]' && (github.event.issue.pull_request || github.event.pull_request) }}
+    if: ${{ github.actor != 'github-actions[bot]' && (github.event.pull_request != null || github.event.issue.pull_request != null) }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
