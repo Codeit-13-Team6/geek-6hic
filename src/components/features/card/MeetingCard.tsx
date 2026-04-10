@@ -34,13 +34,8 @@ export default function MeetingCard({
   return (
     <>
       {visibleMeetingList.map((item) => {
-        const isClosed = isMeetingClosed(item);
-        const isFull = item.participantCount >= item.capacity;
-        console.log(item);
         const isHost = user?.id === item.hostId;
-
         const isUserJoined = item.isJoined || !!item.joinedAt;
-
         const isSecret = isSecretMeeting(item.dateTime);
 
         let statusLabel = null;
@@ -60,13 +55,13 @@ export default function MeetingCard({
               // 엔터 키 입력시 이동
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                onItemClick(item)
+                onItemClick(item);
               }
             }}
             key={item.id}
             onClick={() => onItemClick(item)}
             className={cn(
-              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 sm:flex-row sm:items-stretch sm:gap-0 focus-visible:ring-main-purple focus-visible:ring-2 focus-visible:outline-none",
+              "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none sm:flex-row sm:items-stretch sm:gap-0",
               "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
               "hover:shadow-[0_20px_45px_-10px_rgba(38,6,86,0.12)]",
               statusLabel ? "opacity-95" : "",
@@ -81,7 +76,6 @@ export default function MeetingCard({
                   statusLabel ? "grayscale-[40%]" : "",
                 )}
                 alt="모임 이미지"
-                unoptimized
               />
               {isSecret && (
                 <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
@@ -156,10 +150,7 @@ export default function MeetingCard({
                       </div>
                       <p className="flex items-baseline gap-0.5">
                         <span
-                          className={cn(
-                            "text-sm font-bold text-main-purple",
-                            // isFull ? "text-slate-400" : "text-main-purple",
-                          )}
+                          className={cn("text-main-purple text-sm font-bold")}
                         >
                           {item.participantCount}
                         </span>
@@ -172,10 +163,7 @@ export default function MeetingCard({
                     <div className="w-full">
                       <Progress
                         className={cn(
-                          "block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100 [&_[data-slot=progress-indicator]]:!bg-main-purple",
-                          // isFull || isClosed
-                          //   ? "[&_[data-slot=progress-indicator]]:!bg-slate-300"
-                          //   : "[&_[data-slot=progress-indicator]]:!bg-main-purple",
+                          "[&_[data-slot=progress-indicator]]:!bg-main-purple block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
                         )}
                         value={(item.participantCount / item.capacity) * 100}
                       />

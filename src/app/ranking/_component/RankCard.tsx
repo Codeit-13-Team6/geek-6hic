@@ -28,7 +28,7 @@ export default function RankCard({
         }
       }}
       aria-label={`랭킹 ${rank}위 ${title} 상세 보기`}
-      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main-purple"
+      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
     >
       <div className="flex min-w-0 items-center gap-4 sm:gap-6">
         <div className="min-w-6 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:min-w-8 sm:text-2xl">

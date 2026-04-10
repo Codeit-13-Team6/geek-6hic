@@ -51,7 +51,7 @@ export function BtnTop() {
       tabIndex={visible ? 0 : -1}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 focus-visible:ring-2 focus-visible:ring-main-purple focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+        "fixed z-50 flex h-14 w-14 items-center justify-center rounded-full bg-main-purple text-white shadow-lg transition-all duration-300 hover:bg-slate-950 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white",
         positionClass,
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
       )}

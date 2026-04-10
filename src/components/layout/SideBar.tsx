@@ -60,7 +60,7 @@ export default function SideBar({
               href={link.href}
               onClick={onClose}
               className={cn(
-                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-main-purple",
+                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-black",
                 isActive
                   ? "text-main-purple bg-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]"
                   : "text-slate-500 hover:text-slate-900",

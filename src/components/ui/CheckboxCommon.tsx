@@ -29,7 +29,7 @@ export function CheckboxCommon({
           checked={checked}
           onChange={onChange}
           className={cn(
-            "h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-gray-50 transition-all checked:border-main-purple checked:bg-main-purple focus:outline-none focus:ring-2 focus:ring-main-purple focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-gray-50 transition-all checked:border-main-purple checked:bg-main-purple focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
             className
           )}
           {...props}

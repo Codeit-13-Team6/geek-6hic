@@ -1,39 +1,32 @@
 "use client";
 
-import { useUrlSearch } from "@/hooks/useUrlSearch";
 import { InputCommon } from "./InputCommon";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface Props {
+  initialValue?: string;
   placeholder?: string;
   queryKey?: string;
   className?: string;
-  onSearch?: (keyword: string) => void;
+  onSearch: (keyword: string) => void;
 }
 
-export default function SearchBarCommon({
+export default function SearchBar({
+  initialValue = "",
   placeholder = "검색어를 입력하세요",
-  queryKey = "keyword",
   className,
   onSearch,
 }: Props) {
-  const { keyword, setKeyword, handleSearch } = useUrlSearch(queryKey);
+  const [keyword, setKeyword] = useState(initialValue);
 
-  const executeSearch = () => {
-    if (onSearch) {
-      onSearch(keyword);
-    } else {
-      handleSearch(keyword);
-    }
-  };
+  useEffect(() => {
+    setKeyword(initialValue);
+  }, [initialValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") executeSearch();
-  };
-
-  const handleSearchClick = () => {
-    executeSearch();
+    if (e.key === "Enter") onSearch(keyword);
   };
 
   return (
@@ -57,7 +50,7 @@ export default function SearchBarCommon({
       </div>
 
       <button
-        onClick={handleSearchClick}
+        onClick={() => onSearch(keyword)}
         className="hover:text-main-purple ml-4 flex shrink-0 items-center justify-center text-slate-400 transition-colors active:scale-90"
         aria-label="검색"
       >
