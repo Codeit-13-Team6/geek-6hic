@@ -1,18 +1,14 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "../card/PostCard";
-import { getLoungePostsBFF } from "@/api/client/posts";
-import { GetPostsResponse, LoungeSortBy, Post, SortOrder } from "@/types";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { cn } from "@/lib/utils";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { getNextPageParam } from "@/lib/pagination";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { NoResultFound } from "@/components/ui/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";
+import { usePostList } from "@/hooks";
+import { LoungeSortBy, Post, SortOrder } from "@/types";
 
 export default function PostList() {
   const router = useRouter();
@@ -22,24 +18,8 @@ export default function PostList() {
   const sortBy = (getParam("sortBy") || "createdAt") as LoungeSortBy;
   const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
-  const currentParams = { keyword, sortBy, sortOrder };
-  const listQueryKey = QUERY_KEYS.posts.listParams(currentParams);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery<GetPostsResponse>({
-      queryKey: listQueryKey,
-      queryFn: ({ pageParam }) => {
-        const cursor = typeof pageParam === "string" ? pageParam : undefined;
-        return getLoungePostsBFF({
-          ...currentParams,
-          size: 10,
-          ...(cursor ? { cursor } : {}),
-        });
-      },
-      initialPageParam: undefined,
-      getNextPageParam,
-      staleTime: 1000 * 60,
-    });
+    usePostList({ keyword, sortBy, sortOrder });
 
   const postList = data?.pages.flatMap((page) => page.data) || [];
 

@@ -17,7 +17,7 @@ import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import type { QueryKey } from "@tanstack/react-query";
 
-interface UseMeetingListProps {
+interface GetMeetingsProps {
   type?: string;
   keyword?: string;
   sortBy?: MeetingSortBy;
@@ -35,13 +35,13 @@ export interface InfiniteListResult {
   favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
 }
 
-export const useMeetingList = ({
+export const useGetMeetings = ({
   type = "",
   keyword = "",
   sortBy = "createdAt",
   sortOrder = "desc",
   enabled = true,
-}: UseMeetingListProps = {}): InfiniteListResult => {
+}: GetMeetingsProps = {}): InfiniteListResult => {
   const currentParams = { type, keyword, sortBy, sortOrder };
   const listQueryKey = QUERY_KEYS.meetings.listParams(currentParams);
 
