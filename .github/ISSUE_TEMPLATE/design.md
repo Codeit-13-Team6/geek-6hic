@@ -1,5 +1,5 @@
 ---
-name: "🎨 DESIGN: 스타일 및 디자인"
+name: "🎨 design: 스타일 및 디자인"
 about: UI 컴포넌트 개발 및 스타일 수정
 title: "[DESIGN] "
 labels: "design"

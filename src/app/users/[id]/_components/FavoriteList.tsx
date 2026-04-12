@@ -1,20 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteFavorites, getFavorites } from "@/api/client/meetings";
+import { getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
 import { Loader2, HeartOff } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+import { useToggleFavorite } from "@/hooks/queries/useUser";
 
 const FAVORITES_PAGE_SIZE = 10;
 
 export default function FavoriteList() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const {
     items: favorites,
     isFetching,
@@ -29,13 +28,7 @@ export default function FavoriteList() {
     queryFn: getFavorites,
   });
 
-  const { mutate: toggleFavorite } = useMutation({
-    mutationFn: (meetingId: number) => deleteFavorites(meetingId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.favorites.root });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.list });
-    },
-  });
+  const { mutate: toggleFavorite } = useToggleFavorite();
 
   useEffect(() => {
     if (!isFetching && favorites.length === 0 && page > 1) {
