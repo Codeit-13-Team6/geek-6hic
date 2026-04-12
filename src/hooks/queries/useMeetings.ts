@@ -35,13 +35,13 @@ export interface InfiniteListResult {
   favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
 }
 
-export function useMeetingList({
+export const useMeetingList = ({
   type = "",
   keyword = "",
   sortBy = "createdAt",
   sortOrder = "desc",
   enabled = true,
-}: UseMeetingListProps = {}): InfiniteListResult {
+}: UseMeetingListProps = {}): InfiniteListResult => {
   const currentParams = { type, keyword, sortBy, sortOrder };
   const listQueryKey = QUERY_KEYS.meetings.listParams(currentParams);
 
@@ -77,9 +77,9 @@ export function useMeetingList({
     sortValue: sortBy || undefined,
     favoriteQueryKey: listQueryKey,
   };
-}
+};
 
-export function useJoinedMeetingList(enabled = true): InfiniteListResult {
+export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
   const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: QUERY_KEYS.meetings.joined,
@@ -102,7 +102,7 @@ export function useJoinedMeetingList(enabled = true): InfiniteListResult {
     isFetchingNextPage,
     favoriteQueryKey: QUERY_KEYS.meetings.joined,
   };
-}
+};
 
 export const useMeetingTypes = () => {
   const queryResult = useQuery<MeetingType[]>({

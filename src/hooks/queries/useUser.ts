@@ -19,6 +19,7 @@ export const useUpdateProfile = () => {
     },
   });
 };
+
 export const useToggleFavorite = () => {
   const queryClient = useQueryClient();
 
