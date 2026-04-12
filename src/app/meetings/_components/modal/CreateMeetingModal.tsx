@@ -5,9 +5,7 @@ import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalF
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import ModalBase from "@/components/ui/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
-import { type MeetingType } from "@/types";
 import {
-  AlertCircle,
   Plus,
   StepForwardIcon,
   Sparkles,
@@ -20,10 +18,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { getMeetingTypes } from "@/api/client";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useMeetingTypes } from "@/hooks/queries/useMeetings";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
@@ -48,11 +44,7 @@ export function CreateMeetingModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
-  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: QUERY_KEYS.meetings.meetingType,
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
+  const { meetingTypes } = useMeetingTypes();
 
   const {
     currentStep,
@@ -229,7 +221,6 @@ export function CreateMeetingModal() {
           setIsOpen(false);
         }}
       />
-
     </>
   );
 }

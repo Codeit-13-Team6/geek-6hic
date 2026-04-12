@@ -7,7 +7,7 @@ import { useMeetingFavoriteMutation } from "@/hooks";
 import {
   useMeetingList,
   useJoinedMeetingList,
-} from "@/hooks/queries/useMeetingInfiniteList";
+} from "@/hooks/queries/useMeetings";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { SortOrder, MeetingSortBy, JoinedMeeting } from "@/types";
 import { NoResultFound } from "@/components/ui/NoResultFound";

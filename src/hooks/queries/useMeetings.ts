@@ -1,12 +1,17 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getMeetingList,
+  getJoinedMeetings,
+  getMeetingTypes,
+} from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
   SortOrder,
   MeetingSortBy,
+  MeetingType,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -98,3 +103,13 @@ export function useJoinedMeetingList(enabled = true): InfiniteListResult {
     favoriteQueryKey: QUERY_KEYS.meetings.joined,
   };
 }
+
+export const useMeetingTypes = () => {
+  const queryResult = useQuery<MeetingType[]>({
+    queryKey: QUERY_KEYS.meetings.meetingType,
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return { ...queryResult, meetingTypes: queryResult.data || [] };
+};
