@@ -21,7 +21,7 @@ export default function GradeCard({ userType }: GradeCardProps) {
   return (
     <div
       className={cn(
-        "relative flex h-full w-full flex-col overflow-hidden rounded-4xl border border-slate-100 p-5 text-indigo-950 shadow-md transition-all duration-700 sm:p-6 md:p-7 md:max-lg:min-h-90",
+        "relative flex h-full w-full flex-col overflow-hidden rounded-4xl border border-slate-100 p-5 text-indigo-950 shadow-md transition-all duration-700 sm:p-6 md:p-7 md:max-lg:min-h-22.5",
         character.bgClass,
       )}
     >
