@@ -109,6 +109,12 @@ export function useMeetingJoinMutations(meetingId: number) {
         queryClient.invalidateQueries({
           queryKey: QUERY_KEYS.meetings.participants(meetingId),
         }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.list,
+        }),
       ]);
       ToastCommon({ message: "모임에 참여했어요.", size: "sm" });
     },
@@ -129,6 +135,15 @@ export function useMeetingJoinMutations(meetingId: number) {
         }),
         queryClient.invalidateQueries({
           queryKey: QUERY_KEYS.meetings.participants(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.list,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.joined,
         }),
       ]);
       ToastCommon({ message: "참여를 취소했어요.", size: "sm" });

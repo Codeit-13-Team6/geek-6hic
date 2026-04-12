@@ -1,8 +1,8 @@
 ---
-name: "🐛 Bug: 버그 수정"
+name: "🐛 Fix: 버그 수정"
 about: 잘못된 동작이나 에러 수정
 title: "[FIX] "
-labels: "bug"
+labels: "fix"
 ---
 
 ## 🚨 Issue Description
