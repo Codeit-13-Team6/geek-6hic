@@ -11,10 +11,8 @@ import {
 import { InputCommon } from "@/components/ui/InputCommon";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CheckboxCommon } from "@/components/ui/CheckboxCommon";
-import { MeetingModalFormProps, type MeetingType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { getMeetingTypes } from "@/api/client";
+import { MeetingModalFormProps } from "@/types";
+import { useMeetingTypes } from "@/hooks/queries/useMeetings";
 
 export function MeetingModalForm({
   values,
@@ -25,11 +23,7 @@ export function MeetingModalForm({
   onRemoveImage,
   showCategoryField = false,
 }: MeetingModalFormProps) {
-  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: QUERY_KEYS.meetings.meetingType,
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
+  const { meetingTypes } = useMeetingTypes();
 
   return (
     <div className="space-y-5">

@@ -21,7 +21,7 @@ export default function StatGrid({
 }: StatGridProps) {
   return (
     <dl
-      className="grid grid-cols-6 gap-3 lg:grid-cols-2"
+      className="grid grid-cols-6 gap-3 md:max-lg:h-full lg:grid-cols-2"
       aria-label="사용자 활동 통계"
     >
       <div className="col-span-6 flex items-center justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm lg:col-span-2">
@@ -72,25 +72,25 @@ export default function StatGrid({
             val={participantStats.team}
             color="text-cyan-600"
           />
-          <div className="h-4 w-[1px] bg-slate-100" />
+          <div className="h-4 w-px bg-slate-100" />
           <PartItem
             label="스터디"
             val={participantStats.study}
             color="text-indigo-500"
           />
-          <div className="h-4 w-[1px] bg-slate-100" />
+          <div className="h-4 w-px bg-slate-100" />
           <PartItem
             label="프로젝트"
             val={participantStats.project}
             color="text-violet-500"
           />
-          <div className="h-4 w-[1px] bg-slate-100" />
+          <div className="h-4 w-px bg-slate-100" />
           <PartItem
             label="취준생"
             val={participantStats.jobPrep}
             color="text-rose-400"
           />
-          <div className="h-4 w-[1px] bg-slate-100" />
+          <div className="h-4 w-px bg-slate-100" />
           <PartItem
             label="기타"
             val={participantStats.etc}

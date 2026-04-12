@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { getMeetingTypes } from "@/api/client";
-import type { MeetingType } from "@/types";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
+import { useMeetingTypes } from "@/hooks/queries/useMeetings";
 
 export default function MeetingTypeTabs() {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,11 +12,8 @@ export default function MeetingTypeTabs() {
     setIsMounted(true);
   }, []);
 
-  const { data: meetingTypes = [] } = useQuery<MeetingType[]>({
-    queryKey: QUERY_KEYS.meetings.meetingType,
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
+  const { meetingTypes } = useMeetingTypes();
+
   const { getParam, updateParams } = useUrlQuery();
   const currentTab = getParam("type") || "";
 

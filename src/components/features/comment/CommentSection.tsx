@@ -2,18 +2,6 @@
 
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import {
-  createComment,
-  deleteComment,
-  getComments,
-  updateComment,
-} from "@/api/client/comments";
 import { useAuthStore } from "@/store/useAuthStore";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import Comment from "./Comment";
@@ -21,8 +9,7 @@ import { ToastCommon } from "@/components/ui/ToastCommon";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
-import { CommentSectionProps, GetCommentsResponse } from "@/types";
-import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
+import { CommentSectionProps } from "@/types";
 import { DeleteModal } from "@/components/ui/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { QUERY_KEYS } from "@/constans/queryKey";
@@ -35,6 +22,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/PaginationCommon";
+import {
+  useCreateComment,
+  useDeleteComment,
+  useEditComment,
+  useGetComments,
+} from "@/hooks/queries/useComments";
 
 const COMMENTS_PAGE_LIMIT = 10;
 
@@ -48,7 +41,14 @@ function getVisiblePages(currentPage: number, totalPages: number) {
   }
 
   if (currentPage >= totalPages - 2) {
-    return [1, "ellipsis", totalPages - 3, totalPages - 2, totalPages - 1, totalPages] as const;
+    return [
+      1,
+      "ellipsis",
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ] as const;
   }
 
   return [
@@ -67,7 +67,6 @@ export default function CommentSection({
   isThread = false,
 }: CommentSectionProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
 
@@ -81,15 +80,12 @@ export default function CommentSection({
     ? QUERY_KEYS.comments.detail(postId)
     : QUERY_KEYS.comments.page(postId, page, COMMENTS_PAGE_LIMIT);
 
-  const { data: comments } = useQuery({
-    queryKey: activeCommentsQueryKey,
-    queryFn: () =>
-      getComments(postId, {
-        offset: isThread ? 0 : currentOffset,
-        limit: isThread ? 100 : COMMENTS_PAGE_LIMIT,
-      }),
-    enabled: !!postId,
-    placeholderData: isThread ? undefined : keepPreviousData,
+  const { data: comments } = useGetComments({
+    postId,
+    activeQueryKey: activeCommentsQueryKey,
+    isThread,
+    offset: currentOffset,
+    limit: COMMENTS_PAGE_LIMIT,
   });
 
   const commentsList = comments?.data || [];
@@ -97,72 +93,17 @@ export default function CommentSection({
   const totalPages = Math.max(1, Math.ceil(totalCount / COMMENTS_PAGE_LIMIT));
   const visiblePages = getVisiblePages(page, totalPages);
 
-  const { mutate: postComment, isPending: isPosting } = useMutation({
-    mutationFn: (newContent: string) => createComment(postId, newContent),
-    onSuccess: () => {
-      if (!isThread) {
-        setPage(1);
-        document.getElementById("comments")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
+  const { mutate: postComment, isPending: isPosting } =
+    useCreateComment(postId);
 
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.comments.detail(postId),
-      });
-
-      if (isThread) {
-        setThreadContent(""); // 스레드 입력창(state) 초기화
-      } else if (commentRef.current) {
-        commentRef.current.value = ""; // 일반 댓글창(ref) 초기화
-      }
-    },
-    onError: () => {
-      ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
-    },
-  });
-
-  const { mutate: removeComment } = useMutation({
-    mutationFn: (commentId: number) => deleteComment(postId, commentId),
-    ...useOptimisticMutation<GetCommentsResponse, number>(queryClient, {
-      queryKey: activeCommentsQueryKey,
-      updater: (old, commentId) => ({
-        ...old,
-        data: old.data.filter((c) => c.id !== commentId),
-      }),
-      invalidateKeys: [QUERY_KEYS.comments.detail(postId)],
-      onErrorMessage: "댓글 삭제에 실패했습니다.",
-    }),
-    onSuccess: () => {
-      ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
-    },
-  });
-
-  const { mutate: editComment } = useMutation({
-    mutationFn: ({
-      commentId,
-      content,
-    }: {
-      commentId: number;
-      content: string;
-    }) => updateComment(postId, commentId, content),
-    ...useOptimisticMutation<
-      GetCommentsResponse,
-      { commentId: number; content: string }
-    >(queryClient, {
-      queryKey: activeCommentsQueryKey,
-      updater: (old, { commentId, content }) => ({
-        ...old,
-        data: old.data.map((c) => (c.id === commentId ? { ...c, content } : c)),
-      }),
-      invalidateKeys: [QUERY_KEYS.comments.detail(postId)],
-      onErrorMessage: "댓글 수정에 실패했습니다.",
-    }),
-    onSuccess: () => {
-      ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
-    },
-  });
+  const { mutate: removeComment } = useDeleteComment(
+    postId,
+    activeCommentsQueryKey,
+  );
+  const { mutate: editComment } = useEditComment(
+    postId,
+    activeCommentsQueryKey,
+  );
 
   const handlePostComment = () => {
     // 실시간 카드 리스트로 발생하는 렌더링 최적화
@@ -173,7 +114,22 @@ export default function CommentSection({
         size: "sm",
       });
 
-    postComment(value);
+    postComment(value, {
+      onSuccess: () => {
+        if (!isThread) {
+          setPage(1);
+          document.getElementById("comments")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          if (commentRef.current) {
+            commentRef.current.value = ""; // 일반 댓글창 초기화
+          }
+        } else {
+          setThreadContent(""); // 스레드 입력창 초기화
+        }
+      },
+    });
   };
 
   const handleEdit = (commentId: number, newContent: string) => {

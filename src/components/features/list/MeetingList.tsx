@@ -5,9 +5,9 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingCard from "../card/MeetingCard";
 import { useMeetingFavoriteMutation } from "@/hooks";
 import {
-  useMeetingList,
+  useGetMeetings,
   useJoinedMeetingList,
-} from "@/hooks/queries/useMeetingInfiniteList";
+} from "@/hooks/queries/useMeetings";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { SortOrder, MeetingSortBy, JoinedMeeting } from "@/types";
 import { NoResultFound } from "@/components/ui/NoResultFound";
@@ -30,7 +30,7 @@ export default function MeetingList({
   const sortBy = (getParam("sortBy") || "createdAt") as MeetingSortBy;
   const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
-  const allResult = useMeetingList({
+  const allResult = useGetMeetings({
     type,
     keyword,
     sortBy,

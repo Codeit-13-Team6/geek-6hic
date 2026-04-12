@@ -1,5 +1,9 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getHotPosts, getPostDetail, getPosts } from "@/api/client/posts";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getHotPosts,
+  getLoungePostsBFF,
+  getPostDetail,
+} from "@/api/client/posts";
 import { getOgData } from "@/api/client/og";
 import { parsePostData } from "@/lib/contentLinkUtils";
 import { likePost, unlikePost } from "@/api/client/posts";
@@ -7,9 +11,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost, deletePost } from "@/api/client/posts";
 import { useRouter } from "next/navigation";
 import { ToastCommon } from "@/components/ui/ToastCommon";
-import { GetPostsParams, Post, PostPayload } from "@/types";
+import {
+  GetPostsResponse,
+  LoungeSortBy,
+  Post,
+  PostPayload,
+  SortOrder,
+} from "@/types";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { getNextPageParam } from "@/lib/pagination";
+
+export interface UsePostListParams {
+  keyword: string;
+  sortBy: LoungeSortBy;
+  sortOrder: SortOrder;
+}
 
 /**
  * HOT 게시물 조회 훅 (LoungePage용)
@@ -25,18 +42,20 @@ export const useGetHotPosts = () => {
 /**
  * 게시글 목록 조회 훅
  */
-export const useGetPostsList = (
-  sortValue: string,
-  searchValue: string,
-  params: GetPostsParams,
-  enabled: boolean = true,
-) => {
-  return useQuery({
-    queryKey: ["posts", "list", sortValue, searchValue],
-    queryFn: () => getPosts(params),
-    placeholderData: keepPreviousData, // 필터 변경 시 깜빡임 방지
-    staleTime: 1000 * 60 * 5,
-    enabled, // refetchType 용도로 사용
+export const usePostList = (currentParams: UsePostListParams) => {
+  return useInfiniteQuery<GetPostsResponse>({
+    queryKey: QUERY_KEYS.posts.listParams(currentParams),
+    queryFn: ({ pageParam }) => {
+      const cursor = typeof pageParam === "string" ? pageParam : undefined;
+      return getLoungePostsBFF({
+        ...currentParams,
+        size: 10,
+        ...(cursor ? { cursor } : {}),
+      });
+    },
+    initialPageParam: undefined,
+    getNextPageParam,
+    staleTime: 1000 * 60,
   });
 };
 

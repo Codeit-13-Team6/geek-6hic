@@ -66,7 +66,7 @@ const getCancelJoinErrorMessage = (code?: string) => {
 };
 
 // 모임 상세 조회 함수 모음
-export function useMeetingDetailQueries(meetingId: number) {
+export const useMeetingDetailQueries = (meetingId: number) => {
   const detailQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.detail(meetingId),
     queryFn: () => getMeetingDetail(meetingId),
@@ -81,22 +81,22 @@ export function useMeetingDetailQueries(meetingId: number) {
     detailQuery,
     participantsQuery,
   };
-}
+};
 
 // 추천 모임 조회
-export function useMeetingRecommendationsQuery(
+export const useMeetingRecommendationsQuery = (
   meetingId: number,
   meetingType: string,
-) {
+) => {
   return useQuery({
     queryKey: [...QUERY_KEYS.meetings.recommendations(meetingId), meetingType],
     queryFn: () => getMeetingRecommendations(meetingId, meetingType),
     staleTime: 1000 * 60 * 10,
   });
-}
+};
 
 // 참여 / 탈퇴
-export function useMeetingJoinMutations(meetingId: number) {
+export const useMeetingJoinMutations = (meetingId: number) => {
   const queryClient = useQueryClient();
 
   const joinMutation = useMutation({
@@ -108,6 +108,12 @@ export function useMeetingJoinMutations(meetingId: number) {
         }),
         queryClient.invalidateQueries({
           queryKey: QUERY_KEYS.meetings.participants(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.list,
         }),
       ]);
       ToastCommon({ message: "모임에 참여했어요.", size: "sm" });
@@ -130,6 +136,15 @@ export function useMeetingJoinMutations(meetingId: number) {
         queryClient.invalidateQueries({
           queryKey: QUERY_KEYS.meetings.participants(meetingId),
         }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.recommendations(meetingId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.list,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.meetings.joined,
+        }),
       ]);
       ToastCommon({ message: "참여를 취소했어요.", size: "sm" });
     },
@@ -150,10 +165,10 @@ export function useMeetingJoinMutations(meetingId: number) {
       await cancelJoinMutation.mutateAsync();
     },
   };
-}
+};
 
 // 수정 / 삭제 (호스트 전용)
-export function useMeetingHostMutations(meetingId: number) {
+export const useMeetingHostMutations = (meetingId: number) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -198,10 +213,10 @@ export function useMeetingHostMutations(meetingId: number) {
       deleteMeetingMutation.mutate();
     },
   };
-}
+};
 
 // 출석
-export function useMeetingAttendMutation(meetingId: number) {
+export const useMeetingAttendMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
   const [hasAttended, setHasAttended] = useState(
     queryClient.getQueryData<boolean>(
@@ -239,10 +254,10 @@ export function useMeetingAttendMutation(meetingId: number) {
       });
     },
   };
-}
+};
 
 // 찜하기 (상세 페이지)
-export function useMeetingDetailFavoriteMutation(meetingId: number) {
+export const useMeetingDetailFavoriteMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
 
   const favoriteMutation = useMutation({
@@ -268,12 +283,12 @@ export function useMeetingDetailFavoriteMutation(meetingId: number) {
       favoriteMutation.mutate(isFavorited);
     },
   };
-}
+};
 
 // 모임 좋아요 mutation 함수
-export function useMeetingFavoriteMutation(
+export const useMeetingFavoriteMutation = (
   queryKey: QueryKey = QUERY_KEYS.meetings.joined,
-) {
+) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -311,4 +326,4 @@ export function useMeetingFavoriteMutation(
     isPending: mutation.isPending,
     error: mutation.error,
   };
-}
+};

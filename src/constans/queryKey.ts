@@ -82,4 +82,9 @@ export const QUERY_KEYS = {
   ranking: {
     root: ["ranking"] as const,
   },
+  threads: {
+    root: ["threads"] as const,
+    detail: (meetingId: number | string) =>
+      ["threads", "detail", String(meetingId)] as const,
+  },
 };

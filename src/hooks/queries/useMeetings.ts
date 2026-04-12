@@ -1,18 +1,23 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getMeetingList,
+  getJoinedMeetings,
+  getMeetingTypes,
+} from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
   SortOrder,
   MeetingSortBy,
+  MeetingType,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import type { QueryKey } from "@tanstack/react-query";
 
-interface UseMeetingListProps {
+interface GetMeetingsProps {
   type?: string;
   keyword?: string;
   sortBy?: MeetingSortBy;
@@ -30,13 +35,13 @@ export interface InfiniteListResult {
   favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
 }
 
-export function useMeetingList({
+export const useGetMeetings = ({
   type = "",
   keyword = "",
   sortBy = "createdAt",
   sortOrder = "desc",
   enabled = true,
-}: UseMeetingListProps = {}): InfiniteListResult {
+}: GetMeetingsProps = {}): InfiniteListResult => {
   const currentParams = { type, keyword, sortBy, sortOrder };
   const listQueryKey = QUERY_KEYS.meetings.listParams(currentParams);
 
@@ -72,9 +77,9 @@ export function useMeetingList({
     sortValue: sortBy || undefined,
     favoriteQueryKey: listQueryKey,
   };
-}
+};
 
-export function useJoinedMeetingList(enabled = true): InfiniteListResult {
+export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
   const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: QUERY_KEYS.meetings.joined,
@@ -97,4 +102,14 @@ export function useJoinedMeetingList(enabled = true): InfiniteListResult {
     isFetchingNextPage,
     favoriteQueryKey: QUERY_KEYS.meetings.joined,
   };
-}
+};
+
+export const useMeetingTypes = () => {
+  const queryResult = useQuery<MeetingType[]>({
+    queryKey: QUERY_KEYS.meetings.meetingType,
+    queryFn: getMeetingTypes,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return { ...queryResult, meetingTypes: queryResult.data || [] };
+};

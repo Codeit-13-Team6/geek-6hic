@@ -1,26 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "@/lib/clientFetcher";
 import TopRankCard from "./TopRankCard";
 import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
-import { RankedItem } from "@/types";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { useRanking } from "@/hooks/queries/useRanking";
 
 export default function RankingList() {
   const router = useRouter();
 
-  const { data: rankedList, isLoading } = useQuery<RankedItem[]>({
-    queryKey: QUERY_KEYS.ranking.root,
-    queryFn: async () => {
-      const { data } = await axiosInstance.get("/ranking");
-      return data;
-    },
-    staleTime: 1000 * 60 * 10,
-  });
+  const { data: rankedList, isLoading } = useRanking();
 
   if (isLoading || !rankedList) return <RankingListSkeleton />;
 
