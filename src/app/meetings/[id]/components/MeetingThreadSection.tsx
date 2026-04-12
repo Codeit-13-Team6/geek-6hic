@@ -1,13 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getThreadPost } from "@/api/client/posts";
 import { MeetingThreadSectionProps } from "@/types";
 import CommentSection from "@/components/features/comment/CommentSection";
 import { MessagesSquare, LockKeyhole, Loader2 } from "lucide-react";
-import { getComments } from "@/api/client";
 import { cn } from "@/lib/utils";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { useMeetingThread } from "@/hooks/queries/useThread";
 
 export function MeetingThreadSection({
   meetingId,
@@ -18,18 +15,8 @@ export function MeetingThreadSection({
     ? "모임에 참여하면 스레드를 작성할 수 있어요."
     : "로그인 후 모임에 참여하면 스레드를 작성할 수 있어요.";
 
-  const { data: threadPost, isLoading: isPostLoading } = useQuery({
-    queryKey: ["meeting-thread-post", meetingId],
-    queryFn: () => getThreadPost(meetingId),
-  });
-
-  const { data: commentsData } = useQuery({
-    queryKey: QUERY_KEYS.comments.detail(threadPost?.id || 0),
-    queryFn: () => getComments(threadPost!.id, { offset: 0, limit: 100 }),
-    enabled: !!threadPost?.id,
-  });
-
-  const hasComments = (commentsData?.data?.length || 0) > 0;
+  const { threadPost, isPostLoading, hasComments } =
+    useMeetingThread(meetingId);
 
   if (isPostLoading) {
     return (

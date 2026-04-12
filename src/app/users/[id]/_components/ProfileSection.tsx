@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { updateUserProfile, uploadProfileImage } from "@/api/client/user";
+import { uploadProfileImage } from "@/api/client/user";
 import { User, UserProfileUpdateProps } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
 import ModalBase from "@/components/ui/ModalBase";
@@ -13,6 +12,7 @@ import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import { Settings2 } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useUpdateProfile } from "@/hooks/queries/useUser";
 
 interface ProfileSectionProps {
   initialUser?: {
@@ -31,6 +31,8 @@ export default function ProfileSection({
   canEdit = false,
 }: ProfileSectionProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+
   const storeUser = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
 
@@ -41,20 +43,17 @@ export default function ProfileSection({
     defaultValues: { name: "", email: "", companyName: "", image: null },
   });
 
-  const { mutate: updateProfile, isPending } = useMutation({
-    mutationFn: (data: UserProfileUpdateProps) => updateUserProfile(data),
-    onSuccess: (updated: User) => {
-      setUser(updated); // Gnb 즉시 반영
-      setIsEditModalOpen(false);
-    },
-  });
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
 
   const onSubmitProfile = profileForm.handleSubmit(({ image, ...data }) => {
     // 이미지 업로드는 ImageUploadInput 내부에서 완료됨 — image는 S3 publicUrl
-    updateProfile({ ...data, ...(image && { image }) });
+    updateProfile(
+      { ...data, ...(image && { image }) },
+      {
+        onSuccess: () => setIsEditModalOpen(false),
+      },
+    );
   });
-
-  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
   const requestCloseModal = () => {
     if (profileForm.formState.isDirty) {
