@@ -84,7 +84,7 @@ export default function ProfileSection({
 
   return (
     <>
-      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-sm sm:flex-row sm:gap-8 lg:flex-col lg:p-8">
+      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-sm sm:flex-row sm:gap-8 md:max-lg:min-h-90 lg:flex-col lg:p-8">
         {/* <article className="relative flex h-full w-full flex-col items-center gap-6 overflow-hidden rounded-[40px] border border-slate-100 bg-slate-50 p-8 shadow-md sm:flex-row sm:gap-8 lg:flex-col lg:p-8"> */}
         <div className="relative size-24 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 sm:size-20 lg:size-24">
           <FallbackImage
