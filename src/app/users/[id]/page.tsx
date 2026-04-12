@@ -92,8 +92,8 @@ export default async function Page({
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
         <aside className="custom-scrollbar flex w-full shrink-0 snap-x snap-mandatory flex-row items-stretch gap-4 overflow-x-auto pb-4 lg:w-[310px] lg:flex-col lg:overflow-visible lg:pb-0">
-          <div className="flex min-w-[180%] items-stretch gap-4 md:max-lg:min-h-90 lg:w-full lg:min-w-full lg:flex-col">
-            <div className="w-1/2 snap-center md:max-lg:h-full lg:w-full lg:min-w-full">
+          <div className="flex min-h-80 min-w-[180%] items-stretch gap-4 md:max-lg:min-h-90 lg:w-full lg:min-w-full lg:flex-col">
+            <div className="h-full w-1/2 snap-center lg:w-full lg:min-w-full">
               {/* 남 프로필이랑 내 프로필 구분 */}
               <Suspense
                 fallback={
@@ -109,7 +109,7 @@ export default async function Page({
                 />
               </Suspense>
             </div>
-            <div className="w-1/2 snap-center md:max-lg:h-full lg:w-full">
+            <div className="h-full w-1/2 snap-center lg:w-full">
               <Suspense fallback={<GradeCard />}>
                 <GradeCardContainer
                   basicStatsPromise={basicStatsPromise}
@@ -120,7 +120,7 @@ export default async function Page({
           </div>
 
           {/* 2. 게이미피케이션 스탯 그리드 구역 (옆으로 슬라이드) */}
-          <div className="min-w-[90%] snap-center md:max-lg:min-h-90 lg:min-w-full">
+          <div className="min-h-80 min-w-[90%] snap-center md:max-lg:min-h-90 lg:min-w-full">
             <Suspense
               fallback={
                 <StatGrid
