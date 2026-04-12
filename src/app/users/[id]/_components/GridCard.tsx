@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { UserType } from "@/lib/userType";
 import {
@@ -14,6 +15,7 @@ interface GradeCardProps {
 export default function GradeCard({ userType }: GradeCardProps) {
   "use memo";
 
+  const [isMobileFlipped, setIsMobileFlipped] = useState(false);
   const character = (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER;
 
   return (
@@ -49,21 +51,59 @@ export default function GradeCard({ userType }: GradeCardProps) {
       </div>
 
       <div className="relative z-10 mt-5 mb-2 flex flex-col items-center gap-3 md:my-5 md:mt-7 md:flex-1 md:flex-row md:items-center md:gap-5 lg:flex-col">
-        {/* 3. 중앙 캐릭터 영역 (워터마크 마스킹) */}
-        <div className="relative flex h-33 items-center justify-center overflow-hidden rounded-2xl md:h-48 md:w-1/2 md:shrink-0 lg:w-full">
-          <img
-            src={character.imgUrl.src}
-            alt={character.title}
-            className="relative z-10 w-auto scale-110 object-cover drop-shadow-lg md:scale-120"
-          />
-        </div>
+        {/* 모바일: 탭하면 이미지 ↔ 설명 플립 */}
+        <button
+          type="button"
+          onClick={() => setIsMobileFlipped((prev) => !prev)}
+          aria-label={
+            isMobileFlipped ? "캐릭터 이미지 보기" : "캐릭터 설명 보기"
+          }
+          aria-pressed={isMobileFlipped}
+          className="relative w-full text-left md:hidden"
+        >
+          <div
+            className={cn(
+              "relative h-45 w-full transition-transform duration-500 transform-3d",
+              isMobileFlipped && "transform-[rotateY(180deg)]",
+            )}
+          >
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl backface-hidden">
+              <img
+                src={character.imgUrl.src}
+                alt={character.title}
+                className="relative z-10 w-auto scale-120 object-cover drop-shadow-lg"
+              />
+            </div>
 
-        {/* 4. 하단 요약 정보 (문장 줄바꿈 로직) */}
-        <div className="relative z-20 flex w-full flex-1 flex-col items-center justify-center border-t border-indigo-950/5 pt-3 text-center md:h-full md:items-start md:border-t-0 md:border-l md:pt-0 md:pl-5 md:text-left lg:items-center lg:border-t lg:border-l-0 lg:pt-4 lg:pl-0 lg:text-center">
-          <p className="line-clamp-2 text-sm leading-relaxed font-bold text-indigo-950/80 md:line-clamp-none">
-            {character.description}
-          </p>
-        </div>
+            <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-2xl border border-indigo-950/10 bg-white/60 p-4 text-center backface-hidden">
+              <p className="text-sm leading-relaxed font-bold text-indigo-950/80">
+                {character.description}
+              </p>
+            </div>
+          </div>
+          <span className="mt-2 block text-center text-[11px] font-bold tracking-wide text-indigo-950/50">
+            이미지를 클릭해보세요!
+          </span>
+        </button>
+
+        {/* 태블릿/데스크탑: 기존 레이아웃 */}
+        <>
+          {/* 3. 중앙 캐릭터 영역 (워터마크 마스킹) */}
+          <div className="relative hidden h-48 items-center justify-center overflow-hidden rounded-2xl md:flex md:w-1/2 md:shrink-0 lg:w-full">
+            <img
+              src={character.imgUrl.src}
+              alt={character.title}
+              className="relative z-10 w-auto scale-120 object-cover drop-shadow-lg"
+            />
+          </div>
+
+          {/* 4. 하단 요약 정보 (문장 줄바꿈 로직) */}
+          <div className="relative z-20 hidden w-full flex-1 flex-col items-center justify-center border-t border-indigo-950/5 pt-3 text-center md:flex md:h-full md:items-start md:border-t-0 md:border-l md:pt-0 md:pl-5 md:text-left lg:items-center lg:border-t lg:border-l-0 lg:pt-4 lg:pl-0 lg:text-center">
+            <p className="line-clamp-2 text-sm leading-relaxed font-bold text-indigo-950/80 md:line-clamp-none">
+              {character.description}
+            </p>
+          </div>
+        </>
       </div>
 
       {/* 5. 타입별 동적 그라데이션 질감 */}
