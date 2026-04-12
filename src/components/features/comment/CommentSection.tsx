@@ -48,7 +48,14 @@ function getVisiblePages(currentPage: number, totalPages: number) {
   }
 
   if (currentPage >= totalPages - 2) {
-    return [1, "ellipsis", totalPages - 3, totalPages - 2, totalPages - 1, totalPages] as const;
+    return [
+      1,
+      "ellipsis",
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ] as const;
   }
 
   return [
@@ -111,6 +118,9 @@ export default function CommentSection({
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.comments.detail(postId),
       });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.posts.list,
+      });
 
       if (isThread) {
         setThreadContent(""); // 스레드 입력창(state) 초기화
@@ -131,7 +141,11 @@ export default function CommentSection({
         ...old,
         data: old.data.filter((c) => c.id !== commentId),
       }),
-      invalidateKeys: [QUERY_KEYS.comments.detail(postId)],
+      invalidateKeys: [
+        QUERY_KEYS.comments.detail(postId),
+        QUERY_KEYS.posts.list,
+      ],
+
       onErrorMessage: "댓글 삭제에 실패했습니다.",
     }),
     onSuccess: () => {
