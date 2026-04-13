@@ -1,5 +1,6 @@
 import type { BasicProfileStats, CreatedMeetingSummary } from "@/api/server";
 import { deriveUserType } from "@/lib/userType";
+import GradeCardSkeletonAnimated from "../../../../components/skeleton/GradeCardSkeletonAnimated";
 import GradeCard from "./GridCard";
 
 interface GradeCardContainerProps {
@@ -15,6 +16,12 @@ export default async function GradeCardContainer({
     basicStatsPromise,
     createdMeetingsPromise,
   ]);
+
+  const totalActivity = basicStats.postCount + basicStats.meetingCount;
+
+  if (totalActivity === 0) {
+    return <GradeCardSkeletonAnimated />;
+  }
 
   const userType = deriveUserType({
     postCount: basicStats.postCount,

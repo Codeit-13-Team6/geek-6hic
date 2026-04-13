@@ -22,13 +22,13 @@ const SPRINTER_CHARACTERS: Array<{ label: string; imgUrl: StaticImageData }> = [
   { label: "성실한 탐구자", imgUrl: wsaCharacterImg },
 ];
 
-export default function GradeCardAnimated() {
+export default function GradeCardSkeletonAnimated() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % SPRINTER_CHARACTERS.length);
-    }, 700);
+    }, 1500);
 
     return () => clearInterval(timer);
   }, []);
@@ -55,7 +55,7 @@ export default function GradeCardAnimated() {
           />
         </div>
 
-        <div className="relative z-10 h-50 w-50 transition-transform duration-800">
+        <div className="relative z-10 h-50 w-50 transition-transform duration-1000">
           <Image
             src={currentCharacter.imgUrl}
             alt={currentCharacter.label}
@@ -74,10 +74,10 @@ export default function GradeCardAnimated() {
           </span>
         </div>
         <p className="text-sm leading-relaxed font-bold text-slate-600">
-          소중한 기록들을 하나하나 살펴보고 있어요.
+          첫 모임을 열거나 게시글을 남겨 보세요.
           <br />
           <span className="text-indigo-500">
-            특별한 성장 타입을 곧 찾아드릴게요!
+            특별한 성장 타입을 찾아드릴게요!
           </span>
         </p>
       </div>

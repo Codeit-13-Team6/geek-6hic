@@ -29,18 +29,12 @@ export function deriveUserType({
 }: DeriveUserTypeParams): UserType {
   const totalActivity = postCount + meetingCount;
 
-  if (totalActivity === 0) {
+  if (totalActivity < 4) {
     return "SEED";
   }
 
   const leadershipType =
-    totalActivity < 3
-      ? meetingCount > 0
-        ? "L"
-        : "W"
-      : meetingCount / totalActivity >= LEADERSHIP_THRESHOLD
-        ? "L"
-        : "W";
+    meetingCount / totalActivity >= LEADERSHIP_THRESHOLD ? "L" : "W";
 
   const { projectCount, studyCount } = createdMeetings.reduce(
     (acc, meeting) => {
@@ -60,13 +54,9 @@ export function deriveUserType({
   const orientationType = projectCount > studyCount ? "P" : "S";
 
   const influenceType =
-    postCount < 3
-      ? favoriteCount > 0
-        ? "I"
-        : "A"
-      : favoriteCount / postCount >= INFLUENCE_THRESHOLD
-        ? "I"
-        : "A";
+    postCount > 0 && favoriteCount / postCount >= INFLUENCE_THRESHOLD
+      ? "I"
+      : "A";
 
   return `${leadershipType}${orientationType}${influenceType}` as UserType;
 }
