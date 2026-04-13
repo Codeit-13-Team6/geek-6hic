@@ -137,7 +137,7 @@ export function PostDetailCard({
       <CardContent className="p-8 sm:px-14 lg:px-18 lg:pb-12">
         <div
           className={cn(
-            "prose prose-slate max-w-none leading-relaxed text-slate-600",
+            "prose prose-slate max-w-none leading-relaxed text-slate-600 break-all",
             "prose-p:my-1",
             "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:mt-5",
 

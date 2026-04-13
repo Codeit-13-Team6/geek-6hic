@@ -60,7 +60,7 @@ export default function PostCard({
             {title}
           </h3>
 
-          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500">
+          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500 break-all">
             {pureContent || "내용이 없는 게시글입니다."}
           </p>
         </div>
@@ -68,11 +68,11 @@ export default function PostCard({
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 text-xs font-medium text-slate-400">
           <button
             type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              if (authorId) router.push(`/users/${authorId}`);
-            }}
-            className="flex items-center gap-2.5 rounded-full transition-opacity hover:opacity-80"
+            // onClick={(event) => {
+            //   event.stopPropagation();
+            //   if (authorId) router.push(`/users/${authorId}`);
+            // }}
+            className="flex items-center gap-2.5 rounded-full transition-opacity"
           >
             <div className="relative size-5 overflow-hidden rounded-full ring-2 ring-slate-50">
               <FallbackImage

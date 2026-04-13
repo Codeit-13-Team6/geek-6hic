@@ -174,7 +174,7 @@ export function CreateMeetingModal() {
             </div>
           )}
           {currentStep === 2 && (
-            <div className="space-y-6 pt-6">
+            <div className="space-y-6 pt-6 custom-scrollbar overflow-auto max-h-[300px] sm:max-h-[500px] pr-[15px]">
               <MeetingModalForm
                 values={formValues}
                 errors={errors}

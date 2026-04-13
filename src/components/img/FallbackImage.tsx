@@ -1,6 +1,6 @@
 "use client";
 import Image, { ImageProps, StaticImageData } from "next/image";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import defaultMeetingImg from "@/assets/img/fallback/fallback-meeting-02.png";
 import defaultPostImg from "@/assets/img/fallback/fallback-post-01.webp";
 import defaultUserImg from "@/assets/img/fallback/fallback-user.png";
@@ -19,7 +19,7 @@ const FALLBACK_MAP: Record<FallbackImageType, StaticImageData> = {
   user: defaultUserImg,
 };
 
-export default function FallbackImage({
+const FallbackImage = memo(function FallbackImage({
   src,
   type = "meeting",
   fallbackSrc,
@@ -36,9 +36,11 @@ export default function FallbackImage({
     <Image
       {...props}
       alt={props.alt || `${type} 기본 이미지`}
-      src={imgSrc as string}
+      src={imgSrc}
       onError={() => setImgSrc(targetFallback)}
       unoptimized
     />
   );
-}
+});
+
+export default FallbackImage;
