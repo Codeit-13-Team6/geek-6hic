@@ -5,7 +5,7 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { RankedItem } from "@/types";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { Suspense } from "react";
-import { getRankingBFF } from "@/app/api/internal/ranking";
+import { getRankingBFF } from "@/internal/ranking";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 
 export const metadata: Metadata = {

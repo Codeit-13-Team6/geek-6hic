@@ -3,7 +3,7 @@ import type { GetPostsResponse, LoungeSortBy } from "@/types";
 import type { SortOrder } from "@/types";
 import {
   getLoungePostsPageBFF,
-} from "@/app/api/internal/lounge";
+} from "@/internal/lounge";
 
 export const dynamic = "force-dynamic";
 

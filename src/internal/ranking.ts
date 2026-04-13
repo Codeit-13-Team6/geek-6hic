@@ -1,4 +1,4 @@
-import { serverAxios } from "@/lib/serverFetcher";
+import { serverFetch } from "@/lib/serverFetcher";
 import { CursorResponse } from "@/types";
 import { fetchAllCursor } from "@/lib/fetchAllCursor";
 
@@ -37,8 +37,7 @@ export async function getRankingBFF() {
 
   const meetings = await fetchAllCursor<MeetingItem>({
     fetchPage: (cursor) =>
-      serverAxios
-        .get<CursorResponse<MeetingItem>>("/meetings", { params: { cursor } })
+      serverFetch<CursorResponse<MeetingItem>>({ method: "GET", url: "/meetings", params: { cursor } })
         .then((r) => r.data),
   });
 
@@ -63,12 +62,11 @@ export async function getRankingBFF() {
       try {
         const comments = await fetchAllCursor<CommentItem>({
           fetchPage: (cursor) =>
-            serverAxios
-              .get<CursorResponse<CommentItem>>(
-                `/posts/${meeting.linkPostId}/comments`,
-                { params: { cursor } },
-              )
-              .then((r) => r.data),
+            serverFetch<CursorResponse<CommentItem>>({
+              method: "GET",
+              url: `/posts/${meeting.linkPostId}/comments`,
+              params: { cursor },
+            }).then((r) => r.data),
         });
 
         for (const item of comments) {

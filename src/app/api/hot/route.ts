@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getHotPostsBFF } from "@/app/api/internal/hot";
+import { getHotPostsBFF } from "@/internal/hot";
 
 export const revalidate = 600;
 

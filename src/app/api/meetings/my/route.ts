@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { serverAxios } from "@/lib/serverFetcher";
-import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
-import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
-import type { GetMeetingsResponse, MeetingResponse, MyMeetingsPageResponse } from "@/types";
+import { getMyMeetingsBFF } from "@/internal/meetings";
+import type { MyMeetingsPageResponse } from "@/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,31 +11,8 @@ export async function GET(request: Request) {
   const safeLimit = Number.isFinite(limit) && limit > 0 ? limit : 10;
 
   try {
-    const data = await getVisibleCursorPage<MeetingResponse>({
-      offset: safeOffset,
-      limit: safeLimit,
-      fetchPage: async ({ cursor, size }) => {
-        const response = await serverAxios.get<GetMeetingsResponse>("/meetings/my", {
-          params: {
-            size,
-            ...(cursor ? { cursor } : {}),
-          },
-        });
-
-        return {
-          ...response.data,
-          data: sortByCreatedAtDesc(response.data.data),
-        };
-      },
-      filter: () => true,
-    });
-
-    const sortedData = {
-      ...data,
-      data: sortByCreatedAtDesc(data.data),
-    };
-
-    return NextResponse.json<MyMeetingsPageResponse>(sortedData);
+    const result = await getMyMeetingsBFF({ offset: safeOffset, limit: safeLimit });
+    return NextResponse.json<MyMeetingsPageResponse>(result);
   } catch (error) {
     console.error("[My Meetings BFF Error]", error);
     return NextResponse.json(
