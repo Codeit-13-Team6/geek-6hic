@@ -1,8 +1,11 @@
 import { serverFetch } from "@/lib/serverFetcher";
 import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
 import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
 import type {
   GetMeetingsResponse,
+  JoinedMeeting,
+  JoinedMeetingsResponse,
   MeetingResponse,
   MyMeetingsPageResponse,
 } from "@/types";
@@ -41,4 +44,21 @@ export async function getMyMeetingsBFF({
     ...data,
     data: sortByCreatedAtDesc(data.data),
   };
+}
+
+export async function getJoinedMeetingIdsBFF(): Promise<number[]> {
+  const meetings = await fetchAllCursor<JoinedMeeting>({
+    fetchPage: (cursor) =>
+      serverFetch<JoinedMeetingsResponse>({
+        method: "GET",
+        url: "/meetings/joined",
+        params: {
+          size: 50,
+          sortBy: "joinedAt",
+          ...(cursor ? { cursor } : {}),
+        },
+      }).then((r) => r.data),
+  });
+
+  return meetings.map((m) => m.id);
 }

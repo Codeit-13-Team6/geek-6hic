@@ -6,7 +6,9 @@ import { RankedItem } from "@/types";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { Suspense } from "react";
 import { getRankingBFF } from "@/internal/ranking";
+import { getJoinedMeetingIdsBFF } from "@/internal/meetings";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+import MyRankingSection from "@/app/ranking/_component/MyRankingSection";
 
 export const metadata: Metadata = {
   title: "랭킹 보드",
@@ -40,14 +42,22 @@ export default function Page() {
 
       <Suspense fallback={<RankingListSkeleton />}>
         <PrefetchBoundary
-          prefetchFn={(qc) =>
-            qc.prefetchQuery<RankedItem[]>({
-              queryKey: QUERY_KEYS.ranking.root,
-              queryFn: () => getRankingBFF(),
-              staleTime: 1000 * 60,
-            })
-          }
+          prefetchFn={async (qc) => {
+            await Promise.all([
+              qc.prefetchQuery<RankedItem[]>({
+                queryKey: QUERY_KEYS.ranking.root,
+                queryFn: () => getRankingBFF(),
+                staleTime: 1000 * 60,
+              }),
+              qc.prefetchQuery<number[]>({
+                queryKey: QUERY_KEYS.meetings.joinedIds,
+                queryFn: () => getJoinedMeetingIdsBFF(),
+                staleTime: 1000 * 60,
+              }),
+            ]);
+          }}
         >
+          <MyRankingSection />
           <section className="mt-3 sm:mt-9">
             <RankingList />
           </section>

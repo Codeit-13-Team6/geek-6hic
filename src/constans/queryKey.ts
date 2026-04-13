@@ -53,6 +53,7 @@ export const QUERY_KEYS = {
         `${limit}`,
       ] as const,
     joined: ["meetings", "joined"] as const,
+    joinedIds: ["meetings", "joined", "ids"] as const,
     participants: (meetingId: number | string) =>
       ["meetings", "participants", `${String(meetingId)}`] as const,
     detail: (meetingId: number | string) => [
