@@ -3,7 +3,9 @@ import HotPostList from "@/app/lounge/_component/HotPostList";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { fetchLoungePostsPage } from "@/app/api/internal/lounge";
+import HotPostListSkeleton from "@/components/skeleton/HotPostListSkeleton";
+import { getLoungePostsPageBFF } from "@/app/api/internal/lounge";
+import { getHotPostsBFF } from "@/app/api/internal/hot";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import LoungeSearchSection from "./_component/LoungeSearchSection";
@@ -59,7 +61,19 @@ export default async function LoungePage({
           </h2>
         </div>
         <div className="animate-fade-up">
-          <HotPostList />
+          <Suspense fallback={<HotPostListSkeleton />}>
+            <PrefetchBoundary
+              prefetchFn={(qc) =>
+                qc.prefetchQuery({
+                  queryKey: QUERY_KEYS.posts.hot,
+                  queryFn: () => getHotPostsBFF(),
+                  staleTime: 1000 * 60 * 10,
+                })
+              }
+            >
+              <HotPostList />
+            </PrefetchBoundary>
+          </Suspense>
         </div>
       </section>
 
@@ -82,7 +96,7 @@ export default async function LoungePage({
               queryFn: ({ pageParam }) => {
                 const cursor =
                   typeof pageParam === "string" ? pageParam : undefined;
-                return fetchLoungePostsPage({
+                return getLoungePostsPageBFF({
                   ...currentParams,
                   size: 10,
                   ...(cursor ? { cursor } : {}),

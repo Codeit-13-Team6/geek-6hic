@@ -1,6 +1,12 @@
 import { Metadata } from "next";
 import RankingList from "@/app/ranking/_component/RankingList";
 import { RankingHeroSection } from "./_component/RankingHeroSection";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import { RankedItem } from "@/types";
+import { QUERY_KEYS } from "@/constans/queryKey";
+import { Suspense } from "react";
+import { getRankingBFF } from "@/app/api/internal/ranking";
+import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 
 export const metadata: Metadata = {
   title: "랭킹 보드",
@@ -32,9 +38,21 @@ export default function Page() {
         </h2>
       </div>
 
-      <section className="mt-3 sm:mt-9">
-        <RankingList />
-      </section>
+      <Suspense fallback={<RankingListSkeleton />}>
+        <PrefetchBoundary
+          prefetchFn={(qc) =>
+            qc.prefetchQuery<RankedItem[]>({
+              queryKey: QUERY_KEYS.ranking.root,
+              queryFn: () => getRankingBFF(),
+              staleTime: 1000 * 60,
+            })
+          }
+        >
+          <section className="mt-3 sm:mt-9">
+            <RankingList />
+          </section>
+        </PrefetchBoundary>
+      </Suspense>
 
       <section className="mt-6 flex flex-row-reverse">
         <p className="text-xs font-medium text-slate-400 sm:text-xs">

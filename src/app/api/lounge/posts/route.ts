@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { GetPostsResponse, LoungeSortBy } from "@/types";
 import type { SortOrder } from "@/types";
-import { fetchLoungePostsPage } from "@/app/api/internal/lounge";
+import {
+  getLoungePostsPageBFF,
+} from "@/app/api/internal/lounge";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
     const sortBy = (searchParams.get("sortBy") || "createdAt") as LoungeSortBy;
     const sortOrder = (searchParams.get("sortOrder") || "desc") as SortOrder;
 
-    const result = await fetchLoungePostsPage({
+    const result = await getLoungePostsPageBFF({
       cursor,
       size,
       keyword,

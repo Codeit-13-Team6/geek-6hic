@@ -4,28 +4,13 @@ import { useRouter } from "next/navigation";
 import { Post } from "@/types";
 import { HotPostCard } from "./HotPostCard";
 import { useGetHotPosts } from "@/hooks/queries/usePosts";
-import { Loader2, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function HotPostList() {
   const router = useRouter();
-  const { data: hotList = [], isLoading } = useGetHotPosts();
+  const { data: hotList = [] } = useGetHotPosts();
   const { dragProps } = useDragScroll();
-
-  if (isLoading) {
-    return (
-      <div
-        className="flex h-[200px] w-full flex-col items-center justify-center gap-3 rounded-[32px] border border-slate-100 bg-slate-50/50"
-        role="status"
-        aria-live="polite"
-      >
-        <Loader2 className="text-main-purple animate-spin" size={24} />
-        <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-          인기글을 불러오는 중...
-        </span>
-      </div>
-    );
-  }
 
   if (hotList.length === 0) {
     return (
