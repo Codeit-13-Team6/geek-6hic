@@ -15,7 +15,7 @@ export const useUpdateProfile = () => {
       setUser(updated); // Gnb 즉시 반영
     },
     onError: () => {
-      ToastCommon({ message: "프로필 수정에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "프로필 수정에 실패했습니다.", type: "error" });
     },
   });
 };

@@ -111,7 +111,7 @@ export default function CommentSection({
     if (!value.trim())
       return ToastCommon({
         message: "내용을 입력해주세요.",
-        size: "sm",
+        type: "info",
       });
 
     postComment(value, {

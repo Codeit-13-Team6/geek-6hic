@@ -27,7 +27,7 @@ export function CodeBlock({
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("복사 실패:", err);
-      ToastCommon({ message: "복사에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "복사에 실패했습니다.", type: "error" });
     }
   };
 

@@ -5,9 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
-import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
-import shareIcon from "@/assets/icon/share/share.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
@@ -28,7 +26,7 @@ import {
   useMeetingDetailFavoriteMutation,
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-import type { MeetingHeaderSectionProps, MeetingMember } from "@/types";
+import type { MeetingHeaderSectionProps } from "@/types";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import {
   extractSecretCode,
@@ -46,29 +44,6 @@ const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
-
-const ParticipantAvatar = ({ participant }: { participant: MeetingMember }) => {
-  const displayName = participant.name || "참여자";
-  const profileImage = hasUsableProfileImage(participant.image)
-    ? participant.image
-    : null;
-
-  return (
-    <button
-      type="button"
-      className="rounded-full transition-transform hover:scale-105"
-    >
-      <FallbackImage
-        src={profileImage}
-        type="user"
-        alt={`${displayName} 프로필 이미지`}
-        width={36}
-        height={36}
-        className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
-      />
-    </button>
-  );
-};
 
 export function MeetingHeaderSection({
   meetingId,
@@ -96,13 +71,10 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
-
 
   const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
     useMeetingJoinMutations(meetingId);
-
 
   const { handleEditMeeting, handleDeleteMeeting } =
     useMeetingHostMutations(meetingId);
@@ -119,21 +91,15 @@ export function MeetingHeaderSection({
     });
 
     if (shareResult.result === "failed") {
-      return ToastCommon({ message: "링크 복사에 실패했어요." });
+      return ToastCommon({ message: "링크 복사에 실패했어요.", type: "error" });
     }
 
     if (shareResult.result === "copied-by-app") {
       ToastCommon({
-        message: isSecret ? (
-          <>
-            비밀방입니다.
-            <br />
-            Secret Code를 함께 전달해 주세요
-          </>
-        ) : (
-          "모임 링크가 복사되었어요."
-        ),
-        size: "sm",
+        message: isSecret
+          ? "링크 복사 성공! 시크릿 코드와 함께 전달해 보세요."
+          : "모임 링크가 복사되었어요.",
+        type: "success",
         duration: 3000,
       });
       return;
@@ -297,7 +263,6 @@ export function MeetingHeaderSection({
               </div>
             </div>
 
-
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -417,6 +382,7 @@ export function MeetingHeaderSection({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
+                    size: "lg",
                   });
                 }}
                 className="text-main-purple-point rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold transition hover:bg-purple-200"
@@ -567,12 +533,11 @@ export function MeetingHeaderSection({
           setIsCloseConfirmOpen(false);
           handleCancelJoinMeeting();
         }}
-        description='모임에서 탈퇴하시겠습니까?'
-        subDescription=''
-        confirmButtonLabel='취소하기'
-        cancelButtonLabel='탈퇴하기'
+        description="모임에서 탈퇴하시겠습니까?"
+        subDescription=""
+        confirmButtonLabel="취소하기"
+        cancelButtonLabel="탈퇴하기"
       />
-
     </>
   );
 }

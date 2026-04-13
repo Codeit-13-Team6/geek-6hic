@@ -44,7 +44,6 @@ export default function SignUp() {
       if (result.ok) {
         setIsOpenModal(true);
         // ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
-
       } else {
         setIsLoading(false);
       }
@@ -52,12 +51,12 @@ export default function SignUp() {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         ToastCommon({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
-          size: "sm",
+          type: "info",
         });
       } else {
         ToastCommon({
           message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
-          size: "sm",
+          type: "error",
         });
       }
       setIsLoading(false);
@@ -70,7 +69,6 @@ export default function SignUp() {
     setIsOpenModal(false);
     router.push("/login");
   };
-
 
   return (
     <section
@@ -193,7 +191,7 @@ export default function SignUp() {
             </p>
             <Link
               href="/login"
-              className="text-main-purple focus-visible:ring-black text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
+              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-black"
             >
               Back to Sign In
             </Link>
@@ -209,7 +207,6 @@ export default function SignUp() {
         description="회원가입이 완료되었습니다."
         subDescription=" "
       />
-
     </section>
   );
 }

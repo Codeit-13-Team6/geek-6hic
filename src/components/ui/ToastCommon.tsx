@@ -30,9 +30,9 @@ const TYPE_CONFIG = {
   },
   info: {
     icon: Info,
-    color: "text-slate-200",
+    color: "text-amber-200",
     glow: "drop-shadow-[0_0_8px_rgba(148,163,184,0.6)]",
-    borderColor: "border-slate-300/40",
+    borderColor: "border-amber-300/40",
   },
 };
 
