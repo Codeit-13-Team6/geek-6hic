@@ -27,7 +27,6 @@ interface GetMeetingsProps {
 
 export interface InfiniteListResult {
   meetingList: JoinedMeetingsResponse["data"];
-  isLoading: boolean;
   fetchNextPage: () => void;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
@@ -45,7 +44,7 @@ export const useGetMeetings = ({
   const currentParams = { type, keyword, sortBy, sortOrder };
   const listQueryKey = QUERY_KEYS.meetings.listParams(currentParams);
 
-  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: listQueryKey,
       queryFn: ({ pageParam }) => {
@@ -70,7 +69,6 @@ export const useGetMeetings = ({
 
   return {
     meetingList,
-    isLoading: status === "pending",
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -80,7 +78,7 @@ export const useGetMeetings = ({
 };
 
 export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
-  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<JoinedMeetingsResponse>({
       queryKey: QUERY_KEYS.meetings.joined,
       queryFn: ({ pageParam }) =>
@@ -96,7 +94,6 @@ export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
 
   return {
     meetingList: data?.pages.flatMap((p) => p.data ?? []) ?? [],
-    isLoading: status === "pending",
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

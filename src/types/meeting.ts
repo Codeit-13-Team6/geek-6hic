@@ -160,7 +160,6 @@ export type SortOrder = "asc" | "desc";
 
 export interface MeetingListProps {
   meetingList: JoinedMeeting[];
-  isLoading: boolean;
   sortValue?: MeetingSortBy;
   onItemClick: (item: JoinedMeeting) => void;
   onHeartClick: (item: JoinedMeeting) => void;
