@@ -11,8 +11,6 @@ export default function RankingList() {
 
   const { data: rankedList } = useRanking();
 
-  if (!rankedList) return null;
-
   const top3List = rankedList.slice(0, 3);
   const top10List = rankedList.slice(3, 20);
 

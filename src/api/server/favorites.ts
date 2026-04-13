@@ -17,17 +17,10 @@ export async function getFavorites(
   const { data } = await serverFetch({
     method: "GET",
     url: "/favorites",
-    params: { ...params, sortBy: "createdAt", sortOrder: "desc" },
+    params: { ...params, sortBy: "meetingCreatedAt", sortOrder: "desc" },
   });
 
-  return {
-    ...data,
-    data: [...data.data].sort((a, b) => {
-      const aTime = new Date(a.meeting?.createdAt ?? 0).getTime();
-      const bTime = new Date(b.meeting?.createdAt ?? 0).getTime();
-      return bTime - aTime;
-    }),
-  };
+  return data;
 }
 
 export async function getMyMeetings(
