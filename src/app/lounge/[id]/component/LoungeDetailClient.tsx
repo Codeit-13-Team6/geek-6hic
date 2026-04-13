@@ -12,16 +12,17 @@ import {
 import { useState } from "react";
 import { DeleteModal } from "@/components/ui/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
   const userId = useAuthStore((state) => state.user?.id);
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { data: post, isError } = useGetPostDetail(postId);
+  const { data: post, isError, isLoading } = useGetPostDetail(postId);
   const { mutate: removePost } = useDeletePost(postId);
   const { mutate: toggleLike } = useToggleLike(postId);
-  const isPostOwner = userId !== null && userId === post?.author.id;
+  const isPostOwner = userId !== null && userId === post?.author?.id;
   const { content: mainContent, links: linkObjects } = parsePostData(
     post?.content || "",
   );
@@ -43,6 +44,10 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
       toggleLike(post.isLiked);
     }
   };
+
+  if (isLoading) {
+    return <DetailSkeleton />;
+  }
 
   if (isError || !post) {
     return (
