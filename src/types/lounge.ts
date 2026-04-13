@@ -35,17 +35,6 @@ export interface EditorProps {
   placeholder?: string;
 }
 
-export type EmptyStateVariant =
-  | "meeting"
-  | "lank"
-  | "lounge"
-  | "myMeeting"
-  | "myCreatMeeting";
-
-export interface EmptyStateProps {
-  variant?: EmptyStateVariant;
-}
-
 export interface CommentProps {
   id: number;
   name?: string;

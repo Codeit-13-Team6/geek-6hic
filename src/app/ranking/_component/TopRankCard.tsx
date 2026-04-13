@@ -2,19 +2,11 @@
 
 import { Card } from "@/components/shadcnOrigin/card";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { RankedItem } from "@/types";
+import {  TopRankCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
 
-export default function TopRankCard({
-  rank,
-  item,
-  onDetailClick,
-}: {
-  rank: number;
-  item: RankedItem;
-  onDetailClick: () => void;
-}) {
+export default function TopRankCard({ rank, item, onDetailClick }: TopRankCardProps) {
   const isFirst = rank === 1;
   const suffix = ["ST", "ND", "RD"][rank - 1] || "TH";
 

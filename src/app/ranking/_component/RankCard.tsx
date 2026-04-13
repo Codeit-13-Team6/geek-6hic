@@ -11,7 +11,7 @@ export default function RankCard({
   meetType = "스터디",
   image,
   onDetailClick = () => {},
-}: RankCardProps & { image?: string }) {
+}: RankCardProps) {
   return (
     <article
       role="button"

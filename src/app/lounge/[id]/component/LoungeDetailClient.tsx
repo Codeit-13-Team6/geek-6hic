@@ -10,7 +10,7 @@ import {
   useToggleLike,
 } from "@/hooks/queries/usePosts";
 import { useState } from "react";
-import { DeleteModal } from "@/components/ui/DeleteModal";
+import { DeleteModal } from "@/components/modal/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 

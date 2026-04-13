@@ -1,5 +1,5 @@
 import { Post } from "@/types";
-import { threadKeyword } from "@/constans/post";
+import { threadKeyword } from "@/lib/threadKeyword";
 
 export const filterThreadPosts = <T extends { data: Post[] }>(
   response: T,

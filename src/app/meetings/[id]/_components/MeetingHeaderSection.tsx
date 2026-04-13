@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownCommon";
-import { DeleteModal } from "@/components/ui/DeleteModal";
+import { DeleteModal } from "@/components/modal/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
@@ -33,12 +33,12 @@ import {
   isSecretMeeting,
   verifySecretCode,
 } from "@/lib/meetingSecret";
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { shareLink } from "@/lib/share";
 import { copyToClipboard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&

@@ -6,7 +6,7 @@ import {
   MyPostsPageResponse,
   Post,
 } from "@/types";
-import { threadKeyword } from "@/constans/post";
+import { threadKeyword } from "@/lib/threadKeyword";
 
 export async function getHotPosts(): Promise<Post[]> {
   const { data } = await axiosInstance.get<Post[]>("/hot");

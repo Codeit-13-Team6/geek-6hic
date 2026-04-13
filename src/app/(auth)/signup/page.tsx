@@ -10,9 +10,9 @@ import { ToastCommon } from "@/components/ui/ToastCommon";
 import { useForm } from "react-hook-form";
 import type { SignUpFormValues } from "@/types";
 import React, { useState } from "react";
-import { DeleteModal } from "@/components/ui/DeleteModal";
-import ModalBase from "@/components/ui/ModalBase";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { DeleteModal } from "@/components/modal/DeleteModal";
+import ModalBase from "@/components/modal/ModalBase";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 
 export default function SignUp() {
   const router = useRouter();
