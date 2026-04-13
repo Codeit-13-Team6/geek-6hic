@@ -56,28 +56,29 @@ export const stitchPostData = (content: string, linkList: LinkItem[]) => {
 export const getPlainText = (html: string) => {
   if (!html) return "";
 
-  const CODE_PLACEHOLDER = " [ Code ] ";
+  // 1. 유저가 입력할 리 없는 고유한 시스템 내부 키 설정
+  const SYSTEM_KEY = "___SYS_CODE_BLOCK_8f9a2___";
+  const DISPLAY_TEXT = "[ 💻 코드 첨부 ]";
 
-  // 1. 코드가 있는 자리에 대체 텍스트로 치환
+  // 2. 코드가 있는 자리를 시스템 키로 치환
   const processedHtml = html
-    .replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, CODE_PLACEHOLDER) // <pre> 태그와 내부 코드 전부 placeholder로 치환
+    .replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, ` ${SYSTEM_KEY} `)
     .replace(
       /<div[^>]*class=["'][^"']*ql-code-block-container[^"']*["'][^>]*>[\s\S]*?<\/div>/gi,
-      CODE_PLACEHOLDER,
-    ); // Quill 전용 코드 블록도 placeholder로 치환
+      ` ${SYSTEM_KEY} `,
+    );
 
   const splitContent = processedHtml.split(/<p><a|<a/i);
   let text = splitContent[0];
 
-  // 2. 블록 태그들을 공백으로 치환 (텍스트가 붙는 것 방지)
-  // p, li, div, h1~6 뿐만 아니라 blockquote, ul, ol 등을 추가
+  // 3. 블록 태그들을 공백으로 치환
   text = text.replace(/<(p|br|li|div|h[1-6]|blockquote|ul|ol)[^>]*>/gi, " ");
   text = text.replace(/<\/(p|li|div|h[1-6]|blockquote|ul|ol)>/gi, " ");
 
-  // 3. 남은 모든 HTML 태그 제거
+  // 4. 남은 모든 HTML 태그 제거
   text = text.replace(/<[^>]*>?/gm, "");
 
-  // 4. HTML 엔티티 디코딩 (&gt; -> >, &nbsp; -> 공백 등)
+  // 5. HTML 엔티티 디코딩
   const entities: { [key: string]: string } = {
     "&nbsp;": " ",
     "&lt;": "<",
@@ -86,11 +87,17 @@ export const getPlainText = (html: string) => {
     "&quot;": '"',
     "&#39;": "'",
   };
-
   text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
+
+  // 6. 모든 줄바꿈과 연속된 공백 압축
   text = text.replace(/\s\s+/g, " ").trim();
-  text = text.replace(/(\[\s*Code\s*\]\s*)+/g, "[ Code ] ");
-  // 5. 연속된 공백 하나로 합치고 앞뒤 트림
+
+  // 7. 시스템 키를 기준으로만 중복 제거
+  const systemKeyRegex = new RegExp(`(${SYSTEM_KEY}\\s*)+`, "g");
+  text = text.replace(systemKeyRegex, `${SYSTEM_KEY} `);
+
+  text = text.replace(new RegExp(SYSTEM_KEY, "g"), DISPLAY_TEXT);
+
   return text.trim();
 };
 
