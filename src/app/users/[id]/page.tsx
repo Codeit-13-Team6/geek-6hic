@@ -85,7 +85,7 @@ export default async function Page({
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
           <h1 className="text-xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-4xl">
-            MY <span className="text-main-purple">PAGE.</span>
+            <span className="text-main-purple">PROFILE.</span>
           </h1>
         </div>
       </div>
