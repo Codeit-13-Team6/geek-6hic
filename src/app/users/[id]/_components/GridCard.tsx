@@ -38,7 +38,7 @@ export default function GradeCard({ userType }: GradeCardProps) {
             character.accentColor,
           )}
         >
-          Sprinter Garden
+          Cogit Garden
         </span>
         <div className="mt-1 flex items-baseline gap-2">
           <h3 className="text-2xl font-black tracking-tight text-indigo-950">
@@ -76,7 +76,7 @@ export default function GradeCard({ userType }: GradeCardProps) {
             </div>
 
             <div className="absolute inset-0 flex transform-[rotateY(180deg)] items-center justify-center rounded-2xl border border-indigo-950/10 bg-white/60 p-4 text-center backface-hidden">
-              <p className="text-sm leading-relaxed font-bold text-indigo-950/80">
+              <p className="text-sm leading-relaxed font-bold break-keep text-indigo-950/80">
                 {character.description}
               </p>
             </div>
@@ -99,7 +99,7 @@ export default function GradeCard({ userType }: GradeCardProps) {
 
           {/* 4. 하단 요약 정보 (문장 줄바꿈 로직) */}
           <div className="relative z-20 hidden w-full flex-1 flex-col items-center justify-center border-t border-indigo-950/5 pt-3 text-center md:flex md:h-full md:items-start md:border-t-0 md:border-l md:pt-0 md:pl-5 md:text-left lg:items-center lg:border-t lg:border-l-0 lg:pt-4 lg:pl-0 lg:text-center">
-            <p className="line-clamp-2 text-sm leading-relaxed font-bold text-indigo-950/80 md:line-clamp-none">
+            <p className="line-clamp-2 text-sm leading-relaxed font-bold break-keep text-indigo-950/80 md:line-clamp-none">
               {character.description}
             </p>
           </div>
