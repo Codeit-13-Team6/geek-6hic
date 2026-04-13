@@ -23,6 +23,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";
+import UserTabsPrefetcher from "./_components/UserTabsPrefetcher";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -139,6 +140,11 @@ export default async function Page({
         </aside>
 
         <section className="flex min-w-0 flex-1 flex-col">
+          <UserTabsPrefetcher
+            isOwnProfile={isOwnProfile}
+            userId={profileUserId}
+          />
+
           <Tab tabs={tabs} defaultValue={isOwnProfile ? "liked" : "created"}>
             {isOwnProfile && (
               <TabsContent value="liked" className="mt-8 md:mt-12">
