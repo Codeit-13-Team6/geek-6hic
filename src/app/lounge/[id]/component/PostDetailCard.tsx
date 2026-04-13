@@ -1,5 +1,6 @@
 "use client";
 
+import DOMPurify from "isomorphic-dompurify";
 import Image from "next/image";
 import parse, {
   HTMLReactParserOptions,
@@ -86,6 +87,7 @@ export function PostDetailCard({
   };
 
   const processedContent = content.replace(/<p><\/p>/g, "<p><br/></p>");
+  const cleanContent = DOMPurify.sanitize(processedContent);
 
   return (
     <Card className="relative overflow-hidden rounded-[32px] border-none bg-white shadow-md shadow-slate-200/30">
@@ -144,7 +146,7 @@ export function PostDetailCard({
             "prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0 prose-pre:prose-code:text-inherit",
           )}
         >
-          {parse(processedContent, options)}
+          {parse(cleanContent, options)}
         </div>
 
         {linkObjects && linkObjects.length > 0 && (
