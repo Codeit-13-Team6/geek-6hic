@@ -157,7 +157,7 @@ export default function Comment({
       ) : (
         <div className="mt-2.5 pl-8.5">
           {displayContent && (
-            <p className="text-[15px] leading-relaxed font-medium whitespace-pre-wrap text-slate-600">
+            <p className="text-[15px] leading-relaxed font-medium whitespace-pre-wrap text-slate-600 break-all">
               {displayContent}
             </p>
           )}

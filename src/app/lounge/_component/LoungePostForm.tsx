@@ -21,7 +21,7 @@ export default function LoungePostForm({
   "use memo";
 
   const TITLE_MAX_LENGTH = 30;
-  const CONTENT_MAX_LENGTH = 1000;
+  const POST_HTML_MAX_LENGTH  = 50000;
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [linkUrl, setLinkUrl] = useState("");
@@ -78,6 +78,8 @@ export default function LoungePostForm({
     if (isSuccessed) setLinkUrl("");
   };
 
+  const finalHtml = stitchPostData(content, linkList);
+
   // 게시물 제출 핸들러 (유틸 함수로 합친 뒤 부모에게 전달)
   const handleLocalSubmit = () => {
     if (isSubmittingRef.current) return;
@@ -99,10 +101,10 @@ export default function LoungePostForm({
       });
     }
 
-    if (contentWithoutSpaces > CONTENT_MAX_LENGTH) {
+    if (finalHtml.length > POST_HTML_MAX_LENGTH) {
       return ToastCommon({
-        message: `본문은 최대 ${CONTENT_MAX_LENGTH}자까지 입력 가능합니다.`,
-        type: "info",
+        message: "게시글 최대 입력수를 초과하였습니다.",
+        type: "error",
       });
     }
 
@@ -120,7 +122,6 @@ export default function LoungePostForm({
       });
     }
 
-    const finalHtml = stitchPostData(content, linkList);
     const payload: PostPayload = {
       title: trimmedTitle,
       content: finalHtml,
@@ -232,8 +233,11 @@ export default function LoungePostForm({
             ))}
           </div>
         </div>
-
-        <div className="mt-5 border-t border-gray-100 pt-4 text-right text-xs font-medium sm:mt-4 sm:pt-5 sm:text-sm">
+        <div className="mt-5 border-t border-gray-100 pt-4 text-right text-xs font-medium text-gray-400 sm:mt-4 sm:pt-5 sm:text-sm">
+          공백포함 : {contentWithSpaces.toLocaleString()}자 | 공백제외 :{" "}
+          {contentWithoutSpaces.toLocaleString()}자
+        </div>
+        {/* <div className="mt-5 border-t border-gray-100 pt-4 text-right text-xs font-medium sm:mt-4 sm:pt-5 sm:text-sm">
           <span
             className={
               contentWithoutSpaces > CONTENT_MAX_LENGTH
@@ -243,7 +247,7 @@ export default function LoungePostForm({
           >
             공백제외 : {contentWithoutSpaces.toLocaleString()} / {CONTENT_MAX_LENGTH}자
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

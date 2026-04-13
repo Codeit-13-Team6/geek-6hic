@@ -70,7 +70,7 @@ export default function MeetingCard({
           fill
           className={cn(
             "object-cover transition-transform duration-500 group-hover:scale-105",
-            statusLabel ? "grayscale-[40%]" : "",
+            // statusLabel ? "grayscale-[40%]" : "",
           )}
           alt={`${item.name} 모임 이미지`}
         />

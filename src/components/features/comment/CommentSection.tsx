@@ -88,6 +88,7 @@ export default function CommentSection({
     limit: COMMENTS_PAGE_LIMIT,
   });
 
+  const COMMENT_MAX_LENGTH = 999;
   const commentsList = comments?.data || [];
   const totalCount = comments?.totalCount ?? commentsList.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / COMMENTS_PAGE_LIMIT));
@@ -108,11 +109,20 @@ export default function CommentSection({
   const handlePostComment = () => {
     // 실시간 카드 리스트로 발생하는 렌더링 최적화
     const value = isThread ? threadContent : commentRef.current?.value || "";
+    const trimmedValue = value.trim();
+
     if (!value.trim())
       return ToastCommon({
         message: "내용을 입력해주세요.",
         type: "info",
       });
+
+    if (trimmedValue.length > 999) {
+      return ToastCommon({
+        message: "댓글은 최대 999자까지 입력 가능합니다.",
+        type: "info",
+      });
+    }
 
     postComment(value, {
       onSuccess: () => {
@@ -169,7 +179,7 @@ export default function CommentSection({
               onChange={(event) => setThreadContent(event.target.value)}
               className="focus:!border-main-purple/80 !h-12 !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
               disabled={isPosting}
-              maxLength={999}
+              maxLength={1000}
             />
             <div className="flex justify-end">
               <BtnCommon
@@ -200,7 +210,7 @@ export default function CommentSection({
             disabled={isPosting}
             placeholder="여기에 댓글을 남겨보세요."
             className="w-full resize-none border-none bg-transparent px-2 pt-2 text-[15px] leading-relaxed text-slate-700 placeholder:text-slate-300 focus:ring-0 focus:outline-none"
-            maxLength={999}
+            maxLength={1000}
           />
           <div className="flex justify-end">
             <BtnCommon
@@ -286,7 +296,7 @@ export default function CommentSection({
       <DeleteModal
         isOpen={deleteTargetId !== null}
         onOpenChange={(isOpen) => !isOpen && setDeleteTargetId(null)}
-        title="DELETE COMMENT"
+        // title="DELETE COMMENT"
         description="댓글을 삭제하시겠습니까?"
         onConfirm={handleConfirmDelete}
       />

@@ -60,7 +60,7 @@ export default function PostCard({
             {title}
           </h3>
 
-          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500">
+          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500 break-all">
             {pureContent || "내용이 없는 게시글입니다."}
           </p>
         </div>

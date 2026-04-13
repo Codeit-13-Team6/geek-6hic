@@ -47,10 +47,10 @@ export function EditMeetingModal({
         onOpenChange={(nextIsOpen) => {
           if (!nextIsOpen) requestClose();
         }}
-        contentClassName="w-full -mt-10 sm:max-w-[540px]  rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full sm:max-w-[540px] overflow-hidden rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
-        <div className="px-6 py-4 sm:px-16">
+        <div className="px-6 py-8 sm:px-16">
           <div className="mb-10 text-center">
             <h2 className="text-2xl font-black tracking-tighter text-slate-950 sm:text-3xl">
               모임 수정하기
@@ -60,7 +60,7 @@ export function EditMeetingModal({
             </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 custom-scrollbar overflow-auto max-h-[300px] sm:max-h-[500px] pr-[15px]">
             <MeetingModalForm
               values={formValues}
               errors={errors}
@@ -72,7 +72,7 @@ export function EditMeetingModal({
             />
           </div>
 
-          <div className="my-8 flex gap-4 pt-4">
+          <div className="flex gap-4 pt-10">
             <BtnCommon
               type="button"
               className="h-14 flex-1 rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"

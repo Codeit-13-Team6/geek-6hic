@@ -35,8 +35,8 @@ export function DeleteModal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       title={title}
-      contentClassName="-mt-10"
-      titleClassName="text-xl font-black tracking-tighter text-slate-900 uppercase"
+      // contentClassName="-mt-10"
+      titleClassName="text-xl font-black tracking-tighter text-slate-900 uppercase text-center"
     >
       <div className="flex flex-col gap-8 pt-4">
         <div className="space-y-2 text-center">
