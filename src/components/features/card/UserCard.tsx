@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Users, Calendar, LucideLock} from "lucide-react";
+import { Users, Calendar, LucideLock } from "lucide-react";
 import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -58,14 +58,14 @@ export function UserCard({
         />
       </div>
 
-      <div className="flex flex-1 flex-row items-start justify-between pt-0 pr-4 pb-6 pl-6 sm:p-0">
-        <div className="flex h-25 flex-1 flex-col justify-between">
-          <div>
+      <div className="flex min-w-0 flex-1 flex-row items-start justify-between pt-0 pr-4 pb-6 pl-6 sm:p-0">
+        <div className="flex h-25 min-w-0 flex-1 basis-0 flex-col justify-between">
+          <div className="min-w-0">
             <div className="text-main-purple mb-1 text-xs font-bold tracking-[0.2em] uppercase">
               {type}
             </div>
 
-            <h3 className="mb-4 line-clamp-1 truncate text-lg font-extrabold tracking-tighter text-slate-950 sm:text-xl lg:text-2xl">
+            <h3 className="mb-4 w-full truncate pr-4 text-lg font-extrabold tracking-tighter text-slate-950 sm:text-xl lg:text-2xl">
               {title}
             </h3>
           </div>
@@ -90,20 +90,11 @@ export function UserCard({
             </div>
           </div>
         </div>
-        <div>
+        <div className="shrink-0">
           {showLikeBtn && (
-            <HeartIcon
-              liked={isLiked}
-              onClick={handleHeartClick}
-              size={22}
-            />
+            <HeartIcon liked={isLiked} onClick={handleHeartClick} size={22} />
           )}
-          {showLockBtn && (
-            <LucideLock
-              size={22}
-              aria-hidden="true"
-            />
-          )}
+          {showLockBtn && <LucideLock size={22} aria-hidden="true" />}
         </div>
       </div>
     </Card>

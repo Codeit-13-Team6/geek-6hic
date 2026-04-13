@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { Metadata } from "next";
 import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
-import ProfileSection from "@/app/users/[id]/_components/ProfileSection";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
@@ -18,10 +17,11 @@ import {
   getPublicUserProfile,
 } from "@/api/server";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
+import ProfileSectionSkeleton from "@/components/skeleton/ProfileSectionSkeleton";
+import GradeCardSkeleton from "@/components/skeleton/GradeCardSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
-import GradeCard from "./_components/GridCard";
 import GradeCardContainer from "./_components/GradeCardContainer";
 
 const FAVORITES_PAGE_SIZE = 10;
@@ -85,7 +85,7 @@ export default async function Page({
         <div className="flex items-center gap-3">
           <div className="bg-main-purple h-[6px] w-10 rounded-full" />
           <h1 className="text-xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-4xl">
-            MY <span className="text-main-purple">PAGE.</span>
+            <span className="text-main-purple">PROFILE.</span>
           </h1>
         </div>
       </div>
@@ -95,14 +95,7 @@ export default async function Page({
           <div className="flex min-h-80 min-w-[180%] items-stretch gap-4 md:max-lg:min-h-90 lg:w-full lg:min-w-full lg:flex-col">
             <div className="h-full w-1/2 snap-center lg:w-full lg:min-w-full">
               {/* 남 프로필이랑 내 프로필 구분 */}
-              <Suspense
-                fallback={
-                  <ProfileSection
-                    initialUser={initialUser}
-                    canEdit={isOwnProfile}
-                  />
-                }
-              >
+              <Suspense fallback={<ProfileSectionSkeleton />}>
                 <ProfileSectionContainer
                   profileUserPromise={profileUserPromise}
                   canEdit={isOwnProfile}
@@ -110,7 +103,7 @@ export default async function Page({
               </Suspense>
             </div>
             <div className="h-full w-1/2 snap-center lg:w-full">
-              <Suspense fallback={<GradeCard />}>
+              <Suspense fallback={<GradeCardSkeleton />}>
                 <GradeCardContainer
                   basicStatsPromise={basicStatsPromise}
                   createdMeetingsPromise={createdMeetingsPromise}
