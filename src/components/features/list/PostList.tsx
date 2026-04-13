@@ -18,7 +18,7 @@ export default function PostList() {
   const sortBy = (getParam("sortBy") || "createdAt") as LoungeSortBy;
   const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePostList({ keyword, sortBy, sortOrder });
 
   const postList = data?.pages.flatMap((page) => page.data) || [];

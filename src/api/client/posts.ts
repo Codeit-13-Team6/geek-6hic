@@ -100,7 +100,7 @@ export async function unlikePost(postId: number): Promise<void> {
   await axiosInstance.delete(`/posts/${postId}/like`);
 }
 
-export async function getLoungePostsBFF(params: GetPostsParams): Promise<GetPostsResponse> {
+export async function getLoungePosts(params: GetPostsParams): Promise<GetPostsResponse> {
   const { data } = await axiosInstance.get<GetPostsResponse>("/lounge/posts", {
     params,
   });

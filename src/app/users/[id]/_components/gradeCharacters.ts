@@ -25,7 +25,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "열정적인 캡틴",
     type: "LPI",
     description:
-      "항상 팀을 이끌며 새로운 도전을 즐기는 리더. 열정과 추진력으로 팀을 성공으로 이끈다.",
+      "팀을 이끌고 새로운 도전을 즐기는 성향이 강합니다. 열정과 추진력으로 팀에 활력을 불어넣을 잠재력이 돋보이네요.",
     imgUrl: lpiCharacterImg,
     bgClass: "bg-[#dbe4ff]", // 채도를 높인 라벤더
     accentColor: "text-purple-700",
@@ -35,7 +35,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "고독한 설계자",
     type: "LPA",
     description:
-      "묵묵히 프로젝트의 기초를 닦고 완벽한 설계도를 그린다. 보이지 않는 곳에서 결과물로 증명한다.",
+      "프로젝트의 기초를 닦고 완벽한 설계를 추구하는 타입입니다. 묵묵히 결과물로 증명해내는 능력을 가졌습니다.",
     imgUrl: lpaCharacterImg,
     bgClass: "bg-[#E0F2FE]", // 선명한 스카이
     accentColor: "text-sky-700",
@@ -45,7 +45,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "커뮤니티 마스터",
     type: "LSI",
     description:
-      "활발한 소통으로 사람들을 모으고 팀의 활력을 불어넣는다. 배움의 즐거움을 함께 나누는 분위기 메이커.",
+      "활발한 소통으로 사람들을 모으는 데 소질이 있습니다. 배움의 즐거움을 함께 나누는 분위기 메이커의 자질이 엿보입니다.",
     imgUrl: lsiCharacterImg,
     bgClass: "bg-[#FFE4E6]", // 선명한 로즈
     accentColor: "text-rose-700",
@@ -55,7 +55,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "지식 큐레이터",
     type: "LSA",
     description:
-      "방대한 정보를 체계적으로 정리하여 팀원의 성장을 돕는다. 필요한 지식을 적재적소에 공유하는 리더.",
+      "방대한 정보를 체계적으로 정리하고 공유하는 데 탁월한 성향을 가졌습니다. 지식의 뼈대를 세우며 팀의 성장을 돕는 리더 타입입니다.",
     imgUrl: lsaCharacterImg,
     bgClass: "bg-[#c2edca]", // 선명한 에메랄드
     accentColor: "text-emerald-800",
@@ -65,7 +65,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "영향력 있는 실무자",
     type: "WPI",
     description:
-      "실전에서 얻은 귀중한 경험을 생생한 기록으로 남긴다. 자신의 인사이트로 동료들에게 긍정적인 자극을 준다.",
+      "실전 경험을 생생한 기록으로 남기는 데 흥미를 느낍니다. 자신의 인사이트로 동료들에게 긍정적인 자극을 주는 영향력이 기대됩니다.",
     imgUrl: wpiCharacterImg,
     bgClass: "bg-[#fad9c5]", // 따뜻한 오렌지 틴트
     accentColor: "text-orange-700",
@@ -75,7 +75,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "전문 기록가",
     type: "WPA",
     description:
-      "모든 프로젝트 과정을 세밀하고 정교하게 기록한다. 흩어진 데이터를 모아 하나의 가치 있는 자산으로 만든다.",
+      "프로젝트 과정을 세밀하게 기록하고 데이터를 모으는 데 특화된 성향입니다. 흩어진 정보를 가치 있는 자산으로 만드는 능력이 탁월합니다.",
     imgUrl: wpaCharacterImg,
     bgClass: "bg-[#f5d5ab]", // 🤎 요청하신 갈색(Muted Brown/Beige) 베이스
     accentColor: "text-amber-900",
@@ -85,7 +85,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "공감형 러너",
     type: "WSI",
     description:
-      "함께 배우는 과정에서 즐거움을 찾고 동료들과 깊이 공감한다. 소소한 기록을 통해 따뜻한 유대를 형성한다.",
+      "함께 배우는 과정에서 즐거움을 찾고 깊이 공감하는 타입입니다. 소소한 기록을 통해 따뜻한 유대를 형성하는 데 강점이 있습니다.",
     imgUrl: wsiCharacterImg,
     bgClass: "bg-[#FAE8FF]", // 선명한 푸시아
     accentColor: "text-fuchsia-700",
@@ -95,7 +95,7 @@ export const gradeCharacters: GradeCharacter[] = [
     title: "성실한 탐구자",
     type: "WSA",
     description:
-      "매일 꾸준히 학습 데이터를 쌓으며 자신만의 내실을 다진다. 조용하지만 가장 단단하게 성장하는 노력파.",
+      "매일 꾸준히 학습 데이터를 쌓으며 자신만의 내실을 다지는 데 집중하는 성향입니다. 조용하지만 가장 단단하게 성장할 잠재력을 품고 있습니다.",
     imgUrl: wsaCharacterImg,
     bgClass: "bg-[#FEF9C3]", // 선명한 옐로우
     accentColor: "text-yellow-700",
