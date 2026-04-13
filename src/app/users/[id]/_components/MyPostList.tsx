@@ -64,7 +64,7 @@ export default function MyPostList({
           <FileText className="size-10 text-slate-200" strokeWidth={1.5} />
         </div>
         <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-          {isOwnProfile ? "Your Lounge is Empty." : "No Posts Yet."}
+          {isOwnProfile ? "작성한 게시글이 없어요" : "아직 게시글이 없어요"}
         </h3>
         <p className="mt-2 text-sm font-medium text-slate-400">
           {isOwnProfile
@@ -109,7 +109,7 @@ export default function MyPostList({
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-              Updating Lounge...
+              게시글을 불러오는 중...
             </span>
           </div>
         )}

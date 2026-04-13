@@ -56,7 +56,7 @@ export function EditMeetingModal({
               모임 수정하기
             </h2>
             <p className="mt-2 text-[10px] font-bold tracking-[0.4em] text-slate-400 uppercase">
-              Edit your archive details
+              모임 정보를 수정해 주세요
             </p>
           </div>
 
@@ -102,7 +102,6 @@ export function EditMeetingModal({
           onOpenChange(false);
         }}
       />
-
     </>
   );
 }

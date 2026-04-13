@@ -78,7 +78,7 @@ export function CreateMeetingModal() {
       <BtnCommon
         className={cn(
           "bg-main-purple fixed right-6 bottom-6 z-99 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
-          "h-14 w-14 rounded-full sm:h-14 sm:w-[190px] sm:gap-2 sm:rounded-2xl",
+          "h-14 w-14 rounded-full sm:h-14 sm:w-[170px] sm:gap-2 sm:rounded-2xl",
           "lg:right-16 lg:bottom-16",
           "group !p-0 sm:!p-6",
         )}
@@ -91,7 +91,7 @@ export function CreateMeetingModal() {
           className="transition-transform duration-300 group-hover:rotate-180"
         />
         <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
-          Create Meeting
+          모임 만들기
         </span>
       </BtnCommon>
 
@@ -108,7 +108,7 @@ export function CreateMeetingModal() {
           <div className="text-main-purple flex items-center gap-2 text-sm font-black tracking-[0.2em] uppercase">
             <StepForwardIcon size={14} strokeWidth={3} />
             <span>
-              Step {currentStep} / {totalSteps}
+              단계 {currentStep} / {totalSteps}
             </span>
           </div>
         </div>

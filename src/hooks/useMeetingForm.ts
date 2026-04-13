@@ -67,7 +67,7 @@ export const toEditMeetingPayload = (
     type: formValues.category,
     name: formValues.name,
     description: formValues.description,
-    link: formValues.link,
+    link: getNormalizedMeetingLink(formValues.link),
     image: formValues.imageUrl || formValues.previewImageUrl || null,
     dateTime,
     registrationEnd: "2099-12-31T23:59:59.000Z",

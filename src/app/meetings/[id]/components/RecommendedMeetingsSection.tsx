@@ -32,7 +32,7 @@ export function RecommendedMeetingsSection({
         </div>
 
         <p className="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">
-          Recommended Meetings
+          추천 모임
         </p>
       </div>
 

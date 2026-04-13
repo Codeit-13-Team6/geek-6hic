@@ -83,7 +83,7 @@ export default function SignUp() {
               id="sign-up-header"
               className="text-center text-3xl font-black tracking-tighter text-slate-950 uppercase"
             >
-              Join Us
+              함께 시작해요
             </h1>
           </div>
 
@@ -93,7 +93,7 @@ export default function SignUp() {
             className="flex flex-col gap-5"
           >
             <InputCommon
-              label="Name"
+              label="이름"
               type="text"
               isRequired
               placeholder="이름을 입력해주세요."
@@ -104,7 +104,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Email"
+              label="이메일"
               type="email"
               isRequired
               placeholder="이메일을 입력해주세요."
@@ -121,7 +121,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Password"
+              label="비밀번호"
               type="password"
               isRequired
               placeholder="비밀번호를 입력해주세요."
@@ -139,7 +139,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Confirm Password"
+              label="비밀번호 확인"
               type="password"
               isRequired
               placeholder="비밀번호 확인"
@@ -159,7 +159,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Introduction"
+              label="한줄소개"
               type="text"
               placeholder="한줄소개 (20자 이내)"
               className="!h-12"
@@ -193,7 +193,7 @@ export default function SignUp() {
               href="/login"
               className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-black"
             >
-              Back to Sign In
+              로그인으로 돌아가기
             </Link>
           </div>
         </div>
