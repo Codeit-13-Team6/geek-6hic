@@ -296,7 +296,6 @@ export default function CommentSection({
       <DeleteModal
         isOpen={deleteTargetId !== null}
         onOpenChange={(isOpen) => !isOpen && setDeleteTargetId(null)}
-        // title="DELETE COMMENT"
         description="댓글을 삭제하시겠습니까?"
         onConfirm={handleConfirmDelete}
       />

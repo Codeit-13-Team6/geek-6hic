@@ -472,7 +472,6 @@ export function MeetingHeaderSection({
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        // title="모임 삭제"
         description="모임을 정말 삭제하시겠어요?"
         onConfirm={() => {
           handleDeleteMeeting();

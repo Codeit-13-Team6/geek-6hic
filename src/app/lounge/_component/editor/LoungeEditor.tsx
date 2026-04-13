@@ -47,14 +47,7 @@ export default function LoungeEditor({
       <ReactQuill
         theme="snow"
         value={value}
-        onChange={(val) => {
-          console.log("HTML:", val);
-      
-          const plainText = val.replace(/<[^>]*>?/gm, "");
-          console.log("텍스트 길이:", plainText.length);
-      
-          onChange(val);
-        }}
+        onChange={onChange}
         modules={quillModules}
         placeholder={placeholder}
       />
