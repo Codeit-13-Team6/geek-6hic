@@ -19,7 +19,15 @@ export async function getFavorites(
     url: "/favorites",
     params: { ...params, sortBy: "createdAt", sortOrder: "desc" },
   });
-  return data;
+
+  return {
+    ...data,
+    data: [...data.data].sort((a, b) => {
+      const aTime = new Date(a.meeting?.createdAt ?? 0).getTime();
+      const bTime = new Date(b.meeting?.createdAt ?? 0).getTime();
+      return bTime - aTime;
+    }),
+  };
 }
 
 export async function getMyMeetings(

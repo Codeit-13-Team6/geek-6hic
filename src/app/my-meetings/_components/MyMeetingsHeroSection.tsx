@@ -7,7 +7,10 @@ export function MyMeetingsHeroSection() {
         <div className="flex flex-col gap-8">
           <div className="flex items-center gap-4 sm:gap-5">
             <div className="bg-main-purple shadow-mag flex h-12 min-h-12 w-12 min-w-12 items-center justify-center sm:h-16 sm:w-16">
-              <GitCommitIcon className="text-white" />
+              <GitCommitIcon
+                className="text-white"
+                aria-hidden="true"
+              />
             </div>
             <span className="text-main-purple text-[10px] font-black tracking-[0.3em] uppercase sm:text-xs">
               Meetings / Joined
@@ -28,7 +31,10 @@ export function MyMeetingsHeroSection() {
         </div>
       </div>
       <div className="line-spread mt-8 mb-10 flex w-full justify-center sm:mt-10 sm:mb-15 lg:my-15">
-        <div className="h-[2px] w-full origin-center bg-gray-950" />
+        <div
+          aria-hidden="true"
+          className="h-[2px] w-full origin-center bg-gray-950"
+        />
       </div>
     </div>
   );
