@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { GetPostsResponse, LoungeSortBy } from "@/types";
 import type { SortOrder } from "@/types";
-import { fetchLoungePostsPage } from "@/lib/loungePosts";
+import { fetchLoungePostsPage } from "@/app/api/internal/lounge";
 
 export const dynamic = "force-dynamic";
 

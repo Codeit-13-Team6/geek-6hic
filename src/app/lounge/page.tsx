@@ -3,7 +3,7 @@ import HotPostList from "@/app/lounge/_component/HotPostList";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { fetchLoungePostsPage } from "@/lib/loungePosts";
+import { fetchLoungePostsPage } from "@/app/api/internal/lounge";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import LoungeSearchSection from "./_component/LoungeSearchSection";
