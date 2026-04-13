@@ -10,7 +10,7 @@ export default function RankCard({
   rank = 0,
   meetType = "스터디",
   image,
-  onDetailClick = () => { },
+  onDetailClick = () => {},
 }: RankCardProps & { image?: string }) {
   return (
     <article
@@ -22,13 +22,13 @@ export default function RankCard({
       onKeyDown={(e) => {
         if (window.innerWidth >= 640) return;
 
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onDetailClick();
         }
       }}
       aria-label={`랭킹 ${rank}위 ${title} 상세 보기`}
-      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 sm:h-[90px] sm:cursor-default sm:px-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+      className="group flex cursor-pointer flex-row items-center justify-between gap-4 border-b border-slate-100 bg-transparent py-4 transition-all hover:bg-slate-50/50 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none sm:h-[90px] sm:cursor-default sm:px-4"
     >
       <div className="flex min-w-0 items-center gap-4 sm:gap-6">
         <div className="min-w-6 text-center text-xl font-black text-slate-300 italic group-hover:text-slate-600 sm:min-w-8 sm:text-2xl">
@@ -59,7 +59,7 @@ export default function RankCard({
           <p className="text-lg font-black tracking-tighter text-slate-900 sm:text-xl">
             {point.toLocaleString()}
             <span className="ml-1 text-[9px] font-bold tracking-widest text-slate-400 uppercase">
-              pts
+              포인트
             </span>
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function RankCard({
           variant="outline"
           className="hover:border-main-purple hover:bg-main-purple hidden h-9 w-20 rounded-xl border border-slate-200 bg-transparent text-[10px] font-black tracking-widest text-slate-500 uppercase transition-all hover:text-white sm:flex"
         >
-          View
+          상세 보기
         </BtnCommon>
       </div>
     </article>

@@ -5,9 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
-import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
-import shareIcon from "@/assets/icon/share/share.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
 import { BtnCommon } from "@/components/ui/BtnCommon";
 import {
@@ -28,7 +26,7 @@ import {
   useMeetingDetailFavoriteMutation,
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-import type { MeetingHeaderSectionProps, MeetingMember } from "@/types";
+import type { MeetingHeaderSectionProps } from "@/types";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import {
   extractSecretCode,
@@ -46,29 +44,6 @@ const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
   !value?.includes("example.com") &&
   !value?.startsWith("blob:");
-
-const ParticipantAvatar = ({ participant }: { participant: MeetingMember }) => {
-  const displayName = participant.name || "참여자";
-  const profileImage = hasUsableProfileImage(participant.image)
-    ? participant.image
-    : null;
-
-  return (
-    <button
-      type="button"
-      className="rounded-full transition-transform hover:scale-105"
-    >
-      <FallbackImage
-        src={profileImage}
-        type="user"
-        alt={`${displayName} 프로필 이미지`}
-        width={36}
-        height={36}
-        className="size-8 rounded-full border-2 border-white object-cover xl:size-10"
-      />
-    </button>
-  );
-};
 
 export function MeetingHeaderSection({
   meetingId,
@@ -96,13 +71,10 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
-
 
   const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
     useMeetingJoinMutations(meetingId);
-
 
   const { handleEditMeeting, handleDeleteMeeting } =
     useMeetingHostMutations(meetingId);
@@ -119,21 +91,15 @@ export function MeetingHeaderSection({
     });
 
     if (shareResult.result === "failed") {
-      return ToastCommon({ message: "링크 복사에 실패했어요." });
+      return ToastCommon({ message: "링크 복사에 실패했어요.", type: "error" });
     }
 
     if (shareResult.result === "copied-by-app") {
       ToastCommon({
-        message: isSecret ? (
-          <>
-            비밀방입니다.
-            <br />
-            Secret Code를 함께 전달해 주세요
-          </>
-        ) : (
-          "모임 링크가 복사되었어요."
-        ),
-        size: "sm",
+        message: isSecret
+          ? "링크 복사 성공! 시크릿 코드와 함께 전달해 보세요."
+          : "모임 링크가 복사되었어요.",
+        type: "success",
         duration: 3000,
       });
       return;
@@ -151,6 +117,7 @@ export function MeetingHeaderSection({
   };
 
   const isSecret = isSecretMeeting(detail.dateTime);
+  const showSecretLock = !isAuthLoading && isSecret && !isHost && !isJoined;
 
   const action = (() => {
     if (!isLoggedIn) {
@@ -215,9 +182,14 @@ export function MeetingHeaderSection({
             src={detail.image}
             alt="모임 썸네일"
             fill
-            className="object-cover transition-transform duration-700 hover:scale-105"
+            className="object-cover transition-transform duration-700"
           />
-          {isSecret && !isHost && !isJoined && (
+          {isHost && (
+            <div className="absolute top-5 left-5 z-10 rounded-2xl bg-emerald-100 p-3 shadow-sm">
+              <ChessQueenIcon className="h-5 w-5 text-emerald-400" />
+            </div>
+          )}
+          {showSecretLock && !isHost && !isJoined && (
             <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
               🔒
             </div>
@@ -232,11 +204,6 @@ export function MeetingHeaderSection({
                   <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
                     {detail.name}
                   </h1>
-                  {isHost && (
-                    <div className="mt-1 shrink-0 rounded-xl bg-emerald-100 p-2 shadow-sm">
-                      <ChessQueenIcon className="h-4 w-4 text-emerald-400" />
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -297,7 +264,6 @@ export function MeetingHeaderSection({
               </div>
             </div>
 
-
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -306,7 +272,7 @@ export function MeetingHeaderSection({
                   </div>
                   <div>
                     <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                      Participants
+                      참여 인원
                     </p>
                     <p className="text-xl font-black text-slate-950">
                       {detail.participantCount}{" "}
@@ -390,7 +356,7 @@ export function MeetingHeaderSection({
                   </div>
                   {participant.userId === detail.hostId && (
                     <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      HOST
+                      호스트
                     </span>
                   )}
                 </div>
@@ -417,6 +383,7 @@ export function MeetingHeaderSection({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
+                    size: "lg",
                   });
                 }}
                 className="text-main-purple-point rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold transition hover:bg-purple-200"
@@ -487,7 +454,7 @@ export function MeetingHeaderSection({
               >
                 <p className="text-lg font-black text-slate-900">출석 완료</p>
                 <p className="text-main-purple mt-2 text-base font-bold">
-                  +{showReward.point} Points
+                  +{showReward.point} 포인트
                 </p>
               </motion.div>
             </motion.div>
@@ -505,7 +472,7 @@ export function MeetingHeaderSection({
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE ARCHIVE"
+        title="모임 삭제"
         description="모임을 정말 삭제하시겠어요?"
         onConfirm={() => {
           handleDeleteMeeting();
@@ -567,12 +534,11 @@ export function MeetingHeaderSection({
           setIsCloseConfirmOpen(false);
           handleCancelJoinMeeting();
         }}
-        description='모임에서 탈퇴하시겠습니까?'
-        subDescription=''
-        confirmButtonLabel='취소하기'
-        cancelButtonLabel='탈퇴하기'
+        description="모임에서 탈퇴하시겠습니까?"
+        subDescription=""
+        confirmButtonLabel="취소하기"
+        cancelButtonLabel="탈퇴하기"
       />
-
     </>
   );
 }

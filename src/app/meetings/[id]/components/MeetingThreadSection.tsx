@@ -23,7 +23,7 @@ export function MeetingThreadSection({
       <div className="flex min-h-[300px] w-full flex-col items-center justify-center gap-4 rounded-[40px] border border-slate-50 bg-white shadow-sm">
         <Loader2 size={24} className="text-main-purple/40 animate-spin" />
         <p className="text-xs font-black tracking-widest text-slate-300 uppercase">
-          Loading Thread...
+          스레드를 불러오는 중...
         </p>
       </div>
     );

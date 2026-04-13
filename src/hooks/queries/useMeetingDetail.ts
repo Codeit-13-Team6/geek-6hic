@@ -116,12 +116,12 @@ export const useMeetingJoinMutations = (meetingId: number) => {
           queryKey: QUERY_KEYS.meetings.list,
         }),
       ]);
-      ToastCommon({ message: "모임에 참여했어요.", size: "sm" });
+      ToastCommon({ message: "모임에 참여했어요.", type: "success" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
       ToastCommon({
         message: getJoinErrorMessage(error.response?.data?.code),
-        size: "sm",
+        type: "error",
       });
     },
   });
@@ -146,12 +146,12 @@ export const useMeetingJoinMutations = (meetingId: number) => {
           queryKey: QUERY_KEYS.meetings.joined,
         }),
       ]);
-      ToastCommon({ message: "참여를 취소했어요.", size: "sm" });
+      ToastCommon({ message: "참여를 취소했어요.", type: "success" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
       ToastCommon({
         message: getCancelJoinErrorMessage(error.response?.data?.code),
-        size: "sm",
+        type: "error",
       });
     },
   });
@@ -177,13 +177,13 @@ export const useMeetingHostMutations = (meetingId: number) => {
       updateMeeting(meetingId, nextValues),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
-      ToastCommon({ message: "모임 수정이 반영되었어요.", size: "sm" });
+      ToastCommon({ message: "모임 수정이 반영되었어요.", type: "success" });
     },
     onError: (error: AxiosError<MeetingActionErrorResponse>) => {
       ToastCommon({
         message:
           error.response?.data?.message ?? "모임 수정 중 문제가 발생했어요.",
-        size: "sm",
+        type: "error",
       });
     },
   });
@@ -191,7 +191,7 @@ export const useMeetingHostMutations = (meetingId: number) => {
   const deleteMeetingMutation = useMutation({
     mutationFn: () => deleteMeeting(meetingId),
     onSuccess: () => {
-      ToastCommon({ message: "모임을 삭제했어요.", size: "sm" });
+      ToastCommon({ message: "모임을 삭제했어요.", type: "success" });
       router.push("/meetings");
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
       router.refresh();
@@ -200,7 +200,7 @@ export const useMeetingHostMutations = (meetingId: number) => {
       ToastCommon({
         message:
           error.response?.data?.message ?? "모임 삭제 중 문제가 발생했어요.",
-        size: "sm",
+        type: "error",
       });
     },
   });
@@ -229,10 +229,13 @@ export const useMeetingAttendMutation = (meetingId: number) => {
     onSuccess: () => {
       setHasAttended(true);
 
-      ToastCommon({ message: "출석이 완료되었습니다.", size: "sm" });
+      ToastCommon({ message: "출석이 완료되었습니다.", type: "success" });
     },
     onError: () => {
-      ToastCommon({ message: "출석 처리 중 문제가 발생했어요.", size: "sm" });
+      ToastCommon({
+        message: "출석 처리 중 문제가 발생했어요.",
+        type: "error",
+      });
     },
   });
 

@@ -12,12 +12,7 @@ export function useOptimisticMutation<TData, TVariables>(
   queryClient: QueryClient,
   config: OptimisticMutationConfig<TData, TVariables>,
 ) {
-  const {
-    queryKey,
-    updater,
-    invalidateKeys,
-    onErrorMessage,
-  } = config;
+  const { queryKey, updater, invalidateKeys, onErrorMessage } = config;
 
   return {
     onMutate: async (variables: TVariables) => {
@@ -40,7 +35,7 @@ export function useOptimisticMutation<TData, TVariables>(
         queryClient.setQueryData(queryKey, context.previous);
       }
       if (onErrorMessage) {
-        ToastCommon({ message: onErrorMessage, size: "sm" });
+        ToastCommon({ message: onErrorMessage, type: "error" });
       }
     },
     onSettled: () => {

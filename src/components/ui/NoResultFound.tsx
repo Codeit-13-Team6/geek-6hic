@@ -7,7 +7,7 @@ export function NoResultFound() {
         <SearchX className="size-10 text-slate-200" strokeWidth={1.5} />
       </div>
       <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-        No Results found.
+        검색 결과가 없어요.
       </h3>
       <p className="mt-2 text-sm font-medium text-slate-400">
         다른 키워드로 검색해보세요.

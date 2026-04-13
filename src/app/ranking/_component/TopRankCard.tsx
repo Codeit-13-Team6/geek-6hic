@@ -85,7 +85,7 @@ export default function TopRankCard({
               {item?.rankScore?.toLocaleString()}
             </span>
             <span className="mb-1 text-[10px] tracking-widest text-white/50 uppercase">
-              Points
+              포인트
             </span>
           </div>
 
@@ -100,7 +100,7 @@ export default function TopRankCard({
             )}
           >
             <span className="text-[11px] tracking-[0.2em] uppercase">
-              View Details
+              상세 보기
             </span>
           </BtnCommon>
         </div>

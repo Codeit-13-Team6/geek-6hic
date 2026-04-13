@@ -44,7 +44,6 @@ export default function SignUp() {
       if (result.ok) {
         setIsOpenModal(true);
         // ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
-
       } else {
         setIsLoading(false);
       }
@@ -52,12 +51,12 @@ export default function SignUp() {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         ToastCommon({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
-          size: "sm",
+          type: "info",
         });
       } else {
         ToastCommon({
           message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
-          size: "sm",
+          type: "error",
         });
       }
       setIsLoading(false);
@@ -70,7 +69,6 @@ export default function SignUp() {
     setIsOpenModal(false);
     router.push("/login");
   };
-
 
   return (
     <section
@@ -85,7 +83,7 @@ export default function SignUp() {
               id="sign-up-header"
               className="text-center text-3xl font-black tracking-tighter text-slate-950 uppercase"
             >
-              Join Us
+              함께 시작해요
             </h1>
           </div>
 
@@ -95,7 +93,7 @@ export default function SignUp() {
             className="flex flex-col gap-5"
           >
             <InputCommon
-              label="Name"
+              label="이름"
               type="text"
               isRequired
               placeholder="이름을 입력해주세요."
@@ -106,7 +104,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Email"
+              label="이메일"
               type="email"
               isRequired
               placeholder="이메일을 입력해주세요."
@@ -123,7 +121,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Password"
+              label="비밀번호"
               type="password"
               isRequired
               placeholder="비밀번호를 입력해주세요."
@@ -141,7 +139,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Confirm Password"
+              label="비밀번호 확인"
               type="password"
               isRequired
               placeholder="비밀번호 확인"
@@ -161,7 +159,7 @@ export default function SignUp() {
             />
 
             <InputCommon
-              label="Introduction"
+              label="한줄소개"
               type="text"
               placeholder="한줄소개 (20자 이내)"
               className="!h-12"
@@ -193,9 +191,9 @@ export default function SignUp() {
             </p>
             <Link
               href="/login"
-              className="text-main-purple focus-visible:ring-black text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
+              className="text-main-purple text-sm font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-black"
             >
-              Back to Sign In
+              로그인으로 돌아가기
             </Link>
           </div>
         </div>
@@ -209,7 +207,6 @@ export default function SignUp() {
         description="회원가입이 완료되었습니다."
         subDescription=" "
       />
-
     </section>
   );
 }

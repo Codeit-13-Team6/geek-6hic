@@ -20,13 +20,17 @@ import {
   generateSecretTime,
   isSecretMeeting,
 } from "@/lib/meetingSecret";
-import { MeetingDetailApiData, MeetingDetailData, MeetingFormErrors, MeetingFormValues } from "@/types";
+import {
+  MeetingDetailApiData,
+  MeetingDetailData,
+  MeetingFormErrors,
+  MeetingFormValues,
+} from "@/types";
 import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
 import { threadKeyword } from "@/constans/post";
-
 
 export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   const secretTime = formValues.isPrivate ? generateSecretTime() : null;
@@ -37,7 +41,9 @@ export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
     address: getNormalizedMeetingLink(formValues.link),
     latitude: 0,
     longitude: 0,
-    dateTime: secretTime ? buildSecretDateTime(secretTime) : buildNormalDateTime(),
+    dateTime: secretTime
+      ? buildSecretDateTime(secretTime)
+      : buildNormalDateTime(),
     registrationEnd: "2099-12-31T23:59:59.000Z",
     capacity: Number(formValues.capacity),
     image: formValues.imageUrl,
@@ -45,7 +51,10 @@ export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   };
 };
 
-export const toEditMeetingPayload = (formValues: MeetingFormValues, originalDateTime: string) => {
+export const toEditMeetingPayload = (
+  formValues: MeetingFormValues,
+  originalDateTime: string,
+) => {
   let dateTime: string;
   if (!formValues.isPrivate) {
     dateTime = buildNormalDateTime();
@@ -58,7 +67,7 @@ export const toEditMeetingPayload = (formValues: MeetingFormValues, originalDate
     type: formValues.category,
     name: formValues.name,
     description: formValues.description,
-    link: formValues.link,
+    link: getNormalizedMeetingLink(formValues.link),
     image: formValues.imageUrl || formValues.previewImageUrl || null,
     dateTime,
     registrationEnd: "2099-12-31T23:59:59.000Z",
@@ -101,7 +110,6 @@ export const createEmptyMeetingFormErrors = (): MeetingFormErrors => ({
   capacity: "",
 });
 
-
 function useMeetingFormBase({
   initialValues,
   onClearImageError,
@@ -119,7 +127,8 @@ function useMeetingFormBase({
   handleChangeMeetingImage: (nextFile: File | null) => Promise<void>;
   handleRemoveMeetingImage: () => void;
 } {
-  const [formValues, setFormValues] = useState<MeetingFormValues>(initialValues);
+  const [formValues, setFormValues] =
+    useState<MeetingFormValues>(initialValues);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const previewImageUrlRef = useRef(initialValues.previewImageUrl);
 
@@ -138,7 +147,10 @@ function useMeetingFormBase({
       clearImageError: onClearImageError,
       setImageError: onSetImageError,
       onUploadError: () => {
-        ToastCommon({ message: "이미지 업로드에 실패했습니다." });
+        ToastCommon({
+          message: "이미지 업로드에 실패했습니다.",
+          type: "error",
+        });
       },
     });
   };
@@ -228,7 +240,8 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
   };
 
   const handleNextStep = () => {
-    const currentStepErrors = currentStep === 1 ? categoryErrors : basicInfoErrors;
+    const currentStepErrors =
+      currentStep === 1 ? categoryErrors : basicInfoErrors;
     if (hasMeetingValidationError(currentStepErrors)) {
       markTouchedStep(currentStep);
       return;
@@ -258,7 +271,10 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       setCurrentStep(1);
       return;
     }
-    if (hasMeetingValidationError(nextBasicInfoErrors) || hasMeetingValidationError(nextScheduleErrors)) {
+    if (
+      hasMeetingValidationError(nextBasicInfoErrors) ||
+      hasMeetingValidationError(nextScheduleErrors)
+    ) {
       markTouchedStep(2);
       setCurrentStep(2);
       return;
@@ -274,18 +290,22 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
 
       const newPost = await createPost({
         title: threadKeyword.build(newMeetingId),
-        content: "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
+        content:
+          "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
       });
 
       await updateMeeting(newMeetingId, { region: String(newPost.id) });
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
-      ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
+      ToastCommon({
+        message: "새로운 모임이 시작되었습니다!",
+        type: "success",
+      });
       onSuccess?.();
       router.push(`/meetings/${newMeetingId}`);
     } catch (error) {
       console.error("meeting create error", error);
-      ToastCommon({ message: "모임 생성에 실패했습니다." });
+      ToastCommon({ message: "모임 생성에 실패했습니다.", type: "error" });
     } finally {
       isSubmittingRef.current = false;
       setIsSubmitting(false);
@@ -322,7 +342,9 @@ export function useEditMeetingForm({
   onSubmit: (nextValues: Partial<MeetingDetailData>) => Promise<void> | void;
   onSuccess?: () => void;
 }) {
-  const [errors, setErrors] = useState<MeetingFormErrors>(createEmptyMeetingFormErrors);
+  const [errors, setErrors] = useState<MeetingFormErrors>(
+    createEmptyMeetingFormErrors,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const previousIsOpenRef = useRef(false);
 
@@ -337,7 +359,8 @@ export function useEditMeetingForm({
   } = useMeetingFormBase({
     initialValues: toMeetingFormValues(detail),
     onClearImageError: () => setErrors((prev) => ({ ...prev, imageUrl: "" })),
-    onSetImageError: (message) => setErrors((prev) => ({ ...prev, imageUrl: message })),
+    onSetImageError: (message) =>
+      setErrors((prev) => ({ ...prev, imageUrl: message })),
   });
 
   const resetEditMeetingForm = (nextDetail: MeetingDetailApiData) => {
@@ -374,7 +397,8 @@ export function useEditMeetingForm({
       ...prev,
       category: nextValues.category ? "" : prev.category,
       name: typeof nextValues.name === "string" ? "" : prev.name,
-      description: typeof nextValues.description === "string" ? "" : prev.description,
+      description:
+        typeof nextValues.description === "string" ? "" : prev.description,
       link: typeof nextValues.link === "string" ? "" : prev.link,
       capacity: typeof nextValues.capacity === "string" ? "" : prev.capacity,
     }));

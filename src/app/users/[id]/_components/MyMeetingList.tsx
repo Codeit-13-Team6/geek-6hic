@@ -56,7 +56,7 @@ export default function MyMeetingList({
           <PlusCircle className="size-10 text-slate-200" strokeWidth={1.5} />
         </div>
         <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-          {isOwnProfile ? "No Entries Created." : "No Meetings Yet."}
+          {isOwnProfile ? "아직 주최한 모임이 없어요" : "아직 모임이 없어요"}
         </h3>
         <p className="mt-2 text-sm font-medium text-slate-400">
           {isOwnProfile
@@ -91,7 +91,7 @@ export default function MyMeetingList({
           <div className="flex items-center gap-3">
             <Loader2 className="text-main-purple animate-spin" size={20} />
             <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-              Updating Archive...
+              목록을 불러오는 중...
             </span>
           </div>
         )}

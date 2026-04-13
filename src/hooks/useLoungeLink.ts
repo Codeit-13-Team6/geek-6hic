@@ -2,7 +2,7 @@ import { useState, DragEvent } from "react";
 import { getOgData } from "@/api/client/og";
 import { ToastCommon } from "@/components/ui/ToastCommon";
 import { LinkItem } from "@/types";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export const useLoungeLink = () => {
   const [linkList, setLinkList] = useState<LinkItem[]>([]);
@@ -13,7 +13,7 @@ export const useLoungeLink = () => {
   // 1. 링크 추가 (OG 데이터 페치)
   const addLink = async (linkUrl: string) => {
     if (!linkUrl.trim()) {
-      return ToastCommon({ message: "링크를 입력해주세요.", size: "sm" });
+      return ToastCommon({ message: "링크를 입력해주세요.", type: "info" });
     }
 
     setIsLoading(true);
@@ -36,7 +36,6 @@ export const useLoungeLink = () => {
 
       return true; // 성공 시 입력창 비우기 용도
     } catch (error) {
-
       // 일단은 axios error 아니면 바로 자르긴하는데 문제되면 그냥 error any 로 하고 받기
       if (!axios.isAxiosError(error)) return false;
 
@@ -56,7 +55,7 @@ export const useLoungeLink = () => {
       } else if (status === 404) {
         errorMessage = "존재하지 않거나 삭제된 페이지입니다.";
       }
-      ToastCommon({ message: errorMessage, size: "sm" });
+      ToastCommon({ message: errorMessage, type: "error" });
       return false;
     } finally {
       setIsLoading(false);
@@ -78,7 +77,7 @@ export const useLoungeLink = () => {
   const selectThumbnail = (imageUrl: string) => {
     if (!imageUrl) return;
     setThumbnailImage(imageUrl);
-    ToastCommon({ message: "대표 썸네일로 설정되었습니다.", size: "sm" });
+    ToastCommon({ message: "대표 썸네일로 설정되었습니다.", type: "success" });
   };
 
   // 4. 드래그 앤 드롭 핸들러

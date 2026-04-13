@@ -45,7 +45,8 @@ export default function SideBar({
           aria-label="메뉴 닫기"
         >
           <X
-            className="size-5 text-slate-900" strokeWidth={2}
+            className="size-5 text-slate-900"
+            strokeWidth={2}
             aria-hidden="true"
           />
         </SheetClose>
@@ -60,7 +61,7 @@ export default function SideBar({
               href={link.href}
               onClick={onClose}
               className={cn(
-                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-black",
+                "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all focus-visible:ring-2 focus-visible:ring-black active:scale-[0.98]",
                 isActive
                   ? "text-main-purple bg-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]"
                   : "text-slate-500 hover:text-slate-900",
@@ -102,24 +103,21 @@ export default function SideBar({
             {/* 💡 유저 인사말: 담백하게 텍스트로만 구성 */}
             <p className="text-[15px] font-bold text-slate-900">
               안녕하세요,{" "}
-              <span className="text-main-purple">
-                {user?.name || ""}
-              </span>
-              님
+              <span className="text-main-purple">{user?.name || ""}</span>님
             </p>
 
             <button
               onClick={handleLogout}
               className="flex w-full items-center justify-center rounded-xl bg-white/60 py-3.5 text-[12px] font-bold tracking-widest text-slate-400 uppercase shadow-sm transition-all hover:bg-white hover:text-slate-900"
             >
-              Logout
+              로그아웃
             </button>
           </div>
         ) : (
           <button
             onClick={() => {
-              handleLogin()
-              onClose()
+              handleLogin();
+              onClose();
             }}
             className="bg-main-purple shadow-main-purple/20 flex w-full items-center justify-center rounded-xl py-4 shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
           >

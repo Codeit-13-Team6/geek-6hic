@@ -21,9 +21,8 @@ interface LoginFormProps {
 
 export default function LoginForm({
   onSuccess,
-  title = "Login",
+  title = "로그인",
 }: LoginFormProps) {
-
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +82,7 @@ export default function LoginForm({
     setIsOAuthLoading("kakao");
     saveReturnUrl();
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao?redirect=${encodeURIComponent(window.location.origin + "/oauth/callback")}`;
-  }
+  };
 
   const handleGoogleLogin = () => {
     setIsOAuthLoading("google");
@@ -106,7 +105,7 @@ export default function LoginForm({
         className="flex flex-col gap-4"
       >
         <InputCommon
-          label="Email"
+          label="이메일"
           type="email"
           isRequired
           placeholder="이메일을 입력해주세요."
@@ -124,7 +123,7 @@ export default function LoginForm({
         />
 
         <InputCommon
-          label="Password"
+          label="비밀번호"
           type="password"
           isRequired
           placeholder="비밀번호를 입력해주세요."
@@ -162,7 +161,7 @@ export default function LoginForm({
       <div className="mt-8 mb-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-slate-50"></div>
         <span className="text-[9px] font-black tracking-widest text-slate-300 uppercase">
-          Connect
+          간편 로그인
         </span>
         <div className="h-px flex-1 bg-slate-50"></div>
       </div>
@@ -208,9 +207,9 @@ export default function LoginForm({
         <Link
           href="/signup"
           onClick={closeModal}
-          className="text-main-purple focus-visible:ring-black text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2"
+          className="text-main-purple text-[11px] font-black tracking-widest uppercase underline underline-offset-4 transition-colors hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-black"
         >
-          Create Account
+          회원가입
         </Link>
       </div>
     </div>
