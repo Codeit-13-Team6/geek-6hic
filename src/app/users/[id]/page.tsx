@@ -21,8 +21,8 @@ import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
-import GradeCard from "./_components/GridCard";
 import GradeCardContainer from "./_components/GradeCardContainer";
+import GradeCardSkeleton from "./_components/GradeCardSkeleton";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -110,7 +110,7 @@ export default async function Page({
               </Suspense>
             </div>
             <div className="h-full w-1/2 snap-center lg:w-full">
-              <Suspense fallback={<GradeCard />}>
+              <Suspense fallback={<GradeCardSkeleton />}>
                 <GradeCardContainer
                   basicStatsPromise={basicStatsPromise}
                   createdMeetingsPromise={createdMeetingsPromise}
