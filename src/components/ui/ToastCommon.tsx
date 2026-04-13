@@ -3,9 +3,11 @@
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ToastCommonProps } from "@/types";
+import { CheckCircle2, AlertCircle, Info } from "lucide-react";
+
 /**
  * 예시)
- * ToastCommon({ message: "성공적으로 저장되었습니다." });
+ * ToastCommon({ message: "성공적으로 저장되었습니다.", type: "success" });
  * ToastCommon({ message: "삭제 완료", size: "sm", duration: 1500 });
  * ToastCommon({
  *   message: "로그인이 필요합니다.",
@@ -13,30 +15,80 @@ import { ToastCommonProps } from "@/types";
  * });
  */
 
-// 피그마 기준 크기 규격입니다.
-const TOAST_SIZE_STYLES = {
-  lg: "min-h-[56px] min-w-[339px] rounded-[12px] px-[32px] py-[16px] text-[20px] leading-[24px]",
-  sm: "min-h-[40px] min-w-[260px] rounded-[10px] px-[24px] py-[12px] text-[14px] leading-[16px]",
+const TYPE_CONFIG = {
+  success: {
+    icon: CheckCircle2,
+    color: "text-green-400",
+    glow: "drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]",
+    borderColor: "border-green-500/30",
+  },
+  error: {
+    icon: AlertCircle,
+    color: "text-red-400",
+    glow: "drop-shadow-[0_0_8px_rgba(248,113,113,0.5)]",
+    borderColor: "border-red-500/30",
+  },
+  info: {
+    icon: Info,
+    color: "text-slate-200",
+    glow: "drop-shadow-[0_0_8px_rgba(148,163,184,0.6)]",
+    borderColor: "border-slate-300/40",
+  },
 };
 
-// 공용 toast 실행 함수입니다.
-// sonner의 custom API를 사용해 프로젝트 전용 toast UI를 렌더링합니다.
+const TOAST_SIZE_STYLES = {
+  lg: "min-h-[52px] min-w-[200px] w-fit max-w-[400px] rounded-full px-7 py-3 text-[15px]",
+  sm: "min-h-[40px] min-w-[140px] w-fit max-w-[300px] rounded-full px-5 py-2 text-[13px]",
+};
+
 export const ToastCommon = ({
   message,
+  type = "success",
   size = "lg",
   duration = 2000,
   className,
 }: ToastCommonProps) => {
+  const config = TYPE_CONFIG[type];
+  const Icon = config.icon;
+
   toast.custom(
     () => (
-      <div
-        className={cn(
-          "flex items-center justify-center bg-black/80 text-center font-semibold text-white shadow-lg",
-          TOAST_SIZE_STYLES[size],
-          className,
-        )}
-      >
-        {message}
+      <div className="flex w-full justify-center">
+        <div
+          className={cn(
+            "relative flex items-center justify-center gap-3 overflow-hidden text-center",
+            "bg-slate-950/85 tracking-tight text-white backdrop-blur-2xl",
+            "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] ring-1 ring-white/15",
+            config.borderColor,
+            TOAST_SIZE_STYLES[size],
+            className,
+          )}
+        >
+          <Icon
+            className={cn(
+              config.color,
+              config.glow,
+              "flex-shrink-0",
+              size === "lg" ? "size-5" : "size-4",
+            )}
+            strokeWidth={3}
+          />
+
+          <span className="truncate font-bold whitespace-nowrap">
+            {message}
+          </span>
+
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r opacity-10",
+              type === "success"
+                ? "from-green-500/20"
+                : type === "error"
+                  ? "from-red-500/20"
+                  : "from-slate-400/20",
+            )}
+          />
+        </div>
       </div>
     ),
     { duration },

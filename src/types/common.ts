@@ -23,6 +23,7 @@ export interface TimePickerCommonProps {
 export type ToastSize = "lg" | "sm";
 
 export interface ToastCommonProps {
+  type?: "success" | "error" | "info";
   message: string | ReactNode;
   size?: ToastSize;
   duration?: number;
