@@ -219,6 +219,11 @@ export function MeetingHeaderSection({
               🔒
             </div>
           )}
+          {isHost && (
+            <div className="absolute top-5 left-5 z-10 rounded-2xl bg-emerald-100 p-3 shadow-sm">
+              <ChessQueenIcon className="h-5 w-5 text-emerald-400" />
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between rounded-[40px] border border-slate-50 bg-white p-8 shadow-[0_30px_60px_rgba(0,0,0,0.04)] xl:p-12">
@@ -229,11 +234,6 @@ export function MeetingHeaderSection({
                   <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
                     {detail.name}
                   </h1>
-                  {isHost && (
-                    <div className="mt-1 shrink-0 rounded-xl bg-emerald-100 p-2 shadow-sm">
-                      <ChessQueenIcon className="h-4 w-4 text-emerald-400" />
-                    </div>
-                  )}
                 </div>
               </div>
 
