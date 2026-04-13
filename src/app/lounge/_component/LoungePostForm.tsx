@@ -21,6 +21,7 @@ export default function LoungePostForm({
   "use memo";
 
   const TITLE_MAX_LENGTH = 30;
+  const CONTENT_MAX_LENGTH = 1000;
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [linkUrl, setLinkUrl] = useState("");
@@ -94,6 +95,13 @@ export default function LoungePostForm({
     if (linkList.length === 0 && trimmedContentText.length === 0) {
       return ToastCommon({
         message: "본문 내용 또는 링크를 입력해주세요",
+        type: "info",
+      });
+    }
+
+    if (contentWithoutSpaces > CONTENT_MAX_LENGTH) {
+      return ToastCommon({
+        message: `본문은 최대 ${CONTENT_MAX_LENGTH}자까지 입력 가능합니다.`,
         type: "info",
       });
     }
@@ -225,9 +233,16 @@ export default function LoungePostForm({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-gray-100 pt-4 text-right text-xs font-medium text-gray-400 sm:mt-4 sm:pt-5 sm:text-sm">
-          공백포함 : {contentWithSpaces.toLocaleString()}자 | 공백제외 :{" "}
-          {contentWithoutSpaces.toLocaleString()}자
+        <div className="mt-5 border-t border-gray-100 pt-4 text-right text-xs font-medium sm:mt-4 sm:pt-5 sm:text-sm">
+          <span
+            className={
+              contentWithoutSpaces > CONTENT_MAX_LENGTH
+                ? "text-red-500"
+                : "text-gray-400"
+            }
+          >
+            공백제외 : {contentWithoutSpaces.toLocaleString()} / {CONTENT_MAX_LENGTH}자
+          </span>
         </div>
       </div>
     </div>

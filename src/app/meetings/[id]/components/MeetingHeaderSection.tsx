@@ -243,7 +243,7 @@ export function MeetingHeaderSection({
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => setIsDeleteModalOpen(true)}
-                            className="font-bold text-red-500"
+                            className="text-red-500"
                           >
                             모임 삭제하기
                           </DropdownMenuItem>
@@ -253,7 +253,7 @@ export function MeetingHeaderSection({
                       {menuConfig.showMember ? (
                         <DropdownMenuItem
                           onClick={() => setIsCloseConfirmOpen(true)}
-                          className="font-bold text-red-500"
+                          className="text-red-500"
                         >
                           모임 탈퇴하기
                         </DropdownMenuItem>

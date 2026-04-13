@@ -39,10 +39,14 @@ export function DeleteModal({
       titleClassName="text-xl font-black tracking-tighter text-slate-900 uppercase"
     >
       <div className="flex flex-col gap-8 pt-4">
-        <div className="space-y-2 text-center sm:text-left">
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-red-50 text-red-500 sm:mx-0">
-            <AlertCircle size={24} strokeWidth={2.5} />
+        <div className="space-y-2 text-center">
+          <div className="flex justify-center">
+            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+              <AlertCircle size={24} strokeWidth={2.5} />
+            </div>
           </div>
+          {/* <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-red-50 text-red-500 sm:mx-0">
+          </div> */}
 
           <p className="text-lg leading-tight font-black tracking-tight text-slate-900">
             {description}
