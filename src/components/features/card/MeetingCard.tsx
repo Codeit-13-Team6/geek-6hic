@@ -46,7 +46,7 @@ export default function MeetingCard({
   }
 
   return (
-    <div
+    <article
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -55,6 +55,7 @@ export default function MeetingCard({
         }
       }}
       onClick={onItemClick}
+      aria-label={`${item.name} 모임 상세 보기`}
       className={cn(
         "animate-fade-up group relative flex cursor-pointer flex-col overflow-hidden rounded-[24px] bg-white transition-all duration-300 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none sm:flex-row sm:items-stretch sm:gap-0",
         "shadow-[0_10px_25px_-10px_rgba(0,0,0,0.04),_0_15px_35px_-10px_rgba(38,6,86,0.05)]",
@@ -70,7 +71,7 @@ export default function MeetingCard({
             "object-cover transition-transform duration-500 group-hover:scale-105",
             statusLabel ? "grayscale-[40%]" : "",
           )}
-          alt="모임 이미지"
+          alt={`${item.name} 모임 이미지`}
         />
         {isSecret && (
           <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
@@ -96,14 +97,16 @@ export default function MeetingCard({
           <div className="absolute top-3 left-3 z-10 shrink-0 rounded-full bg-amber-100 p-1.5 shadow-sm">
             <Image
               src={crownLgIcon}
-              alt="호스트 이미지"
+              alt=""
               width={20}
               height={20}
               className="xl:size-6"
+              aria-hidden="true"
             />
           </div>
         ) : (
-          <span></span>
+          // <span></span>
+          null
         )}
       </div>
 
@@ -164,7 +167,11 @@ export default function MeetingCard({
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Calendar size={14} className="text-slate-300" />
+              <Calendar
+                size={14}
+                className="text-slate-300"
+                aria-hidden="true"
+              />
               <span className="text-xs font-medium text-slate-400">
                 {new Date(item.createdAt)
                   .toLocaleDateString("ko-KR", {
@@ -179,6 +186,6 @@ export default function MeetingCard({
           </div>
         </section>
       </div>
-    </div>
+    </article>
   );
 }

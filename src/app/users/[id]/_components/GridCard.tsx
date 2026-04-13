@@ -26,7 +26,10 @@ export default function GradeCard({ userType }: GradeCardProps) {
       )}
     >
       {/* 1. 배경 장식: COGIT */}
-      <div className="absolute -top-9 -right-0.5 text-[7rem] font-black tracking-tighter text-indigo-950 italic opacity-[0.03] select-none">
+      <div
+        className="absolute -top-9 -right-0.5 text-[7rem] font-black tracking-tighter text-indigo-950 italic opacity-[0.03] select-none"
+        aria-hidden="true"
+      >
         COGIT
       </div>
 
