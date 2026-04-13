@@ -98,16 +98,9 @@ export async function getFavorites(params?: {
   const { data } = await axiosInstance.get<FavoritesPageResponse>(
     "/favorites",
     {
-      params: { ...params, sortBy: "createdAt", sortOrder: "desc" },
+      params: { ...params, sortBy: "meetingCreatedAt", sortOrder: "desc" },
     },
   );
 
-  return {
-    ...data,
-    data: [...data.data].sort((a, b) => {
-      const aTime = new Date(a.meeting?.createdAt ?? 0).getTime();
-      const bTime = new Date(b.meeting?.createdAt ?? 0).getTime();
-      return bTime - aTime;
-    }),
-  };
+  return data;
 }
