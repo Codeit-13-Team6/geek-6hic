@@ -84,8 +84,8 @@ export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
       queryFn: ({ pageParam }) =>
         getJoinedMeetings(
           pageParam
-            ? { cursor: pageParam as string, size: 10, sortOrder: "desc" }
-            : { size: 10, sortOrder: "desc" },
+            ? { cursor: pageParam as string, size: 10, sortOrder: "desc", sortBy: "joinedAt" }
+            : { size: 10, sortOrder: "desc", sortBy: "joinedAt" },
         ),
       initialPageParam: undefined,
       getNextPageParam,
