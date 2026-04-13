@@ -75,7 +75,7 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
           onEdit={handlePostEdit}
           onDelete={handlePostDelete}
           onLike={() => {
-            loginGuardAction(handleLikeClick)
+            loginGuardAction(handleLikeClick);
           }}
           onAuthorClick={() => router.push(`/users/${post.author.id}`)}
         />
@@ -84,8 +84,8 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE POST"
-        description="게시글을 삭제하시겠습니까?"
+        title="게시글 삭제"
+        description="삭제하시겠습니까?"
         subDescription="삭제된 데이터는 복구할 수 없습니다."
         onConfirm={handleConfirmDelete}
       />

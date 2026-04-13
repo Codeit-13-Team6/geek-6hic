@@ -117,7 +117,7 @@ export default function ProfileSection({
           <div className="w-full space-y-3 text-center sm:text-left lg:text-center">
             <div>
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
-                Contact
+                contact
               </p>
               <p className="line-clamp-2 text-sm font-semibold break-all text-slate-600">
                 {displayUser?.email}
@@ -175,7 +175,7 @@ export default function ProfileSection({
                 render={({ field, fieldState }) => (
                   <InputCommon
                     {...field}
-                    label="Display Name"
+                    label="닉네임"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
                     isRequired
                     onClear={() => field.onChange("")}
@@ -191,7 +191,7 @@ export default function ProfileSection({
                 render={({ field, fieldState }) => (
                   <InputCommon
                     {...field}
-                    label="Email Address"
+                    label="이메일"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
                     isRequired
                     placeholder="이메일을 입력해주세요."
@@ -207,7 +207,7 @@ export default function ProfileSection({
                 render={({ field, fieldState }) => (
                   <InputCommon
                     {...field}
-                    label="Introduction"
+                    label="한줄소개"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
                     placeholder="한줄소개를 입력해주세요."
                     onClear={() => field.onChange("")}

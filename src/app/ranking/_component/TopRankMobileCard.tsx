@@ -82,7 +82,7 @@ export default function TopRankMobileCard({
         >
           {item?.rankScore?.toLocaleString()}{" "}
           <span className="ml-1 text-[9px] tracking-widest uppercase opacity-40">
-            pts
+            포인트
           </span>
         </p>
       </div>

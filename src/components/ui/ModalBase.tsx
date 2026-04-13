@@ -32,27 +32,27 @@ export default function ModalBase({
             "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
-            "overflow-y-auto border border-slate-100 bg-white shadow-2xl outline-none p-12",
+            "overflow-y-auto border border-slate-100 bg-white p-12 shadow-2xl outline-none",
             contentClassName,
             "gap-0!",
           )}
           showCloseButton={false}
         >
-            <DialogTitle className={cn("text-slate-950", titleClassName)}>
-              {title}
-            </DialogTitle>
-            <DialogClose
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon-lg"
-                  className="fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200"
-                />
-              }
-            >
-              <XIcon size={20} />
-              <span className="sr-only">Close</span>
-            </DialogClose>
+          <DialogTitle className={cn("text-slate-950", titleClassName)}>
+            {title}
+          </DialogTitle>
+          <DialogClose
+            render={
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200"
+              />
+            }
+          >
+            <XIcon size={20} />
+            <span className="sr-only">닫기</span>
+          </DialogClose>
 
           <div>{children}</div>
         </DialogContent>

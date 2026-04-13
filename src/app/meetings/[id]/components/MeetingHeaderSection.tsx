@@ -96,13 +96,10 @@ export function MeetingHeaderSection({
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
-
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
-
 
   const { isJoinPending, handleJoinMeeting, handleCancelJoinMeeting } =
     useMeetingJoinMutations(meetingId);
-
 
   const { handleEditMeeting, handleDeleteMeeting } =
     useMeetingHostMutations(meetingId);
@@ -151,6 +148,7 @@ export function MeetingHeaderSection({
   };
 
   const isSecret = isSecretMeeting(detail.dateTime);
+  const showSecretLock = !isAuthLoading && isSecret && !isHost && !isJoined;
 
   const action = (() => {
     if (!isLoggedIn) {
@@ -215,9 +213,14 @@ export function MeetingHeaderSection({
             src={detail.image}
             alt="모임 썸네일"
             fill
-            className="object-cover transition-transform duration-700 hover:scale-105"
+            className="object-cover transition-transform duration-700"
           />
-          {isSecret && !isHost && !isJoined && (
+          {isHost && (
+            <div className="absolute top-5 left-5 z-10 rounded-2xl bg-emerald-100 p-3 shadow-sm">
+              <ChessQueenIcon className="h-5 w-5 text-emerald-400" />
+            </div>
+          )}
+          {showSecretLock && !isHost && !isJoined && (
             <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
               🔒
             </div>
@@ -232,11 +235,6 @@ export function MeetingHeaderSection({
                   <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
                     {detail.name}
                   </h1>
-                  {isHost && (
-                    <div className="mt-1 shrink-0 rounded-xl bg-emerald-100 p-2 shadow-sm">
-                      <ChessQueenIcon className="h-4 w-4 text-emerald-400" />
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -297,7 +295,6 @@ export function MeetingHeaderSection({
               </div>
             </div>
 
-
             <div className="group relative rounded-[28px] bg-slate-50 p-4 transition-all">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -306,7 +303,7 @@ export function MeetingHeaderSection({
                   </div>
                   <div>
                     <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                      Participants
+                      참여 인원
                     </p>
                     <p className="text-xl font-black text-slate-950">
                       {detail.participantCount}{" "}
@@ -390,7 +387,7 @@ export function MeetingHeaderSection({
                   </div>
                   {participant.userId === detail.hostId && (
                     <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      HOST
+                      호스트
                     </span>
                   )}
                 </div>
@@ -487,7 +484,7 @@ export function MeetingHeaderSection({
               >
                 <p className="text-lg font-black text-slate-900">출석 완료</p>
                 <p className="text-main-purple mt-2 text-base font-bold">
-                  +{showReward.point} Points
+                  +{showReward.point} 포인트
                 </p>
               </motion.div>
             </motion.div>
@@ -505,7 +502,7 @@ export function MeetingHeaderSection({
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="DELETE ARCHIVE"
+        title="모임 삭제"
         description="모임을 정말 삭제하시겠어요?"
         onConfirm={() => {
           handleDeleteMeeting();
@@ -567,12 +564,11 @@ export function MeetingHeaderSection({
           setIsCloseConfirmOpen(false);
           handleCancelJoinMeeting();
         }}
-        description='모임에서 탈퇴하시겠습니까?'
-        subDescription=''
-        confirmButtonLabel='취소하기'
-        cancelButtonLabel='탈퇴하기'
+        description="모임에서 탈퇴하시겠습니까?"
+        subDescription=""
+        confirmButtonLabel="취소하기"
+        cancelButtonLabel="탈퇴하기"
       />
-
     </>
   );
 }
