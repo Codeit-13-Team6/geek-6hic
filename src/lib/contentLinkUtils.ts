@@ -10,7 +10,6 @@ export const parsePostData = (rawContent: string) => {
   const mainContent = parts[0];
   const links: LinkItem[] = [];
 
-
   // 2. 잘려나간 링크 영역 파싱
   if (parts.length > 1) {
     parts.slice(1).forEach((str, index) => {
@@ -19,7 +18,6 @@ export const parsePostData = (rawContent: string) => {
 
       const urlMatch = restoredString.match(/href="([^"]+)"/);
       const titleMatch = restoredString.match(/>\s*(.*?)\s*<\/a>/);
-
 
       if (urlMatch) {
         links.push({
@@ -58,7 +56,17 @@ export const stitchPostData = (content: string, linkList: LinkItem[]) => {
 export const getPlainText = (html: string) => {
   if (!html) return "";
 
-  const splitContent = html.split(/<p><a|<a/i);
+  const CODE_PLACEHOLDER = " [ Code ] ";
+
+  // 1. 코드가 있는 자리에 대체 텍스트로 치환
+  const processedHtml = html
+    .replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, CODE_PLACEHOLDER) // <pre> 태그와 내부 코드 전부 placeholder로 치환
+    .replace(
+      /<div[^>]*class=["'][^"']*ql-code-block-container[^"']*["'][^>]*>[\s\S]*?<\/div>/gi,
+      CODE_PLACEHOLDER,
+    ); // Quill 전용 코드 블록도 placeholder로 치환
+
+  const splitContent = processedHtml.split(/<p><a|<a/i);
   let text = splitContent[0];
 
   // 2. 블록 태그들을 공백으로 치환 (텍스트가 붙는 것 방지)
@@ -80,9 +88,10 @@ export const getPlainText = (html: string) => {
   };
 
   text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
-
+  text = text.replace(/\s\s+/g, " ").trim();
+  text = text.replace(/(\[\s*Code\s*\]\s*)+/g, "[ Code ] ");
   // 5. 연속된 공백 하나로 합치고 앞뒤 트림
-  return text.replace(/\s\s+/g, " ").trim();
+  return text.trim();
 };
 
 /**
