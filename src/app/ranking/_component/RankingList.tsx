@@ -15,7 +15,7 @@ export default function RankingList() {
   if (isLoading || !rankedList) return <RankingListSkeleton />;
 
   const top3List = rankedList.slice(0, 3);
-  const top10List = rankedList.slice(3, 10);
+  const top10List = rankedList.slice(3, 20);
 
   return (
     <div className="animate-fade-up">
