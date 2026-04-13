@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { UserType } from "@/lib/userType";
@@ -66,10 +67,12 @@ export default function GradeCard({ userType }: GradeCardProps) {
           )}
         >
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl backface-hidden">
-            <img
-              src={character.imgUrl.src}
+            <Image
+              src={character.imgUrl}
               alt={character.title}
-              className="relative z-10 w-auto scale-120 object-cover drop-shadow-lg"
+              fill
+              sizes="(max-width: 767px) 100vw, 0px"
+              className="relative z-10 scale-120 object-contain drop-shadow-lg"
             />
           </div>
 
@@ -87,10 +90,12 @@ export default function GradeCard({ userType }: GradeCardProps) {
         <>
           {/* 3. 중앙 캐릭터 영역 (워터마크 마스킹) */}
           <div className="relative hidden h-48 items-center justify-center overflow-hidden rounded-2xl md:flex md:w-1/2 md:shrink-0 lg:w-full">
-            <img
-              src={character.imgUrl.src}
+            <Image
+              src={character.imgUrl}
               alt={character.title}
-              className="relative z-10 w-auto scale-120 object-cover drop-shadow-lg"
+              fill
+              sizes="(max-width: 1023px) 50vw, 310px"
+              className="relative z-10 scale-120 object-contain drop-shadow-lg"
             />
           </div>
 
