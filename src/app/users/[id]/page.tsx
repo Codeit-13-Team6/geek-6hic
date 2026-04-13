@@ -102,7 +102,7 @@ export default async function Page({
                 />
               </Suspense>
             </div>
-            <div className="h-full w-1/2 snap-center lg:w-full">
+            <div className="w-1/2 snap-center self-start md:h-full md:self-auto lg:w-full">
               <Suspense fallback={<GradeCardSkeleton />}>
                 <GradeCardContainer
                   basicStatsPromise={basicStatsPromise}

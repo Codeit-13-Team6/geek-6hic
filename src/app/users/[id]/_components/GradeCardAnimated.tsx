@@ -28,7 +28,7 @@ export default function GradeCardAnimated() {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % SPRINTER_CHARACTERS.length);
-    }, 700);
+    }, 1500);
 
     return () => clearInterval(timer);
   }, []);
@@ -38,14 +38,14 @@ export default function GradeCardAnimated() {
     SPRINTER_CHARACTERS[(index + 1) % SPRINTER_CHARACTERS.length];
 
   return (
-    <div className="relative flex h-full min-h-105 w-full flex-col items-center justify-center overflow-hidden rounded-4xl bg-[#FDFCFB] p-8 shadow-inner ring-1 ring-black/5">
-      <div className="relative z-10 mb-5 text-center">
+    <div className="relative flex h-full min-h-80 w-full flex-col items-center justify-center overflow-hidden rounded-4xl bg-[#FDFCFB] shadow-inner ring-1 ring-black/5 sm:p-8 md:max-lg:min-h-90 lg:min-h-105">
+      <div className="relative z-10 mt-5 mb-5 text-center sm:mt-0">
         <h3 className="text-xl font-black tracking-tight text-slate-900 uppercase">
           당신은 어떤 <span className="text-indigo-600">스프린터</span>일까요?
         </h3>
       </div>
 
-      <div className="relative mb-6 flex h-50 w-50 items-center justify-center">
+      <div className="relative mb-4 flex h-50 w-50 items-center justify-center">
         <div className="absolute inset-0 z-0 animate-pulse opacity-20 blur-md">
           <Image
             src={nextCharacter.imgUrl}
@@ -55,7 +55,7 @@ export default function GradeCardAnimated() {
           />
         </div>
 
-        <div className="relative z-10 h-50 w-50 transition-transform duration-800">
+        <div className="relative z-10 h-50 w-50 transition-transform duration-1000">
           <Image
             src={currentCharacter.imgUrl}
             alt={currentCharacter.label}
@@ -64,7 +64,7 @@ export default function GradeCardAnimated() {
             className="object-contain"
           />
         </div>
-        <div className="absolute inset-0 rounded-full border-2 border-indigo-100 opacity-40" />
+        <div className="absolute inset-3 rounded-full border-2 border-indigo-100 opacity-40" />
       </div>
 
       <div className="relative z-10 text-center">
@@ -73,11 +73,11 @@ export default function GradeCardAnimated() {
             {currentCharacter.label}?
           </span>
         </div>
-        <p className="text-sm leading-relaxed font-bold text-slate-600">
-          소중한 기록들을 하나하나 살펴보고 있어요.
+        <p className="hidden text-sm leading-relaxed font-bold text-slate-600 sm:block">
+          첫 모임을 열거나 게시글을 남겨 보세요.
           <br />
           <span className="text-indigo-500">
-            특별한 성장 타입을 곧 찾아드릴게요!
+            특별한 성장 타입을 찾아드릴게요!
           </span>
         </p>
       </div>
