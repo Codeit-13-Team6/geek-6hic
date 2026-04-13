@@ -11,7 +11,7 @@ import NotificationCard from "@/components/layout/notification/NotificationCard"
 import type { ThreadMeetingDisplayInfo, NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 import { Trash2, CheckCheck } from "lucide-react";
-import { threadKeyword } from "@/constans/post";
+import { threadKeyword } from "@/lib/threadKeyword";
 import { getMeetingDetail } from "@/api/client/meetingDetail";
 
 const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";

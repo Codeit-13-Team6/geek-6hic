@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { threadKeyword } from "@/constans/post";
+import { threadKeyword } from "@/lib/threadKeyword";
 import { NotificationItem, NotificationCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
 

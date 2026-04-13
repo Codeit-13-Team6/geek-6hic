@@ -33,7 +33,7 @@ interface RetryableRequestConfig extends InternalAxiosRequestConfig {
 }
 
 // 모듈 떨어지는거 테스팅
-const MODULE_INSTANCE_ID = Math.random().toString(36).slice(2, 8);
+// const MODULE_INSTANCE_ID = Math.random().toString(36).slice(2, 8);
 
 // 그냥 serverAxios ,,,
 const serverAxios = axios.create({

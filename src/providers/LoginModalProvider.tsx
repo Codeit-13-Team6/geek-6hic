@@ -1,6 +1,6 @@
 "use client";
 
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 import LoginForm from "@/app/(auth)/login/LoginForm";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 

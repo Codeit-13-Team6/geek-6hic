@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { type InfiniteData } from "@tanstack/react-query";
-import { MeetingDetailContent } from "@/app/meetings/[id]/components/MeetingDetailContent";
+import { MeetingDetailContent } from "@/app/meetings/[id]/_components/MeetingDetailContent";
 
 import {
   getCurrentUserOnServer,

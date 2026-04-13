@@ -1,4 +1,3 @@
-import type { DateRange } from "react-day-picker";
 import type { CursorResponse, OffsetResponse } from "./pagination";
 import { Dispatch, SetStateAction } from "react";
 
@@ -113,14 +112,11 @@ export interface MeetingParticipant {
 }
 
 export type JoinedMeetingsResponse = CursorResponse<JoinedMeeting>;
-export type FavoritesResponse = CursorResponse<FavoritesResponseData>;
-export type MyMeetingsResponse = CursorResponse<Meeting>;
 export type FavoritesPageResponse = OffsetResponse<FavoritesResponseData>;
 export type MyMeetingsPageResponse = OffsetResponse<MeetingResponse>;
 export type MeetingParticipantsResponse = CursorResponse<MeetingParticipant>;
 export type MeetingAttendanceCommentsResponse =
   CursorResponse<MeetingAttendanceComment>;
-export type MeetingListResponse = CursorResponse<MeetingResponse>;
 export type GetMeetingsResponse = CursorResponse<MeetingResponse>;
 
 export interface MeetingsRecommendResponse {
@@ -145,10 +141,6 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-export interface UploadImageResponse {
-  presignedUrl: string;
-  publicUrl: string;
-}
 
 export type MeetingSortBy =
   | "createdAt"

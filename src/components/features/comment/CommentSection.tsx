@@ -10,7 +10,7 @@ import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { TextareaCommon } from "@/components/ui/TextareaCommon";
 import { CommentSectionProps } from "@/types";
-import { DeleteModal } from "@/components/ui/DeleteModal";
+import { DeleteModal } from "@/components/modal/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import {

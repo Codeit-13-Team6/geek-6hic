@@ -2,7 +2,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;

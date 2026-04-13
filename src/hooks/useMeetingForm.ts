@@ -30,7 +30,7 @@ import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
-import { threadKeyword } from "@/constans/post";
+import { threadKeyword } from "@/lib/threadKeyword";
 
 export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   const secretTime = formValues.isPrivate ? generateSecretTime() : null;

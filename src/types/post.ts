@@ -47,12 +47,6 @@ export interface VisiblePostsPageResponse extends MyPostsPageResponse {
   totalLikeCount: number;
 }
 
-export interface PostListProps {
-  keyword?: string;
-  sortBy?: LoungeSortBy;
-  sortOrder?: SortOrder;
-}
-
 export interface PostCardProps {
   id: number;
   title: string;
