@@ -148,6 +148,7 @@ export function MeetingHeaderSection({
   };
 
   const isSecret = isSecretMeeting(detail.dateTime);
+  const showSecretLock = !isAuthLoading && isSecret && !isHost && !isJoined;
 
   const action = (() => {
     if (!isLoggedIn) {
@@ -214,14 +215,14 @@ export function MeetingHeaderSection({
             fill
             className="object-cover transition-transform duration-700"
           />
-          {isSecret && !isHost && !isJoined && (
-            <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
-              🔒
-            </div>
-          )}
           {isHost && (
             <div className="absolute top-5 left-5 z-10 rounded-2xl bg-emerald-100 p-3 shadow-sm">
               <ChessQueenIcon className="h-5 w-5 text-emerald-400" />
+            </div>
+          )}
+          {showSecretLock && !isHost && !isJoined && (
+            <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
+              🔒
             </div>
           )}
         </div>
