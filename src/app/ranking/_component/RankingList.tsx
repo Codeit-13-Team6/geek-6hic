@@ -4,15 +4,14 @@ import TopRankCard from "./TopRankCard";
 import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
-import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import { useRanking } from "@/hooks/queries/useRanking";
 
 export default function RankingList() {
   const router = useRouter();
 
-  const { data: rankedList, isLoading } = useRanking();
+  const { data: rankedList } = useRanking();
 
-  if (isLoading || !rankedList) return <RankingListSkeleton />;
+  if (!rankedList) return null;
 
   const top3List = rankedList.slice(0, 3);
   const top10List = rankedList.slice(3, 20);

@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { InfiniteData } from "@tanstack/react-query";
-import { getJoinedMeetingsServer } from "@/api/server/meetings";
 import type { JoinedMeetingsResponse } from "@/types";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
@@ -9,6 +8,7 @@ import { QUERY_KEYS } from "@/constans/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { MyMeetingsHeroSection } from "./_components/MyMeetingsHeroSection";
 import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";
+import { getJoinedMeetingsServer } from "@/api/server";
 
 export const metadata: Metadata = {
   title: "나의 모임",

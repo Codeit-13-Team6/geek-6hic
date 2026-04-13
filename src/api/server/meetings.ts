@@ -1,17 +1,17 @@
 import { serverFetch } from "@/lib/serverFetcher";
-import type { JoinedMeetingsResponse, SortOrder, MeetingSortBy } from "@/types";
+import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {
   cursor?: string;
   size?: number;
   sortOrder?: SortOrder;
-  sortBy?: "dateTime" | "registrationEnd" | "joinedAt";
+  sortBy?: '"dateTime" | "registrationEnd" | "joinedAt"';
   completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
   const { data } = await serverFetch<JoinedMeetingsResponse>({
     method: "GET",
     url: "/meetings/joined",
-    params,
+    params: { ...params, sortBy: "joinedAt" },
   });
 
   return data;

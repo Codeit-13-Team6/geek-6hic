@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getHotPosts,
-  getLoungePostsBFF,
+  getLoungePosts,
   getPostDetail,
 } from "@/api/client/posts";
 import { getOgData } from "@/api/client/og";
@@ -47,7 +47,7 @@ export const usePostList = (currentParams: UsePostListParams) => {
     queryKey: QUERY_KEYS.posts.listParams(currentParams),
     queryFn: ({ pageParam }) => {
       const cursor = typeof pageParam === "string" ? pageParam : undefined;
-      return getLoungePostsBFF({
+      return getLoungePosts({
         ...currentParams,
         size: 10,
         ...(cursor ? { cursor } : {}),
