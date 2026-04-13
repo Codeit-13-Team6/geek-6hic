@@ -87,14 +87,14 @@ export default function LoungePostForm({
     if (!trimmedTitle) {
       return ToastCommon({
         message: "제목을 입력해주세요.",
-        size: "sm",
+        type: "info",
       });
     }
 
     if (linkList.length === 0 && trimmedContentText.length === 0) {
       return ToastCommon({
         message: "본문 내용 또는 링크를 입력해주세요",
-        size: "sm",
+        type: "info",
       });
     }
 
@@ -104,10 +104,10 @@ export default function LoungePostForm({
           <>
             입력하신 링크가 추가되지 않았습니다.
             <br />
-            링크 추가 버튼을 먼저 눌러주세요.
+            링크 추가 버튼을 눌러주세요!
           </>
         ),
-        size: "sm",
+        type: "info",
         duration: 3500,
       });
     }

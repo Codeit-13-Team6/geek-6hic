@@ -51,12 +51,12 @@ export default function SignUp() {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         ToastCommon({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
-          size: "sm",
+          type: "info",
         });
       } else {
         ToastCommon({
           message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
-          size: "sm",
+          type: "error",
         });
       }
       setIsLoading(false);

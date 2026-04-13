@@ -147,7 +147,10 @@ function useMeetingFormBase({
       clearImageError: onClearImageError,
       setImageError: onSetImageError,
       onUploadError: () => {
-        ToastCommon({ message: "이미지 업로드에 실패했습니다." });
+        ToastCommon({
+          message: "이미지 업로드에 실패했습니다.",
+          type: "error",
+        });
       },
     });
   };
@@ -294,12 +297,15 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       await updateMeeting(newMeetingId, { region: String(newPost.id) });
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
-      ToastCommon({ message: `${newMeeting.name} 모임 생성완료` });
+      ToastCommon({
+        message: "새로운 모임이 시작되었습니다!",
+        type: "success",
+      });
       onSuccess?.();
       router.push(`/meetings/${newMeetingId}`);
     } catch (error) {
       console.error("meeting create error", error);
-      ToastCommon({ message: "모임 생성에 실패했습니다." });
+      ToastCommon({ message: "모임 생성에 실패했습니다.", type: "error" });
     } finally {
       isSubmittingRef.current = false;
       setIsSubmitting(false);

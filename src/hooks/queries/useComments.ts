@@ -60,7 +60,7 @@ export const useCreateComment = (postId: number) => {
       ]);
     },
     onError: () => {
-      ToastCommon({ message: "댓글 등록에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "댓글 등록에 실패했습니다.", type: "error" });
     },
   });
 };
@@ -86,7 +86,7 @@ export const useDeleteComment = (
       onErrorMessage: "댓글 삭제에 실패했습니다.",
     }),
     onSuccess: () => {
-      ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
+      // ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
   });
 };
@@ -118,7 +118,7 @@ export const useEditComment = (
       onErrorMessage: "댓글 수정에 실패했습니다.",
     }),
     onSuccess: () => {
-      ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
+      // ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
     },
   });
 };

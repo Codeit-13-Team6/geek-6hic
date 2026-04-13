@@ -143,11 +143,11 @@ export const useCreatePost = () => {
     mutationFn: (payload: PostPayload) => createPost(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
-      ToastCommon({ message: "게시글이 등록되었습니다.", size: "sm" });
+      ToastCommon({ message: "게시글이 등록되었습니다.", type: "success" });
       router.push("/lounge");
     },
     onError: () => {
-      ToastCommon({ message: "게시글 등록에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "게시글 등록에 실패했습니다.", type: "error" });
     },
   });
 };
@@ -162,7 +162,7 @@ export const useUpdatePost = (postId: number) => {
   return useMutation({
     mutationFn: (payload: PostPayload) => updatePost(postId, payload),
     onSuccess: () => {
-      ToastCommon({ message: "게시글이 수정되었습니다.", size: "sm" });
+      ToastCommon({ message: "게시글이 수정되었습니다.", type: "success" });
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.list });
       queryClient.invalidateQueries({
@@ -175,7 +175,7 @@ export const useUpdatePost = (postId: number) => {
       router.back();
     },
     onError: () => {
-      ToastCommon({ message: "수정에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "수정에 실패했습니다.", type: "error" });
     },
   });
 };
@@ -191,11 +191,11 @@ export const useDeletePost = (postId: number) => {
     mutationFn: () => deletePost(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.posts.root });
-      ToastCommon({ message: "게시글이 삭제되었습니다.", size: "sm" });
+      ToastCommon({ message: "게시글이 삭제되었습니다.", type: "success" });
       router.push("/lounge");
     },
     onError: () => {
-      ToastCommon({ message: "게시글 삭제에 실패했습니다.", size: "sm" });
+      ToastCommon({ message: "게시글 삭제에 실패했습니다.", type: "error" });
     },
   });
 };
