@@ -12,8 +12,18 @@ export const useLoungeLink = () => {
 
   // 1. 링크 추가 (OG 데이터 페치)
   const addLink = async (linkUrl: string) => {
-    if (!linkUrl.trim()) {
+    const trimmedUrl = linkUrl.trim();
+
+    if (!trimmedUrl) {
       return ToastCommon({ message: "링크를 입력해주세요.", type: "info" });
+    }
+
+    if (!/^(http:\/\/|https:\/\/)/i.test(trimmedUrl)) {
+      ToastCommon({
+        message: "올바른 웹 주소(http/https) 형식이 아닙니다.",
+        type: "error",
+      });
+      return false;
     }
 
     setIsLoading(true);
