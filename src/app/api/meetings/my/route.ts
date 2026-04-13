@@ -4,14 +4,12 @@ import type { MyMeetingsPageResponse } from "@/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const offset = Number(searchParams.get("offset") ?? "0");
-  const limit = Number(searchParams.get("limit") ?? "10");
-
-  const safeOffset = Number.isFinite(offset) && offset >= 0 ? offset : 0;
-  const safeLimit = Number.isFinite(limit) && limit > 0 ? limit : 10;
 
   try {
-    const result = await getMyMeetingsBFF({ offset: safeOffset, limit: safeLimit });
+    const result = await getMyMeetingsBFF({
+      offset: Number(searchParams.get("offset")) || undefined,
+      limit: Number(searchParams.get("limit")) || undefined,
+    });
     return NextResponse.json<MyMeetingsPageResponse>(result);
   } catch (error) {
     console.error("[My Meetings BFF Error]", error);

@@ -8,12 +8,14 @@ import type {
 } from "@/types";
 
 export async function getMyMeetingsBFF({
-  offset,
-  limit,
+  offset: rawOffset,
+  limit: rawLimit,
 }: {
-  offset: number;
-  limit: number;
-}): Promise<MyMeetingsPageResponse> {
+  offset?: number;
+  limit?: number;
+} = {}): Promise<MyMeetingsPageResponse> {
+  const offset = Number.isFinite(rawOffset) && (rawOffset ?? 0) >= 0 ? (rawOffset ?? 0) : 0;
+  const limit = Number.isFinite(rawLimit) && (rawLimit ?? 0) > 0 ? (rawLimit ?? 10) : 10;
   const data = await getVisibleCursorPage<MeetingResponse>({
     offset,
     limit,
