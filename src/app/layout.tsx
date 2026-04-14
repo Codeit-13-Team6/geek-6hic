@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { Gnb } from "@/components/layout/Gnb";
@@ -56,6 +57,10 @@ export default async function RootLayout({
         className="bg-background text-foreground font-pretendard antialiased"
         suppressHydrationWarning
       >
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+        />
         <QueryProvider>
           <MemberProvider initialUser={initialUser}>
             <Gnb initialUser={initialUser} />
@@ -63,7 +68,7 @@ export default async function RootLayout({
             <ToasterProvider />
             <LoginModalProvider />
             <main className="min-h-[calc(100dvh-72px)]">
-            {/* <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20"> */}
+              {/* <main className="mx-auto w-full max-w-[1200px] px-6 py-8 sm:px-8 lg:py-20"> */}
               {children}
             </main>
             <BtnTop />

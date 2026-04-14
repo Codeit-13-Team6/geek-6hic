@@ -10,7 +10,8 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
-import { loginUser } from "@/api/client";
+import { bindAuthTokens, exchangeGoogleToken, loginUser } from "@/api/client";
+import { requestGoogleAccessToken } from "@/lib/googleAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 
@@ -86,8 +87,44 @@ export default function LoginForm({
 
   const handleGoogleLogin = () => {
     setIsOAuthLoading("google");
-    saveReturnUrl();
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    setError(null);
+
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+    if (!googleClientId) {
+      setError("Google 로그인 설정이 올바르지 않습니다.");
+      setIsOAuthLoading(null);
+      return;
+    }
+
+    void (async () => {
+      try {
+        // 1. 구글에서 액세스 토큰 요청
+        const googleAccessToken =
+          await requestGoogleAccessToken(googleClientId);
+        // 2. 액세스 토큰으로 백엔드에서 인증 처리 및 JWT 토큰 발급
+        const tokens = await exchangeGoogleToken(googleAccessToken);
+        // 3. 발급된 토큰으로 클라이언트 로그인 처리
+        const data = await bindAuthTokens(tokens);
+
+        if (!data.ok) {
+          throw new Error("login_failed");
+        }
+
+        if (data.user) {
+          setUser(data.user);
+        }
+
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          window.location.replace(returnUrl);
+        }
+      } catch {
+        setError("Google 로그인 실패. 다시 시도해주세요.");
+        setIsOAuthLoading(null);
+      }
+    })();
   };
 
   return (
