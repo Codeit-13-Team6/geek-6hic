@@ -15,13 +15,13 @@ import axiosInstance from "@/lib/clientFetcher";
 import SideBar from "./SideBar";
 
 const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
-  <div className="relative flex items-center justify-center p-1 bell-hover">
+  <div className="bell-hover relative flex items-center justify-center p-1">
     <Bell
       className="group-hover:text-main-purple h-5 w-5 text-slate-600 transition-colors"
       strokeWidth={2.2}
     />
     {hasUnread && (
-      <span className="absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full bg-main-purple ring-2 ring-white" />
+      <span className="bg-main-purple absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full ring-2 ring-white" />
     )}
   </div>
 );
@@ -39,7 +39,7 @@ const isNavActive = (pathname: string, href: string, exact?: boolean) => {
 };
 
 interface GnbProps {
-  initialUser?: { id: number; name: string; image: string | null } | null;
+  initialUser?: { id: number; name: string; image?: string | null } | null;
 }
 
 export function Gnb({ initialUser }: GnbProps) {
@@ -97,13 +97,13 @@ export function Gnb({ initialUser }: GnbProps) {
   }, [isNotificationOpen]);
 
   return (
-    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 backdrop-blur-xl transition-all md:h-18 px-4 2xl:px-0">
+    <header className="sticky top-0 z-[100] flex h-16 w-full items-center justify-center border-b border-slate-200 bg-white/80 px-4 backdrop-blur-xl transition-all md:h-18 2xl:px-0">
       <div className="flex h-full w-full max-w-[1280px] items-center justify-between">
         {/* 왼쪽 영역 */}
         <div className="flex items-center gap-10 lg:gap-14">
           <Link
             href="/"
-            className="flex items-center transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-black"
+            className="flex items-center transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-black active:scale-95"
           >
             <span className="text-main-purple text-2xl font-black tracking-tighter sm:text-3xl">
               co-git.
@@ -121,12 +121,15 @@ export function Gnb({ initialUser }: GnbProps) {
                     return;
                   }
                   isNavigating.current = true;
-                  setTimeout(() => {
-                    isNavigating.current = false;
-                  }, isNavActive(pathname, link.href, link.exact) ? 500 : 100);
+                  setTimeout(
+                    () => {
+                      isNavigating.current = false;
+                    },
+                    isNavActive(pathname, link.href, link.exact) ? 500 : 100,
+                  );
                 }}
                 className={cn(
-                  "relative py-2 px-4 text-sm font-bold tracking-tight transition-all focus-visible:ring-2 focus-visible:ring-black",
+                  "relative px-4 py-2 text-sm font-bold tracking-tight transition-all focus-visible:ring-2 focus-visible:ring-black",
                   isNavActive(pathname, link.href, link.exact)
                     ? "text-main-purple after:bg-main-purple after:absolute after:-bottom-1 after:left-1/2 after:h-[3px] after:w-5 after:-translate-x-1/2 after:rounded-full"
                     : "text-slate-400 hover:text-slate-900",
@@ -159,7 +162,6 @@ export function Gnb({ initialUser }: GnbProps) {
                 onClick={() => router.push(`/users/${user.id}`)}
                 aria-label="프로필 페이지 이동"
               >
-
                 {user?.image && !isBlobUrl ? (
                   <Image
                     src={user.image}
@@ -218,10 +220,7 @@ export function Gnb({ initialUser }: GnbProps) {
               aria-label="메뉴 열기"
             >
               <SheetTrigger className="flex h-8 w-8 items-center justify-center rounded-xl transition-all hover:bg-slate-50 active:scale-95">
-                <Menu
-                  className="h-5 w-5 text-slate-800"
-                  aria-hidden="true"
-                />
+                <Menu className="h-5 w-5 text-slate-800" aria-hidden="true" />
               </SheetTrigger>
               <SideBar
                 isLoggedIn={isLoggedIn}
