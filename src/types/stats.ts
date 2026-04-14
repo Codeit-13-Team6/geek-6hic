@@ -12,6 +12,14 @@ export interface BasicProfileStats {
   favoriteCount: number;
 }
 
+export interface MeetingTypeStats {
+  team: number;
+  study: number;
+  project: number;
+  jobPrep: number;
+  etc: number;
+}
+
 export interface CreatedMeetingSummary {
   category: "PROJECT" | "STUDY";
 }

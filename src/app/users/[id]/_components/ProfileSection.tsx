@@ -92,9 +92,8 @@ export default function ProfileSection({
 
   return (
     <>
-      <article className="flex h-full w-full flex-col items-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-sm sm:flex-row sm:gap-8 md:max-lg:min-h-90 lg:flex-col lg:p-8">
-        {/* <article className="relative flex h-full w-full flex-col items-center gap-6 overflow-hidden rounded-[40px] border border-slate-100 bg-slate-50 p-8 shadow-md sm:flex-row sm:gap-8 lg:flex-col lg:p-8"> */}
-        <div className="relative size-24 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 sm:size-20 lg:size-24">
+      <article className="flex !h-[380px] w-full flex-col items-center justify-center gap-6 rounded-[40px] border border-slate-100 bg-white p-8 shadow-sm sm:!h-[300px] sm:h-auto sm:flex-row sm:gap-8 lg:!h-[400px] lg:flex-col">
+        <div className="relative size-24 shrink-0 overflow-hidden rounded-full ring-4 ring-slate-100 sm:ml-5 sm:size-20 sm:size-32 lg:ml-0 lg:size-24">
           <FallbackImage
             src={displayUser?.image}
             type="user"
@@ -104,7 +103,7 @@ export default function ProfileSection({
           />
         </div>
 
-        <div className="flex w-full flex-1 flex-col items-center gap-3 sm:items-start lg:items-center">
+        <div className="flex w-full flex-0 flex-col items-center gap-3 sm:ml-5 sm:flex-1 sm:items-start lg:ml-0 lg:flex-0 lg:items-center">
           <div className="flex flex-col items-center gap-2 sm:items-start lg:items-center">
             <div className="flex items-center gap-4">
               <h2 className="text-2xl font-bold tracking-tight break-all text-slate-950 sm:text-3xl">
@@ -121,11 +120,11 @@ export default function ProfileSection({
             </div>
           </div>
 
-          <div className="h-[1px] w-full bg-slate-50" />
+          <div className="h-[1.5px] w-full bg-slate-50" />
 
-          <div className="w-full space-y-3 text-center sm:text-left lg:text-center">
+          <div className="w-full space-y-4 text-center sm:text-left lg:text-center">
             <div>
-              <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
+              <p className="my-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 contact
               </p>
               <p className="line-clamp-2 text-sm font-semibold break-all text-slate-600">
@@ -136,7 +135,7 @@ export default function ProfileSection({
               <p className="mb-0.5 text-xs font-black tracking-widest text-slate-400 uppercase">
                 Intro
               </p>
-              <p className="line-clamp-2 text-sm leading-relaxed font-semibold text-slate-600">
+              <p className="line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed font-semibold text-slate-600">
                 {displayUser?.companyName || "자기소개가 없습니다."}
               </p>
             </div>

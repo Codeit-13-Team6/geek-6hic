@@ -289,3 +289,97 @@ export async function getCreatedMeetingsByUser({
     userId,
   );
 }
+
+export function createEmptyMeetingTypeStats() {
+  return { team: 0, study: 0, project: 0, jobPrep: 0, etc: 0 };
+}
+
+export function accumulateMeetingTypeStats(
+  stats: ReturnType<typeof createEmptyMeetingTypeStats>,
+  meetings: Array<Pick<Meeting, "type">>,
+) {
+  meetings.forEach((meeting) => {
+    switch (meeting.type) {
+      case "팀미팅":
+      case "team":
+        stats.team += 1;
+        break;
+      case "스터디":
+      case "study":
+        stats.study += 1;
+        break;
+      case "프로젝트":
+      case "project":
+        stats.project += 1;
+        break;
+      case "취준생":
+      case "jobPrep":
+        stats.jobPrep += 1;
+        break;
+      default:
+        stats.etc += 1;
+    }
+  });
+}
+
+export async function collectMeetingTypeStatsFromOffsetPages(
+  fetchPage: (params: {
+    offset: number;
+    limit: number;
+  }) => Promise<MyMeetingsPageResponse>,
+  pageSize: number,
+) {
+  const stats = createEmptyMeetingTypeStats();
+  let offset = 0;
+  let totalCount = Number.POSITIVE_INFINITY;
+
+  while (offset < totalCount) {
+    const response = await fetchPage({ offset, limit: pageSize });
+    accumulateMeetingTypeStats(stats, response.data);
+    totalCount = response.totalCount;
+    offset += response.limit;
+    if (response.data.length === 0) break;
+  }
+  return stats;
+}
+
+export async function collectMeetingTypeStatsFromCursorPages(
+  fetchPage: (cursor?: string) => Promise<GetMeetingsResponse>,
+  userId: number,
+) {
+  const stats = createEmptyMeetingTypeStats();
+  let cursor: string | undefined;
+  const seenCursors = new Set<string>();
+
+  while (true) {
+    const data = await fetchPage(cursor);
+    const filteredMeetings = data.data.filter((meeting) =>
+      isMeetingCreatedByUser(meeting, userId),
+    );
+    accumulateMeetingTypeStats(stats, filteredMeetings);
+    if (!data.hasMore || !data.nextCursor || seenCursors.has(data.nextCursor))
+      break;
+    seenCursors.add(data.nextCursor);
+    cursor = data.nextCursor;
+  }
+  return stats;
+}
+
+export async function getMeetingTypeStats({
+  isOwnProfile,
+  userId,
+}: {
+  isOwnProfile: boolean;
+  userId: number;
+}) {
+  if (isOwnProfile) {
+    return collectMeetingTypeStatsFromOffsetPages(
+      getMyMeetings,
+      MEETING_SCAN_SIZE,
+    );
+  }
+  return collectMeetingTypeStatsFromCursorPages(
+    (cursor) => getMeetingsCursorPageForStats(cursor, MEETING_SCAN_SIZE),
+    userId,
+  );
+}

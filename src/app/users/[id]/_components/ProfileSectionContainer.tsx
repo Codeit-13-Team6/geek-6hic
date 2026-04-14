@@ -18,5 +18,15 @@ export default async function ProfileSectionContainer({
 }) {
   const profileUser = await profileUserPromise;
 
-  return <ProfileSection initialUser={profileUser} canEdit={canEdit} />;
+  return (
+    <>
+      <div className="mb-3 flex items-center gap-3 px-1 lg:mt-5">
+        <div className="h-4 w-[2px] rounded-full bg-slate-950/20" />
+        <h2 className="text-sm font-black tracking-[0.2em] text-slate-400 uppercase">
+          User
+        </h2>
+      </div>
+      <ProfileSection initialUser={profileUser} canEdit={canEdit} />
+    </>
+  );
 }
