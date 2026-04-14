@@ -18,7 +18,7 @@ interface ConfirmDeleteModalProps {
 export function DeleteModal({
   isOpen,
   onOpenChange,
-  title = "DELETE",
+  // title = "DELETE",
   description = "정말 삭제하시겠습니까?",
   subDescription = "삭제된 데이터는 복구할 수 없습니다.",
   onConfirm,
@@ -34,7 +34,7 @@ export function DeleteModal({
     <ModalBase
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      title={title}
+      // title={title}
       // contentClassName="-mt-10"
       titleClassName="text-xl font-black tracking-tighter text-slate-900 uppercase text-center"
     >
