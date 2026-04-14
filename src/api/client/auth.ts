@@ -1,28 +1,15 @@
 import axios from "axios";
 import type { User } from "@/types";
-import type { SignUpFormValues } from "@/types";
+import type {
+  LoginResult,
+  OAuthLoginResult,
+  OAuthTokenPair,
+  SignUpFormValues,
+  SignUpResult,
+} from "@/types";
 import axiosInstance from "@/lib/clientFetcher";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-// 로그인 응답 타입 정의
-export interface LoginResult {
-  ok: boolean;
-  user?: User;
-}
-
-export interface SignUpResult {
-  ok: boolean;
-}
-
-export interface OAuthTokenPair {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface OAuthLoginResult extends OAuthTokenPair {
-  user: User;
-}
 
 // 클라이언트 로그인 BFF 호출 함수
 export async function loginUser(data: {

@@ -20,6 +20,7 @@
     "cookies-next": "^6.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",
+    "gsap": "^3.15.0",
     "highlight.js": "^11.11.1",
     "html-react-parser": "^6.0.0",
     "isomorphic-dompurify": "^3.8.0",

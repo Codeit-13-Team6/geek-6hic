@@ -7,4 +7,5 @@ export * from "./notification";
 export * from "./pagination";
 export * from "./post";
 export * from "./rank";
+export * from "./stats";
 export * from "./user";
