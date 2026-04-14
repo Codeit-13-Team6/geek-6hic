@@ -7,7 +7,10 @@ import type { OffsetResponse } from "@/types";
 interface UseOffsetPaginationQueryParams<T> {
   pageSize: number;
   queryKey: (page: number, pageSize: number) => readonly unknown[];
-  queryFn: (params: { offset: number; limit: number }) => Promise<OffsetResponse<T>>;
+  queryFn: (params: {
+    offset: number;
+    limit: number;
+  }) => Promise<OffsetResponse<T>>;
   enabled?: boolean;
   staleTime?: number;
 }
@@ -47,6 +50,11 @@ export function useOffsetPaginationQuery<T>({
   const handlePageChange = (targetPage: number) => {
     if (targetPage < 1 || targetPage > totalPages) return;
     setPage(targetPage);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
   };
 
   return {

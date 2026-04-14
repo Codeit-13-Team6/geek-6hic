@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { getMeeting, getUserMeetingsPage } from "@/api/client/meetings";
 import { UserCard } from "@/components/features/card/UserCard";
-import { Loader2, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constans/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { isSecretMeeting } from "@/lib/meetingSecret";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
+import { cn } from "@/lib/utils";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 
@@ -17,7 +18,7 @@ interface MyMeetingListProps {
   userId?: number;
 }
 
-export default function MyMeetingList({
+export default function UserMeetingList({
   isOwnProfile = true,
   userId,
 }: MyMeetingListProps) {
@@ -69,7 +70,12 @@ export default function MyMeetingList({
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+      <div
+        className={cn(
+          "grid grid-cols-1 gap-4 transition-opacity duration-200 sm:gap-6",
+          isFetching ? "pointer-events-none opacity-50" : "opacity-100",
+        )}
+      >
         {meetings.map((item) => (
           <UserCard
             key={item.id}
@@ -87,15 +93,6 @@ export default function MyMeetingList({
       </div>
 
       <div className="mt-10 flex flex-col items-center gap-4">
-        {isFetching && (
-          <div className="flex items-center gap-3">
-            <Loader2 className="text-main-purple animate-spin" size={20} />
-            <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
-              목록을 불러오는 중...
-            </span>
-          </div>
-        )}
-
         <NumberPagination
           href="#"
           page={page}

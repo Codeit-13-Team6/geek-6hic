@@ -4,7 +4,7 @@ import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
+import MyMeetingList from "@/app/users/[id]/_components/UserMeetingList";
 import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
 import type { FavoritesPageResponse } from "@/types";
@@ -22,7 +22,9 @@ import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";
 import UserTabsPrefetcher from "./_components/UserTabsPrefetcher";
-import UserCardList from "@/app/users/[id]/_components/UserCardList";
+import UserCardList from "@/app/users/[id]/_components/UserLikeList";
+import UserLikeList from "@/app/users/[id]/_components/UserLikeList";
+import UserMeetingList from "@/app/users/[id]/_components/UserMeetingList";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -163,14 +165,14 @@ export default async function Page({
                       })
                     }
                   >
-                    <UserCardList />
+                    <UserLikeList />
                   </PrefetchBoundary>
                 </Suspense>
               </TabsContent>
             )}
 
             <TabsContent value="created" className="mt-8 !border-none md:mt-12">
-              <MyMeetingList
+              <UserMeetingList
                 isOwnProfile={isOwnProfile}
                 userId={profileUserId}
               />
