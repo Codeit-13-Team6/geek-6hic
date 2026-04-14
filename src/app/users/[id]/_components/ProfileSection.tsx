@@ -13,6 +13,7 @@ import { Settings2 } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useUpdateProfile } from "@/hooks/queries/useUser";
+import { useRouter } from "next/navigation";
 
 interface ProfileSectionProps {
   initialUser?: {
@@ -26,6 +27,9 @@ interface ProfileSectionProps {
   canEdit?: boolean;
 }
 
+const DEFAULT_PROFILE_URL =
+  "https://raw.githubusercontent.com/Codeit-13-Team6/geek-6hic/cd0c0904e2d2b38880d9aa8b1f1cd810c107e68a/src/assets/img/fallback/fallback-user.png";
+
 export default function ProfileSection({
   initialUser,
   canEdit = false,
@@ -33,6 +37,7 @@ export default function ProfileSection({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
 
+  const router = useRouter();
   const storeUser = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
 
@@ -40,7 +45,7 @@ export default function ProfileSection({
   const displayUser = canEdit ? (storeUser ?? initialUser) : initialUser;
 
   const profileForm = useForm<UserProfileUpdateProps>({
-    defaultValues: { name: "", email: "", companyName: "", image: null },
+    defaultValues: { name: "", email: "", companyName: "", image: "" },
   });
 
   const { mutate: updateProfile, isPending } = useUpdateProfile();
@@ -50,7 +55,11 @@ export default function ProfileSection({
     updateProfile(
       { ...data, ...(image && { image }) },
       {
-        onSuccess: () => setIsEditModalOpen(false),
+        onSuccess: (updatedData) => {
+          setIsEditModalOpen(false);
+          setUser(updatedData);
+          router.refresh();
+        },
       },
     );
   });
@@ -155,13 +164,17 @@ export default function ProfileSection({
                 control={profileForm.control}
                 render={({ field }) => (
                   <ImageUploadInput
-                    type="profile"
+                    type="user"
                     size="sm"
                     className="mx-auto"
-                    imageSrc={field.value ?? undefined}
+                    imageSrc={
+                      field.value === DEFAULT_PROFILE_URL
+                        ? undefined
+                        : field.value
+                    }
                     uploadFn={uploadProfileImage}
                     onUploaded={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange(null)}
+                    onRemove={() => field.onChange(DEFAULT_PROFILE_URL)}
                   />
                 )}
               />

@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Bell, Menu } from "lucide-react";
-import profileMd from "@/assets/img/profile/female1-m.jpg";
 import { getNotifications } from "@/api/client/notifications";
 import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
 import Notification from "@/components/layout/notification/Notification";
 import axiosInstance from "@/lib/clientFetcher";
 import SideBar from "./SideBar";
+import FallbackImage from "../img/FallbackImage";
 
 const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
   <div className="bell-hover relative flex items-center justify-center p-1">
@@ -158,27 +157,17 @@ export function Gnb({ initialUser }: GnbProps) {
               </button>
 
               <button
-                className="hidden h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-all hover:opacity-80 active:scale-95 md:flex"
+                className="relative hidden h-6 w-6 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-all hover:opacity-80 active:scale-95 md:flex"
                 onClick={() => router.push(`/users/${user.id}`)}
                 aria-label="프로필 페이지 이동"
               >
-                {user?.image && !isBlobUrl ? (
-                  <Image
-                    src={user.image}
-                    alt="프로필"
-                    width={32}
-                    height={32}
-                    className="h-7 w-7 rounded-full object-cover"
-                  />
-                ) : (
-                  <Image
-                    src={profileMd}
-                    alt="기본 프로필"
-                    width={32}
-                    height={32}
-                    className="h-9 w-9 object-cover"
-                  />
-                )}
+                <FallbackImage
+                  src={user?.image}
+                  type="user"
+                  alt="유저 프로필"
+                  fill
+                  className="object-cover"
+                />
               </button>
 
               <div className="mx-1 hidden h-3 w-[1px] bg-slate-200 md:block" />

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -7,14 +7,14 @@ import { cn } from "@/lib/utils";
 import deleteSmIcon from "@/assets/icon/delete/delete-sm.svg";
 import deleteLgIcon from "@/assets/icon/delete/delete-lg.svg";
 import imagePlusIcon from "@/assets/icon/plus/image-plus.svg";
-import profileFallbackImg from "@/assets/img/profile/female1-m.jpg";
+import FallbackImage from "./FallbackImage";
 
 /**
  * 사용 예시
  *
  * // 1) 컴포넌트 내부에서 직접 업로드 (권장)
  * <ImageUploadInput
- *   type="profile"
+ *   type="user"
  *   imageSrc={field.value ?? undefined}
  *   uploadFn={uploadProfileImage}
  *   onUploaded={(url) => field.onChange(url)}
@@ -39,7 +39,7 @@ const fileInputVariants = cva(
       },
       type: {
         image: "rounded-[12px]",
-        profile: "rounded-full",
+        user: "rounded-full",
       },
     },
     defaultVariants: {
@@ -50,7 +50,7 @@ const fileInputVariants = cva(
 );
 
 interface ImageUploadInputProps extends VariantProps<typeof fileInputVariants> {
-  imageSrc?: string;
+  imageSrc?: string | null;
   uploadFn?: (file: File) => Promise<string>;
   onUploaded?: (url: string) => void;
   onUploadError?: (err: unknown) => void;
@@ -73,14 +73,9 @@ export function ImageUploadInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const deleteIconPath = size === "sm" ? deleteSmIcon : deleteLgIcon;
 
-  // 업로드 진행 중 보여줄 임시 미리보기 (blob URL)
-  const [internalPreview, setInternalPreview] = useState<string>();
   const [isUploading, setIsUploading] = useState(false);
 
-  // 표시할 src: 업로드 중엔 미리보기, 평소엔 부모가 준 imageSrc, profile이면 기본 이미지 폴백
-  const displaySrc = internalPreview ?? imageSrc;
-  const resolvedSrc =
-    displaySrc ?? (type === "profile" ? profileFallbackImg : undefined);
+  const shouldShowImage = !!imageSrc || type === "user";
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,38 +87,22 @@ export function ImageUploadInput({
       return;
     }
 
-    const blobUrl = URL.createObjectURL(file);
-    setInternalPreview(blobUrl);
     setIsUploading(true);
 
     try {
       const publicUrl = await uploadFn(file);
       onUploaded?.(publicUrl);
-      setInternalPreview(undefined);
-      URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error("[ImageUpload Error]:", err);
       onUploadError?.(err);
-      setInternalPreview(undefined);
-      URL.revokeObjectURL(blobUrl);
     } finally {
       setIsUploading(false);
     }
   };
 
   const handleRemove = () => {
-    if (internalPreview) {
-      URL.revokeObjectURL(internalPreview);
-      setInternalPreview(undefined);
-    }
     onRemove?.();
   };
-
-  useEffect(() => {
-    return () => {
-      if (internalPreview) URL.revokeObjectURL(internalPreview);
-    };
-  }, [internalPreview]);
 
   return (
     <div className="relative w-fit">
@@ -142,13 +121,14 @@ export function ImageUploadInput({
           onChange={handleFileChange}
         />
 
-        {resolvedSrc ? (
-          <Image
-            src={resolvedSrc}
-            alt="이미지"
+        {shouldShowImage ? (
+          <FallbackImage
+            src={imageSrc}
+            type={type === "user" ? "user" : "post"} // FallbackImage의 타입에 맞게 매핑
+            alt="업로드 이미지"
             fill
             className="object-cover"
-            unoptimized={!!displaySrc}
+            unoptimized={!!imageSrc} // Blob URL 최적화 에러 방지
           />
         ) : (
           <div className="pointer-events-none flex flex-col items-center justify-center gap-[10px]">
@@ -178,7 +158,7 @@ export function ImageUploadInput({
         )}
       </button>
 
-      {displaySrc && !isUploading && (
+      {imageSrc && !isUploading && (
         <button
           type="button"
           aria-label="이미지 삭제"
