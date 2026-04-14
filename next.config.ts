@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
       "picsum.photos",
       "via.placeholder.com",
       "avatar.vercel.sh",
+      "img1.kakaocdn.net",
     ],
     remotePatterns: [
       {
