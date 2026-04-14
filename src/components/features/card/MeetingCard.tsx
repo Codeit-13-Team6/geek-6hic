@@ -11,7 +11,6 @@ import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar, Crown, Lock } from "lucide-react";
 import { isSecretMeeting } from "@/lib/meetingSecret";
 import { useAuthStore } from "@/store/useAuthStore";
-import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
 
 interface MeetingCardProps {
   item: JoinedMeeting;
@@ -74,7 +73,6 @@ export default function MeetingCard({
           )}
           alt={`${item.name} 모임 이미지`}
         />
-        {/* 1. 블러 글래스모피즘 */}
         {isSecret && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
             <div className="flex flex-col items-center gap-2">
@@ -110,80 +108,67 @@ export default function MeetingCard({
       </div>
 
       <div className="flex flex-1 flex-col justify-between p-5 sm:p-7">
-        <div className="flex flex-col gap-1">
-          <span className="text-main-purple/60 text-[10px] font-bold tracking-[0.15em] uppercase sm:text-[11px]">
-            {item.type}
-          </span>
-          <div className="flex flex-row items-center gap-1">
-            <h3 className="line-clamp-1 text-lg leading-snug font-extrabold tracking-tight text-slate-900">
-              {item.name}
-            </h3>
+        <div className="flex flex-col gap-2">
+          <div className="flex">
+            <span className="bg-main-purple/5 text-main-purple ring-main-purple/10 rounded-md px-2 py-0.5 text-[10px] font-black tracking-[0.1em] ring-1 sm:text-[11px]">
+              {item.type}
+            </span>
           </div>
-        </div>
-        <div className="flex flex-row gap-1">
-          <HeartIcon
-            liked={item.isFavorited}
-            onClick={(e) => {
-              e.stopPropagation();
-              loginGuardAction(() => {
-                onHeartClick();
-              });
-            }}
-            size={22}
-            className="sm: absolute right-3 bottom-30.5 cursor-pointer sm:top-2 sm:right-5"
-          />
+          <h3 className="line-clamp-1 text-lg leading-snug font-extrabold tracking-tight break-all text-slate-900">
+            {item.name}
+          </h3>
+          <p className="line-clamp-1 text-[14px] font-medium break-all text-slate-500/80">
+            {item.description || "모임 설명이 없습니다."}
+          </p>
         </div>
 
-        <p className="mt-1.5 line-clamp-1 text-base font-medium text-slate-500">
-          {item.description || "모임 설명이 아직 등록되지 않았습니다."}
-        </p>
-
-        <section className="mt-5 flex w-full items-center justify-between gap-3 border-t border-slate-50 pt-4">
-          <div className="flex w-full items-center justify-between gap-3">
-            <div className="flex w-full items-center justify-between gap-3">
+        <div className="mt-6 flex flex-col gap-4 border-t border-slate-50 pt-5">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <div className="relative h-3.5 w-3.5 opacity-30">
-                  <Image src={person} fill alt="인원 아이콘" />
-                </div>
-                <p className="flex items-baseline gap-0.5">
-                  <span className={cn("text-main-purple text-sm font-bold")}>
+                <Image
+                  src={person}
+                  width={12}
+                  height={12}
+                  alt="인원"
+                  className="opacity-40"
+                />
+                <p className="flex items-baseline gap-1">
+                  <span className="text-main-purple text-sm font-bold">
                     {item.participantCount}
                   </span>
                   <span className="text-[11px] font-medium text-slate-400">
-                    /{item.capacity}
+                    / {item.capacity} 명
                   </span>
                 </p>
               </div>
-
-              <div className="w-full">
-                <Progress
-                  className={cn(
-                    "[&_[data-slot=progress-indicator]]:!bg-main-purple block h-1 w-full shrink-0 overflow-hidden rounded-full bg-slate-100",
-                  )}
-                  value={(item.participantCount / item.capacity) * 100}
-                />
+              <div className="flex items-center gap-1 text-slate-400">
+                <Calendar size={12} strokeWidth={2.5} />
+                <span className="text-[11px] font-bold">
+                  {new Date(item.createdAt)
+                    .toLocaleDateString("ko-KR")
+                    .slice(2, -1)
+                    .replace(/\. /g, ".")}
+                </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <Calendar
-                size={14}
-                className="text-slate-300"
-                aria-hidden="true"
-              />
-              <span className="text-xs font-medium text-slate-400">
-                {new Date(item.createdAt)
-                  .toLocaleDateString("ko-KR", {
-                    year: "2-digit",
-                    month: "2-digit",
-                    day: "2-digit",
-                  })
-                  .replace(/\. /g, "/")
-                  .replace(/\./g, "")}
-              </span>
-            </div>
+            <Progress
+              className="[&_[data-slot=progress-indicator]]:bg-main-purple h-1 w-full rounded-full bg-slate-100"
+              value={(item.participantCount / item.capacity) * 100}
+            />
           </div>
-        </section>
+        </div>
+
+        <HeartIcon
+          liked={item.isFavorited}
+          onClick={(e) => {
+            e.stopPropagation();
+            loginGuardAction(onHeartClick);
+          }}
+          size={22}
+          className="absolute top-5 right-5 z-20"
+        />
       </div>
     </article>
   );

@@ -21,7 +21,7 @@ export function MeetingsHeroSection() {
           <h1 className="text-5xl leading-[1.1] font-black tracking-tighter text-slate-950 sm:text-7xl lg:text-8xl">
             CO-GIT
             <br />
-            <span className="from-main-purple bg-gradient-to-r to-violet-800 bg-clip-text text-transparent">
+            <span className="from-main-purple b bg-gradient-to-l to-violet-800 bg-clip-text text-transparent">
               CONNECTION.
             </span>
           </h1>

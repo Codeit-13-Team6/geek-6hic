@@ -15,7 +15,7 @@ export function MyMeetingsHeroSection() {
           </div>
           <h1 className="text-4xl leading-none font-black tracking-tighter whitespace-nowrap text-slate-950 sm:text-5xl lg:text-6xl">
             MY{" "}
-            <span className="from-main-purple bg-gradient-to-r to-violet-800 bg-clip-text text-transparent">
+            <span className="from-main-purple bg-gradient-to-t to-violet-800 bg-clip-text text-transparent">
               MEETINGS.
             </span>
           </h1>

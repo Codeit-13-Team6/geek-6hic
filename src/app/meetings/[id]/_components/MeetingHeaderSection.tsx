@@ -368,7 +368,7 @@ export function MeetingHeaderSection({
                   </div>
                   {participant.userId === detail.hostId && (
                     <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      호스트
+                      HOST
                     </span>
                   )}
                 </div>

@@ -46,7 +46,6 @@ export default async function LoungePage({
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
       <LoungeHeroSection />
-
       <section className="mb-1 sm:mb-12" aria-labelledby="hot-posts-heading">
         <div className="animate-fade-up mt-10 mb-8 flex items-center gap-3">
           <div
@@ -76,9 +75,7 @@ export default async function LoungePage({
           </Suspense>
         </div>
       </section>
-
       <LoungeSearchSection />
-
       <Suspense
         key={`${sortBy}-${sortOrder}-${keyword}`}
         fallback={<LoungeSkeleton />}

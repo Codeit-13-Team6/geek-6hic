@@ -76,7 +76,7 @@ export default function TopRankMobileCard({
 
         <h3
           className={cn(
-            "mb-2 line-clamp-2 leading-tight font-black tracking-tighter text-white drop-shadow-md",
+            "mb-2 line-clamp-2 truncate leading-tight font-black tracking-tighter text-white drop-shadow-md",
             isFirst ? "text-2xl" : "text-lg",
           )}
         >

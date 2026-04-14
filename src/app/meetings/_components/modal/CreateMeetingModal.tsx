@@ -76,7 +76,10 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <BtnCreate path="/meetings/new" title="모임 만들기" />
+      <BtnCreate
+        onClick={() => loginGuardAction(handleOpenModal)}
+        title="모임 만들기"
+      />
 
       <ModalBase
         disablePointerDismissal

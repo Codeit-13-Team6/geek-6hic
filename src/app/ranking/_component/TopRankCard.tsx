@@ -69,7 +69,7 @@ export default function TopRankCard({
 
         <h3
           className={cn(
-            "line-clamp-2 leading-none font-black text-white drop-shadow-lg",
+            "line-clamp-2 leading-none font-black break-all text-white drop-shadow-lg",
             isFirst ? "text-3xl lg:text-4xl" : "text-2xl lg:text-3xl",
           )}
         >
