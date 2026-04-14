@@ -9,10 +9,11 @@ import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { useToggleFavorite } from "@/hooks/queries/useUser";
+import { isSecretMeeting } from "@/lib/meetingSecret";
 
 const FAVORITES_PAGE_SIZE = 10;
 
-export default function FavoriteList() {
+export default function UserCardList() {
   const router = useRouter();
   const {
     items: favorites,
@@ -57,6 +58,7 @@ export default function FavoriteList() {
         {favorites.map((item) => (
           <UserCard
             key={item.id}
+            isSecret={isSecretMeeting(item.meeting.dateTime)}
             title={item.meeting.name}
             type={item.meeting.type}
             date={new Date(item.meeting.createdAt)}

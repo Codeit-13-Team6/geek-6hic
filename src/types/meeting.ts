@@ -141,7 +141,6 @@ export interface GetMeetingListParams {
   size?: number;
 }
 
-
 export type MeetingSortBy =
   | "createdAt"
   | "dateTime"
@@ -171,6 +170,7 @@ export interface UserCardProps {
   showLockBtn?: boolean;
   onHeartClick?: (liked: boolean) => void;
   onDetailClick?: () => void;
+  isSecret?: boolean;
 }
 
 export interface MeetingHeaderSectionProps {

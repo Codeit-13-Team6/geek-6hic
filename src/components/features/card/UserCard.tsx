@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Users, Calendar, LucideLock } from "lucide-react";
+import { Users, Calendar, LucideLock, Lock } from "lucide-react";
 import { Card } from "@/components/shadcnOrigin/card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ export function UserCard({
   capacity = 20,
   showLikeBtn = true,
   showLockBtn = false,
+  isSecret = false,
   onHeartClick,
   onDetailClick,
 }: UserCardProps) {
@@ -56,6 +57,18 @@ export function UserCard({
           fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        {isSecret && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+                <Lock className="size-5 text-slate-300" />
+              </div>
+              <span className="text-xs font-bold tracking-[0.2em] text-slate-300">
+                SECRET
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-row items-start justify-between pt-0 pr-4 pb-6 pl-6 sm:p-0">
@@ -90,7 +103,7 @@ export function UserCard({
             </div>
           </div>
         </div>
-        <div className="shrink-0">
+        <div className="absolute right-3 bottom-23 shrink-0 sm:top-5 sm:right-5">
           {showLikeBtn && (
             <HeartIcon liked={isLiked} onClick={handleHeartClick} size={22} />
           )}

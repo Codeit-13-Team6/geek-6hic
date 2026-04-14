@@ -7,12 +7,8 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import MyMeetingList from "@/app/users/[id]/_components/MyMeetingList";
 import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
-import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type { FavoritesPageResponse } from "@/types";
-import {
-  getFavorites,
-  getPublicUserProfile,
-} from "@/api/server";
+import { getFavorites, getPublicUserProfile } from "@/api/server";
 import {
   getBasicProfileStats,
   getCreatedMeetingsByUser,
@@ -26,6 +22,7 @@ import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";
 import UserTabsPrefetcher from "./_components/UserTabsPrefetcher";
+import UserCardList from "@/app/users/[id]/_components/UserCardList";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -166,7 +163,7 @@ export default async function Page({
                       })
                     }
                   >
-                    <FavoriteList />
+                    <UserCardList />
                   </PrefetchBoundary>
                 </Suspense>
               </TabsContent>
