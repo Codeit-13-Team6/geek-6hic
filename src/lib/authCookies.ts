@@ -38,8 +38,8 @@ export function setUserDisplayCookie(
   user: {
     id: number;
     name: string;
-    image: string | null;
-    email: string;
+    image?: string | null;
+    email?: string;
     companyName: string;
   },
 ) {
@@ -48,8 +48,8 @@ export function setUserDisplayCookie(
     JSON.stringify({
       id: user.id,
       name: user.name,
-      image: user.image,
-      email: user.email,
+      image: user.image ?? null,
+      email: user.email ?? "",
       companyName: user.companyName,
     }),
     { ...COOKIE_OPTIONS, maxAge: USER_DISPLAY_MAX_AGE },

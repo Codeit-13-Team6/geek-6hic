@@ -21,8 +21,8 @@ const InfiniteScrollTrigger = forwardRef<
       {isFetchingNextPage ? (
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="text-main-purple animate-spin" size={24} />
-          <p className="text-main-purple text-[10px] font-black tracking-[0.4em] uppercase">
-            목록을 불러오는 중...
+          <p className="text-main-purple text-[10px] font-bold tracking-[0.4em] uppercase">
+            로딩 중...
           </p>
         </div>
       ) : (
@@ -30,7 +30,7 @@ const InfiniteScrollTrigger = forwardRef<
         hasData && (
           <div className="flex flex-col items-center gap-4">
             <div className="h-1.5 w-8 rounded-full bg-slate-200" />
-            <p className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">
+            <p className="text-[10px] font-black tracking-[0.3em] text-slate-300 uppercase">
               더 이상 항목이 없습니다
             </p>
           </div>

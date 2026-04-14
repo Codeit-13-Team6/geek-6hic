@@ -4,14 +4,12 @@ import { ThumbsUp, MessageSquare } from "lucide-react";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
 import FallbackImage from "@/components/img/FallbackImage";
-import { useRouter } from "next/navigation";
 
 export default function PostCard({
   title,
   content,
   authorImage,
   authorName,
-  authorId,
   date,
   likeCount,
   commentCount,
@@ -21,7 +19,6 @@ export default function PostCard({
   "use memo";
 
   const pureContent = getPlainText(content);
-  const router = useRouter();
 
   return (
     <article
@@ -60,7 +57,7 @@ export default function PostCard({
             {title}
           </h3>
 
-          <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500 break-all">
+          <p className="line-clamp-2 text-sm leading-relaxed font-medium break-all text-slate-500">
             {pureContent || "내용이 없는 게시글입니다."}
           </p>
         </div>
@@ -68,10 +65,6 @@ export default function PostCard({
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 text-xs font-medium text-slate-400">
           <button
             type="button"
-            // onClick={(event) => {
-            //   event.stopPropagation();
-            //   if (authorId) router.push(`/users/${authorId}`);
-            // }}
             className="flex items-center gap-2.5 rounded-full transition-opacity"
           >
             <div className="relative size-5 overflow-hidden rounded-full ring-2 ring-slate-50">

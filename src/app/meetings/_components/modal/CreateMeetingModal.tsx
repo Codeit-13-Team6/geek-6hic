@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { BtnCreate } from "@/components/features/btn/BtnCreate";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {
@@ -75,25 +76,10 @@ export function CreateMeetingModal() {
 
   return (
     <>
-      <BtnCommon
-        className={cn(
-          "bg-main-purple fixed right-6 bottom-6 z-99 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(38,6,86,0.3)] transition-all hover:bg-slate-950 active:scale-95",
-          "h-14 w-14 rounded-full sm:h-14 sm:w-[170px] sm:gap-2 sm:rounded-2xl",
-          "lg:right-16 lg:bottom-16",
-          "group !p-0 sm:!p-6",
-        )}
-        type="button"
+      <BtnCreate
         onClick={() => loginGuardAction(handleOpenModal)}
-      >
-        <Plus
-          size={20}
-          strokeWidth={3}
-          className="transition-transform duration-300 group-hover:rotate-180"
-        />
-        <span className="hidden text-xs font-black tracking-widest uppercase sm:block">
-          모임 만들기
-        </span>
-      </BtnCommon>
+        title="모임 만들기"
+      />
 
       <ModalBase
         disablePointerDismissal
@@ -174,7 +160,7 @@ export function CreateMeetingModal() {
             </div>
           )}
           {currentStep === 2 && (
-            <div className="space-y-6 pt-6 custom-scrollbar overflow-auto max-h-[300px] sm:max-h-[500px] pr-[15px]">
+            <div className="custom-scrollbar max-h-[300px] space-y-6 overflow-auto pt-6 pr-[15px] sm:max-h-[500px]">
               <MeetingModalForm
                 values={formValues}
                 errors={errors}

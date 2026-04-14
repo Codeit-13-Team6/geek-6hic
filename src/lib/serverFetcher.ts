@@ -102,15 +102,12 @@ const refreshAccessToken = async (
   requestUrl: string,
   forceRefresh = false,
 ): Promise<TokenPair | null> => {
-
   // 리프레쉬 맵에 유저아이디가 있을때  토큰 캐시처리 로직
   if (refreshMap.has(userId)) {
-
     // 포스리프레쉬가 아닐떄 , 포스리프레쉬는 강제로 리프레쉬해버리니까 아래 로직이 필요없음
     if (!forceRefresh) {
       // 캐시 또는 진행 중인 refresh가 있으면 그대로 재사용
       // 캐시 히트 시에도 현재 요청의 응답에 쿠키를 세팅해야 브라우저에 전달됨
-
 
       const cachedTokenPair = await refreshMap.get(userId)!;
       if (cachedTokenPair) {
@@ -160,7 +157,6 @@ const refreshAccessToken = async (
       // 새 entry가 있으면 그걸 재사용 (중복 refresh 방지)
       const current = refreshMap.get(userId);
       if (current && current !== existing) {
-
         const result = await current;
         if (result) {
           try {
@@ -180,7 +176,6 @@ const refreshAccessToken = async (
 
     refreshMap.delete(userId);
   } // if fine.
-
 
   // await 전에 즉시 map에 등록하여 동시 진입 방지
   const promise = (async () => {
@@ -207,9 +202,7 @@ const refreshAccessToken = async (
       // 특정 모듈 컨텍스트에서 cookies().set()이 실패할 수 있음 ( 서버컴포넌트 )
       try {
         await setTokenCookies(data as TokenPair);
-      } catch {
-
-      }
+      } catch {}
 
       return data as TokenPair;
     } catch {
@@ -259,7 +252,6 @@ serverAxios.interceptors.request.use(async (config) => {
   const cookieStore = await cookies();
   let accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
-
 
   // refreshToken도 없으면 요청 보내지 않고 즉시 차단 (공개 경로는 제외)
   if (!refreshToken) {
@@ -329,7 +321,6 @@ serverAxios.interceptors.response.use(
       originalRequest.headers.Authorization = `Bearer ${refreshed.accessToken}`;
       return serverAxios(originalRequest);
     }
-
 
     return Promise.reject(error);
   },

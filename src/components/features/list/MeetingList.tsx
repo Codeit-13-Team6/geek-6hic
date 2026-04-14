@@ -30,6 +30,17 @@ export default function MeetingList({
   const sortBy = (getParam("sortBy") || "createdAt") as MeetingSortBy;
   const sortOrder = (getParam("sortOrder") || "desc") as SortOrder;
 
+  const getNoResultType = (): "search" | "meetings" | "myMeetings" => {
+    // 검색어가 있는데 결과가 없는 경우
+    if (keyword) return "search";
+
+    // 나의 모임(joined) 탭인데 결과가 없는 경우
+    if (variant === "joined") return "myMeetings";
+
+    // 모임 찾기인데 아예 데이터가 없는 경우
+    return "meetings";
+  };
+
   const allResult = useGetMeetings({
     type,
     keyword,
@@ -80,7 +91,7 @@ export default function MeetingList({
             />
           ))
         ) : (
-          <NoResultFound />
+          <NoResultFound type={getNoResultType()} />
         )}
       </div>
 
