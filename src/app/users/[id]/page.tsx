@@ -4,8 +4,6 @@ import { Tab } from "@/components/ui/Tab";
 import { TabsContent } from "@/components/shadcnOrigin/tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import MyMeetingList from "@/app/users/[id]/_components/UserMeetingList";
-import MyPostList from "@/app/users/[id]/_components/MyPostList";
 import { Suspense } from "react";
 import type { FavoritesPageResponse } from "@/types";
 import { getFavorites, getPublicUserProfile } from "@/api/server";
@@ -22,9 +20,9 @@ import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";
 import UserTabsPrefetcher from "./_components/UserTabsPrefetcher";
-import UserCardList from "@/app/users/[id]/_components/UserLikeList";
 import UserLikeList from "@/app/users/[id]/_components/UserLikeList";
 import UserMeetingList from "@/app/users/[id]/_components/UserMeetingList";
+import UserPostList from "@/app/users/[id]/_components/UserPostList";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -85,9 +83,11 @@ export default async function Page({
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
       <div className="mb-10 border-b-2 border-slate-950 pb-6 sm:mb-16 sm:pb-10">
         <div className="flex items-center gap-3">
-          <div className="bg-main-purple h-[6px] w-10 rounded-full" />
+          <div className="h-[6px] w-10 rounded-full bg-slate-950" />
           <h1 className="text-xl font-black tracking-tighter text-slate-950 uppercase sm:text-4xl lg:text-4xl">
-            <span className="text-main-purple">PROFILE.</span>
+            <span className="from-main-purple bg-gradient-to-t to-violet-800 bg-clip-text text-transparent">
+              PROFILE.
+            </span>
           </h1>
         </div>
       </div>
@@ -181,7 +181,10 @@ export default async function Page({
             </TabsContent>
 
             <TabsContent value="lounge" className="mt-8 md:mt-12">
-              <MyPostList isOwnProfile={isOwnProfile} userId={profileUserId} />
+              <UserPostList
+                isOwnProfile={isOwnProfile}
+                userId={profileUserId}
+              />
             </TabsContent>
           </Tab>
         </section>

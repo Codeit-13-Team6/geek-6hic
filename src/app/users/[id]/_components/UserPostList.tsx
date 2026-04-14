@@ -13,15 +13,15 @@ import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 
 const MY_POSTS_PAGE_SIZE = 10;
 
-interface MyPostListProps {
+interface UserPostListProps {
   isOwnProfile?: boolean;
   userId?: number;
 }
 
-export default function MyPostList({
+export default function UserPostList({
   isOwnProfile = true,
   userId,
-}: MyPostListProps) {
+}: UserPostListProps) {
   const router = useRouter();
   //기존에는 user 객체만 가져와서 유저정보 없을때도 api 요청 발생할 수 있음 -> 유저 인증 후에만 가능하도록
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);

@@ -129,7 +129,7 @@ export function PostDetailCard({
           <span className="text-slate-500">{name}</span>
           <span className="opacity-20">•</span>
           <time className="text-slate-400">
-            {date.toLocaleDateString("ko-KR")}
+            {date.toLocaleDateString("ko-KR").slice(0, -1)}
           </time>
         </button>
       </div>
@@ -137,7 +137,7 @@ export function PostDetailCard({
       <CardContent className="p-8 sm:px-14 lg:px-18 lg:pb-12">
         <div
           className={cn(
-            "prose prose-slate max-w-none leading-relaxed text-slate-600 break-all",
+            "prose prose-slate max-w-none leading-relaxed break-all text-slate-600",
             "prose-p:my-1",
             "prose-headings:text-slate-900 prose-headings:font-bold prose-headings:mt-5",
 

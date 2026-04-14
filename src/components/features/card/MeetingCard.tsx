@@ -146,9 +146,13 @@ export default function MeetingCard({
                 <Calendar size={12} strokeWidth={2.5} />
                 <span className="text-[11px] font-bold">
                   {new Date(item.createdAt)
-                    .toLocaleDateString("ko-KR")
-                    .slice(2, -1)
-                    .replace(/\. /g, ".")}
+                    .toLocaleDateString("ko-KR", {
+                      year: "2-digit",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                    .replace(/\. /g, ".") // "26. 04. 04." -> "26.04.04." (공백 제거)
+                    .slice(0, -1)}
                 </span>
               </div>
             </div>
