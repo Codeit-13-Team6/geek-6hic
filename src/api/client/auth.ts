@@ -51,24 +51,32 @@ export async function signupUser(
   return res.data;
 }
 
-export async function loginWithOAuth(
-  provider: "google" | "kakao",
+export async function loginWithGoogleToken(
   token: string,
 ): Promise<OAuthLoginResult> {
   if (!API_BASE_URL) {
     throw new Error("missing_api_url");
   }
 
-  const res = await axios.post<OAuthLoginResult>(
-    `${API_BASE_URL}/oauth/${provider}`,
-    { token },
-  );
+  const res = await axios.post<OAuthLoginResult>(`${API_BASE_URL}/oauth/google`, {
+    token,
+  });
 
   return res.data;
 }
 
 export async function bindAuthTokens(tokens: OAuthTokenPair): Promise<LoginResult> {
   const res = await axiosInstance.post("/auth/token", tokens);
+  return res.data;
+}
+
+export async function loginWithKakaoCode(
+  code: string,
+): Promise<OAuthLoginResult> {
+  const res = await axiosInstance.post<OAuthLoginResult>("/oauth/kakao", {
+    code,
+  });
+
   return res.data;
 }
 
