@@ -1,4 +1,4 @@
-import type { BasicProfileStats, CreatedMeetingSummary } from "@/api/server";
+import type { BasicProfileStats, CreatedMeetingSummary } from "@/types";
 import { deriveUserType } from "@/lib/userType";
 import GradeCardAnimated from "@/app/users/[id]/_components/GradeCardAnimated";
 import GradeCard from "./GridCard";
