@@ -47,7 +47,7 @@ export function EditMeetingModal({
         onOpenChange={(nextIsOpen) => {
           if (!nextIsOpen) requestClose();
         }}
-        contentClassName="w-full sm:max-w-[540px] overflow-hidden rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full sm:max-w-[540px] overflow-x-auto rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="py-8 px-6 lg:px-0">
@@ -60,7 +60,7 @@ export function EditMeetingModal({
             </p>
           </div>
 
-          <div className="space-y-6 custom-scrollbar overflow-auto max-h-[300px] sm:max-h-[500px] pr-[15px]">
+          <div className="space-y-6 pr-[15px]">
             <MeetingModalForm
               values={formValues}
               errors={errors}
