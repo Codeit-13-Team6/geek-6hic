@@ -81,7 +81,7 @@ export default function MyRankingSection() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <span className="bg-main-purple/5 text-main-purple ring-main-purple/10 mb-2 inline-block rounded-md px-2 py-0.5 text-[9px] font-black tracking-[0.2em] uppercase ring-1">
-                        My Meeting
+                        {meet.meetType}
                       </span>
                       <h3 className="group-hover:text-main-purple truncate text-base font-bold tracking-tight text-slate-800 transition-colors">
                         {meet.meetName}
