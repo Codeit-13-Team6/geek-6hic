@@ -7,7 +7,7 @@ import crew1 from "@/assets/img/crew/crew1.png";
 import crew3 from "@/assets/img/crew/crew3.png";
 import crew4 from "@/assets/img/crew/crew4.png";
 import crew5 from "@/assets/img/crew/crew5.png";
-import WSA from "@/assets/img/character/WSA.png";
+import wsa from "@/assets/img/character/wsa.png";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -48,30 +48,30 @@ const SURVIVORS = [
   {
     name: "유진",
     emoji: crew1,
-    profile: WSA,
+    profile: wsa,
     review: "팀 전체 방향을 잡고, 구조와 일정이 흔들리지 않도록 끝까지 조율했습니다. 나는 카리나 ㅋ 로켓펀쳐~",
   },
   {
     name: "제현",
     emoji: crew1,
-    profile: WSA,
+    profile: wsa,
     review: "프론트엔드 전반의 코드 구조를 총괄하며, 일관성과 확장성을 기준으로 코드를 정리했습니다.",
   },
   {
     name: "상현",
     emoji: crew3,
-    profile: WSA,
+    profile: wsa,
     review: "UI와 인터랙션을 담당하며, 화면 흐름이 자연스럽게 이어지도록 사용자 경험을 다듬었습니다.",
   },
   {
     name: "민주",
-    profile: WSA,
+    profile: wsa,
     emoji: crew4,
     review: "드디어 끝났다 개꿀 ㅋ 담배가져와 ㅋ 드디어 끝났다 개꿀 ㅋ 담배가져와 ㅋ",
   },
   {
     name: "병택",
-    profile: WSA,
+    profile: wsa,
     emoji: crew5,
     review: "모임 상세 페이지를 담당하며, 데이터 흐름과 사용자 경험이 자연스럽게 연결되도록 구현했습니다.",
   },

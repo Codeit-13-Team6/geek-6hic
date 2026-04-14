@@ -7,9 +7,11 @@ import { ChevronDown, Sparkles, ChartColumn, ArrowUpRight } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRanking } from "@/hooks/queries/useRanking";
 import { QUERY_KEYS } from "@/constans/queryKey";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function MyRankingSection() {
   const router = useRouter();
+  const { dragProps } = useDragScroll();
   const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -55,9 +57,8 @@ export default function MyRankingSection() {
             {isOpen ? "접어두기" : "자세히 보기"}
           </span>
           <ChevronDown
-            className={`group-hover:text-main-purple size-5 text-slate-400 transition-transform duration-300 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`group-hover:text-main-purple size-5 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+              }`}
           />
         </div>
       </button>
@@ -71,7 +72,10 @@ export default function MyRankingSection() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="hide-scrollbar flex w-full snap-x snap-mandatory gap-4 overflow-x-auto pt-6 pb-4 sm:pb-6">
+            <div
+              {...dragProps}
+              className="custom-scrollbar flex w-full gap-4 overflow-x-auto pt-6 pb-4 sm:pb-6"
+            >
               {myMeetings.map((meet) => (
                 <div
                   key={meet.id}
