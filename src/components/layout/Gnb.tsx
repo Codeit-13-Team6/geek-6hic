@@ -21,7 +21,7 @@ const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
       strokeWidth={2.2}
     />
     {hasUnread && (
-      <span className="bg-point-green absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full ring-2 ring-white" />
+      <span className="absolute top-1 right-1 z-20 block h-1.5 w-1.5 rounded-full bg-[#00d287] ring-2 ring-white" />
     )}
   </div>
 );

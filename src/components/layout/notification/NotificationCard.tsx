@@ -132,7 +132,7 @@ export default function NotificationCard({
             {!notification.isRead && (
               <span
                 aria-label="읽지 않은 알림"
-                className="bg-point-green/70 size-1.5 rounded-full shadow-[0_0_8px_rgba(0,210,135,0.5)]"
+                className="size-1.5 rounded-full bg-[#00d287]/70 shadow-[0_0_8px_rgba(0,210,135,0.5)]"
               />
             )}
             {relativeTime}

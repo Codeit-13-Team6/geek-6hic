@@ -90,7 +90,7 @@ export default function MeetingCard({
         {statusLabel === "참여중" ? (
           meetingStatusBadgeVisible && (
             <div className="absolute top-5 left-5 z-10 flex items-center gap-1.5 rounded-full border border-slate-700/50 bg-slate-900/80 px-3 py-1.5 shadow-sm backdrop-blur-md sm:top-3 sm:left-3">
-              <span className="bg-point-green h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(0,210,135,0.8)]"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00d287] shadow-[0_0_8px_rgba(0,210,135,0.8)]"></span>
               <span className="text-[11px] font-bold tracking-widest text-slate-200">
                 참여중
               </span>
