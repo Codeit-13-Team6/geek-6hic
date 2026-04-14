@@ -280,8 +280,9 @@ function ContactBlock({
 function useFadeUpGsap() {
   useEffect(() => {
     const targets = gsap.utils.toArray<HTMLElement>("[data-fade-up]");
-
     if (!targets.length) return;
+
+    const tweenList: gsap.core.Tween[] = [];
 
     targets.forEach((el) => {
       gsap.set(el, {
@@ -289,7 +290,7 @@ function useFadeUpGsap() {
         y: 40,
       });
 
-      gsap.to(el, {
+      const tween = gsap.to(el, {
         opacity: 1,
         y: 0,
         duration: 0.8,
@@ -298,13 +299,17 @@ function useFadeUpGsap() {
           trigger: el,
           start: "top 70%",
           toggleActions: "play none none none",
-          // markers: true,
         },
       });
+
+      tweenList.push(tween);
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tweenList.forEach((tween) => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      });
     };
   }, []);
 }
