@@ -10,7 +10,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
-import { bindAuthTokens, exchangeGoogleToken, loginUser } from "@/api/client";
+import { bindAuthTokens, loginUser, loginWithOAuth } from "@/api/client";
 import { requestGoogleAccessToken } from "@/lib/googleAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
@@ -103,16 +103,19 @@ export default function LoginForm({
         const googleAccessToken =
           await requestGoogleAccessToken(googleClientId);
         // 2. 액세스 토큰으로 백엔드에서 인증 처리 및 JWT 토큰 발급
-        const tokens = await exchangeGoogleToken(googleAccessToken);
+        const oauthResult = await loginWithOAuth("google", googleAccessToken);
         // 3. 발급된 토큰으로 클라이언트 로그인 처리
-        const data = await bindAuthTokens(tokens);
+        const data = await bindAuthTokens({
+          accessToken: oauthResult.accessToken,
+          refreshToken: oauthResult.refreshToken,
+        });
 
         if (!data.ok) {
           throw new Error("login_failed");
         }
 
-        if (data.user) {
-          setUser(data.user);
+        if (oauthResult.user) {
+          setUser(oauthResult.user);
         }
 
         if (onSuccess) {
