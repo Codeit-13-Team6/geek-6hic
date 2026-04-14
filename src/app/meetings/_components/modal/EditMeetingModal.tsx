@@ -50,7 +50,7 @@ export function EditMeetingModal({
         contentClassName="w-full sm:max-w-[540px] overflow-hidden rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
-        <div className="py-8">
+        <div className="py-8 px-6 lg:px-0">
           <div className="mb-10 text-center">
             <h2 className="text-2xl font-black tracking-tighter text-slate-950 sm:text-3xl">
               모임 수정하기
