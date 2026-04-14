@@ -1,4 +1,4 @@
-import type { BasicProfileStats, ParticipantStats } from "@/api/server";
+import type { BasicProfileStats, ParticipantStats } from "@/types";
 import StatGrid from "./StatGrid";
 
 export default async function StatGridContainer({

@@ -11,11 +11,13 @@ import FavoriteList from "@/app/users/[id]/_components/FavoriteList";
 import type { FavoritesPageResponse } from "@/types";
 import {
   getFavorites,
+  getPublicUserProfile,
+} from "@/api/server";
+import {
   getBasicProfileStats,
   getCreatedMeetingsByUser,
   getDetailedParticipantStats,
-  getPublicUserProfile,
-} from "@/api/server";
+} from "@/lib/stats";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import ProfileSectionSkeleton from "@/components/skeleton/ProfileSectionSkeleton";
 import GradeCardSkeleton from "@/components/skeleton/GradeCardSkeleton";
