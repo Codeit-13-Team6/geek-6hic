@@ -14,7 +14,7 @@ import { GetPostsResponse, LoungeSortBy } from "@/types/post";
 import { SortOrder } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
 import { LoungeHeroSection } from "./_component/LoungeHeroSection";
-import { BtnCreatePost } from "./BtnCreatePost";
+import { BtnCreate } from "@/components/features/btn/BtnCreate";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",
@@ -114,7 +114,7 @@ export default async function LoungePage({
         </PrefetchBoundary>
       </Suspense>
 
-      <BtnCreatePost />
+      <BtnCreate path="/lounge/create" title="게시글 작성" />
     </div>
   );
 }
