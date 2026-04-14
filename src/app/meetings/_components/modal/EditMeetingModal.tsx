@@ -47,7 +47,7 @@ export function EditMeetingModal({
         onOpenChange={(nextIsOpen) => {
           if (!nextIsOpen) requestClose();
         }}
-        contentClassName="w-full sm:max-w-[540px] overflow-x-auto rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
+        contentClassName="w-full sm:max-w-[540px] overflow-y-auto rounded-[40px] border-none p-0 shadow-[0_40px_80px_rgba(0,0,0,0.2)]"
         title=""
       >
         <div className="py-8 px-6 lg:px-0">
