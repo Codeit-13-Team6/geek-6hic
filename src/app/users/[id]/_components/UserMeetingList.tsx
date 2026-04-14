@@ -44,6 +44,7 @@ export default function UserMeetingList({
             offset,
             limit,
           }),
+    scrollTargetId: "pagination-top",
   });
 
   if (isLoading) {

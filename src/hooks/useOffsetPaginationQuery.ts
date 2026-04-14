@@ -13,6 +13,7 @@ interface UseOffsetPaginationQueryParams<T> {
   }) => Promise<OffsetResponse<T>>;
   enabled?: boolean;
   staleTime?: number;
+  scrollTargetId?: string;
 }
 
 export function useOffsetPaginationQuery<T>({
@@ -21,6 +22,7 @@ export function useOffsetPaginationQuery<T>({
   queryFn,
   enabled = true,
   staleTime = 1000 * 60 * 5,
+  scrollTargetId,
 }: UseOffsetPaginationQueryParams<T>) {
   const [page, setPage] = useState(1);
   const currentOffset = (page - 1) * pageSize;
@@ -51,10 +53,20 @@ export function useOffsetPaginationQuery<T>({
     if (targetPage < 1 || targetPage > totalPages) return;
     setPage(targetPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "instant",
-    });
+    if (scrollTargetId) {
+      const targetElement = document.getElementById(scrollTargetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: "instant",
+          block: "start",
+        });
+      }
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "instant",
+      });
+    }
   };
 
   return {

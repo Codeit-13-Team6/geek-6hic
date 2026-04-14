@@ -146,6 +146,8 @@ export default async function Page({
             userId={profileUserId}
           />
 
+          <div id="pagination-top" className="scroll-mt-20 sm:scroll-mt-22" />
+
           <Tab tabs={tabs} defaultValue={isOwnProfile ? "liked" : "created"}>
             {isOwnProfile && (
               <TabsContent value="liked" className="mt-8 md:mt-12">
