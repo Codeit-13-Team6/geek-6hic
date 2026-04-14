@@ -6,9 +6,9 @@ import SelectFilter from "@/components/ui/SelectFilter";
 
 const LOUNGE_SORT_OPTIONS = [
   { value: "createdAt_desc", label: "최신순" },
-  { value: "createdAt_asc", label: "오래된순" },
   { value: "likeCount_desc", label: "인기순" },
   { value: "commentCount_desc", label: "댓글순" },
+  { value: "createdAt_asc", label: "오래된순" },
 ];
 
 export default function LoungeSearchSection() {

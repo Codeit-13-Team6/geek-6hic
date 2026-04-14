@@ -28,6 +28,7 @@ import {
   useEditComment,
   useGetComments,
 } from "@/hooks/queries/useComments";
+import { cn } from "@/lib/utils";
 
 const COMMENTS_PAGE_LIMIT = 10;
 
@@ -187,7 +188,7 @@ export default function CommentSection({
                 onClick={() => loginGuardAction(handlePostComment)}
                 disabled={!threadContent.trim() || isPosting}
               >
-                {isPosting ? "..." : "작성하기"}
+                작성하기
               </BtnCommon>
             </div>
           </div>
@@ -203,20 +204,25 @@ export default function CommentSection({
           )}
         </div>
       ) : (
-        <div className="group relative flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 bg-white p-3 transition-colors">
+        <div className="flex flex-col gap-3">
           <textarea
             ref={commentRef}
-            rows={2}
+            rows={3}
             disabled={isPosting}
             placeholder="여기에 댓글을 남겨보세요."
-            className="w-full resize-none border-none bg-transparent px-2 pt-2 text-[15px] leading-relaxed text-slate-700 placeholder:text-slate-300 focus:ring-0 focus:outline-none"
+            className={cn(
+              "w-full resize-none rounded-xl border border-slate-100 bg-white px-4 py-3 text-[15px] leading-relaxed text-slate-700 shadow-sm transition-all placeholder:text-slate-300",
+              "focus:border-main-purple/60",
+              "focus:!ring-0 focus:!outline-none focus-visible:!ring-0 focus-visible:!outline-none",
+            )}
             maxLength={1000}
           />
+
           <div className="flex justify-end">
             <BtnCommon
               onClick={() => loginGuardAction(handlePostComment)}
               disabled={isPosting}
-              className="h-10 w-20 !rounded-xl text-sm font-bold"
+              className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
             >
               등록
             </BtnCommon>

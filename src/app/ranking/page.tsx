@@ -27,19 +27,6 @@ export default function Page() {
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
       <RankingHeroSection />
 
-      <div className="animate-fade-up mb-10 flex items-center gap-3 md:mb-15">
-        <div
-          className="bg-main-purple h-[6px] w-8 rounded-full"
-          aria-hidden="true"
-        />
-        <h2
-          id="ranking-top3-title"
-          className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase"
-        >
-          TOP 3 Meetings
-        </h2>
-      </div>
-
       <Suspense fallback={<RankingListSkeleton />}>
         <PrefetchBoundary
           prefetchFn={async (qc) => {
@@ -58,6 +45,18 @@ export default function Page() {
           }}
         >
           <MyRankingSection />
+          <div className="animate-fade-up mb-10 flex items-center gap-3 md:mb-15">
+            <div
+              className="bg-main-purple h-[6px] w-8 rounded-full"
+              aria-hidden="true"
+            />
+            <h2
+              id="ranking-top3-title"
+              className="text-xs font-black tracking-[0.3em] text-slate-900 uppercase"
+            >
+              TOP 3 Meetings
+            </h2>
+          </div>
           <section className="mt-3 sm:mt-9">
             <RankingList />
           </section>

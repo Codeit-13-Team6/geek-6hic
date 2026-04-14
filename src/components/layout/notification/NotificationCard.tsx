@@ -99,7 +99,7 @@ export default function NotificationCard({
       className={cn(
         "flex w-full gap-4 px-5 py-4 transition-colors",
         notification.isRead ? "bg-white" : "bg-slate-50",
-        "focus-visible:ring-black hover:bg-slate-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
+        "hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none focus-visible:ring-inset",
         className,
       )}
       onClick={() => onClick?.(notification)}
@@ -132,7 +132,7 @@ export default function NotificationCard({
             {!notification.isRead && (
               <span
                 aria-label="읽지 않은 알림"
-                className="size-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                className="size-1.5 rounded-full bg-[#00d287]/70 shadow-[0_0_8px_rgba(0,210,135,0.5)]"
               />
             )}
             {relativeTime}
