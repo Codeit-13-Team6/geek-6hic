@@ -1,10 +1,10 @@
 "use client";
 
 import { AlertCircle, AlignLeft } from "lucide-react";
-import { MeetingHeaderSection } from "@/app/meetings/[id]/components/MeetingHeaderSection";
-import { MeetingLinkSection } from "@/app/meetings/[id]/components/MeetingLinkSection";
-import { MeetingThreadSection } from "@/app/meetings/[id]/components/MeetingThreadSection";
-import { RecommendedMeetingsSection } from "@/app/meetings/[id]/components/RecommendedMeetingsSection";
+import { MeetingHeaderSection } from "@/app/meetings/[id]/_components/MeetingHeaderSection";
+import { MeetingLinkSection } from "@/app/meetings/[id]/_components/MeetingLinkSection";
+import { MeetingThreadSection } from "@/app/meetings/[id]/_components/MeetingThreadSection";
+import { RecommendedMeetingsSection } from "@/app/meetings/[id]/_components/RecommendedMeetingsSection";
 import { useMeetingDetailQueries } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingDetailContentProps } from "@/types";

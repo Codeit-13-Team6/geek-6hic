@@ -32,7 +32,7 @@ export default function ModalBase({
             "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
-            "overflow-y-auto border border-slate-100 bg-white p-12 shadow-2xl outline-none",
+            "overflow-y-auto border border-slate-100 bg-white shadow-2xl outline-none px-6 py-8 sm:px-16",
             contentClassName,
             "gap-0!",
           )}

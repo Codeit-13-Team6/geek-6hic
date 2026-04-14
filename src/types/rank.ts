@@ -1,14 +1,3 @@
-export interface TopRankCardProps {
-  title?: string;
-  point?: number;
-  rank?: number;
-  meetType?: string;
-}
-
-export interface RankCardProps extends TopRankCardProps {
-  onDetailClick?: () => void;
-}
-
 export interface RankedItem {
   id: number;
   commentLeng: number;
@@ -18,5 +7,20 @@ export interface RankedItem {
   rankScore: number;
   meetName: string;
   meetType: string;
+  image?: string;
+}
+
+export interface TopRankCardProps {
+  rank: number;
+  item: RankedItem;
+  onDetailClick?: () => void;
+}
+
+export interface RankCardProps {
+  title?: string;
+  point?: number;
+  rank?: number;
+  meetType?: string;
+  onDetailClick?: () => void;
   image?: string;
 }

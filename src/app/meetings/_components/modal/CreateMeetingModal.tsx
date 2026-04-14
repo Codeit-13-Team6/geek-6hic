@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 import { useCreateMeetingForm } from "@/hooks";
 import {
   Plus,
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useMeetingTypes } from "@/hooks/queries/useMeetings";
 
 function getMeetingCategoryIcon(name: string) {
@@ -174,7 +174,7 @@ export function CreateMeetingModal() {
             </div>
           )}
           {currentStep === 2 && (
-            <div className="space-y-6 pt-6">
+            <div className="space-y-6 pt-6 custom-scrollbar overflow-auto max-h-[300px] sm:max-h-[500px] pr-[15px]">
               <MeetingModalForm
                 values={formValues}
                 errors={errors}

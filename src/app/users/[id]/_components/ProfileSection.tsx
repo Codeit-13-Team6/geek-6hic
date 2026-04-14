@@ -5,13 +5,13 @@ import { useForm, Controller } from "react-hook-form";
 import { uploadProfileImage } from "@/api/client/user";
 import { User, UserProfileUpdateProps } from "@/types";
 import { useAuthStore } from "@/store/useAuthStore";
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 import { InputCommon } from "@/components/ui/InputCommon";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
+import { ImageUploadInput } from "@/components/img/ImageUploadInput";
 import { Settings2 } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useUpdateProfile } from "@/hooks/queries/useUser";
 
 interface ProfileSectionProps {

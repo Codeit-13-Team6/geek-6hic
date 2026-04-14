@@ -15,11 +15,6 @@ export interface TabItem {
   label: string;
 }
 
-export interface TimePickerCommonProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
 export type ToastSize = "lg" | "sm";
 
 export interface ToastCommonProps {

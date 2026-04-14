@@ -17,7 +17,6 @@ export default function FavoriteList() {
   const {
     items: favorites,
     isFetching,
-    isLoading,
     page,
     totalPages,
     handlePageChange,
@@ -35,10 +34,6 @@ export default function FavoriteList() {
       setPage(totalPages);
     }
   }, [favorites.length, isFetching, page, setPage, totalPages]);
-
-  if (isLoading) {
-    return null;
-  }
 
   if (favorites.length === 0 && !isFetching) {
     return (

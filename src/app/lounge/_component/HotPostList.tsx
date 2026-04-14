@@ -9,7 +9,7 @@ import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function HotPostList() {
   const router = useRouter();
-  const { data: hotList = [] } = useGetHotPosts();
+  const { data: hotList } = useGetHotPosts();
   const { dragProps } = useDragScroll();
 
   if (hotList.length === 0) {

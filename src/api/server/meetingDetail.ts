@@ -4,12 +4,10 @@ import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,
   MeetingDetailApiData,
-  GetMeetingsResponse,
   MeetingParticipantsResponse,
 } from "@/types";
 
 const PARTICIPANTS_PAGE_SIZE = 100;
-const RECOMMENDED_MEETINGS_PAGE_SIZE = 100;
 const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";
 
 export async function getMeetingDetail(meetingId: number) {
@@ -33,19 +31,6 @@ export async function getMeetingParticipants(meetingId: number) {
   return response.data;
 }
 
-export async function getMeetingRecommendationCandidates() {
-  const response = await serverFetch<GetMeetingsResponse>({
-    url: "/meetings",
-    method: "GET",
-    params: {
-      sortBy: "dateTime",
-      sortOrder: "asc",
-      size: RECOMMENDED_MEETINGS_PAGE_SIZE,
-    },
-  });
-
-  return response.data;
-}
 
 export async function getCurrentUserOnServer() {
   try {

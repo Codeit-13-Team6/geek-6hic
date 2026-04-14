@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   getHotPosts,
   getLoungePosts,
@@ -32,7 +32,7 @@ export interface UsePostListParams {
  * HOT 게시물 조회 훅 (LoungePage용)
  */
 export const useGetHotPosts = () => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: QUERY_KEYS.posts.hot,
     queryFn: () => getHotPosts(),
     staleTime: 1000 * 60 * 5,

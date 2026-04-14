@@ -2,7 +2,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { BtnCommon } from "@/components/ui/BtnCommon";
-import ModalBase from "@/components/ui/ModalBase";
+import ModalBase from "@/components/modal/ModalBase";
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
@@ -46,7 +46,7 @@ export function ConfirmModal({
         <div className="mb-6 flex size-14 items-center justify-center rounded-full bg-red-50 text-red-500">
           <AlertCircle size={28} />
         </div>
-        <p className="text-xl font-black tracking-tighter text-slate-950 sm:text-2xl">
+        <p className="text-xl font-black tracking-tighter text-slate-950">
           {description}
         </p>
         <p className="mt-2 text-sm font-medium text-slate-400">

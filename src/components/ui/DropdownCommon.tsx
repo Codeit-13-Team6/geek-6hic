@@ -41,7 +41,7 @@ function Item({ className, variant = "default", ...props }: ItemProps) {
   return (
     <DropdownMenuItem
       className={cn(
-        "cursor-pointer rounded-md px-3 py-2 transition-colors",
+        "cursor-pointer rounded-md px-3 py-2 transition-colors font-bold",
         "focus:bg-gray-100",
         variant === "destructive" &&
           "text-red-500 focus:bg-red-50 focus:text-red-600",

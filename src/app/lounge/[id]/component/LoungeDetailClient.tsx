@@ -10,19 +10,19 @@ import {
   useToggleLike,
 } from "@/hooks/queries/usePosts";
 import { useState } from "react";
-import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
-import { DeleteModal } from "@/components/ui/DeleteModal";
+import { DeleteModal } from "@/components/modal/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();
   const userId = useAuthStore((state) => state.user?.id);
   const loginGuardAction = useLoginModalStore((s) => s.loginGuardAction);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { data: post, isLoading, isError } = useGetPostDetail(postId);
+  const { data: post, isError, isLoading } = useGetPostDetail(postId);
   const { mutate: removePost } = useDeletePost(postId);
   const { mutate: toggleLike } = useToggleLike(postId);
-  const isPostOwner = userId !== null && userId === post?.author.id;
+  const isPostOwner = userId !== null && userId === post?.author?.id;
   const { content: mainContent, links: linkObjects } = parsePostData(
     post?.content || "",
   );
@@ -45,7 +45,9 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
     }
   };
 
-  if (isLoading) return <DetailSkeleton />;
+  if (isLoading) {
+    return <DetailSkeleton />;
+  }
 
   if (isError || !post) {
     return (
@@ -84,8 +86,7 @@ export default function LoungeDetailClient({ postId }: { postId: number }) {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="게시글 삭제"
-        description="삭제하시겠습니까?"
+        description="게시글을 삭제하시겠습니까?"
         subDescription="삭제된 데이터는 복구할 수 없습니다."
         onConfirm={handleConfirmDelete}
       />

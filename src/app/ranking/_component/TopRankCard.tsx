@@ -1,7 +1,9 @@
 "use client";
 
 import { Card } from "@/components/shadcnOrigin/card";
-import { RankedItem } from "@/types";
+
+import { TopRankCardProps } from "@/types";
+
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
 import { ArrowUpRight } from "lucide-react";
@@ -10,11 +12,7 @@ export default function TopRankCard({
   rank,
   item,
   onDetailClick,
-}: {
-  rank: number;
-  item: RankedItem;
-  onDetailClick: () => void;
-}) {
+}: TopRankCardProps) {
   const isFirst = rank === 1;
   const suffix = ["ST", "ND", "RD"][rank - 1] || "TH";
 
@@ -99,11 +97,7 @@ export default function TopRankCard({
             </span>
           </div>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDetailClick();
-            }}
+          <div
             aria-label={`${rank}위 ${item?.meetName || "모임"} 상세 보기`}
             className={cn(
               "group/btn flex size-12 shrink-0 items-center justify-center rounded-full shadow-lg transition-all active:scale-95",
@@ -113,7 +107,7 @@ export default function TopRankCard({
             )}
           >
             <ArrowUpRight className="size-6 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 group-hover/btn:scale-110" />
-          </button>
+          </div>
         </div>
       </div>
     </Card>
