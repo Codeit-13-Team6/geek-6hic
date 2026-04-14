@@ -18,7 +18,7 @@ import { DeleteModal } from "@/components/ui/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ChessQueenIcon, Share2Icon, Users2 } from "lucide-react";
+import { ChessQueenIcon, Crown, Lock, Share2Icon, Users2 } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -117,7 +117,6 @@ export function MeetingHeaderSection({
   };
 
   const isSecret = isSecretMeeting(detail.dateTime);
-  const showSecretLock = !isAuthLoading && isSecret && !isHost && !isJoined;
 
   const action = (() => {
     if (!isLoggedIn) {
@@ -185,13 +184,26 @@ export function MeetingHeaderSection({
             className="object-cover transition-transform duration-700"
           />
           {isHost && (
-            <div className="absolute top-5 left-5 z-10 rounded-2xl bg-emerald-100 p-3 shadow-sm">
-              <ChessQueenIcon className="h-5 w-5 text-emerald-400" />
+            <div className="absolute top-5 left-5 z-10 shrink-0">
+              <div className="flex items-center gap-1.5 rounded-full border-slate-700/50 bg-slate-900/90 p-3 shadow-sm backdrop-blur-md">
+                <Crown
+                  className="size-4 text-amber-200 sm:size-5"
+                  strokeWidth={2.3}
+                  aria-hidden="true"
+                />
+              </div>
             </div>
           )}
-          {showSecretLock && !isHost && !isJoined && (
-            <div className="absolute top-3 left-3 flex items-center justify-center rounded-full p-2 text-[32px] backdrop-blur-sm">
-              🔒
+          {isSecret && !isJoined && !isHost && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+                  <Lock className="size-5 text-slate-300" />
+                </div>
+                <span className="text-xs font-bold tracking-[0.2em] text-slate-300">
+                  SECRET
+                </span>
+              </div>
             </div>
           )}
         </div>
@@ -201,8 +213,8 @@ export function MeetingHeaderSection({
             <div className="flex items-start justify-between">
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start gap-3">
-                  <h1 className="truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 sm:text-3xl xl:text-4xl">
-                    {detail.name}
+                  <h1 className="flex items-center gap-2.5 truncate text-2xl leading-tight font-black tracking-tighter break-keep text-slate-950 md:text-3xl">
+                    <span className="truncate">{detail.name}</span>
                   </h1>
                 </div>
               </div>
@@ -311,7 +323,7 @@ export function MeetingHeaderSection({
 
               <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-purple-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
+                  className="bg-main-purple-light h-full rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)] transition-all duration-1000 ease-out"
                   style={{ width: `${progressValue}%` }}
                 />
               </div>

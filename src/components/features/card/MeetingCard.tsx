@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { HeartIcon } from "../../icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { Calendar } from "lucide-react";
+import { Calendar, Crown, Lock } from "lucide-react";
 import { isSecretMeeting } from "@/lib/meetingSecret";
 import { useAuthStore } from "@/store/useAuthStore";
 import crownLgIcon from "@/assets/icon/crown/crown-lg.svg";
@@ -74,41 +74,39 @@ export default function MeetingCard({
           )}
           alt={`${item.name} 모임 이미지`}
         />
+        {/* 1. 블러 글래스모피즘 */}
         {isSecret && (
-          <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
-            <div className="absolute top-[15%] -left-[20%] flex w-[160%] rotate-[-20deg] items-center justify-center gap-1.5 bg-slate-900/80 py-1 text-[10px] font-bold tracking-[0.3em] text-white shadow-md backdrop-blur-sm">
-              🔒 SECRET · SECRET · SECRET
-            </div>
-            <div className="absolute top-[45%] -left-[20%] flex w-[160%] rotate-[15deg] items-center justify-center gap-1.5 bg-slate-900/80 py-1 text-[10px] font-bold tracking-[0.3em] text-white shadow-md backdrop-blur-sm">
-              SECRET · 🔒 · SECRET · SECRET
-            </div>
-            <div className="absolute top-[72%] -left-[20%] flex w-[160%] rotate-[-8deg] items-center justify-center gap-1.5 bg-slate-900/80 py-1 text-[10px] font-bold tracking-[0.3em] text-white shadow-md backdrop-blur-sm">
-              SECRET · SECRET 🔒 SECRET
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+                <Lock className="size-5 text-slate-300" />
+              </div>
+              <span className="text-xs font-bold tracking-[0.2em] text-slate-300">
+                SECRET
+              </span>
             </div>
           </div>
         )}
         {statusLabel === "참여중" ? (
           meetingStatusBadgeVisible && (
-            <span className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-lg bg-slate-900/80 px-3 py-1.5 text-[11px] font-bold text-slate-100 shadow-sm backdrop-blur-md">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-              {statusLabel}
-            </span>
+            <div className="absolute top-5 left-5 z-10 flex items-center gap-1.5 rounded-full border border-slate-700/50 bg-slate-900/80 px-3 py-1.5 shadow-sm backdrop-blur-md sm:top-3 sm:left-3">
+              <span className="bg-point-green h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(0,210,135,0.8)]"></span>
+              <span className="text-[11px] font-bold tracking-widest text-slate-200">
+                참여중
+              </span>
+            </div>
           )
         ) : statusLabel === "모임장" ? (
-          <div className="absolute top-3 left-3 z-10 shrink-0 rounded-full bg-amber-100 p-1.5 shadow-sm">
-            <Image
-              src={crownLgIcon}
-              alt=""
-              width={20}
-              height={20}
-              className="xl:size-6"
-              aria-hidden="true"
-            />
+          <div className="absolute top-5 left-5 z-10 shrink-0 sm:top-3 sm:left-3">
+            <div className="flex items-center gap-1.5 rounded-full border-slate-700/50 bg-slate-900/90 p-2 shadow-sm backdrop-blur-md">
+              <Crown
+                className="size-4 text-amber-200"
+                strokeWidth={2.3}
+                aria-hidden="true"
+              />
+            </div>
           </div>
-        ) : (
-          // <span></span>
-          null
-        )}
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col justify-between p-5 sm:p-7">
@@ -132,7 +130,7 @@ export default function MeetingCard({
               });
             }}
             size={22}
-            className="absolute top-4 right-4 cursor-pointer"
+            className="sm: absolute right-3 bottom-30.5 cursor-pointer sm:top-2 sm:right-5"
           />
         </div>
 

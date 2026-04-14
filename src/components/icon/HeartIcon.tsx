@@ -28,7 +28,7 @@ export function HeartIcon({
       onClick={(e) => onClick?.(e)}
       disabled={disabled}
       className={cn(
-        "group relative flex items-center justify-center rounded-full p-2",
+        "group relative z-20 flex items-center justify-center rounded-full p-2",
         "transition-all duration-300 ease-out",
         "hover:bg-main-purple/5 active:scale-90",
         disabled && "cursor-not-allowed opacity-40",
