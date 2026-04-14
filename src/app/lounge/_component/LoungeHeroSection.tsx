@@ -36,7 +36,7 @@ export function LoungeHeroSection() {
       </div>
 
       <div className="line-spread mt-8 mb-10 flex w-full justify-center sm:mt-10 sm:mb-15 lg:my-15">
-        <div className="h-[2px] w-full origin-center bg-gray-950" />
+        <div className="h-[1.5px] w-full origin-center bg-gray-950" />
       </div>
     </div>
   );

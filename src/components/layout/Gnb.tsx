@@ -39,7 +39,7 @@ const isNavActive = (pathname: string, href: string, exact?: boolean) => {
 };
 
 interface GnbProps {
-  initialUser?: { id: number; name: string; image: string | null } | null;
+  initialUser?: { id: number; name: string; image?: string | null } | null;
 }
 
 export function Gnb({ initialUser }: GnbProps) {

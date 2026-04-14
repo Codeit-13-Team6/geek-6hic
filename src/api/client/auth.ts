@@ -3,6 +3,8 @@ import type { User } from "@/types";
 import type { SignUpFormValues } from "@/types";
 import axiosInstance from "@/lib/clientFetcher";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 // 로그인 응답 타입 정의
 export interface LoginResult {
   ok: boolean;
@@ -11,6 +13,11 @@ export interface LoginResult {
 
 export interface SignUpResult {
   ok: boolean;
+}
+
+export interface OAuthTokenPair {
+  accessToken: string;
+  refreshToken: string;
 }
 
 // 클라이언트 로그인 BFF 호출 함수
@@ -37,6 +44,25 @@ export async function signupUser(
     withCredentials: true,
   });
 
+  return res.data;
+}
+
+export async function exchangeGoogleToken(
+  token: string,
+): Promise<OAuthTokenPair> {
+  if (!API_BASE_URL) {
+    throw new Error("missing_api_url");
+  }
+
+  const res = await axios.post<OAuthTokenPair>(`${API_BASE_URL}/oauth/google`, {
+    token,
+  });
+
+  return res.data;
+}
+
+export async function bindAuthTokens(tokens: OAuthTokenPair): Promise<LoginResult> {
+  const res = await axiosInstance.post("/auth/token", tokens);
   return res.data;
 }
 
