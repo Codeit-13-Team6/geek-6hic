@@ -25,9 +25,9 @@ export default async function Page() {
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-15 lg:py-20 2xl:px-0">
       <MyMeetingsHeroSection />
 
-      <div className="animate-fade-up mb-10 flex items-center gap-3">
-        <div className="bg-main-purple h-[6px] w-8 rounded-full" />
-        <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase">
+      <div className="animate-fade-up mb-8 flex items-center gap-3 sm:mb-10">
+        <div className="bg-main-purple h-[6px] w-8 rounded-full shadow-sm" />
+        <span className="text-[11px] font-black tracking-[0.3em] text-slate-950 uppercase sm:text-xs">
           Joined List
         </span>
       </div>

@@ -11,7 +11,24 @@ export default function RankingListSkeleton() {
         </div>
       </div>
 
-      {/* 데스크톱 Top 3 카드 */}
+      <section className="mb-10 sm:mb-12">
+        <div className="flex w-full items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-full bg-slate-200" />
+            {/* 텍스트 줄 */}
+            <div className="h-4 w-48 rounded bg-slate-200 sm:w-64" />
+          </div>
+          {/* 우측 아이콘 */}
+          <div className="size-5 w-14 rounded bg-slate-200" />
+        </div>
+      </section>
+
+      <div className="mb-10 flex items-center gap-3 md:mb-15">
+        <div className="h-[6px] w-8 rounded-full bg-slate-200" />
+        <div className="h-3 w-28 rounded bg-slate-200" />
+      </div>
+
+      {/* 기존: 데스크톱 Top 3 카드 */}
       <section className="mb-10 md:mb-15">
         <div className="hidden items-end gap-6 md:flex lg:gap-10">
           {[false, true, false].map((isFirst, i) => (
@@ -40,7 +57,7 @@ export default function RankingListSkeleton() {
           ))}
         </div>
 
-        {/* 모바일 Top 3 카드 */}
+        {/* 기존: 모바일 Top 3 카드 */}
         <div className="flex flex-col gap-3 md:hidden">
           {[200, 150, 150].map((h, i) => (
             <div
@@ -62,7 +79,7 @@ export default function RankingListSkeleton() {
         </div>
       </section>
 
-      {/* 4~10위 리스트 */}
+      {/* 기존: 4~10위 리스트 */}
       <section className="flex flex-col gap-1 sm:gap-2">
         {Array.from({ length: 7 }).map((_, i) => (
           <div
