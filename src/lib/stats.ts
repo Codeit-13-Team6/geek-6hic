@@ -7,9 +7,9 @@ import type {
   MyMeetingsPageResponse,
   ParticipantStats,
 } from "@/types";
-import { serverAxios } from "@/lib/serverFetcher";
 import { getMyMeetings } from "@/api/server/favorites";
 import { getMyPostsServer } from "@/api/server/posts";
+import { getMeetingsCursorPageForStats } from "@/api/server/stats";
 import {
   getUserMeetingsPageServer,
   getUserPostsPageServer,
@@ -264,18 +264,10 @@ export async function getDetailedParticipantStats({
     );
   }
 
-  return collectParticipantStatsFromCursorPages(async (cursor) => {
-    const { data } = await serverAxios.get<GetMeetingsResponse>("/meetings", {
-      params: {
-        sortBy: "dateTime",
-        sortOrder: "desc",
-        size: MEETING_SCAN_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    return data;
-  }, userId);
+  return collectParticipantStatsFromCursorPages(
+    (cursor) => getMeetingsCursorPageForStats(cursor, MEETING_SCAN_SIZE),
+    userId,
+  );
 }
 
 export async function getCreatedMeetingsByUser({
@@ -286,19 +278,14 @@ export async function getCreatedMeetingsByUser({
   userId: number;
 }): Promise<CreatedMeetingSummary[]> {
   if (isOwnProfile) {
-    return collectCreatedMeetingsFromOffsetPages(getMyMeetings, MEETING_SCAN_SIZE);
+    return collectCreatedMeetingsFromOffsetPages(
+      getMyMeetings,
+      MEETING_SCAN_SIZE,
+    );
   }
 
-  return collectCreatedMeetingsFromCursorPages(async (cursor) => {
-    const { data } = await serverAxios.get<GetMeetingsResponse>("/meetings", {
-      params: {
-        sortBy: "dateTime",
-        sortOrder: "desc",
-        size: MEETING_SCAN_SIZE,
-        ...(cursor ? { cursor } : {}),
-      },
-    });
-
-    return data;
-  }, userId);
+  return collectCreatedMeetingsFromCursorPages(
+    (cursor) => getMeetingsCursorPageForStats(cursor, MEETING_SCAN_SIZE),
+    userId,
+  );
 }
