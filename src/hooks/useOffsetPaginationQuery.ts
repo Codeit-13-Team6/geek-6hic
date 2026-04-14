@@ -7,9 +7,13 @@ import type { OffsetResponse } from "@/types";
 interface UseOffsetPaginationQueryParams<T> {
   pageSize: number;
   queryKey: (page: number, pageSize: number) => readonly unknown[];
-  queryFn: (params: { offset: number; limit: number }) => Promise<OffsetResponse<T>>;
+  queryFn: (params: {
+    offset: number;
+    limit: number;
+  }) => Promise<OffsetResponse<T>>;
   enabled?: boolean;
   staleTime?: number;
+  scrollTargetId?: string;
 }
 
 export function useOffsetPaginationQuery<T>({
@@ -18,6 +22,7 @@ export function useOffsetPaginationQuery<T>({
   queryFn,
   enabled = true,
   staleTime = 1000 * 60 * 5,
+  scrollTargetId,
 }: UseOffsetPaginationQueryParams<T>) {
   const [page, setPage] = useState(1);
   const currentOffset = (page - 1) * pageSize;
@@ -47,6 +52,21 @@ export function useOffsetPaginationQuery<T>({
   const handlePageChange = (targetPage: number) => {
     if (targetPage < 1 || targetPage > totalPages) return;
     setPage(targetPage);
+
+    if (scrollTargetId) {
+      const targetElement = document.getElementById(scrollTargetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: "instant",
+          block: "start",
+        });
+      }
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "instant",
+      });
+    }
   };
 
   return {

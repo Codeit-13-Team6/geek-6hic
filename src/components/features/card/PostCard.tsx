@@ -53,7 +53,7 @@ export default function PostCard({
             </span>
           </div>
 
-          <h3 className="sm:group-hover:text-main-purple line-clamp-2 text-lg font-extrabold tracking-tighter text-slate-950 transition-colors sm:text-xl lg:text-2xl">
+          <h3 className="sm:group-hover:text-main-purple line-clamp-2 text-lg font-extrabold tracking-tighter text-slate-950 transition-colors md:text-xl">
             {title}
           </h3>
 
