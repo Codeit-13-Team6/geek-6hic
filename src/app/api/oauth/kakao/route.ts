@@ -1,24 +1,10 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
+import type { OAuthLoginResult } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;
 const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET;
-
-type OAuthLoginResult = {
-  user: {
-    id: number;
-    teamId: string;
-    email: string;
-    name: string;
-    companyName: string;
-    image: string | null;
-    createdAt: string;
-    updatedAt: string;
-  };
-  accessToken: string;
-  refreshToken: string;
-};
 
 export async function POST(request: Request) {
   const { code } = (await request.json()) as { code?: string };
