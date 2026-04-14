@@ -20,6 +20,10 @@ export interface OAuthTokenPair {
   refreshToken: string;
 }
 
+export interface OAuthLoginResult extends OAuthTokenPair {
+  user: User;
+}
+
 // 클라이언트 로그인 BFF 호출 함수
 export async function loginUser(data: {
   email: string;
@@ -47,14 +51,14 @@ export async function signupUser(
   return res.data;
 }
 
-export async function exchangeGoogleToken(
+export async function loginWithGoogleToken(
   token: string,
-): Promise<OAuthTokenPair> {
+): Promise<OAuthLoginResult> {
   if (!API_BASE_URL) {
     throw new Error("missing_api_url");
   }
 
-  const res = await axios.post<OAuthTokenPair>(`${API_BASE_URL}/oauth/google`, {
+  const res = await axios.post<OAuthLoginResult>(`${API_BASE_URL}/oauth/google`, {
     token,
   });
 
@@ -63,6 +67,16 @@ export async function exchangeGoogleToken(
 
 export async function bindAuthTokens(tokens: OAuthTokenPair): Promise<LoginResult> {
   const res = await axiosInstance.post("/auth/token", tokens);
+  return res.data;
+}
+
+export async function loginWithKakaoCode(
+  code: string,
+): Promise<OAuthLoginResult> {
+  const res = await axiosInstance.post<OAuthLoginResult>("/oauth/kakao", {
+    code,
+  });
+
   return res.data;
 }
 

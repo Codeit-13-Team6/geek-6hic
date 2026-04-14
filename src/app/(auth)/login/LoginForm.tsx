@@ -10,7 +10,7 @@ import { BtnCommon } from "@/components/ui/BtnCommon";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
-import { bindAuthTokens, exchangeGoogleToken, loginUser } from "@/api/client";
+import { bindAuthTokens, loginUser, loginWithGoogleToken } from "@/api/client";
 import { requestGoogleAccessToken } from "@/lib/googleAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
@@ -82,7 +82,24 @@ export default function LoginForm({
   const handleKakaoLogin = () => {
     setIsOAuthLoading("kakao");
     saveReturnUrl();
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/kakao?redirect=${encodeURIComponent(window.location.origin + "/oauth/callback")}`;
+
+    const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;
+    const kakaoRedirectUri = `${window.location.origin}/oauth/kakao`;
+
+    if (!kakaoClientId) {
+      setError("Kakao 로그인 설정이 올바르지 않습니다.");
+      setIsOAuthLoading(null);
+      return;
+    }
+
+    const kakaoAuthorizeUrl = new URL(
+      "https://kauth.kakao.com/oauth/authorize",
+    );
+    kakaoAuthorizeUrl.searchParams.set("client_id", kakaoClientId);
+    kakaoAuthorizeUrl.searchParams.set("redirect_uri", kakaoRedirectUri);
+    kakaoAuthorizeUrl.searchParams.set("response_type", "code");
+
+    window.location.href = kakaoAuthorizeUrl.toString();
   };
 
   const handleGoogleLogin = () => {
@@ -103,9 +120,12 @@ export default function LoginForm({
         const googleAccessToken =
           await requestGoogleAccessToken(googleClientId);
         // 2. 액세스 토큰으로 백엔드에서 인증 처리 및 JWT 토큰 발급
-        const tokens = await exchangeGoogleToken(googleAccessToken);
+        const oauthResult = await loginWithGoogleToken(googleAccessToken);
         // 3. 발급된 토큰으로 클라이언트 로그인 처리
-        const data = await bindAuthTokens(tokens);
+        const data = await bindAuthTokens({
+          accessToken: oauthResult.accessToken,
+          refreshToken: oauthResult.refreshToken,
+        });
 
         if (!data.ok) {
           throw new Error("login_failed");
