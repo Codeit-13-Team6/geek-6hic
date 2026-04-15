@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useGetHotPosts } from "../hooks/queries/usePosts";
 import HotPostList from "@/app/lounge/_component/HotPostList";
 import HotPostListSkeleton from "@/components/skeleton/HotPostListSkeleton";
+import { useGetHotPosts } from "@/hooks";
 
 const mockPush = jest.fn();
 
@@ -12,7 +12,7 @@ jest.mock("next/navigation", () => ({
   }),
 }));
 
-jest.mock("../hooks/queries/usePosts", () => ({
+jest.mock("@/hooks/queries/usePosts", () => ({
   useGetHotPosts: jest.fn(),
 }));
 
