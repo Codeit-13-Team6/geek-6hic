@@ -1,6 +1,6 @@
 export default function LoungeSkeleton() {
   return (
-    <div className="w-full animate-pulse">
+    <div className="w-full animate-pulse" role="status">
       <section className="mt-8 flex flex-col sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex w-full flex-row items-center gap-3 sm:max-w-[500px]">
           <div className="h-[50px] w-full rounded-full bg-gray-100"></div>
