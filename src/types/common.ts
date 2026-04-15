@@ -7,6 +7,7 @@ export interface ModalCommonProps {
   title?: string;
   titleClassName?: string;
   contentClassName?: string;
+  closeButtonClassName?: string;
   disablePointerDismissal?: boolean;
 }
 

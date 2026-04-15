@@ -17,7 +17,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-// 도넛 차트와 완전히 동일한 브랜드 컬러 유지
 const chartConfig = {
   visitors: { label: "참여자 수" },
   team: { label: "팀미팅", color: "#06b6d4" },
@@ -39,7 +38,6 @@ interface ParticipantBarChartProps {
 
 export function ParticipantBarChart({ stats }: ParticipantBarChartProps) {
   const chartData = React.useMemo(() => {
-    // ✨ 정렬(sort)을 빼고, 원하시는 순서대로 배열을 고정했습니다.
     return [
       {
         type: "team",
@@ -78,23 +76,38 @@ export function ParticipantBarChart({ stats }: ParticipantBarChartProps) {
     <ChartContainer config={chartConfig} className="h-full w-full">
       <BarChart
         data={chartData}
-        // ✨ 라벨이 없으므로 마진을 최소화해서 아래 박스와 밀착시킵니다.
         margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
       >
         <CartesianGrid horizontal={false} vertical={false} />
 
-        {/* ✨ X축과 Y축의 모든 텍스트/선을 지워 차트 자체만 남깁니다. */}
         <XAxis hide />
         <YAxis hide />
 
         <ChartTooltip
-          cursor={{ fill: "rgba(241, 245, 249, 0.5)" }}
-          content={
-            <ChartTooltipContent
-              hideLabel
-              formatter={(value) => `${value}명`}
-            />
-          }
+          cursor={{ fill: "rgba(241, 245, 249, 0.6)", radius: 4 }}
+          content={({ active, payload }) => {
+            if (active && payload && payload.length) {
+              const data = payload[0].payload;
+              return (
+                <div className="flex items-center gap-3 rounded-[16px] border border-slate-100 bg-white/95 px-3 py-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+                  <div
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: data.fill }}
+                  />
+                  <span className="text-[13px] font-semibold text-slate-600">
+                    {data.label}
+                  </span>
+                  <span
+                    className="text-[14px] font-black"
+                    style={{ color: data.fill }}
+                  >
+                    {data.visitors}명
+                  </span>
+                </div>
+              );
+            }
+            return null;
+          }}
         />
 
         <Bar dataKey="visitors" radius={[4, 4, 4, 4]} barSize={18}></Bar>

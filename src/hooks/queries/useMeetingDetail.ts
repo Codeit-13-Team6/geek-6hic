@@ -228,8 +228,6 @@ export const useMeetingAttendMutation = (meetingId: number) => {
     mutationFn: attendMeeting,
     onSuccess: () => {
       setHasAttended(true);
-
-      ToastCommon({ message: "출석이 완료되었습니다.", type: "success" });
     },
     onError: () => {
       ToastCommon({
