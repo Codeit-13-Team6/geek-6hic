@@ -7,7 +7,7 @@ import crew1 from "@/assets/img/crew/crew1.png";
 import crew3 from "@/assets/img/crew/crew3.png";
 import crew4 from "@/assets/img/crew/crew4.png";
 import crew5 from "@/assets/img/crew/crew5.png";
-import wsa from "@/assets/img/character/wsa.png";
+import wsa from "@/assets/img/character/WSA.png";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
