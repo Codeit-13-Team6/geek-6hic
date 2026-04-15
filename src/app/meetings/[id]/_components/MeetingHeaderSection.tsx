@@ -446,41 +446,52 @@ export function MeetingHeaderSection({
       <AnimatePresence>
         {isAnimating && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 top-0 left-0 z-[999] flex items-start justify-center"
+            initial={{ opacity: 0, x: "-50%", scale: 0.8 }}
+            animate={{ opacity: 1, x: "-50%", scale: 1 }}
+            exit={{ opacity: 0, x: "-50%", scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="fixed top-[5%] left-1/2 z-[9999] flex w-[calc(100%-2rem)] max-w-[380px] flex-col items-center rounded-[32px] border-2 border-blue-200 bg-blue-50 px-6 py-7 shadow-xl shadow-blue-900/5"
           >
+            <Lottie
+              animationData={checkAnim}
+              loop={false}
+              className="h-24 w-24"
+              onComplete={() => {
+                setIsAnimating(false);
+                setShowReward({
+                  show: false,
+                  point: 0,
+                });
+              }}
+            />
+
             <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 24, scale: 0.96 }}
-              transition={{ duration: 0.25 }}
-              className="mx-4 flex w-full max-w-[320px] flex-col items-center rounded-[32px] bg-white px-8 py-10 shadow-2xl"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="mt-1 flex flex-col items-center text-center"
             >
-              <Lottie
-                animationData={checkAnim}
-                loop={false}
-                className="h-28 w-28"
-                onComplete={() => {
-                  setIsAnimating(false);
-                  setShowReward({
-                    show: false,
-                    point: 0,
-                  });
-                }}
-              />
+              <p className="mb-1 text-[15px] font-bold text-slate-500">
+                랜덤 출석 포인트를 받았습니다!
+              </p>
 
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.25 }}
-                className="mt-2 text-center"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: 0.2,
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 15,
+                }}
+                className="flex items-baseline justify-center gap-1"
               >
-                <p className="text-lg font-black text-slate-900">출석 완료</p>
-                <p className="text-main-purple mt-2 text-base font-bold">
-                  +{showReward.point} 포인트
-                </p>
+                <span className="bg-gradient-to-br from-blue-500 to-indigo-600 bg-clip-text text-[36px] font-black tracking-tighter text-transparent drop-shadow-sm">
+                  +{showReward.point}
+                </span>
+                <span className="text-[18px] font-extrabold text-indigo-600">
+                  P
+                </span>
               </motion.div>
             </motion.div>
           </motion.div>
