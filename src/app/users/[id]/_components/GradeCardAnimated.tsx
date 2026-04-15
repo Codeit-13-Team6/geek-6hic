@@ -2,14 +2,14 @@
 
 import Image, { type StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
-import lpaCharacterImg from "@/assets/icon/character/LPA.png";
-import lpiCharacterImg from "@/assets/icon/character/LPI.png";
-import lsaCharacterImg from "@/assets/icon/character/LSA.png";
-import lsiCharacterImg from "@/assets/icon/character/LSI.png";
-import wpaCharacterImg from "@/assets/icon/character/WPA.png";
-import wpiCharacterImg from "@/assets/icon/character/WPI.png";
-import wsaCharacterImg from "@/assets/icon/character/WSA.png";
-import wsiCharacterImg from "@/assets/icon/character/WSI.png";
+import lpaCharacterImg from "@/assets/icon/character/lpa.png";
+import lpiCharacterImg from "@/assets/icon/character/lpi.png";
+import lsaCharacterImg from "@/assets/icon/character/lsa.png";
+import lsiCharacterImg from "@/assets/icon/character/lsi.png";
+import wpaCharacterImg from "@/assets/icon/character/wpa.png";
+import wpiCharacterImg from "@/assets/icon/character/wpi.png";
+import wsaCharacterImg from "@/assets/icon/character/wsa.png";
+import wsiCharacterImg from "@/assets/icon/character/wsi.png";
 
 const SPRINTER_CHARACTERS: Array<{ label: string; imgUrl: StaticImageData }> = [
   { label: "열정적인 캡틴", imgUrl: lpiCharacterImg },
