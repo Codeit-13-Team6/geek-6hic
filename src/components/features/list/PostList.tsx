@@ -79,7 +79,7 @@ export default function PostList() {
             ))}
           </div>
         ) : (
-          <NoResultFound />
+          <NoResultFound type="lounge" />
         )}
       </div>
 
