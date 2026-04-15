@@ -14,6 +14,7 @@ import { bindAuthTokens, loginUser, loginWithGoogleToken } from "@/api/client";
 import { requestGoogleAccessToken } from "@/lib/googleAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { ToastCommon } from "@/components/ui/ToastCommon";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -71,6 +72,11 @@ export default function LoginForm({
       }
     } catch {
       setError("로그인 실패. 다시 시도해주세요.");
+      ToastCommon({
+        message: "로그인 실패. 다시 시도해주세요.",
+        type: "error",
+      });
+
       setIsLoading(false);
     }
   };
@@ -88,6 +94,10 @@ export default function LoginForm({
 
     if (!kakaoClientId) {
       setError("Kakao 로그인 설정이 올바르지 않습니다.");
+      ToastCommon({
+        message: "Kakao 로그인 설정이 올바르지 않습니다.",
+        type: "error",
+      });
       setIsOAuthLoading(null);
       return;
     }
@@ -110,6 +120,10 @@ export default function LoginForm({
 
     if (!googleClientId) {
       setError("Google 로그인 설정이 올바르지 않습니다.");
+      ToastCommon({
+        message: "Google 로그인 설정이 올바르지 않습니다.",
+        type: "error",
+      });
       setIsOAuthLoading(null);
       return;
     }
@@ -142,6 +156,10 @@ export default function LoginForm({
         }
       } catch {
         setError("Google 로그인 실패. 다시 시도해주세요.");
+        ToastCommon({
+          message: "Google 로그인 실패. 다시 시도해주세요.",
+          type: "error",
+        });
         setIsOAuthLoading(null);
       }
     })();
