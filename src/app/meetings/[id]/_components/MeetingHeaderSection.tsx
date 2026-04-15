@@ -341,21 +341,22 @@ export function MeetingHeaderSection({
             isOpen={isParticipantsModalOpen}
             onOpenChange={setIsParticipantsModalOpen}
             title={`참여자 목록 (${detail.participantCount})`}
-            contentClassName="max-w-[310px] rounded-[32px]"
-            titleClassName="text-lg font-bold mb-5"
+            closeButtonClassName="top-5 right-5"
+            contentClassName="max-w-[340px] rounded-[32px]"
+            titleClassName="text-[18px] font-extrabold text-slate-800 mb-3 px-1 border-b border-slate-200 pb-4"
           >
-            <div className="custom-scrollbar flex max-h-[400px] flex-col gap-2 overflow-y-auto pr-2">
+            <div className="custom-scrollbar flex max-h-[380px] flex-col gap-1.5 overflow-y-auto pr-1 pb-2">
               {participants.map((participant) => (
                 <div
                   key={participant.user.id}
-                  className="flex items-center justify-between rounded-2xl transition-colors hover:bg-slate-50 sm:py-3"
+                  className="group flex items-center justify-between rounded-[20px] p-2.5 transition-all duration-200 hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3.5">
                     <button
                       onClick={() =>
                         router.push(`/users/${participant.user.id}`)
                       }
-                      className="relative size-10 overflow-hidden rounded-full border border-slate-100"
+                      className="group-hover:border-main-purple/20 focus-visible:ring-main-purple relative size-11 shrink-0 overflow-hidden rounded-full border border-slate-100 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_12px_rgba(109,40,217,0.15)] focus-visible:ring-2 focus-visible:outline-none"
                     >
                       <FallbackImage
                         src={
@@ -369,19 +370,24 @@ export function MeetingHeaderSection({
                         className="object-cover"
                       />
                     </button>
-                    <span className="text-base font-bold text-slate-700">
+
+                    <span className="text-[15px] font-bold text-slate-700 transition-colors group-hover:text-slate-900">
                       {participant.user.name || "사용자"}
                     </span>
                   </div>
+
                   {participant.userId === detail.hostId && (
-                    <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      HOST
-                    </span>
+                    <div className="bg-main-purple/10 border-main-purple/10 flex items-center gap-1 rounded-[12px] border px-2.5 py-1.5 shadow-sm">
+                      <span className="text-main-purple mt-0.5 text-[10px] font-black tracking-wider uppercase">
+                        Host
+                      </span>
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           </ModalBase>
+
           {isHost && isSecretMeeting(detail.dateTime) && (
             <div className="mt-5 flex items-center justify-between rounded-[20px] bg-purple-50 px-5 py-4">
               <div>
@@ -402,7 +408,7 @@ export function MeetingHeaderSection({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
-                    size: "lg",
+                    type: isCopied ? "success" : "error",
                   });
                 }}
                 className="text-main-purple-point rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold transition hover:bg-purple-200"
@@ -525,7 +531,6 @@ export function MeetingHeaderSection({
             </p>
           </div>
 
-          {/* 2. 인풋 영역: 양옆 여백을 살짝 주어 모달 안에서 안정감 있게 배치 */}
           <div className="px-1">
             <InputCommon
               label="비밀 코드"
@@ -540,7 +545,6 @@ export function MeetingHeaderSection({
             />
           </div>
 
-          {/* 3. 버튼 영역: 그림자, 호버 시 떠오르는 효과, 클릭 시 눌리는 애니메이션 추가 */}
           <BtnCommon
             type="button"
             size="md"
