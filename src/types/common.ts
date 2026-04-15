@@ -35,6 +35,8 @@ export interface SideBarProps {
 export interface TabsLineProps {
   tabs: TabItem[];
   defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   /**   children 사용 방법 간략하게 작성 , ui/tabs 에서 TabsContent 를 import 해서 사용해야함
    *  <Tab>
    *     <TabsContent value="liked">

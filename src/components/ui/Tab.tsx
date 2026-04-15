@@ -24,9 +24,20 @@ const triggerSize = cn(
   "md:h-16 md:w-[160px] md:text-base",
 );
 
-function Tab({ tabs, defaultValue, children }: TabsLineProps) {
+function Tab({
+  tabs,
+  defaultValue,
+  value,
+  onValueChange,
+  children,
+}: TabsLineProps) {
   return (
-    <Tabs defaultValue={defaultValue ?? tabs[0]?.value} className={tabsRoot}>
+    <Tabs
+      defaultValue={defaultValue ?? tabs[0]?.value}
+      value={value}
+      onValueChange={onValueChange}
+      className={tabsRoot}
+    >
       <TabsList variant="line" className={lineList}>
         {tabs.map((tab) => (
           <TabsTrigger
