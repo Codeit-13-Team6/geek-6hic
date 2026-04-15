@@ -18,7 +18,14 @@ import { DeleteModal } from "@/components/modal/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ChessQueenIcon, Crown, Lock, Share2Icon, Users2 } from "lucide-react";
+import {
+  ChessQueenIcon,
+  Crown,
+  Lock,
+  LockKeyholeIcon,
+  Share2Icon,
+  Users2,
+} from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -501,23 +508,39 @@ export function MeetingHeaderSection({
           }
         }}
         title="비밀 모임 참여"
+        titleClassName="text-lg font-bold"
+        closeButtonClassName="top-5 right-5"
         contentClassName="max-w-[400px] rounded-[32px]"
       >
-        <div className="flex flex-col gap-5 pb-4">
-          <p className="text-sm text-slate-500">
-            호스트에게 비밀 코드를 받아 입력해 주세요.
-          </p>
-          <InputCommon
-            label="비밀 코드"
-            placeholder="비밀 코드를 입력해 주세요"
-            value={secretInput}
-            onChange={(e) => {
-              setSecretInput(e.target.value);
-              setSecretError("");
-            }}
-            isDestructive={Boolean(secretError)}
-            hintText={secretError}
-          />
+        <div className="flex flex-col gap-6 pt-2 pb-2">
+          <div className="flex flex-col items-center justify-center gap-1.5 rounded-[24px] border border-slate-100/50 bg-slate-50/80 px-4 py-5 text-center">
+            <LockKeyholeIcon className="mb-3 h-6 w-6 text-slate-500" />
+            <p className="text-[15px] font-bold text-slate-700">
+              프라이빗 모임에 입장합니다
+            </p>
+            <p className="text-[13px] font-medium text-slate-500">
+              호스트에게 전달받은{" "}
+              <span className="text-main-purple font-bold">비밀 코드</span>를
+              입력해 주세요.
+            </p>
+          </div>
+
+          {/* 2. 인풋 영역: 양옆 여백을 살짝 주어 모달 안에서 안정감 있게 배치 */}
+          <div className="px-1">
+            <InputCommon
+              label="비밀 코드"
+              placeholder="비밀 코드를 입력해 주세요"
+              value={secretInput}
+              onChange={(e) => {
+                setSecretInput(e.target.value);
+                setSecretError("");
+              }}
+              isDestructive={Boolean(secretError)}
+              hintText={secretError}
+            />
+          </div>
+
+          {/* 3. 버튼 영역: 그림자, 호버 시 떠오르는 효과, 클릭 시 눌리는 애니메이션 추가 */}
           <BtnCommon
             type="button"
             size="md"
@@ -530,13 +553,12 @@ export function MeetingHeaderSection({
               setIsSecretModalOpen(false);
               handleJoinMeeting();
             }}
-            className="bg-main-purple hover:bg-main-purple/80 h-14 w-full !rounded-[20px] font-bold text-white"
+            className="bg-main-purple hover:bg-main-purple/90 h-14 w-full !rounded-[20px] text-[16px] font-bold text-white shadow-[0_8px_20px_rgba(109,40,217,0.15)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(109,40,217,0.2)] active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
           >
             참여하기
           </BtnCommon>
         </div>
       </ModalBase>
-
       <ConfirmModal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
