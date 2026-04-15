@@ -2,7 +2,7 @@
 name: "🧪 Test: 테스트 코드 작성"
 about: 단위 테스트, E2E 테스트 및 기능 검증 로직 추가
 title: "[TEST] "
-labels: "test"
+labels: "tests"
 ---
 
 ## 🔍 Test Details
