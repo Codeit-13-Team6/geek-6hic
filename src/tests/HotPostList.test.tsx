@@ -100,7 +100,7 @@ describe("HotPostList 컴포넌트 기능 테스트", () => {
       expect(screen.getByText(/인기글을 불러오는 중/i)).toBeInTheDocument();
     });
 
-    // 2. 에러 테스트 (ErrorBoundary 용)
+    // 2. 에러 테스트 (ErrorBoundary)
     it("데이터 패칭 실패 시 에러를 던져야 한다", () => {
       (useGetHotPosts as jest.Mock).mockImplementation(() => {
         throw new Error("서버 에러");
