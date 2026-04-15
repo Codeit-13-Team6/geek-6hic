@@ -1,14 +1,14 @@
 import type { StaticImageData } from "next/image";
 import type { UserType } from "@/lib/userType";
-import lpiCharacterImg from "@/assets/img/character/LPI.png";
-import lpaCharacterImg from "@/assets/img/character/LPA.png";
-import lsaCharacterImg from "@/assets/img/character/LSA.png";
-import lsiCharacterImg from "@/assets/img/character/LSI.png";
-import wpaCharacterImg from "@/assets/img/character/WPA.png";
-import wpiCharacterImg from "@/assets/img/character/WPI.png";
-import wsaCharacterImg from "@/assets/img/character/WSA.png";
-import wsiCharacterImg from "@/assets/img/character/WSI.png";
-import seedCharacterImg from "@/assets/img/character/SEED.png";
+import lpiCharacterImg from "@/assets/img/character/lpi.png";
+import lpaCharacterImg from "@/assets/img/character/lpa.png";
+import lsaCharacterImg from "@/assets/img/character/lsa.png";
+import lsiCharacterImg from "@/assets/img/character/lsi.png";
+import wpaCharacterImg from "@/assets/img/character/wpa.png";
+import wpiCharacterImg from "@/assets/img/character/wpi.png";
+import wsaCharacterImg from "@/assets/img/character/wsa.png";
+import wsiCharacterImg from "@/assets/img/character/wsi.png";
+import seedCharacterImg from "@/assets/img/character/seed.png";
 
 export interface GradeCharacter {
   title: string;
