@@ -342,4 +342,9 @@ async function serverFetch<T = unknown>(config: AxiosRequestConfig<T>) {
 // serverAxios 는 서버단에서 사용
 // serverFetch 는 서버컴포넌트용
 
-export { serverAxios, serverFetch };
+export {
+  serverAxios,
+  serverFetch,
+  isPublicPath,
+  getUserIdFromToken,
+};
