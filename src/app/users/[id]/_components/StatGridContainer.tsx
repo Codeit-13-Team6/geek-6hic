@@ -15,9 +15,18 @@ export default async function StatGridContainer({
   meetingTypeStatsPromise: Promise<MeetingTypeStats>;
 }) {
   const [basicStats, participantStats, meetingTypeStats] = await Promise.all([
-    basicStatsPromise,
-    participantStatsPromise,
-    meetingTypeStatsPromise,
+    basicStatsPromise.catch((err) => {
+      console.error("기본 통계 실패:", err);
+      return { postCount: 0, meetingCount: 0, favoriteCount: 0 };
+    }),
+    participantStatsPromise.catch((err) => {
+      console.error("참여자 통계 실패:", err);
+      return { team: 0, study: 0, project: 0, jobPrep: 0, etc: 0 };
+    }),
+    meetingTypeStatsPromise.catch((err) => {
+      console.error("모임 타입 통계 실패:", err);
+      return { team: 0, study: 0, project: 0, jobPrep: 0, etc: 0 };
+    }),
   ]);
 
   return (

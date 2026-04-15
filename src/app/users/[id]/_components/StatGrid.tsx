@@ -26,17 +26,31 @@ export default function StatGrid({
   postCount = 0,
   meetingCount = 0,
   favoriteCount = 0,
-  participantStats = { team: 0, study: 0, project: 0, jobPrep: 0, etc: 0 },
-  meetingTypeStats = { team: 0, study: 0, project: 0, jobPrep: 0, etc: 0 },
+  participantStats,
+  meetingTypeStats,
 }: StatGridProps) {
+  const safeMeetingStats = {
+    team: meetingTypeStats?.team || 0,
+    study: meetingTypeStats?.study || 0,
+    project: meetingTypeStats?.project || 0,
+    jobPrep: meetingTypeStats?.jobPrep || 0,
+    etc: meetingTypeStats?.etc || 0,
+  };
+
+  const safeParticipantStats = {
+    team: participantStats?.team || 0,
+    study: participantStats?.study || 0,
+    project: participantStats?.project || 0,
+    jobPrep: participantStats?.jobPrep || 0,
+    etc: participantStats?.etc || 0,
+  };
+
   const hasMeetings = meetingCount > 0;
-  const hasParticipants = Object.values(participantStats).some(
-    (val) => val > 0,
-  );
-  const totalParticipants = Object.values(participantStats).reduce(
+  const totalParticipants = Object.values(safeParticipantStats).reduce(
     (sum, val) => sum + (val || 0),
     0,
   );
+  const hasParticipants = totalParticipants > 0;
 
   return (
     <div className="flex w-[80%] snap-x snap-mandatory flex-row items-stretch gap-4 lg:contents">
@@ -76,27 +90,27 @@ export default function StatGrid({
                 <div className="flex flex-col gap-2.5">
                   <TypeCountText
                     label="팀미팅"
-                    count={meetingTypeStats.team}
+                    count={safeMeetingStats.team}
                     dotColor="bg-cyan-500"
                   />
                   <TypeCountText
                     label="스터디"
-                    count={meetingTypeStats.study}
+                    count={safeMeetingStats.study}
                     dotColor="bg-indigo-500"
                   />
                   <TypeCountText
                     label="프로젝트"
-                    count={meetingTypeStats.project}
+                    count={safeMeetingStats.project}
                     dotColor="bg-purple-500"
                   />
                   <TypeCountText
                     label="취준생"
-                    count={meetingTypeStats.jobPrep}
+                    count={safeMeetingStats.jobPrep}
                     dotColor="bg-rose-500"
                   />
                   <TypeCountText
                     label="기타"
-                    count={meetingTypeStats.etc}
+                    count={safeMeetingStats.etc}
                     dotColor="bg-slate-400"
                   />
                 </div>
@@ -161,36 +175,36 @@ export default function StatGrid({
                 </span>
               </div>
               <div className="h-[130px] w-full shrink-0">
-                <ParticipantBarChart stats={participantStats} />
+                <ParticipantBarChart stats={safeParticipantStats} />
               </div>
               <div className="flex w-full items-center justify-between rounded-xl bg-slate-50 px-1 py-5 sm:px-3 sm:py-2.5">
                 <PartItem
                   label="팀미팅"
-                  val={participantStats.team}
+                  val={safeParticipantStats.team}
                   color="text-cyan-600"
                 />
                 <div className="h-4 w-px bg-slate-200" />
                 <PartItem
                   label="스터디"
-                  val={participantStats.study}
+                  val={safeParticipantStats.study}
                   color="text-indigo-500"
                 />
                 <div className="h-4 w-px bg-slate-200" />
                 <PartItem
                   label="프로젝트"
-                  val={participantStats.project}
+                  val={safeParticipantStats.project}
                   color="text-violet-500"
                 />
                 <div className="h-4 w-px bg-slate-200" />
                 <PartItem
                   label="취준생"
-                  val={participantStats.jobPrep}
+                  val={safeParticipantStats.jobPrep}
                   color="text-rose-400"
                 />
                 <div className="h-4 w-px bg-slate-200" />
                 <PartItem
                   label="기타"
-                  val={participantStats.etc}
+                  val={safeParticipantStats.etc}
                   color="text-slate-500"
                 />
               </div>
