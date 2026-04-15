@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+// 준비 완료된 상태(false)에서 "바닥에 닿는 사건(Act)'을 일으켜서, 함수가 "실행됨(True)"으로 변하는 그 찰나의 순간을 테스트
+import { render, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MeetingList from "@/components/features/list/MeetingList";
 import * as meetingHooks from "@/hooks/queries/useMeetings";
 
-// src/tests/meetingList.test.tsx 상단에 추가
 global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
   unobserve: jest.fn(),
@@ -12,15 +12,12 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
 
 // 1. 필요한 외부 모듈 모킹
 jest.mock("@/hooks/queries/useMeetings");
-// src/tests/meetingList.test.tsx 상단 수정
-
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
     prefetch: jest.fn(),
   }),
-  // 🔽 이 부분들이 추가되어야 useUrlQuery 에러가 해결됩니다.
   useSearchParams: () => ({
     get: jest.fn((key) => null), // 기본적으로 쿼리 파라미터가 없는 상태 반환
     getAll: jest.fn(),
@@ -61,16 +58,15 @@ describe("MeetingList 무한 스크롤 동작 테스트", () => {
       </QueryClientProvider>,
     );
 
-    // [Act] 실행
+    // [Act] 실행 -> IntersectionObserver의 콜백이 트리거되는 시점까지 기다립니다.
     const trigger = document.querySelector(".h-40");
     if (!trigger) throw new Error("트리거 요소를 찾을 수 없습니다.");
 
     // IntersectionObserver가 호출될 때까지 잠시 기다렸다가 낚아챕니다.
     await waitFor(() => {
-      expect(global.IntersectionObserver).toHaveBeenCalled();
+      expect(global.IntersectionObserver).toHaveBeenCalled(); // IntersectionObserver가 생성되었는지 확인
     });
 
-    // 67번 줄: 좀 더 안전한 접근 방식
     const mockObserver = global.IntersectionObserver as jest.Mock;
     const callback = mockObserver.mock.calls[0][0]; // 첫 번째 호출의 첫 번째 인자(callback)
 
@@ -80,7 +76,7 @@ describe("MeetingList 무한 스크롤 동작 테스트", () => {
     // [Assert] 검증
     // fetchNextPage가 비동기적으로 호출될 수 있으므로 waitFor로 기다립니다.
     await waitFor(() => {
-      expect(mockFetchNextPage).toHaveBeenCalledTimes(1);
+      expect(mockFetchNextPage).toHaveBeenCalledTimes(1); //제대로 한번 호출되었는지 확인 (중복 호출x)
     });
   });
 });
