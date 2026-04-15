@@ -24,6 +24,7 @@ import UserTabsPrefetcher from "./_components/UserTabsPrefetcher";
 import UserLikeList from "@/app/users/[id]/_components/UserLikeList";
 import UserMeetingList from "@/app/users/[id]/_components/UserMeetingList";
 import UserPostList from "@/app/users/[id]/_components/UserPostList";
+import UserTabController from "./_components/UserTabController";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -41,10 +42,14 @@ export const metadata: Metadata = {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const { id } = await params;
+  const { tab } = await searchParams;
+
   const cookieStore = await cookies();
   const raw = cookieStore.get("user_display")?.value;
   const initialUser = raw ? JSON.parse(raw) : null;
@@ -83,6 +88,9 @@ export default async function Page({
         { value: "created", label: "주최한 모임" },
         { value: "lounge", label: "작성한 게시물" },
       ];
+
+  const defaultTab = isOwnProfile ? "liked" : "created";
+  const currentTab = tab || defaultTab;
 
   return (
     <div className="relative mx-auto w-full max-w-[1280px] px-6 py-10 sm:py-20 2xl:px-0">
@@ -161,7 +169,7 @@ export default async function Page({
 
           <div id="pagination-top" className="scroll-mt-20 sm:scroll-mt-22" />
 
-          <Tab tabs={tabs} defaultValue={isOwnProfile ? "liked" : "created"}>
+          <UserTabController tabs={tabs} currentTab={currentTab}>
             {isOwnProfile && (
               <TabsContent value="liked" className="mt-8 md:mt-12">
                 <Suspense fallback={<UserTabSkeleton variant="meeting" />}>
@@ -199,7 +207,7 @@ export default async function Page({
                 userId={profileUserId}
               />
             </TabsContent>
-          </Tab>
+          </UserTabController>
         </section>
       </div>
     </div>
