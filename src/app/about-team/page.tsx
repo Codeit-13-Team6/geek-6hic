@@ -31,7 +31,7 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 const GITHUB_HREF = "https://github.com/Codeit-13-Team6/geek-6hic";
-const CONTACT_EMAIL = "contact@co-git.team";
+const CONTACT_EMAIL = "cogit.kr@gmail.com";
 
 const PALETTE_ITEMS = [
   { name: "Surface", hex: "#F8F9FA" },
@@ -41,7 +41,19 @@ const PALETTE_ITEMS = [
   { name: "Text", hex: "#0F172A" },
 ];
 
-const TOOL_ITEMS = ["React", "next.js", "zustand", "BFF", "prefetch", "TypeScript", "TanStack Query", "Route Handler", "tailwind", "Web Accessibility", "Semantic Markup"];
+const TOOL_ITEMS = [
+  "React",
+  "next.js",
+  "zustand",
+  "BFF",
+  "prefetch",
+  "TypeScript",
+  "TanStack Query",
+  "Route Handler",
+  "tailwind",
+  "Web Accessibility",
+  "Semantic Markup",
+];
 
 const SURVIVORS = [
   {
