@@ -5,7 +5,7 @@ import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/Progress";
 import { JoinedMeeting } from "@/types";
 import { cn } from "@/lib/utils";
-import { HeartIcon } from "../../icon/HeartIcon";
+import { HeartIcon } from "../../ui/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar, Crown, Lock } from "lucide-react";

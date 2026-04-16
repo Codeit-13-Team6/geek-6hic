@@ -53,7 +53,7 @@ jest.mock("@/components/img/FallbackImage", () => ({
   default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
 
-jest.mock("@/components/icon/HeartIcon", () => ({
+jest.mock("@/components/ui/HeartIcon", () => ({
   HeartIcon: () => <button type="button">favorite</button>,
 }));
 

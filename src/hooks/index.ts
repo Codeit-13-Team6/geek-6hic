@@ -1,5 +1,4 @@
 export * from "./queries/useComments";
-export * from "./queries/useMeetingFavorite";
 export * from "./queries/useMeetingList";
 export * from "./queries/usePostList";
 export * from "./useDragScroll";

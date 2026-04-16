@@ -333,6 +333,8 @@ async function serverFetch<T = unknown>(config: AxiosRequestConfig<T>) {
   } catch (err) {
     const error = err as RefreshFailedError;
     if (error.response?.data?.code === "REFRESH_FAILED") {
+      const cookieStore = await cookies();
+      cookieStore.delete("user_display");
       redirect("/login");
     }
     throw err;
