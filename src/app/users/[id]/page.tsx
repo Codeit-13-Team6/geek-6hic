@@ -1,22 +1,22 @@
 import { cookies } from "next/headers";
 import { Metadata } from "next";
-import { Tab } from "@/components/ui/Tab";
-import { TabsContent } from "@/components/shadcnOrigin/tabs";
+import { Tab } from "@/shared/components/ui/Tab";
+import { TabsContent } from "@/shared/components/shadcn/tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
-import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import type { FavoritesPageResponse } from "@/types";
-import { getFavorites, getPublicUserProfile } from "@/api/server";
+import type { FavoritesPageResponse } from "@/shared/types";
+import { getFavorites, getPublicUserProfile } from "@/shared/api/server";
 import {
   getBasicProfileStats,
   getCreatedMeetingsByUser,
   getDetailedParticipantStats,
   getMeetingTypeStats,
-} from "@/lib/stats";
-import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
-import ProfileSectionSkeleton from "@/components/skeleton/ProfileSectionSkeleton";
-import GradeCardSkeleton from "@/components/skeleton/GradeCardSkeleton";
-import { QUERY_KEYS } from "@/constans/queryKey";
+} from "@/app/users/[id]/_lib/stats";
+import { UserTabSkeleton } from "@/shared/components/skeleton/UserTabSkeleton";
+import ProfileSectionSkeleton from "@/shared/components/skeleton/ProfileSectionSkeleton";
+import GradeCardSkeleton from "@/shared/components/skeleton/GradeCardSkeleton";
+import { QUERY_KEYS } from "@/shared/constants/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";

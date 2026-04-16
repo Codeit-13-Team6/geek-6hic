@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image";
-import type { UserType } from "@/lib/userType";
+import type { UserType } from "@/app/users/[id]/_lib/userType";
 import lpiCharacterImg from "@/assets/img/character/lpi.png";
 import lpaCharacterImg from "@/assets/img/character/lpa.png";
 import lsaCharacterImg from "@/assets/img/character/lsa.png";

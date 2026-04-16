@@ -1,10 +1,10 @@
 "use client";
 
-import { MeetingThreadSectionProps } from "@/types";
-import CommentSection from "@/components/features/comment/CommentSection";
+import { MeetingThreadSectionProps } from "@/shared/types";
+import CommentSection from "@/shared/components/features/comment/CommentSection";
 import { MessagesSquare, LockKeyhole, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useMeetingThread } from "@/hooks/queries/useThread";
+import { cn } from "@/shared/lib/utils";
+import { useMeetingThread } from "@/app/meetings/[id]/_hooks/useThread";
 
 export function MeetingThreadSection({
   meetingId,

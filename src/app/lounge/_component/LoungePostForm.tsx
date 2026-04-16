@@ -2,14 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Link2, Loader2 } from "lucide-react";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
 import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
-import { ToastCommon } from "@/components/ui/ToastCommon";
-import { useLoungeLink } from "@/hooks/useLoungeLink";
+import { ToastCommon } from "@/shared/components/ui/ToastCommon";
+import { useLoungeLink } from "@/app/lounge/_hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_component/LinkCard";
-import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
-import { PostPayload, LoungePostFormProps } from "@/types";
-import { BtnBack } from "@/components/features/btn/BtnBack";
+import { parsePostData, stitchPostData } from "@/shared/lib/contentLinkUtils";
+import { decodeHtmlEntities } from "@/shared/lib/decodeHtmlEntities";
+import { PostPayload, LoungePostFormProps } from "@/shared/types";
+import { BtnBack } from "@/shared/components/ui/BtnBack";
 
 export default function LoungePostForm({
   id,
@@ -59,15 +60,7 @@ export default function LoungePostForm({
     if (!content) return "";
 
     const text = content.replace(/<[^>]*>?/gm, "");
-    const entities: { [key: string]: string } = {
-      "&nbsp;": " ",
-      "&lt;": "<",
-      "&gt;": ">",
-      "&amp;": "&",
-      "&quot;": '"',
-      "&#39;": "'",
-    };
-    return text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || " ");
+    return decodeHtmlEntities(text);
   })();
 
   const contentWithSpaces = plainText.length;

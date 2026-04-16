@@ -6,7 +6,7 @@ import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import "react-quill-new/dist/quill.snow.css";
 import "./LoungeEditor.css";
-import { EditorProps } from "@/types";
+import { EditorProps } from "@/shared/types";
 declare global {
   interface Window {
     hljs: typeof hljs;

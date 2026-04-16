@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getUserPostsBFF } from "@/internal/users";
-import type { VisiblePostsPageResponse } from "@/types";
+import { getUserPostsBFF } from "@/app/api/_services/users";
+import type { VisiblePostsPageResponse } from "@/shared/types";
 
 interface RouteParams {
   params: Promise<{ id: string }>;

@@ -7,15 +7,15 @@ import {
   getMeetingDetail,
   getMeetingParticipants,
   getTodayAttendanceStatus,
-} from "@/api/server/meetingDetail";
-import { type GetPostsResponse, MeetingDetailPageProps } from "@/types";
-import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
+} from "@/shared/api/server/meetingDetail";
+import { type GetPostsResponse, MeetingDetailPageProps } from "@/shared/types";
+import DetailSkeleton from "@/shared/components/skeleton/DetailCardSkeleton";
 import { Suspense } from "react";
-import { getLoungePosts } from "@/api/server";
-import { getNextPageParam } from "@/lib/pagination";
-import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { BtnBack } from "@/components/features/btn/BtnBack";
+import { getLoungePosts } from "@/shared/api/server";
+import { getNextPageParam } from "@/shared/lib/pagination";
+import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
+import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import { BtnBack } from "@/shared/components/ui/BtnBack";
 import { notFound } from "next/navigation";
 
 interface Props {

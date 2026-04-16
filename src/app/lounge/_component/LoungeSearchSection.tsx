@@ -1,8 +1,8 @@
 "use client";
 
-import { useUrlQuery } from "@/hooks/useUrlQuery";
-import SearchBarCommon from "@/components/ui/SearchBar";
-import SelectFilter from "@/components/ui/SelectFilter";
+import { useUrlQuery } from "@/shared/hooks/useUrlQuery";
+import SearchBarCommon from "@/shared/components/ui/SearchBar";
+import SelectFilter from "@/shared/components/ui/SelectFilter";
 
 const LOUNGE_SORT_OPTIONS = [
   { value: "createdAt_desc", label: "최신순" },

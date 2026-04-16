@@ -5,16 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { InputCommon } from "@/components/ui/InputCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { InputCommon } from "@/shared/components/ui/InputCommon";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
-import type { LoginFormValues } from "@/types";
-import { bindAuthTokens, loginUser, loginWithGoogleToken } from "@/api/client";
-import { requestGoogleAccessToken } from "@/lib/googleAuth";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import type { LoginFormValues } from "@/shared/types";
+import { bindAuthTokens, loginUser, loginWithGoogleToken } from "@/shared/api/client";
+import { requestGoogleAccessToken } from "@/infra/auth/googleAuth";
+import { useAuthStore } from "@/infra/store/useAuthStore";
+import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
+import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 
 interface LoginFormProps {
   onSuccess?: () => void;

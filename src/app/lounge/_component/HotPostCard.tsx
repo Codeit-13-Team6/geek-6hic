@@ -4,9 +4,9 @@ import Image from "next/image";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import fallbackImg from "@/assets/img/fallback/fallback-post-01.webp";
-import { getRelativeTime } from "@/lib/getRelativeTime";
-import { HotPostCardCommonProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import { getRelativeTime } from "@/shared/lib/getRelativeTime";
+import { HotPostCardCommonProps } from "@/shared/types";
+import FallbackImage from "@/shared/components/img/FallbackImage";
 
 export function HotPostCard({
   title = "제목이 없습니다.",

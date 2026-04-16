@@ -1,7 +1,7 @@
 "use client";
 
-import { Tab } from "@/components/ui/Tab";
-import { useUrlQuery } from "@/hooks/useUrlQuery";
+import { Tab } from "@/shared/components/ui/Tab";
+import { useUrlQuery } from "@/shared/hooks/useUrlQuery";
 import { ReactNode } from "react";
 
 interface ProfileTabControllerProps {

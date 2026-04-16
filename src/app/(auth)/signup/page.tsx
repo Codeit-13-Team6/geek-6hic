@@ -1,18 +1,18 @@
 "use client";
 
-import { InputCommon } from "@/components/ui/InputCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { InputCommon } from "@/shared/components/ui/InputCommon";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signupUser } from "@/api/client/auth";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { signupUser } from "@/shared/api/client/auth";
+import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 import { useForm } from "react-hook-form";
-import type { SignUpFormValues } from "@/types";
+import type { SignUpFormValues } from "@/shared/types";
 import React, { useState } from "react";
-import { DeleteModal } from "@/components/modal/DeleteModal";
-import ModalBase from "@/components/modal/ModalBase";
-import { ConfirmModal } from "@/components/modal/ConfirmModal";
+import { DeleteModal } from "@/shared/components/modal/DeleteModal";
+import ModalBase from "@/shared/components/modal/ModalBase";
+import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
 
 export default function SignUp() {
   const router = useRouter();

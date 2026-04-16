@@ -1,5 +1,5 @@
-import type { BasicProfileStats, CreatedMeetingSummary } from "@/types";
-import { deriveUserType } from "@/lib/userType";
+import type { BasicProfileStats, CreatedMeetingSummary } from "@/shared/types";
+import { deriveUserType } from "@/app/users/[id]/_lib/userType";
 import GradeCardAnimated from "@/app/users/[id]/_components/GradeCardAnimated";
 import GradeCard from "./GridCard";
 

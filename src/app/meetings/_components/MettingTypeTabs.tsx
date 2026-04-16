@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { useUrlQuery } from "@/hooks/useUrlQuery";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { cn } from "@/shared/lib/utils";
+import { useUrlQuery } from "@/shared/hooks/useUrlQuery";
+import { useMeetingTypes } from "@/shared/hooks/queries/useMeetings";
 
 export default function MeetingTypeTabs() {
   const [isMounted, setIsMounted] = useState(false);

@@ -2,8 +2,8 @@
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { bindAuthTokens, loginWithKakaoCode } from "@/api/client";
-import { useAuthStore } from "@/store/useAuthStore";
+import { bindAuthTokens, loginWithKakaoCode } from "@/shared/api/client";
+import { useAuthStore } from "@/infra/store/useAuthStore";
 
 function KakaoOAuthContent() {
   const router = useRouter();

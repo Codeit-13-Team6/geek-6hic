@@ -1,6 +1,6 @@
-import { MeetingLinkSectionProps } from "@/types";
+import { MeetingLinkSectionProps } from "@/shared/types";
 import { Link2, LockKeyhole, ExternalLink } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 export function MeetingLinkSection({
   link,

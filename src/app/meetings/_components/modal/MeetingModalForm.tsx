@@ -1,18 +1,18 @@
 "use client";
 
-import { ImageUploadInput } from "@/components/img/ImageUploadInput";
+import { ImageUploadInput } from "@/shared/components/img/ImageUploadInput";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/shadcnOrigin/select";
-import { InputCommon } from "@/components/ui/InputCommon";
-import { TextareaCommon } from "@/components/ui/TextareaCommon";
-import { CheckboxCommon } from "@/components/ui/CheckboxCommon";
-import { MeetingModalFormProps } from "@/types";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+} from "@/shared/components/shadcn/select";
+import { InputCommon } from "@/shared/components/ui/InputCommon";
+import { TextareaCommon } from "@/shared/components/ui/TextareaCommon";
+import { CheckboxCommon } from "@/shared/components/ui/CheckboxCommon";
+import { MeetingModalFormProps } from "@/shared/types";
+import { useMeetingTypes } from "@/shared/hooks/queries/useMeetings";
 
 export function MeetingModalForm({
   values,

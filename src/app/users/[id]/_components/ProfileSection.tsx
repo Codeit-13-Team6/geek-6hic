@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { uploadProfileImage } from "@/api/client/user";
-import { User, UserProfileUpdateProps } from "@/types";
-import { useAuthStore } from "@/store/useAuthStore";
-import ModalBase from "@/components/modal/ModalBase";
-import { InputCommon } from "@/components/ui/InputCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
-import { ImageUploadInput } from "@/components/img/ImageUploadInput";
+import { uploadProfileImage } from "@/shared/api/client/user";
+import { User, UserProfileUpdateProps } from "@/shared/types";
+import { useAuthStore } from "@/infra/store/useAuthStore";
+import ModalBase from "@/shared/components/modal/ModalBase";
+import { InputCommon } from "@/shared/components/ui/InputCommon";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { ImageUploadInput } from "@/shared/components/img/ImageUploadInput";
 import { Settings2 } from "lucide-react";
-import FallbackImage from "@/components/img/FallbackImage";
-import { ConfirmModal } from "@/components/modal/ConfirmModal";
-import { useUpdateProfile } from "@/hooks/queries/useUser";
+import FallbackImage from "@/shared/components/img/FallbackImage";
+import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
+import { useUpdateProfile } from "@/app/users/[id]/_hooks/useUser";
 import { useRouter } from "next/navigation";
 
 interface ProfileSectionProps {

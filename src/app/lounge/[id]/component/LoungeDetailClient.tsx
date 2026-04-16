@@ -2,17 +2,17 @@
 
 import { PostDetailCard } from "@/app/lounge/[id]/component/PostDetailCard";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
-import { parsePostData } from "@/lib/contentLinkUtils";
+import { useAuthStore } from "@/infra/store/useAuthStore";
+import { parsePostData } from "@/shared/lib/contentLinkUtils";
 import {
   useDeletePost,
   useGetPostDetail,
   useToggleLike,
-} from "@/hooks/queries/usePosts";
+} from "@/shared/hooks/queries/usePosts";
 import { useState } from "react";
-import { DeleteModal } from "@/components/modal/DeleteModal";
-import { useLoginModalStore } from "@/store/useLoginModalStore";
-import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
+import { DeleteModal } from "@/shared/components/modal/DeleteModal";
+import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
+import DetailSkeleton from "@/shared/components/skeleton/DetailCardSkeleton";
 
 export default function LoungeDetailClient({ postId }: { postId: number }) {
   const router = useRouter();

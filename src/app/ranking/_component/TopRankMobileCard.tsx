@@ -1,8 +1,8 @@
 "use client";
 
-import { RankedItem } from "@/types";
-import { cn } from "@/lib/utils";
-import FallbackImage from "@/components/img/FallbackImage";
+import { RankedItem } from "@/shared/types";
+import { cn } from "@/shared/lib/utils";
+import FallbackImage from "@/shared/components/img/FallbackImage";
 
 export default function TopRankMobileCard({
   rank,

@@ -1,6 +1,6 @@
 import React from "react";
 import { GripVertical, ImageIcon, Link2, X } from "lucide-react";
-import { LinkCardProps } from "@/types";
+import { LinkCardProps } from "@/shared/types";
 
 export default function LinkCard({
   link,

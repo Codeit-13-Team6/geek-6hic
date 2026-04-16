@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ChartColumn, ArrowUpRight } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRanking } from "@/hooks/queries/useRanking";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { useDragScroll } from "@/hooks/useDragScroll";
+import { useRanking } from "@/app/ranking/_hooks/useRanking";
+import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import { useDragScroll } from "@/shared/hooks/useDragScroll";
 
 export default function MyRankingSection() {
   const router = useRouter();

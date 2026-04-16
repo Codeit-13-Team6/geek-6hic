@@ -2,7 +2,7 @@ import type {
   BasicProfileStats,
   MeetingTypeStats,
   ParticipantStats,
-} from "@/types";
+} from "@/shared/types";
 import StatGrid from "./StatGrid";
 
 export default async function StatGridContainer({

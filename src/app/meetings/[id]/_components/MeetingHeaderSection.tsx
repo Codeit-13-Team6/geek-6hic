@@ -7,38 +7,38 @@ import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownCommon";
-import { DeleteModal } from "@/components/modal/DeleteModal";
-import { HeartIcon } from "@/components/icon/HeartIcon";
-import FallbackImage from "@/components/img/FallbackImage";
-import { useLoginModalStore } from "@/store/useLoginModalStore";
+} from "@/shared/components/ui/DropdownCommon";
+import { DeleteModal } from "@/shared/components/modal/DeleteModal";
+import { HeartIcon } from "@/shared/components/icon/HeartIcon";
+import FallbackImage from "@/shared/components/img/FallbackImage";
+import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
 import { ChessQueenIcon, Crown, Lock, Share2Icon, Users2 } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
   useMeetingAttendMutation,
   useMeetingDetailFavoriteMutation,
-} from "@/hooks";
-import { useAuthStore } from "@/store/useAuthStore";
-import type { MeetingHeaderSectionProps } from "@/types";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+} from "@/shared/hooks";
+import { useAuthStore } from "@/infra/store/useAuthStore";
+import type { MeetingHeaderSectionProps } from "@/shared/types";
+import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 import {
   extractSecretCode,
   isSecretMeeting,
   verifySecretCode,
-} from "@/lib/meetingSecret";
-import ModalBase from "@/components/modal/ModalBase";
-import { InputCommon } from "@/components/ui/InputCommon";
-import { shareLink } from "@/lib/share";
-import { copyToClipboard } from "@/lib/utils";
+} from "@/shared/lib/meetingSecret";
+import ModalBase from "@/shared/components/modal/ModalBase";
+import { InputCommon } from "@/shared/components/ui/InputCommon";
+import { shareLink } from "@/app/meetings/[id]/_lib/share";
+import { copyToClipboard } from "@/shared/lib/utils";
 import { useRouter } from "next/navigation";
-import { ConfirmModal } from "@/components/modal/ConfirmModal";
+import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&

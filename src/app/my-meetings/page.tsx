@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 import { InfiniteData } from "@tanstack/react-query";
-import type { JoinedMeetingsResponse } from "@/types";
-import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import type { JoinedMeetingsResponse } from "@/shared/types";
+import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import { getNextPageParam } from "@/lib/pagination";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import MeetingList from "@/components/features/list/MeetingList";
+import { getNextPageParam } from "@/shared/lib/pagination";
+import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import MeetingList from "@/shared/components/features/list/MeetingList";
 import { MyMeetingsHeroSection } from "./_components/MyMeetingsHeroSection";
-import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";
-import { getJoinedMeetingsServer } from "@/api/server";
+import MeetingsSkeleton from "@/shared/components/skeleton/MeetingsSkeleton";
+import { getJoinedMeetingsServer } from "@/shared/api/server";
 
 export const metadata: Metadata = {
   title: "나의 모임",

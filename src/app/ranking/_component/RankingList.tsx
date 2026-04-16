@@ -4,7 +4,7 @@ import TopRankCard from "./TopRankCard";
 import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
-import { useRanking } from "@/hooks/queries/useRanking";
+import { useRanking } from "@/app/ranking/_hooks/useRanking";
 
 export default function RankingList() {
   const router = useRouter();

@@ -1,10 +1,10 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useGetPostForEdit, useUpdatePost } from "@/hooks";
+import { useGetPostForEdit, useUpdatePost } from "@/shared/hooks";
 import LoungePostForm from "@/app/lounge/_component/LoungePostForm";
 import { useEffect } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore } from "@/infra/store/useAuthStore";
 
 export default function LoungeEditPage() {
   const { id } = useParams();

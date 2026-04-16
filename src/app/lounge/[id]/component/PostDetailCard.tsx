@@ -8,25 +8,25 @@ import parse, {
   DOMNode,
 } from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
-import { Card, CardContent, CardTitle } from "@/components/shadcnOrigin/card";
+import { Card, CardContent, CardTitle } from "@/shared/components/shadcn/card";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from "@/components/shadcnOrigin/dropdown-menu";
+} from "@/shared/components/shadcn/dropdown-menu";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/DropdownCommon";
-import { getRelativeTime } from "@/lib/getRelativeTime";
+} from "@/shared/components/ui/DropdownCommon";
+import { getRelativeTime } from "@/shared/lib/getRelativeTime";
 import { Link2 } from "lucide-react";
-import { CompactLinkList } from "@/components/features/list/CompactLinkList";
-import { PostDetailCardProps } from "@/types";
-import { cn } from "@/lib/utils";
-import { HeartIcon } from "@/components/icon/HeartIcon";
+import { CompactLinkList } from "@/shared/components/features/list/CompactLinkList";
+import { PostDetailCardProps } from "@/shared/types";
+import { cn } from "@/shared/lib/utils";
+import { HeartIcon } from "@/shared/components/icon/HeartIcon";
 import { CodeBlock } from "./CodeBlock";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/shared/components/img/FallbackImage";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",

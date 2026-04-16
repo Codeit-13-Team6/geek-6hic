@@ -7,8 +7,8 @@ import {
   atomOneLight,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Sun, Moon, Check, Copy } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { cn } from "@/shared/lib/utils";
+import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 
 export function CodeBlock({
   code,

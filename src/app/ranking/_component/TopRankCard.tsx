@@ -1,11 +1,11 @@
 "use client";
 
-import { Card } from "@/components/shadcnOrigin/card";
+import { Card } from "@/shared/components/shadcn/card";
 
-import { TopRankCardProps } from "@/types";
+import { TopRankCardProps } from "@/shared/types";
 
-import { cn } from "@/lib/utils";
-import FallbackImage from "@/components/img/FallbackImage";
+import { cn } from "@/shared/lib/utils";
+import FallbackImage from "@/shared/components/img/FallbackImage";
 import { ArrowUpRight } from "lucide-react";
 
 export default function TopRankCard({

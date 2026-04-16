@@ -1,7 +1,7 @@
 "use client";
 
-import { RankCardProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import { RankCardProps } from "@/shared/types";
+import FallbackImage from "@/shared/components/img/FallbackImage";
 import { ArrowUpRight } from "lucide-react";
 
 export default function RankCard({

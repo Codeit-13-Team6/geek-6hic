@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Post } from "@/types";
+import { Post } from "@/shared/types";
 import { HotPostCard } from "./HotPostCard";
-import { useGetHotPosts } from "@/hooks/queries/usePosts";
+import { useGetHotPosts } from "@/shared/hooks/queries/usePosts";
 import { Flame } from "lucide-react";
-import { useDragScroll } from "@/hooks/useDragScroll";
+import { useDragScroll } from "@/shared/hooks/useDragScroll";
 
 export default function HotPostList() {
   const router = useRouter();

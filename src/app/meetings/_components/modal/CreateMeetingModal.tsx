@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
-import { BtnCommon } from "@/components/ui/BtnCommon";
-import ModalBase from "@/components/modal/ModalBase";
-import { useCreateMeetingForm } from "@/hooks";
+import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import ModalBase from "@/shared/components/modal/ModalBase";
+import { useCreateMeetingForm } from "@/app/meetings/_hooks/useMeetingForm";
 import {
   Plus,
   StepForwardIcon,
@@ -16,11 +16,11 @@ import {
   FolderKanban,
   Briefcase,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ConfirmModal } from "@/components/modal/ConfirmModal";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
-import { BtnCreate } from "@/components/features/btn/BtnCreate";
+import { cn } from "@/shared/lib/utils";
+import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
+import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
+import { useMeetingTypes } from "@/shared/hooks/queries/useMeetings";
+import { BtnCreate } from "@/shared/components/ui/BtnCreate";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getMyPostsBFF } from "@/internal/users";
-import type { VisiblePostsPageResponse } from "@/types";
+import { getMyPostsBFF } from "@/app/api/_services/users";
+import type { VisiblePostsPageResponse } from "@/shared/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
