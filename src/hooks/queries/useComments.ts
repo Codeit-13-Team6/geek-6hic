@@ -4,8 +4,8 @@ import {
   getComments,
   updateComment,
 } from "@/api/client";
-import { ToastCommon } from "@/components/ui/ToastCommon";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { Toast } from "@/components/ui/Toast";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import { GetCommentsResponse } from "@/types";
 import {
   keepPreviousData,
@@ -60,7 +60,7 @@ export const useCreateComment = (postId: number) => {
       ]);
     },
     onError: () => {
-      ToastCommon({ message: "댓글 등록에 실패했습니다.", type: "error" });
+      Toast({ message: "댓글 등록에 실패했습니다.", type: "error" });
     },
   });
 };
@@ -86,7 +86,7 @@ export const useDeleteComment = (
       onErrorMessage: "댓글 삭제에 실패했습니다.",
     }),
     onSuccess: () => {
-      // ToastCommon({ message: "댓글이 삭제되었습니다.", size: "sm" });
+      // Toast({ message: "댓글이 삭제되었습니다.", size: "sm" });
     },
   });
 };
@@ -118,7 +118,7 @@ export const useEditComment = (
       onErrorMessage: "댓글 수정에 실패했습니다.",
     }),
     onSuccess: () => {
-      // ToastCommon({ message: "댓글이 수정되었습니다.", size: "sm" });
+      // Toast({ message: "댓글이 수정되었습니다.", size: "sm" });
     },
   });
 };

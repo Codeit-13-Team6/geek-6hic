@@ -1,3 +1,4 @@
+import { iterateCursor } from "./cursorIterator";
 import type { CursorResponse, OffsetResponse } from "@/types";
 
 interface CursorPageParams {
@@ -23,40 +24,23 @@ export async function getVisibleCursorPage<T>({
   filter,
 }: VisibleCursorPageParams<T>): Promise<OffsetResponse<T>> {
   const visibleItems: T[] = [];
-  const seenCursors = new Set<string>();
   let visibleTotalCount = 0;
-  let nextCursor: string | undefined;
-  let hasMore = true;
 
-  while (hasMore) {
-    const response = await fetchPage({
-      size: scanPageSize,
-      ...(nextCursor ? { cursor: nextCursor } : {}),
-    });
+  await iterateCursor({
+    fetchPage: (cursor) => fetchPage({ cursor, size: scanPageSize }),
+    onPage: (pageItems) => {
+      const filtered = pageItems.filter(filter);
+      const pageStart = visibleTotalCount;
+      visibleTotalCount += filtered.length;
 
-    const filteredItems = response.data.filter(filter);
-    const pageVisibleStart = visibleTotalCount;
-    visibleTotalCount += filteredItems.length;
-
-    if (visibleTotalCount > offset && visibleItems.length < limit) {
-      const startIndex = Math.max(0, offset - pageVisibleStart);
-      const remaining = limit - visibleItems.length;
-      visibleItems.push(...filteredItems.slice(startIndex, startIndex + remaining));
-    }
-
-    if (!response.hasMore || !response.nextCursor) {
-      hasMore = false;
-      break;
-    }
-
-    if (seenCursors.has(response.nextCursor)) {
-      hasMore = false;
-      break;
-    }
-
-    seenCursors.add(response.nextCursor);
-    nextCursor = response.nextCursor;
-  }
+      if (visibleTotalCount > offset && visibleItems.length < limit) {
+        const startIndex = Math.max(0, offset - pageStart);
+        const remaining = limit - visibleItems.length;
+        visibleItems.push(...filtered.slice(startIndex, startIndex + remaining));
+      }
+      return "continue";
+    },
+  });
 
   return {
     data: visibleItems,

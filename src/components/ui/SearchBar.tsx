@@ -1,6 +1,6 @@
 "use client";
 
-import { InputCommon } from "./InputCommon";
+import { Input } from "./Input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -38,7 +38,7 @@ export default function SearchBar({
       )}
     >
       <div className="flex-1">
-        <InputCommon
+        <Input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onClear={() => setKeyword("")}

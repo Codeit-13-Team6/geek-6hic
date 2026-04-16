@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/clientFetcher";
+import axiosInstance from "@/auth/fetcher.client";
 import type {
   NotificationItem,
   NotificationListResponse,

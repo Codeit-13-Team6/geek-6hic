@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import type { UserType } from "@/lib/userType";
+import type { UserType } from "@/app/users/[id]/_lib/userType";
 import {
   CHARACTER_MAP,
   DEFAULT_CHARACTER,

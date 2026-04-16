@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { getFavorites } from "@/api/client/meetings";
-import { UserCard } from "@/components/features/card/UserCard";
+import { UserCard } from "@/app/users/[id]/_components/UserCard";
 import { HeartOff } from "lucide-react";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
-import { useToggleFavorite } from "@/hooks/queries/useUser";
+import { useToggleFavorite } from "@/app/users/[id]/_hooks/useUser";
 import { isSecretMeeting } from "@/lib/meetingSecret";
 import { cn } from "@/lib/utils";
 

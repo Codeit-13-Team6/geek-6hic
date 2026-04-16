@@ -5,12 +5,12 @@ import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
 import { getNextPageParam } from "@/lib/pagination";
 import { Suspense } from "react";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
 import { MeetingsControlSkeleton } from "@/components/skeleton/MeetingsControlSkeleton";
 import { MeetingsHeroSection } from "./_components/MeetingsHeroSection";
-import SearchFilterBar from "@/components/features/composite/SearchFilterBar";
+import SearchFilterBar from "@/components/ui/SearchFilterBar";
 import MeetingTypeTabs from "./_components/MettingTypeTabs";
 import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";
 

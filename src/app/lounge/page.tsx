@@ -1,20 +1,20 @@
 import { Metadata } from "next";
-import HotPostList from "@/app/lounge/_component/HotPostList";
+import HotPostList from "@/app/lounge/_components/HotPostList";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import HotPostListSkeleton from "@/components/skeleton/HotPostListSkeleton";
-import { getLoungePostsPageBFF } from "@/internal/lounge";
-import { getHotPostsBFF } from "@/internal/hot";
+import { getLoungePostsPageBFF } from "@/app/api/_services/lounge";
+import { getHotPostsBFF } from "@/app/api/_services/hot";
 import { getNextPageParam } from "@/lib/pagination";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import LoungeSearchSection from "./_component/LoungeSearchSection";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import LoungeSearchSection from "./_components/LoungeSearchSection";
 import PostList from "@/components/features/list/PostList";
 import { GetPostsResponse, LoungeSortBy } from "@/types/post";
 import { SortOrder } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
-import { LoungeHeroSection } from "./_component/LoungeHeroSection";
-import { BtnCreate } from "@/components/features/btn/BtnCreate";
+import { LoungeHeroSection } from "./_components/LoungeHeroSection";
+import { BtnCreate } from "@/components/ui/BtnCreate";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",

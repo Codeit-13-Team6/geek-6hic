@@ -11,7 +11,7 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
 }));
 
 // 1. 필요한 외부 모듈 모킹
-jest.mock("@/hooks/queries/useMeetings");
+jest.mock("hooks/queries/useMeetings");
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),

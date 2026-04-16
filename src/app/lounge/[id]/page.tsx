@@ -1,12 +1,12 @@
 import { Metadata } from "next";
-import LoungeDetailClient from "./component/LoungeDetailClient";
+import LoungeDetailClient from "./_components/LoungeDetailClient";
 import { Suspense } from "react";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import { getPostCommentsServer, getPostDetail } from "@/api/server";
 import CommentSection from "@/components/features/comment/CommentSection";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { BtnBack } from "@/components/features/btn/BtnBack";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import { BtnBack } from "@/components/ui/BtnBack";
 
 const COMMENTS_PAGE_LIMIT = 10;
 

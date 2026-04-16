@@ -6,7 +6,7 @@ import PostCard from "@/components/features/card/PostCard";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";

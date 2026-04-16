@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getMeeting, getUserMeetingsPage } from "@/api/client/meetings";
 import { getMyPosts, getUserPostsPage } from "@/api/client/posts";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 
 const TAB_PAGE_SIZE = 10;
 

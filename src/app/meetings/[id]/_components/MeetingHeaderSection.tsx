@@ -7,13 +7,13 @@ import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownCommon";
+} from "@/components/ui/Dropdown";
 import { DeleteModal } from "@/components/modal/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
@@ -34,15 +34,15 @@ import {
 } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingHeaderSectionProps } from "@/types";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { Toast } from "@/components/ui/Toast";
 import {
   extractSecretCode,
   isSecretMeeting,
   verifySecretCode,
 } from "@/lib/meetingSecret";
 import ModalBase from "@/components/modal/ModalBase";
-import { InputCommon } from "@/components/ui/InputCommon";
-import { shareLink } from "@/lib/share";
+import { Input } from "@/components/ui/Input";
+import { shareLink } from "@/app/meetings/[id]/_lib/share";
 import { copyToClipboard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
@@ -98,11 +98,11 @@ export function MeetingHeaderSection({
     });
 
     if (shareResult.result === "failed") {
-      return ToastCommon({ message: "링크 복사에 실패했어요.", type: "error" });
+      return Toast({ message: "링크 복사에 실패했어요.", type: "error" });
     }
 
     if (shareResult.result === "copied-by-app") {
-      ToastCommon({
+      Toast({
         message: isSecret
           ? "링크 복사 성공! 시크릿 코드와 함께 전달해 보세요."
           : "모임 링크가 복사되었어요.",
@@ -404,7 +404,7 @@ export function MeetingHeaderSection({
                   const isCopied = await copyToClipboard(
                     extractSecretCode(detail.dateTime),
                   );
-                  ToastCommon({
+                  Toast({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
@@ -419,9 +419,9 @@ export function MeetingHeaderSection({
           )}
 
           <div className="mt-5 flex items-center gap-4 sm:mt-10">
-            <BtnCommon
+            <Button
               type="button"
-              size="md"
+              size="responsive-lg"
               disabled={action.disabled || isActionPending || isAuthLoading}
               onClick={() => loginGuardAction(() => void action.handler())}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
@@ -429,7 +429,7 @@ export function MeetingHeaderSection({
               <span className="tracking-widest sm:text-sm">
                 {isActionPending ? "진행중..." : action.label}
               </span>
-            </BtnCommon>
+            </Button>
             {menuConfig.showShare && (
               <button
                 type="button"
@@ -543,7 +543,7 @@ export function MeetingHeaderSection({
           </div>
 
           <div className="px-1">
-            <InputCommon
+            <Input
               label="비밀 코드"
               placeholder="비밀 코드를 입력해 주세요"
               value={secretInput}
@@ -556,9 +556,9 @@ export function MeetingHeaderSection({
             />
           </div>
 
-          <BtnCommon
+          <Button
             type="button"
-            size="md"
+            size="responsive-lg"
             disabled={isJoinPending || !secretInput}
             onClick={() => {
               if (!verifySecretCode(secretInput, detail.dateTime)) {
@@ -571,7 +571,7 @@ export function MeetingHeaderSection({
             className="bg-main-purple hover:bg-main-purple/90 h-14 w-full !rounded-[20px] text-[16px] font-bold text-white shadow-[0_8px_20px_rgba(109,40,217,0.15)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(109,40,217,0.2)] active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
           >
             참여하기
-          </BtnCommon>
+          </Button>
         </div>
       </ModalBase>
       <ConfirmModal

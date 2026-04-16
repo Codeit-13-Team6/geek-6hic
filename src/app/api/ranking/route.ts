@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getRankingBFF } from "@/internal/ranking";
+import { getRankingBFF } from "@/app/api/_services/ranking";
 
 interface AxiosErrorLike {
   response?: { data?: unknown; status?: number };

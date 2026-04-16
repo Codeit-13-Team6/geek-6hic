@@ -1,5 +1,5 @@
 import type { Comment, GetCommentsResponse } from "@/types";
-import axiosInstance from "@/lib/clientFetcher";
+import axiosInstance from "@/auth/fetcher.client";
 
 export async function getComments(
   postId: number,

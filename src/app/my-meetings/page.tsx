@@ -4,7 +4,7 @@ import type { JoinedMeetingsResponse } from "@/types";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
 import { getNextPageParam } from "@/lib/pagination";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { MyMeetingsHeroSection } from "./_components/MyMeetingsHeroSection";
 import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";

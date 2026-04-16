@@ -1,4 +1,4 @@
-import { serverFetch } from "@/lib/serverFetcher";
+import { serverFetch } from "@/auth/fetcher.server";
 import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {

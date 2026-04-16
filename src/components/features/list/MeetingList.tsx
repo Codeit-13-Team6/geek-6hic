@@ -10,7 +10,7 @@ import {
 } from "@/hooks/queries/useMeetings";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { SortOrder, MeetingSortBy, JoinedMeeting } from "@/types";
-import { NoResultFound } from "@/components/ui/NoResultFound";
+import { NoResultFound } from "@/components/features/feedback/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";
 
 interface MeetingsClientProps {

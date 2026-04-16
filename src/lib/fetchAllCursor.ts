@@ -1,10 +1,10 @@
+import { iterateCursor } from "./cursorIterator";
 import type { CursorResponse } from "@/types";
 
 interface FetchAllCursorOptions<T> {
   fetchPage: (cursor?: string) => Promise<CursorResponse<T>>;
   maxItems?: number;
   earlyExit?: (item: T) => boolean;
-  // ex) isThread 거를 떄  용도만 생각해서 만들긴했는데 필요시 좀 수정
   filter?: (item: T) => boolean;
 }
 
@@ -15,34 +15,18 @@ export async function fetchAllCursor<T>({
   filter,
 }: FetchAllCursorOptions<T>): Promise<T[]> {
   const items: T[] = [];
-  let cursor: string | undefined;
 
-  while (true) {
-    if (maxItems !== undefined && items.length >= maxItems) break;
-
-    const response = await fetchPage(cursor);
-    let stopped = false;
-
-    for (const item of response.data) {
-      if (earlyExit?.(item)) {
-        stopped = true;
-        break;
+  await iterateCursor({
+    fetchPage,
+    onPage: (pageItems) => {
+      for (const item of pageItems) {
+        if (earlyExit?.(item)) return "stop";
+        if (!filter || filter(item)) items.push(item);
+        if (maxItems !== undefined && items.length >= maxItems) return "stop";
       }
-
-      if (!filter || filter(item)) {
-        items.push(item);
-      }
-
-      if (maxItems !== undefined && items.length >= maxItems) {
-        stopped = true;
-        break;
-      }
-    }
-
-    if (stopped || !response.hasMore || !response.nextCursor) break;
-
-    cursor = response.nextCursor;
-  }
+      return "continue";
+    },
+  });
 
   return items;
 }

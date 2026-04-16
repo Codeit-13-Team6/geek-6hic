@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/PaginationCommon";
+} from "@/components/ui/Pagination";
 
 interface NumberPaginationProps {
   page: number;

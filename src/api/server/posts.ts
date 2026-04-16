@@ -1,4 +1,4 @@
-import { serverFetch, serverAxios } from "@/lib/serverFetcher";
+import { serverFetch, serverAxios } from "@/auth/fetcher.server";
 import type {
   GetCommentsResponse,
   GetPostsParams,

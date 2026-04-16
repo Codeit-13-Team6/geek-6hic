@@ -1,5 +1,5 @@
 import { QueryClient, QueryKey } from "@tanstack/react-query";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { Toast } from "@/components/ui/Toast";
 
 interface OptimisticMutationConfig<TData, TVariables> {
   queryKey: QueryKey;
@@ -35,7 +35,7 @@ export function useOptimisticMutation<TData, TVariables>(
         queryClient.setQueryData(queryKey, context.previous);
       }
       if (onErrorMessage) {
-        ToastCommon({ message: onErrorMessage, type: "error" });
+        Toast({ message: onErrorMessage, type: "error" });
       }
     },
     onSettled: () => {

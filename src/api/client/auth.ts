@@ -1,5 +1,4 @@
 import axios from "axios";
-import type { User } from "@/types";
 import type {
   LoginResult,
   OAuthLoginResult,
@@ -7,7 +6,7 @@ import type {
   SignUpFormValues,
   SignUpResult,
 } from "@/types";
-import axiosInstance from "@/lib/clientFetcher";
+import axiosInstance from "@/auth/fetcher.client";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -57,6 +56,15 @@ export async function bindAuthTokens(tokens: OAuthTokenPair): Promise<LoginResul
   return res.data;
 }
 
+export async function logoutUser(): Promise<{ ok: boolean }> {
+  const res = await axiosInstance.post<{ ok: boolean }>(
+    "/auth/logout",
+    {},
+    { withCredentials: true },
+  );
+  return res.data;
+}
+
 export async function loginWithKakaoCode(
   code: string,
 ): Promise<OAuthLoginResult> {
@@ -65,18 +73,4 @@ export async function loginWithKakaoCode(
   });
 
   return res.data;
-}
-
-// 클라이언트 유저 BFF 호출 함수
-export async function getUserData(): Promise<User | null> {
-  try {
-    // ** 이제 /api/users/me 라는 물리적 파일은 없음
-    // ** -> axiosInstance를 통해 baseURL: "/api" 설정 + withCredentials: true 자동으로 됨
-    // ** 이 다음에 slug 프록시가 /api/users/me 요청을 받아서 백엔드로 전달
-    const res = await axiosInstance.get("/users/me");
-
-    return res.data;
-  } catch {
-    return null;
-  }
 }

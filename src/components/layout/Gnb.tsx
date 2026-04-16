@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Bell, Menu } from "lucide-react";
+import { logoutUser } from "@/api/client/auth";
 import { getNotifications } from "@/api/client/notifications";
-import { Sheet, SheetTrigger } from "@/components/shadcnOrigin/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/Sheet";
 import { useAuthStore } from "@/store/useAuthStore";
 import Notification from "@/components/layout/notification/Notification";
-import axiosInstance from "@/lib/clientFetcher";
 import SideBar from "./SideBar";
 import FallbackImage from "../img/FallbackImage";
 
@@ -60,7 +60,7 @@ export function Gnb({ initialUser }: GnbProps) {
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
-    await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
+    await logoutUser();
     clearAuth();
     window.location.replace("/login");
   };

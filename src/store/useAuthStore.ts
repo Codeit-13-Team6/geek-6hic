@@ -18,6 +18,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 // 페이지에서 사용 예시
-// import { useAuthStore } from '@/store/useAuthStore';
+// import { useAuthStore } from 'store/useAuthStore';
 // const user = useAuthStore((s) => s.user);
 // const clearAuth = useAuthStore((s) => s.clearAuth);

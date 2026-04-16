@@ -14,7 +14,7 @@ import type {
   MeetingType,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import type { QueryKey } from "@tanstack/react-query";
 
 interface GetMeetingsProps {

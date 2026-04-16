@@ -3,16 +3,16 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { Button } from "@/components/ui/Button";
 import Comment from "./Comment";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { Toast } from "@/components/ui/Toast";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
-import { TextareaCommon } from "@/components/ui/TextareaCommon";
+import { Textarea } from "@/components/ui/Textarea";
 import { CommentSectionProps } from "@/types";
 import { DeleteModal } from "@/components/modal/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import {
   Pagination,
   PaginationContent,
@@ -21,7 +21,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/PaginationCommon";
+} from "@/components/ui/Pagination";
 import {
   useCreateComment,
   useDeleteComment,
@@ -113,13 +113,13 @@ export default function CommentSection({
     const trimmedValue = value.trim();
 
     if (!value.trim())
-      return ToastCommon({
+      return Toast({
         message: "내용을 입력해주세요.",
         type: "info",
       });
 
     if (trimmedValue.length > 999) {
-      return ToastCommon({
+      return Toast({
         message: "댓글은 최대 999자까지 입력 가능합니다.",
         type: "info",
       });
@@ -174,7 +174,7 @@ export default function CommentSection({
       {isThread ? (
         <div className="-mt-10 flex flex-col gap-4">
           <div className="flex flex-col gap-3">
-            <TextareaCommon
+            <Textarea
               value={threadContent}
               placeholder="메시지나 공유할 링크를 자유롭게 입력해주세요."
               onChange={(event) => setThreadContent(event.target.value)}
@@ -183,13 +183,13 @@ export default function CommentSection({
               maxLength={1000}
             />
             <div className="flex justify-end">
-              <BtnCommon
+              <Button
                 className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
                 onClick={() => loginGuardAction(handlePostComment)}
                 disabled={!threadContent.trim() || isPosting}
               >
                 작성하기
-              </BtnCommon>
+              </Button>
             </div>
           </div>
           {linkObjects.length > 0 && (
@@ -219,13 +219,13 @@ export default function CommentSection({
           />
 
           <div className="flex justify-end">
-            <BtnCommon
+            <Button
               onClick={() => loginGuardAction(handlePostComment)}
               disabled={isPosting}
               className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
             >
               등록
-            </BtnCommon>
+            </Button>
           </div>
         </div>
       )}

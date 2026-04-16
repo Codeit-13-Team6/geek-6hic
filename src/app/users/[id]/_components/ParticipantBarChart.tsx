@@ -15,7 +15,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/components/ui/Chart";
 
 const chartConfig = {
   visitors: { label: "참여자 수" },

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { cn } from "@/lib/utils";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
-import { NoResultFound } from "@/components/ui/NoResultFound";
+import { NoResultFound } from "@/components/features/feedback/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";
 import { usePostList } from "@/hooks";
 import { LoungeSortBy, Post, SortOrder } from "@/types";

@@ -1,7 +1,7 @@
 "use client";
 
 import ModalBase from "@/components/modal/ModalBase";
-import LoginForm from "@/app/(auth)/login/LoginForm";
+import LoginForm from "@/components/features/form/LoginForm";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 
 export default function LoginModalProvider() {

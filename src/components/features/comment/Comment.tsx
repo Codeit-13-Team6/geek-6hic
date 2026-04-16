@@ -3,13 +3,11 @@ import Image from "next/image";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/shadcnOrigin/dropdown-menu";
-import {
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/DropdownCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+  DropdownMenuTrigger,
+} from "@/components/ui/Dropdown";
+import { Button } from "@/components/ui/Button";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
@@ -131,22 +129,22 @@ export default function Comment({
             rows={3}
           />
           <div className="mt-3 flex justify-end gap-2">
-            <BtnCommon
+            <Button
               onClick={handleCancel}
               size="sm"
               variant="teritary"
               className="h-9 w-16 !rounded-lg text-xs font-bold"
             >
               취소
-            </BtnCommon>
-            <BtnCommon
+            </Button>
+            <Button
               onClick={handleSave}
               size="sm"
               className="h-9 w-16 !rounded-lg text-xs font-bold"
               disabled={!editValue.trim() || editValue === content}
             >
               저장
-            </BtnCommon>
+            </Button>
           </div>
         </div>
       ) : (

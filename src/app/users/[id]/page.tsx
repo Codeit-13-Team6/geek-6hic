@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { Metadata } from "next";
-import { Tab } from "@/components/ui/Tab";
-import { TabsContent } from "@/components/shadcnOrigin/tabs";
+import { TabsContent } from "@/components/ui/Tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
@@ -12,11 +11,11 @@ import {
   getCreatedMeetingsByUser,
   getDetailedParticipantStats,
   getMeetingTypeStats,
-} from "@/lib/stats";
+} from "@/app/users/[id]/_lib/stats";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 import ProfileSectionSkeleton from "@/components/skeleton/ProfileSectionSkeleton";
 import GradeCardSkeleton from "@/components/skeleton/GradeCardSkeleton";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import StatGrid from "./_components/StatGrid";
 import StatGridContainer from "./_components/StatGridContainer";
 import GradeCardContainer from "./_components/GradeCardContainer";

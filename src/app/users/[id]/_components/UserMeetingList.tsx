@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { getMeeting, getUserMeetingsPage } from "@/api/client/meetings";
-import { UserCard } from "@/components/features/card/UserCard";
+import { UserCard } from "@/app/users/[id]/_components/UserCard";
 import { PlusCircle } from "lucide-react";
-import { QUERY_KEYS } from "@/constans/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { isSecretMeeting } from "@/lib/meetingSecret";

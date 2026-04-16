@@ -1,12 +1,12 @@
 "use client";
 
-import { InputCommon } from "@/components/ui/InputCommon";
-import { BtnCommon } from "@/components/ui/BtnCommon";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signupUser } from "@/api/client/auth";
-import { ToastCommon } from "@/components/ui/ToastCommon";
+import { Toast } from "@/components/ui/Toast";
 import { useForm } from "react-hook-form";
 import type { SignUpFormValues } from "@/types";
 import React, { useState } from "react";
@@ -43,18 +43,18 @@ export default function SignUp() {
 
       if (result.ok) {
         setIsOpenModal(true);
-        // ToastCommon({ message: "회원가입이 완료되었습니다.", size: "sm" });
+        // Toast({ message: "회원가입이 완료되었습니다.", size: "sm" });
       } else {
         setIsLoading(false);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        ToastCommon({
+        Toast({
           message: "이미 가입된 이메일입니다. 로그인해 주세요.",
           type: "info",
         });
       } else {
-        ToastCommon({
+        Toast({
           message: "회원가입에 실패했습니다. 다시 시도해 주세요.",
           type: "error",
         });
@@ -92,7 +92,7 @@ export default function SignUp() {
             noValidate
             className="flex flex-col gap-5"
           >
-            <InputCommon
+            <Input
               label="이름"
               type="text"
               isRequired
@@ -103,7 +103,7 @@ export default function SignUp() {
               hintText={errors.name?.message}
             />
 
-            <InputCommon
+            <Input
               label="이메일"
               type="email"
               isRequired
@@ -120,7 +120,7 @@ export default function SignUp() {
               hintText={errors.email?.message}
             />
 
-            <InputCommon
+            <Input
               label="비밀번호"
               type="password"
               isRequired
@@ -138,7 +138,7 @@ export default function SignUp() {
               onClear={() => setValue("password", "")}
             />
 
-            <InputCommon
+            <Input
               label="비밀번호 확인"
               type="password"
               isRequired
@@ -158,7 +158,7 @@ export default function SignUp() {
               onClear={() => setValue("passwordConfirm", "")}
             />
 
-            <InputCommon
+            <Input
               label="한줄소개"
               type="text"
               placeholder="한줄소개 (20자 이내)"
@@ -174,7 +174,7 @@ export default function SignUp() {
               onClear={() => setValue("introduce", "")}
             />
 
-            <BtnCommon
+            <Button
               variant={"default"}
               size={"md"}
               type="submit"
@@ -182,7 +182,7 @@ export default function SignUp() {
               className="mt-4 h-12 !rounded-xl font-black tracking-widest transition-all"
             >
               {isLoading ? "가입 중..." : "회원가입"}
-            </BtnCommon>
+            </Button>
           </form>
 
           <div className="mt-12 flex flex-col items-center justify-center gap-2">

@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/clientFetcher";
+import axiosInstance from "@/auth/fetcher.client";
 
 export async function getOgData(url: string) {
   const response = await axiosInstance.get(

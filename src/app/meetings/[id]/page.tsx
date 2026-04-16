@@ -14,8 +14,8 @@ import { Suspense } from "react";
 import { getLoungePosts } from "@/api/server";
 import { getNextPageParam } from "@/lib/pagination";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
-import { QUERY_KEYS } from "@/constans/queryKey";
-import { BtnBack } from "@/components/features/btn/BtnBack";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import { BtnBack } from "@/components/ui/BtnBack";
 import { notFound } from "next/navigation";
 
 interface Props {

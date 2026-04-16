@@ -1,4 +1,5 @@
 import { LinkItem } from "@/types";
+import { decodeHtmlEntities } from "@/lib/decodeHtmlEntities";
 /**
  * 서버에서 받은 혼합된 html을 콘텐츠와 링크로 분리하는 함수
  */
@@ -79,15 +80,7 @@ export const getPlainText = (html: string) => {
   text = text.replace(/<[^>]*>?/gm, "");
 
   // 5. HTML 엔티티 디코딩
-  const entities: { [key: string]: string } = {
-    "&nbsp;": " ",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&amp;": "&",
-    "&quot;": '"',
-    "&#39;": "'",
-  };
-  text = text.replace(/&[a-z0-9#]+;/gi, (match) => entities[match] || match);
+  text = decodeHtmlEntities(text);
 
   // 6. 모든 줄바꿈과 연속된 공백 압축
   text = text.replace(/\s\s+/g, " ").trim();
