@@ -6,7 +6,7 @@ import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
 import HotPostListSkeleton from "@/components/skeleton/HotPostListSkeleton";
 import { getLoungePostsPageBFF } from "@/bff/lounge";
 import { getHotPostsBFF } from "@/bff/hot";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import LoungeSearchSection from "./_components/LoungeSearchSection";
 import PostList from "@/components/features/list/PostList";

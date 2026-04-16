@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 import deleteSmIcon from "@/assets/icon/delete/delete-sm.svg";
 import deleteLgIcon from "@/assets/icon/delete/delete-lg.svg";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { ReactNode, useEffect, useState } from "react";
 
 interface ProfileTabControllerProps {

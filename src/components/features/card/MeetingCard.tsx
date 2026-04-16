@@ -4,12 +4,12 @@ import Image from "next/image";
 import person from "@/assets/icon/person/person.svg";
 import { Progress } from "@/components/ui/Progress";
 import { JoinedMeeting } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { HeartIcon } from "../../ui/HeartIcon";
 import FallbackImage from "@/components/ui/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar, Crown, Lock } from "lucide-react";
-import { isSecretMeeting } from "@/lib/meetingSecret";
+import { isSecretMeeting } from "@/lib";
 import { useAuthStore } from "@/store/useAuthStore";
 
 interface MeetingCardProps {

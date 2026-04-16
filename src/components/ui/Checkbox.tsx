@@ -1,5 +1,5 @@
 import { useId, type ComponentProps } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 export interface CheckboxProps extends Omit<ComponentProps<"input">, "type"> {
   label: string;

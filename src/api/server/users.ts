@@ -7,8 +7,8 @@ import type {
   User,
   VisiblePostsPageResponse,
 } from "@/types";
-import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
-import { getVisiblePostsPage } from "@/lib/myVisiblePosts";
+import { getVisibleCursorPage } from "@/lib";
+import { getVisiblePostsPage } from "@/lib";
 
 export async function getPublicUserProfile({ userId }: { userId: number }) {
   const response = await serverAxios.get<User>(`/users/${userId}`);

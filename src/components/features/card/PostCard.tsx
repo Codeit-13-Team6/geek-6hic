@@ -1,7 +1,7 @@
 "use client";
 
 import { ThumbsUp, MessageSquare } from "lucide-react";
-import { getPlainText } from "@/lib/contentLinkUtils";
+import { getPlainText } from "@/lib";
 import { PostCardProps } from "@/types";
 import FallbackImage from "@/components/ui/FallbackImage";
 

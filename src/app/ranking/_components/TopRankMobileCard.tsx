@@ -1,7 +1,7 @@
 "use client";
 
 import { RankedItem } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import FallbackImage from "@/components/ui/FallbackImage";
 
 export default function TopRankMobileCard({

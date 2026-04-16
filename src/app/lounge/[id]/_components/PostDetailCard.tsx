@@ -17,11 +17,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/Dropdown";
-import { getRelativeTime } from "@/lib/getRelativeTime";
+import { getRelativeTime } from "@/lib";
 import { Link2 } from "lucide-react";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { HeartIcon } from "@/components/ui/HeartIcon";
 import { CodeBlock } from "./CodeBlock";
 import FallbackImage from "@/components/ui/FallbackImage";

@@ -3,7 +3,7 @@ import { InfiniteData } from "@tanstack/react-query";
 import type { JoinedMeetingsResponse } from "@/types";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";
 import { MyMeetingsHeroSection } from "./_components/MyMeetingsHeroSection";

@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/Dropdown";
 import { Button } from "@/components/ui/Button";
-import { extractUrlsFromText } from "@/lib/contentLinkUtils";
+import { extractUrlsFromText } from "@/lib";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
 import FallbackImage from "@/components/ui/FallbackImage";

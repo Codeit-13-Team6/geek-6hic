@@ -12,7 +12,7 @@ import { type GetPostsResponse, MeetingDetailPageProps } from "@/types";
 import DetailSkeleton from "@/components/skeleton/DetailCardSkeleton";
 import { Suspense } from "react";
 import { getLoungePosts } from "@/api/server";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import { BtnBack } from "@/components/ui/BtnBack";

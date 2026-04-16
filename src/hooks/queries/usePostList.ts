@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getLoungePosts } from "@/api/client/posts";
 import { GetPostsResponse, LoungeSortBy, SortOrder } from "@/types";
 import { QUERY_KEYS } from "@/constants/queryKey";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 
 export interface UsePostListParams {
   keyword: string;

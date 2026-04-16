@@ -4,7 +4,7 @@ import Image from "next/image";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import fallbackImg from "@/assets/img/fallback/fallback-post-01.webp";
-import { getRelativeTime } from "@/lib/getRelativeTime";
+import { getRelativeTime } from "@/lib";
 import { HotPostCardCommonProps } from "@/types";
 import FallbackImage from "@/components/ui/FallbackImage";
 
