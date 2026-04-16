@@ -4,10 +4,18 @@ import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import crew1 from "@/assets/img/crew/crew1.png";
+import crew2 from "@/assets/img/crew/crew2.png";
 import crew3 from "@/assets/img/crew/crew3.png";
 import crew4 from "@/assets/img/crew/crew4.png";
 import crew5 from "@/assets/img/crew/crew5.png";
-import wsa from "@/assets/img/character/wsa.png";
+import lpaCharacterImg from "@/assets/img/character/lpa.png";
+import lpiCharacterImg from "@/assets/img/character/lpi.png";
+import lsaCharacterImg from "@/assets/img/character/lsa.png";
+import lsiCharacterImg from "@/assets/img/character/lsi.png";
+import wpaCharacterImg from "@/assets/img/character/wpa.png";
+import wpiCharacterImg from "@/assets/img/character/wpi.png";
+import wsaCharacterImg from "@/assets/img/character/wsa.png";
+import wsiCharacterImg from "@/assets/img/character/wsi.png";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -33,46 +41,45 @@ const PALETTE_ITEMS = [
   { name: "Text", hex: "#0F172A" },
 ];
 
-const TOOL_ITEMS = ["React", "next.js", "zustand", "BFF", "prefetch"];
-
-const STORY_PARAGRAPHS = [
-  '"우리 디자인은 누가 해?" 프로젝트 첫 주, 피그마에 놓인 회색 박스들을 보며 다 같이 멈칫했습니다. 하지만 곧 화면 레퍼런스를 찾고, border-radius 1px 차이까지 이야기하는 팀이 되어갔습니다.',
-  "물론 고요한 날만 있었던 건 아닙니다. 새벽 디스코드에서 401 에러와 씨름하던 날, 머지 충돌에 동시에 멘탈이 흔들리던 날, API가 없어서 서버에서 데이터를 다시 모아야 했던 날도 있었습니다.",
-  "그 시간을 지나고 보니 남은 건 단순한 결과물이 아니라, 같이 부딪히며 기준을 세운 팀의 흔적이었습니다. co-git도 그런 흔적 위에 서 있습니다.",
-];
+const TOOL_ITEMS = ["React", "next.js", "zustand", "BFF", "prefetch", "TypeScript", "TanStack Query", "Route Handler", "tailwind", "Web Accessibility", "Semantic Markup"];
 
 const SURVIVORS = [
   {
+    head: "열정적인 캡틴",
     name: "유진",
     emoji: crew1,
-    profile: wsa,
+    profile: lpiCharacterImg,
     review:
-      "팀 전체 방향을 잡고, 구조와 일정이 흔들리지 않도록 끝까지 조율했습니다. 나는 카리나 ㅋ 로켓펀쳐~",
+      "팀 전체 방향을 잡고, 구조와 일정이 흔들리지 않도록 끝까지 조율했습니다.",
   },
   {
+    head: "지식 큐레이터",
     name: "제현",
-    emoji: crew1,
-    profile: wsa,
+    emoji: crew2,
+    profile: lsaCharacterImg,
     review:
       "프론트엔드 전반의 코드 구조를 총괄하며, 일관성과 확장성을 기준으로 코드를 정리했습니다.",
   },
   {
+    head: "공감형 러너",
     name: "상현",
     emoji: crew3,
-    profile: wsa,
+    profile: wsiCharacterImg,
     review:
       "UI와 인터랙션을 담당하며, 화면 흐름이 자연스럽게 이어지도록 사용자 경험을 다듬었습니다.",
   },
   {
+    head: "영향력있는 실무자",
     name: "민주",
-    profile: wsa,
+    profile: wpiCharacterImg,
     emoji: crew4,
     review:
-      "드디어 끝났다 개꿀 ㅋ 담배가져와 ㅋ 드디어 끝났다 개꿀 ㅋ 담배가져와 ㅋ",
+      "팀 내 소통을 중심에서 조율하며, 진행 상황을 공유하고 협업 흐름이 원활하게 이어지도록 지원했습니다.",
   },
   {
+    head: "성실한 탐구자",
     name: "병택",
-    profile: wsa,
+    profile: wsaCharacterImg,
     emoji: crew5,
     review:
       "모임 상세 페이지를 담당하며, 데이터 흐름과 사용자 경험이 자연스럽게 연결되도록 구현했습니다.",
@@ -186,9 +193,11 @@ function SurvivorGrid({
           {/* <p className="text-3xl">{member.emoji}</p> */}
           <div className="py-10">
             <div className="flex items-center justify-center gap-1">
-              <Image src={member.emoji} alt="" width={36} height={36} />
+              <div className="-translate-y-1">
+                <Image src={member.emoji} alt="" width={36} height={36} />
+              </div>
               <h3 className={titleClassName}>
-                <span className="text-main-purple">커뮤니티 마스터</span>{" "}
+                <span className="text-main-purple">{member.head}</span>{" "}
                 {member.name}
               </h3>
             </div>
