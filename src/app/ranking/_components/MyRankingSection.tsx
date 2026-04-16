@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ChartColumn, ArrowUpRight } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRanking } from "@/app/ranking/_hooks/useRanking";
-import { QUERY_KEYS } from "@/constants/queryKey";
+import { useJoinedMeetingIds, useRanking } from "@/app/ranking/_hooks/useRanking";
 import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function MyRankingSection() {
@@ -14,13 +12,10 @@ export default function MyRankingSection() {
   const { dragProps } = useDragScroll();
   const [isOpen, setIsOpen] = useState(false);
 
-  const queryClient = useQueryClient();
   const { data: rankedList } = useRanking();
-  const joinedIds = queryClient.getQueryData<number[]>(
-    QUERY_KEYS.meetings.joinedIds,
-  );
+  const { data: joinedIds } = useJoinedMeetingIds();
 
-  if (!rankedList || !joinedIds) return null;
+  if (!rankedList) return null;
 
   const joinedIdSet = new Set(joinedIds);
   const myMeetings = rankedList
@@ -38,8 +33,7 @@ export default function MyRankingSection() {
     <section className="mb-10 sm:mb-12">
       <button
         onClick={() => {
-          console.log("clicked", isOpen);
-          setIsOpen(!isOpen)
+          setIsOpen((prev) => !prev);
         }}
         className="group hover:border-main-purple/40 flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-all hover:shadow-md active:scale-[0.99]"
       >

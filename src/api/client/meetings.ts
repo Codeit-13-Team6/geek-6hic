@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/auth/clientFetcher";
+import { fetchAllCursor } from "@/lib";
 import {
   JoinedMeetingsResponse,
   Meeting,
@@ -7,6 +8,7 @@ import {
   FavoritesPageResponse,
   MeetingType,
   MyMeetingsPageResponse,
+  JoinedMeeting,
 } from "@/types";
 
 export async function getMeetingList(
@@ -66,6 +68,20 @@ export async function getJoinedMeetings(params: {
     params,
   });
   return data;
+}
+
+export async function getJoinedMeetingIds(): Promise<number[]> {
+  const meetings = await fetchAllCursor<JoinedMeeting>({
+    fetchPage: (cursor) =>
+      getJoinedMeetings({
+        size: 50,
+        sortBy: "joinedAt",
+        sortOrder: "desc",
+        ...(cursor ? { cursor } : {}),
+      }),
+  });
+
+  return meetings.map((meeting) => meeting.id);
 }
 
 export async function createMeeting(meeting: CreateMeeting): Promise<Meeting> {
