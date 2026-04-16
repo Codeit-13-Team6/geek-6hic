@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingCard from "../card/MeetingCard";
 import {
+  useMeetingFavoriteMutation,
   useGetMeetings,
   useJoinedMeetingList,
-} from "@/hooks/queries/useMeetingList";
-import { useMeetingFavoriteMutation } from "@/hooks";
-import { useUrlQuery } from "@/hooks/useUrlQuery";
+  useUrlQuery,
+  useIntersectionObserver,
+} from "@/hooks";
 import { SortOrder, MeetingSortBy, JoinedMeeting } from "@/types";
 import { NoResultFound } from "@/components/features/feedback/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";

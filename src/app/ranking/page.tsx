@@ -5,8 +5,8 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { RankedItem } from "@/types";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import { Suspense } from "react";
-import { getRankingBFF } from "@/app/api/_services/ranking";
-import { getJoinedMeetingIdsBFF } from "@/app/api/_services/meetings";
+import { getRankingBFF } from "@/bff/ranking";
+import { getJoinedMeetingIdsBFF } from "@/bff/meetings";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import MyRankingSection from "@/app/ranking/_components/MyRankingSection";
 

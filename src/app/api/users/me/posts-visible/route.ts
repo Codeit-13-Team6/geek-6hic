@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMyPostsBFF } from "@/app/api/_services/users";
+import { getMyPostsBFF } from "@/bff/users";
 import type { VisiblePostsPageResponse } from "@/types";
 
 export async function GET(request: Request) {

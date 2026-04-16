@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getRecommendedMeetingsBFF } from "@/app/api/_services/recommend";
+import { getRecommendedMeetingsBFF } from "@/bff/recommend";
 
 export async function GET(
   request: Request,
