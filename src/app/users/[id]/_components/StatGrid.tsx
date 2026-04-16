@@ -159,7 +159,7 @@ export default function StatGrid({
               👥
             </div>
             <h3 className="text-xs font-bold tracking-tight text-slate-400 uppercase">
-              함께하고 있는 참여자 수
+              모임 참여 인원
             </h3>
           </div>
 

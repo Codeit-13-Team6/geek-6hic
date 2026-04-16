@@ -17,6 +17,7 @@ export default function ModalBase({
   title,
   contentClassName,
   titleClassName,
+  closeButtonClassName,
   disablePointerDismissal = true,
 }: ModalCommonProps) {
   return (
@@ -32,7 +33,7 @@ export default function ModalBase({
             "max-h-[calc(100vh-100px)]",
             "translate-y-[-50%]",
 
-            "overflow-y-auto border border-slate-100 bg-white shadow-2xl outline-none px-6 py-8 lg:px-16",
+            "overflow-y-auto border border-slate-100 bg-white px-6 py-8 shadow-2xl outline-none lg:px-16",
             contentClassName,
             "gap-0!",
           )}
@@ -46,7 +47,10 @@ export default function ModalBase({
               <Button
                 variant="ghost"
                 size="icon-lg"
-                className="fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200"
+                className={cn(
+                  "fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200",
+                  closeButtonClassName,
+                )}
               />
             }
           >

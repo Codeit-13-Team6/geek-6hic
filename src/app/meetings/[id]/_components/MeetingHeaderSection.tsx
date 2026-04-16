@@ -18,7 +18,14 @@ import { DeleteModal } from "@/components/modal/DeleteModal";
 import { HeartIcon } from "@/components/icon/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
-import { ChessQueenIcon, Crown, Lock, Share2Icon, Users2 } from "lucide-react";
+import {
+  ChessQueenIcon,
+  Crown,
+  Lock,
+  LockKeyholeIcon,
+  Share2Icon,
+  Users2,
+} from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
@@ -334,21 +341,22 @@ export function MeetingHeaderSection({
             isOpen={isParticipantsModalOpen}
             onOpenChange={setIsParticipantsModalOpen}
             title={`참여자 목록 (${detail.participantCount})`}
-            contentClassName="max-w-[310px] rounded-[32px]"
-            titleClassName="text-lg font-bold mb-5"
+            closeButtonClassName="top-5 right-5"
+            contentClassName="max-w-[340px] rounded-[32px]"
+            titleClassName="text-[18px] font-extrabold text-slate-800 mb-3 px-1 border-b border-slate-200 pb-4"
           >
-            <div className="custom-scrollbar flex max-h-[400px] flex-col gap-2 overflow-y-auto pr-2">
+            <div className="custom-scrollbar flex max-h-[380px] flex-col gap-1.5 overflow-y-auto pr-1 pb-2">
               {participants.map((participant) => (
                 <div
                   key={participant.user.id}
-                  className="flex items-center justify-between rounded-2xl transition-colors hover:bg-slate-50 sm:py-3"
+                  className="group flex items-center justify-between rounded-[20px] p-2.5 transition-all duration-200 hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3.5">
                     <button
                       onClick={() =>
                         router.push(`/users/${participant.user.id}`)
                       }
-                      className="relative size-10 overflow-hidden rounded-full border border-slate-100"
+                      className="group-hover:border-main-purple/20 focus-visible:ring-main-purple relative size-11 shrink-0 overflow-hidden rounded-full border border-slate-100 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_12px_rgba(109,40,217,0.15)] focus-visible:ring-2 focus-visible:outline-none"
                     >
                       <FallbackImage
                         src={
@@ -362,19 +370,24 @@ export function MeetingHeaderSection({
                         className="object-cover"
                       />
                     </button>
-                    <span className="text-base font-bold text-slate-700">
+
+                    <span className="text-[15px] font-bold text-slate-700 transition-colors group-hover:text-slate-900">
                       {participant.user.name || "사용자"}
                     </span>
                   </div>
+
                   {participant.userId === detail.hostId && (
-                    <span className="text-main-purple-point bg-main-purple-light/20 rounded-lg px-2 py-1 text-[10px] font-black">
-                      HOST
-                    </span>
+                    <div className="bg-main-purple/10 border-main-purple/10 flex items-center gap-1 rounded-[12px] border px-2.5 py-1.5 shadow-sm">
+                      <span className="text-main-purple mt-0.5 text-[10px] font-black tracking-wider uppercase">
+                        Host
+                      </span>
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           </ModalBase>
+
           {isHost && isSecretMeeting(detail.dateTime) && (
             <div className="mt-5 flex items-center justify-between rounded-[20px] bg-purple-50 px-5 py-4">
               <div>
@@ -395,7 +408,7 @@ export function MeetingHeaderSection({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
-                    size: "lg",
+                    type: isCopied ? "success" : "error",
                   });
                 }}
                 className="text-main-purple-point rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold transition hover:bg-purple-200"
@@ -433,41 +446,52 @@ export function MeetingHeaderSection({
       <AnimatePresence>
         {isAnimating && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 top-0 left-0 z-[999] flex items-start justify-center"
+            initial={{ opacity: 0, x: "-50%", scale: 0.8 }}
+            animate={{ opacity: 1, x: "-50%", scale: 1 }}
+            exit={{ opacity: 0, x: "-50%", scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="fixed top-[5%] left-1/2 z-[9999] flex w-[calc(100%-2rem)] max-w-[380px] flex-col items-center rounded-[32px] border-2 border-blue-200 bg-blue-50 px-6 py-7 shadow-xl shadow-blue-900/5"
           >
+            <Lottie
+              animationData={checkAnim}
+              loop={false}
+              className="h-24 w-24"
+              onComplete={() => {
+                setIsAnimating(false);
+                setShowReward({
+                  show: false,
+                  point: 0,
+                });
+              }}
+            />
+
             <motion.div
-              initial={{ opacity: 0, y: 24, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 24, scale: 0.96 }}
-              transition={{ duration: 0.25 }}
-              className="mx-4 flex w-full max-w-[320px] flex-col items-center rounded-[32px] bg-white px-8 py-10 shadow-2xl"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="mt-1 flex flex-col items-center text-center"
             >
-              <Lottie
-                animationData={checkAnim}
-                loop={false}
-                className="h-28 w-28"
-                onComplete={() => {
-                  setIsAnimating(false);
-                  setShowReward({
-                    show: false,
-                    point: 0,
-                  });
-                }}
-              />
+              <p className="mb-1 text-[15px] font-bold text-slate-500">
+                랜덤 출석 포인트를 받았습니다!
+              </p>
 
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.25 }}
-                className="mt-2 text-center"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: 0.2,
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 15,
+                }}
+                className="flex items-baseline justify-center gap-1"
               >
-                <p className="text-lg font-black text-slate-900">출석 완료</p>
-                <p className="text-main-purple mt-2 text-base font-bold">
-                  +{showReward.point} 포인트
-                </p>
+                <span className="bg-gradient-to-br from-blue-500 to-indigo-600 bg-clip-text text-[36px] font-black tracking-tighter text-transparent drop-shadow-sm">
+                  +{showReward.point}
+                </span>
+                <span className="text-[18px] font-extrabold text-indigo-600">
+                  P
+                </span>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -501,23 +525,37 @@ export function MeetingHeaderSection({
           }
         }}
         title="비밀 모임 참여"
+        titleClassName="text-lg font-bold"
+        closeButtonClassName="top-5 right-5"
         contentClassName="max-w-[400px] rounded-[32px]"
       >
-        <div className="flex flex-col gap-5 pb-4">
-          <p className="text-sm text-slate-500">
-            호스트에게 비밀 코드를 받아 입력해 주세요.
-          </p>
-          <Input
-            label="비밀 코드"
-            placeholder="비밀 코드를 입력해 주세요"
-            value={secretInput}
-            onChange={(e) => {
-              setSecretInput(e.target.value);
-              setSecretError("");
-            }}
-            isDestructive={Boolean(secretError)}
-            hintText={secretError}
-          />
+        <div className="flex flex-col gap-6 pt-2 pb-2">
+          <div className="flex flex-col items-center justify-center gap-1.5 rounded-[24px] border border-slate-100/50 bg-slate-50/80 px-4 py-5 text-center">
+            <LockKeyholeIcon className="mb-3 h-6 w-6 text-slate-500" />
+            <p className="text-[15px] font-bold text-slate-700">
+              프라이빗 모임에 입장합니다
+            </p>
+            <p className="text-[13px] font-medium text-slate-500">
+              호스트에게 전달받은{" "}
+              <span className="text-main-purple font-bold">비밀 코드</span>를
+              입력해 주세요.
+            </p>
+          </div>
+
+          <div className="px-1">
+            <Input
+              label="비밀 코드"
+              placeholder="비밀 코드를 입력해 주세요"
+              value={secretInput}
+              onChange={(e) => {
+                setSecretInput(e.target.value);
+                setSecretError("");
+              }}
+              isDestructive={Boolean(secretError)}
+              hintText={secretError}
+            />
+          </div>
+
           <Button
             type="button"
             size="responsive-lg"
@@ -530,13 +568,12 @@ export function MeetingHeaderSection({
               setIsSecretModalOpen(false);
               handleJoinMeeting();
             }}
-            className="bg-main-purple hover:bg-main-purple/80 h-14 w-full !rounded-[20px] font-bold text-white"
+            className="bg-main-purple hover:bg-main-purple/90 h-14 w-full !rounded-[20px] text-[16px] font-bold text-white shadow-[0_8px_20px_rgba(109,40,217,0.15)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(109,40,217,0.2)] active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
           >
             참여하기
           </Button>
         </div>
       </ModalBase>
-
       <ConfirmModal
         isOpen={isCloseConfirmOpen}
         onOpenChange={setIsCloseConfirmOpen}
