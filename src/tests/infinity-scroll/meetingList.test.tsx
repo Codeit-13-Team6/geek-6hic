@@ -2,7 +2,7 @@
 import { render, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MeetingList from "@/components/features/list/MeetingList";
-import * as meetingHooks from "@/hooks/queries/useMeetings";
+import * as meetingHooks from "@/hooks/queries/useMeetingList";
 
 global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
@@ -11,7 +11,7 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
 }));
 
 // 1. 필요한 외부 모듈 모킹
-jest.mock("hooks/queries/useMeetings");
+jest.mock("@/hooks/queries/useMeetingList");
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),

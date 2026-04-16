@@ -1,17 +1,12 @@
 "use client";
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import {
-  getMeetingList,
-  getJoinedMeetings,
-  getMeetingTypes,
-} from "@/api/client/meetings";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getMeetingList, getJoinedMeetings } from "@/api/client/meetings";
 import type {
   JoinedMeetingsResponse,
   GetMeetingListParams,
   SortOrder,
   MeetingSortBy,
-  MeetingType,
 } from "@/types";
 import { getNextPageParam } from "@/lib/pagination";
 import { QUERY_KEYS } from "@/constants/queryKey";
@@ -31,7 +26,7 @@ export interface InfiniteListResult {
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
   sortValue?: MeetingSortBy;
-  favoriteQueryKey: QueryKey; // 좋아요/수정 후 이 키를 무효화해야 함
+  favoriteQueryKey: QueryKey;
 }
 
 export const useGetMeetings = ({
@@ -99,14 +94,4 @@ export const useJoinedMeetingList = (enabled = true): InfiniteListResult => {
     isFetchingNextPage,
     favoriteQueryKey: QUERY_KEYS.meetings.joined,
   };
-};
-
-export const useMeetingTypes = () => {
-  const queryResult = useQuery<MeetingType[]>({
-    queryKey: QUERY_KEYS.meetings.meetingType,
-    queryFn: getMeetingTypes,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  return { ...queryResult, meetingTypes: queryResult.data || [] };
 };

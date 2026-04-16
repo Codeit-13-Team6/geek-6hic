@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { MeetingModalFormProps } from "@/types";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { useMeetingTypes } from "@/app/meetings/_hooks/useMeetingTypes";
 
 export function MeetingModalForm({
   values,

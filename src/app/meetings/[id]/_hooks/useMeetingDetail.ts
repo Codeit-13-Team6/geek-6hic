@@ -4,8 +4,6 @@ import { useState } from "react";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import {
-  InfiniteData,
-  QueryKey,
   useMutation,
   useQuery,
   useSuspenseQuery,
@@ -25,13 +23,10 @@ import {
 } from "@/api/client/meetingDetail";
 import { Toast } from "@/components/ui/Toast";
 import {
-  JoinedMeeting,
-  JoinedMeetingsResponse,
   MeetingActionErrorResponse,
   MeetingDetailApiData,
   MeetingDetailData,
 } from "@/types";
-import { deleteFavorites, updateFavorites } from "@/api/client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";
 import { QUERY_KEYS } from "@/constants/queryKey";
 
@@ -65,7 +60,6 @@ const getCancelJoinErrorMessage = (code?: string) => {
   }
 };
 
-// 모임 상세 조회 함수 모음
 export const useMeetingDetailQueries = (meetingId: number) => {
   const detailQuery = useSuspenseQuery({
     queryKey: QUERY_KEYS.meetings.detail(meetingId),
@@ -83,7 +77,6 @@ export const useMeetingDetailQueries = (meetingId: number) => {
   };
 };
 
-// 추천 모임 조회
 export const useMeetingRecommendationsQuery = (
   meetingId: number,
   meetingType: string,
@@ -95,7 +88,6 @@ export const useMeetingRecommendationsQuery = (
   });
 };
 
-// 참여 / 탈퇴
 export const useMeetingJoinMutations = (meetingId: number) => {
   const queryClient = useQueryClient();
 
@@ -167,7 +159,6 @@ export const useMeetingJoinMutations = (meetingId: number) => {
   };
 };
 
-// 수정 / 삭제 (호스트 전용)
 export const useMeetingHostMutations = (meetingId: number) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -215,7 +206,6 @@ export const useMeetingHostMutations = (meetingId: number) => {
   };
 };
 
-// 출석
 export const useMeetingAttendMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
   const [hasAttended, setHasAttended] = useState(
@@ -237,8 +227,6 @@ export const useMeetingAttendMutation = (meetingId: number) => {
     },
   });
 
-  // 공통 성공/실패 처리는 mutation에서 담당하고,
-  //  UI(보상/애니메이션)만 호출 시 onSuccess로 분리
   return {
     hasAttended,
     isCheckingAttendance: attendMutation.isPending,
@@ -257,7 +245,6 @@ export const useMeetingAttendMutation = (meetingId: number) => {
   };
 };
 
-// 찜하기 (상세 페이지)
 export const useMeetingDetailFavoriteMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
 
@@ -283,48 +270,5 @@ export const useMeetingDetailFavoriteMutation = (meetingId: number) => {
     handleToggleFavorite: (isFavorited: boolean) => {
       favoriteMutation.mutate(isFavorited);
     },
-  };
-};
-
-// 모임 좋아요 mutation 함수
-export const useMeetingFavoriteMutation = (
-  queryKey: QueryKey = QUERY_KEYS.meetings.joined,
-) => {
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async (meeting: Pick<JoinedMeeting, "id" | "isFavorited">) => {
-      if (meeting.isFavorited) {
-        await deleteFavorites(meeting.id);
-        return;
-      }
-      await updateFavorites(meeting.id);
-    },
-    ...useOptimisticMutation<
-      InfiniteData<JoinedMeetingsResponse>,
-      Pick<JoinedMeeting, "id" | "isFavorited">
-    >(queryClient, {
-      queryKey,
-      updater: (oldData, meeting) => ({
-        ...oldData,
-        pages: oldData.pages.map((page) => ({
-          ...page,
-          data: page.data.map((item) =>
-            item.id === meeting.id
-              ? { ...item, isFavorited: !item.isFavorited }
-              : item,
-          ),
-        })),
-      }),
-      invalidateKeys: [QUERY_KEYS.meetings.root, QUERY_KEYS.favorites.root],
-      onErrorMessage: "즐겨찾기 처리에 실패했습니다.",
-    }),
-  });
-
-  return {
-    toggleFavorite: mutation.mutate,
-    toggleFavoriteAsync: mutation.mutateAsync,
-    isPending: mutation.isPending,
-    error: mutation.error,
   };
 };

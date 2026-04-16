@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { NoResultFound } from "@/components/features/feedback/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";
-import { usePostList } from "@/hooks";
+import { usePostList } from "@/hooks/queries/usePostList";
 import { LoungeSortBy, Post, SortOrder } from "@/types";
 
 export default function PostList() {

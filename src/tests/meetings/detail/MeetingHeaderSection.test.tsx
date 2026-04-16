@@ -44,8 +44,8 @@ jest.mock("@/components/modal/ModalBase", () => ({
   default: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-jest.mock("@/components/ui/InputCommon", () => ({
-  InputCommon: () => null,
+jest.mock("@/components/ui/Input", () => ({
+  Input: () => null,
 }));
 
 jest.mock("@/components/img/FallbackImage", () => ({
@@ -57,15 +57,15 @@ jest.mock("@/components/icon/HeartIcon", () => ({
   HeartIcon: () => <button type="button">favorite</button>,
 }));
 
-jest.mock("@/components/ui/BtnCommon", () => ({
-  BtnCommon: ({ children, ...props }: { children: ReactNode }) => (
+jest.mock("@/components/ui/Button", () => ({
+  Button: ({ children, ...props }: { children: ReactNode }) => (
     <button type="button" {...props}>
       {children}
     </button>
   ),
 }));
 
-jest.mock("@/components/ui/DropdownCommon", () => ({
+jest.mock("@/components/ui/Dropdown", () => ({
   DropdownMenu: ({ children }: { children: ReactNode }) => (
     <div>{children}</div>
   ),
@@ -96,7 +96,7 @@ jest.mock("@/store/useAuthStore", () => ({
     }),
 }));
 
-jest.mock("@/hooks", () => ({
+jest.mock("@/app/meetings/[id]/_hooks/useMeetingDetail", () => ({
   useMeetingJoinMutations: () => ({
     isJoinPending: false,
     handleJoinMeeting: jest.fn(),
@@ -123,7 +123,7 @@ jest.mock("@/lib/meetingSecret", () => ({
   verifySecretCode: () => true,
 }));
 
-jest.mock("@/lib/share", () => ({
+jest.mock("@/app/meetings/[id]/_lib/share", () => ({
   shareLink: jest.fn(),
 }));
 

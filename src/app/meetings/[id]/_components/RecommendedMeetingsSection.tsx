@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { RecommendedMeetingsSectionProps } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
 import FallbackImage from "@/components/img/FallbackImage";
-import { useMeetingRecommendationsQuery } from "@/hooks";
+import { useMeetingRecommendationsQuery } from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 
 import { useDragScroll } from "@/hooks/useDragScroll";
 

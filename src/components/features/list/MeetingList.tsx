@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import MeetingCard from "../card/MeetingCard";
-import { useMeetingFavoriteMutation } from "@/hooks";
 import {
   useGetMeetings,
   useJoinedMeetingList,
-} from "@/hooks/queries/useMeetings";
+} from "@/hooks/queries/useMeetingList";
+import { useMeetingFavoriteMutation } from "@/hooks/queries/useMeetingFavorite";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { SortOrder, MeetingSortBy, JoinedMeeting } from "@/types";
 import { NoResultFound } from "@/components/features/feedback/NoResultFound";

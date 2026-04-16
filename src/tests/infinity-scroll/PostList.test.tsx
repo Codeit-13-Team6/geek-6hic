@@ -1,10 +1,10 @@
 import { render, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PostList from "@/components/features/list/PostList";
-import * as postHooks from "@/hooks"; // usePostList가 들어있는 위치
+import * as postHooks from "@/hooks/queries/usePostList";
 
 // 1. 필요한 외부 모듈 모킹
-jest.mock("hooks");
+jest.mock("@/hooks/queries/usePostList");
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),

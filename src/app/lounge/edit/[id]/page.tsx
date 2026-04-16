@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useGetPostForEdit, useUpdatePost } from "@/hooks";
+import { useGetPostForEdit, useUpdatePost } from "@/app/lounge/_hooks/useLoungePosts";
 import LoungePostForm from "@/app/lounge/_components/LoungePostForm";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";

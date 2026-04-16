@@ -8,7 +8,7 @@ import {
   useDeletePost,
   useGetPostDetail,
   useToggleLike,
-} from "@/hooks/queries/usePosts";
+} from "@/app/lounge/_hooks/useLoungePosts";
 import { useState } from "react";
 import { DeleteModal } from "@/components/modal/DeleteModal";
 import { useLoginModalStore } from "@/store/useLoginModalStore";

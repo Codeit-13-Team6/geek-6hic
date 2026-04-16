@@ -5,7 +5,7 @@ import { MeetingHeaderSection } from "@/app/meetings/[id]/_components/MeetingHea
 import { MeetingLinkSection } from "@/app/meetings/[id]/_components/MeetingLinkSection";
 import { MeetingThreadSection } from "@/app/meetings/[id]/_components/MeetingThreadSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/_components/RecommendedMeetingsSection";
-import { useMeetingDetailQueries } from "@/hooks";
+import { useMeetingDetailQueries } from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingDetailContentProps } from "@/types";
 import { cn } from "@/lib/utils";

@@ -31,7 +31,7 @@ import {
   useMeetingHostMutations,
   useMeetingAttendMutation,
   useMeetingDetailFavoriteMutation,
-} from "@/hooks";
+} from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingHeaderSectionProps } from "@/types";
 import { Toast } from "@/components/ui/Toast";
