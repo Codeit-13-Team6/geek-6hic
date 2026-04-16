@@ -8,7 +8,7 @@ import {
   isPublicPath,
   serverAxios,
   serverFetch,
-} from "@/auth/fetcher.server";
+} from "@/lib/auth/fetcher.server";
 
 
 

@@ -3,7 +3,7 @@ import type {
   GetPostsResponse,
   MyMeetingsPageResponse,
 } from "@/types";
-import { serverFetch } from "@/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 import { filterThreadPosts } from "@/lib/postUtils";
 
 export async function getFavorites(

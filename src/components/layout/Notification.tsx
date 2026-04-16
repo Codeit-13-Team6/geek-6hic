@@ -7,7 +7,7 @@ import {
   markAllNotificationsAsRead,
   markNotificationAsRead,
 } from "@/api/client/notifications";
-import NotificationCard from "@/components/layout/notification/NotificationCard";
+import NotificationCard from "@/components/layout/NotificationCard";
 import type { ThreadMeetingDisplayInfo, NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 import { Trash2, CheckCheck } from "lucide-react";

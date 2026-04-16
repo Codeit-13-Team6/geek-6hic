@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageUploadInput } from "@/components/img/ImageUploadInput";
+import { ImageUploadInput } from "@/components/ui/ImageUploadInput";
 import {
   Select,
   SelectContent,

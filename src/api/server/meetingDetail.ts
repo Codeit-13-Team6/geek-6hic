@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import { serverAxios, serverFetch } from "@/auth/fetcher.server";
+import { serverAxios, serverFetch } from "@/lib/auth/fetcher.server";
 import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,

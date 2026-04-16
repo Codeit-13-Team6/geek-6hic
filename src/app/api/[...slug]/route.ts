@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { serverAxios } from "@/auth/fetcher.server";
-import { setUserDisplayCookie } from "@/auth/cookies";
+import { serverAxios } from "@/lib/auth/fetcher.server";
+import { setUserDisplayCookie } from "@/lib/auth/cookies";
 import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {

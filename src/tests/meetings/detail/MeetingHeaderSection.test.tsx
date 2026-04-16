@@ -48,7 +48,7 @@ jest.mock("@/components/ui/Input", () => ({
   Input: () => null,
 }));
 
-jest.mock("@/components/img/FallbackImage", () => ({
+jest.mock("@/components/ui/FallbackImage", () => ({
   __esModule: true,
   default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));

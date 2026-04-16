@@ -2,7 +2,7 @@
 
 import { RankedItem } from "@/types";
 import { cn } from "@/lib/utils";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 export default function TopRankMobileCard({
   rank,

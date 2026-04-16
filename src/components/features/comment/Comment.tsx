@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { extractUrlsFromText } from "@/lib/contentLinkUtils";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { CommentProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 export default function Comment({
   id,

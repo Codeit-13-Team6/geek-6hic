@@ -6,7 +6,7 @@ import messageIcon from "@/assets/icon/message/message.svg";
 import fallbackImg from "@/assets/img/fallback/fallback-post-01.webp";
 import { getRelativeTime } from "@/lib/getRelativeTime";
 import { HotPostCardCommonProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 export function HotPostCard({
   title = "제목이 없습니다.",

@@ -7,7 +7,7 @@ import {
   ACCESS_TOKEN_MAX_AGE,
   COOKIE_OPTIONS,
   REFRESH_TOKEN_MAX_AGE,
-} from "@/auth/cookies";
+} from "@/lib/auth/cookies";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 

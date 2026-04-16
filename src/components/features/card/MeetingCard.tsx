@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/Progress";
 import { JoinedMeeting } from "@/types";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "../../ui/HeartIcon";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Calendar, Crown, Lock } from "lucide-react";
 import { isSecretMeeting } from "@/lib/meetingSecret";
