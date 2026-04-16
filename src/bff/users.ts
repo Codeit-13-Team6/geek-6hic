@@ -2,7 +2,7 @@ import {
   collectDeferredAuthTokens,
   serverFetch,
   type DeferredAuthCommitContext,
-} from "@/lib/auth/fetcher.server";
+} from "@/lib/auth/serverFetcher";
 import { getVisibleCursorPage } from "@/lib";
 import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib";
 import { sortByCreatedAtDesc } from "@/lib";
@@ -43,7 +43,7 @@ authContext?: DeferredAuthCommitContext,
           ...(cursor ? { cursor } : {}),
         },
       }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
+        authSyncMode: authContext ? "response" : "throw",
       });
       collectDeferredAuthTokens(authContext, response);
 
@@ -92,7 +92,7 @@ authContext?: DeferredAuthCommitContext,
           limit: pageLimit,
         },
       }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
+        authSyncMode: authContext ? "response" : "throw",
       });
       collectDeferredAuthTokens(authContext, response);
 
@@ -127,7 +127,7 @@ authContext?: DeferredAuthCommitContext,
           limit: pageLimit,
         },
       }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
+        authSyncMode: authContext ? "response" : "throw",
       });
       collectDeferredAuthTokens(authContext, response);
 

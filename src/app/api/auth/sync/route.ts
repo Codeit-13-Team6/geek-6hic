@@ -1,7 +1,11 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { clearAuthCookies } from "@/lib/auth/cookies";
-import { serverAxios } from "@/lib/auth/fetcher.server";
+import { clearAuthCookies, setAuthCookies } from "@/lib/auth/cookies";
+import {
+  AUTH_SYNC_REQUIRED_CODE,
+  isAuthSyncRequiredError,
+  serverAxios,
+} from "@/lib/auth/serverFetcher";
 
 const DEFAULT_NEXT_PATH = "/";
 const SYNC_PATH = "/api/auth/sync";
@@ -44,19 +48,34 @@ export async function GET(request: NextRequest) {
   const nextPath = resolveNextPath(request);
 
   try {
-    await serverAxios.get("/users/me");
+    const authResponse = await serverAxios.get("/users/me");
+    const response = NextResponse.redirect(new URL(nextPath, request.url));
+
+    if (authResponse._refreshedTokens) {
+      const { accessToken, refreshToken } = authResponse._refreshedTokens;
+      setAuthCookies(response, {
+        accessToken,
+        ...(refreshToken ? { refreshToken } : {}),
+      });
+    }
+
+    return response;
   } catch (error) {
+    if (isAuthSyncRequiredError(error)) {
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      clearAuthCookies(response);
+      return response;
+    }
     if (
       axios.isAxiosError(error) &&
       (error.response?.status === 401 ||
         (error.response?.data as { code?: string } | undefined)?.code ===
-          "REFRESH_FAILED")
+          AUTH_SYNC_REQUIRED_CODE)
     ) {
       const response = NextResponse.redirect(new URL("/login", request.url));
       clearAuthCookies(response);
       return response;
     }
+    throw error;
   }
-
-  return NextResponse.redirect(new URL(nextPath, request.url));
 }

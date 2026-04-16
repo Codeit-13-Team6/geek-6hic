@@ -42,7 +42,7 @@ const getJoinErrorMessage = (code?: string) => {
       return "이미 참여 중인 모임이에요.";
     case "NOT_FOUND":
       return "존재하지 않는 모임이에요.";
-    case "REFRESH_FAILED":
+    case "AUTH_SYNC_REQUIRED":
       return "로그인 후 다시 참여해 주세요.";
     default:
       return "참여 처리 중 문제가 발생했어요.";
@@ -53,7 +53,7 @@ const getCancelJoinErrorMessage = (code?: string) => {
   switch (code) {
     case "NOT_FOUND":
       return "존재하지 않는 모임이에요.";
-    case "REFRESH_FAILED":
+    case "AUTH_SYNC_REQUIRED":
       return "로그인 후 다시 참여 취소해 주세요.";
     default:
       return "참여 취소 처리 중 문제가 발생했어요.";

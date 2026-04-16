@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRecommendedMeetingsBFF } from "@/bff/recommend";
 import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 export async function GET(
   request: Request,

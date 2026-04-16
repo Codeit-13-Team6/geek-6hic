@@ -37,7 +37,10 @@ export default function MyRankingSection() {
   return (
     <section className="mb-10 sm:mb-12">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          console.log("clicked", isOpen);
+          setIsOpen(!isOpen)
+        }}
         className="group hover:border-main-purple/40 flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-all hover:shadow-md active:scale-[0.99]"
       >
         <div className="flex items-center gap-3">

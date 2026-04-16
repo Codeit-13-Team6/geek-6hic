@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "@/lib/auth/fetcher.client";
+import axiosInstance from "@/lib/auth/clientFetcher";
 import { createComment } from "@/api/client/comments";
 import {
   MeetingDetailApiData,

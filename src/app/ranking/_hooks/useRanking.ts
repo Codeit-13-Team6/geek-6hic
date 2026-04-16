@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "@/constants/queryKey";
-import axiosInstance from "@/lib/auth/fetcher.client";
+import axiosInstance from "@/lib/auth/clientFetcher";
 import { RankedItem } from "@/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

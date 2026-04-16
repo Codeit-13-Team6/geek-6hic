@@ -2,7 +2,7 @@ import {
   collectDeferredAuthTokens,
   serverFetch,
   type DeferredAuthCommitContext,
-} from "@/lib/auth/fetcher.server";
+} from "@/lib/auth/serverFetcher";
 import { fetchAllCursor } from "@/lib";
 import { isSecretMeeting } from "@/lib";
 import type {
@@ -91,7 +91,7 @@ async function getMeetingCandidateList(
           ...(cursor ? { cursor } : {}),
         },
       }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
+        authSyncMode: authContext ? "response" : "throw",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;
@@ -117,7 +117,7 @@ async function getThreadActivityMap(
           ...(cursor ? { cursor } : {}),
         },
       }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
+        authSyncMode: authContext ? "response" : "throw",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;

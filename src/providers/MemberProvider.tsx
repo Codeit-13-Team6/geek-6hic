@@ -30,8 +30,25 @@ export function MemberProvider({ children, initialUser }: Props) {
           const status = axios.isAxiosError(error)
             ? error.response?.status
             : undefined;
+          const code = axios.isAxiosError(error)
+            ? (error.response?.data as { code?: string } | undefined)?.code
+            : undefined;
 
           if (status === 401) {
+            if (code === "AUTH_SYNC_REQUIRED") {
+              // 로그인/회원가입 화면에서는 sync 재진입을 막아 무한 루프를 방지합니다.
+              if (
+                window.location.pathname === "/login" ||
+                window.location.pathname === "/signup" ||
+                window.location.pathname === "/oauth/kakao"
+              ) {
+                useAuthStore.getState().clearAuth();
+                return;
+              }
+              const nextPath = `${window.location.pathname}${window.location.search}`;
+              window.location.href = `/api/auth/sync?next=${encodeURIComponent(nextPath)}`;
+              return;
+            }
             await logoutUser().catch(() => {
               return;
             });

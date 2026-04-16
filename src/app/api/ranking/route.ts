@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRankingBFF } from "@/bff/ranking";
 import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 interface AxiosErrorLike {
   response?: { data?: unknown; status?: number };
