@@ -513,6 +513,26 @@ describe("serverFetch wrapper", () => {
     expect(redirect).not.toHaveBeenCalled();
   });
 
+  it("SSR에서 쿠키 커밋이 deferred 되면 /api/auth/sync 로 redirect 한다", async () => {
+    setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
+
+    server.use(
+      http.post(`${BASE}/auth/refresh`, () =>
+        HttpResponse.json({
+          accessToken: "deferred-access-token",
+          refreshToken: makeMockJwt("1"),
+        }),
+      ),
+      http.get(`${BASE}/users/me`, () => HttpResponse.json({ id: 1, name: "tester" })),
+    );
+
+    await expect(
+      serverFetch({ method: "GET", url: "/users/me" }),
+    ).rejects.toThrow("NEXT_REDIRECT");
+
+    expect(redirect).toHaveBeenCalledWith("/api/auth/sync");
+  });
+
   it("REFRESH_FAILED 에러 → redirect('/login') 를 호출한다", async () => {
     setupCookies({}); // 토큰 없음 + private path → REFRESH_FAILED
 

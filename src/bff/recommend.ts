@@ -90,6 +90,8 @@ async function getMeetingCandidateList(
           size: MEETING_PAGE_SIZE,
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;
@@ -114,6 +116,8 @@ async function getThreadActivityMap(
           size: THREAD_PAGE_SIZE,
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;

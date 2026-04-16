@@ -47,6 +47,8 @@ export async function getRankingBFF(
         method: "GET",
         url: "/meetings",
         params: { cursor },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;
@@ -78,6 +80,8 @@ export async function getRankingBFF(
               method: "GET",
               url: `/posts/${meeting.linkPostId}/comments`,
               params: { cursor },
+            }, {
+              deferredCommitMode: authContext ? "bubble" : "redirect",
             }).then((r) => {
               collectDeferredAuthTokens(authContext, r);
               return r.data;

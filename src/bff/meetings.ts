@@ -37,6 +37,8 @@ authContext?: DeferredAuthCommitContext,
           size,
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
       collectDeferredAuthTokens(authContext, response);
 
@@ -67,6 +69,8 @@ export async function getJoinedMeetingIdsBFF(
           sortBy: "joinedAt",
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       }).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;

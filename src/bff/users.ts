@@ -42,6 +42,8 @@ authContext?: DeferredAuthCommitContext,
           size,
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
       collectDeferredAuthTokens(authContext, response);
 
@@ -89,6 +91,8 @@ authContext?: DeferredAuthCommitContext,
           offset: pageOffset,
           limit: pageLimit,
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
       collectDeferredAuthTokens(authContext, response);
 
@@ -122,6 +126,8 @@ authContext?: DeferredAuthCommitContext,
           offset: pageOffset,
           limit: pageLimit,
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
       collectDeferredAuthTokens(authContext, response);
 

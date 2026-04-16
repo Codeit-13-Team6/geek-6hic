@@ -38,6 +38,8 @@ export async function getPostCommentsServer(
       offset: params.offset ?? 0,
       limit: params.limit ?? 100,
     },
+  }, {
+    deferredCommitMode: authContext ? "bubble" : "redirect",
   });
   collectDeferredAuthTokens(authContext, response);
   return response.data;
@@ -57,6 +59,8 @@ export async function getPosts(
       size: params.size || 10,
       ...(params.cursor ? { cursor: params.cursor } : {}),
     },
+  }, {
+    deferredCommitMode: authContext ? "bubble" : "redirect",
   });
   collectDeferredAuthTokens(authContext, response);
 

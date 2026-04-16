@@ -44,6 +44,13 @@ interface RefreshResult {
   deferredCookieCommit: boolean;
 }
 
+type DeferredCommitMode = "redirect" | "bubble";
+
+interface ServerFetchOptions {
+  deferredCommitMode?: DeferredCommitMode;
+  syncPath?: string;
+}
+
 export interface DeferredAuthCommitContext {
   refreshedTokens?: TokenPair;
 }
@@ -413,9 +420,26 @@ serverAxios.interceptors.response.use(
 );
 
 // 서버 컴포넌트 전용 리프레쉬 토큰 없거나 만료되었을때 저절로 redirect 처리하기 위해 래퍼로 감싸둠
-async function serverFetch<T = unknown>(config: AxiosRequestConfig<T>) {
+async function serverFetch<T = unknown>(
+  config: AxiosRequestConfig<T>,
+  options: ServerFetchOptions = {},
+) {
+  const {
+    deferredCommitMode = "redirect",
+    syncPath = "/api/auth/sync",
+  } = options;
+
   try {
-    return await serverAxios(config);
+    const response = await serverAxios(config);
+
+    if (response._deferredCookieCommit && response._refreshedTokens) {
+      if (deferredCommitMode === "bubble") {
+        return response;
+      }
+      redirect(syncPath);
+    }
+
+    return response;
   } catch (err) {
     const error = err as RefreshFailedError;
     if (error.response?.data?.code === "REFRESH_FAILED") {
