@@ -169,7 +169,7 @@ export const useToggleLike = (postId: number) => {
         isLiked: !old.isLiked,
         likeCount: old.isLiked ? old.likeCount - 1 : old.likeCount + 1,
       }),
-      invalidateKeys: [QUERY_KEYS.posts.list, QUERY_KEYS.posts.detail(postId)],
+      invalidateKeys: [QUERY_KEYS.posts.root, QUERY_KEYS.posts.detail(postId)],
       onErrorMessage: "좋아요 처리에 실패했습니다.",
     }),
   });

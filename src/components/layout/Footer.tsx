@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Github } from "lucide-react";
 
-const HIDE_FOOTER_PATHS = ["/login", "/signup"];
+const HIDE_FOOTER_PATHS = ["/login", "/signup", "/meetings", "/lounge"];
 
 export function Footer() {
   const pathname = usePathname();
@@ -43,18 +43,6 @@ export function Footer() {
               className="text-sm font-bold tracking-tight text-slate-500 transition-colors hover:text-slate-900"
             >
               About Team
-            </Link>
-            <Link
-              href="https://github.com/당신의/레포지토리"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-1.5 text-sm font-bold tracking-tight text-slate-500 transition-colors hover:text-slate-900"
-            >
-              <Github
-                className="size-4 transition-transform group-hover:scale-110"
-                strokeWidth={2.5}
-              />
-              <span>Contribute</span>
             </Link>
           </div>
 
