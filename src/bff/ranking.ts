@@ -1,6 +1,6 @@
 import { serverFetch } from "@/lib/auth/fetcher.server";
 import { CursorResponse } from "@/types";
-import { fetchAllCursor } from "@/lib/fetchAllCursor";
+import { fetchAllCursor } from "@/lib";
 
 interface MeetingRankData {
   commentLeng: number;

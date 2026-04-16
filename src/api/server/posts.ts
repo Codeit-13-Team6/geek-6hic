@@ -7,8 +7,8 @@ import type {
 
   VisiblePostsPageResponse,
 } from "@/types";
-import { filterThreadPosts } from "@/lib/postUtils";
-import { getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
+import { filterThreadPosts } from "@/lib";
+import { getVisibleMyPostsPage } from "@/lib";
 
 export async function getPostDetail(postId: number): Promise<Post> {
   const { data } = await serverFetch({

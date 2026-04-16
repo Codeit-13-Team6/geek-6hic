@@ -11,7 +11,7 @@ import NotificationCard from "@/components/layout/NotificationCard";
 import type { ThreadMeetingDisplayInfo, NotificationItem } from "@/types";
 import { NotificationProps } from "@/types";
 import { Trash2, CheckCheck } from "lucide-react";
-import { threadKeyword } from "@/lib/threadKeyword";
+import { isThread } from "@/lib";
 import { getMeetingDetail } from "@/api/client/meetingDetail";
 
 const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";
@@ -23,7 +23,7 @@ const isAttendanceComment = (notification: NotificationItem) =>
   notification.data.commentContent?.startsWith(ATTENDANCE_COMMENT_PREFIX);
 
 const getThreadMeetingId = (postTitle?: string) => {
-  if (!postTitle || !threadKeyword.is(postTitle)) return null;
+  if (!postTitle || !isThread.is(postTitle)) return null;
 
   const meetingId = Number(postTitle.split("_")[1]);
   return Number.isFinite(meetingId) ? meetingId : null;

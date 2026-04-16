@@ -2,7 +2,7 @@
 
 import { Input } from "./Input";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { useEffect, useState } from "react";
 
 interface Props {

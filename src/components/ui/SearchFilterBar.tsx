@@ -2,7 +2,7 @@
 
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import SelectFilter from "@/components/ui/SelectFilter";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import SearchBar from "@/components/ui/SearchBar";
 
 interface SortOption {

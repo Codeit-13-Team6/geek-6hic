@@ -3,7 +3,7 @@
 import PostCard from "../card/PostCard";
 import { useRouter } from "next/navigation";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
 import { NoResultFound } from "@/components/features/feedback/NoResultFound";
 import InfiniteScrollTrigger from "@/components/ui/InfiniteScrollTrigger";

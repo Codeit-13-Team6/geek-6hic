@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { XIcon } from "lucide-react";
 import { ModalCommonProps } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 export default function ModalBase({
   isOpen,

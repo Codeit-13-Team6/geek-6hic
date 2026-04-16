@@ -1,8 +1,8 @@
 import { serverFetch } from "@/lib/auth/fetcher.server";
-import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
-import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
-import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
-import { safeOffset, safeLimit } from "@/lib/safePagination";
+import { getVisibleCursorPage } from "@/lib";
+import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib";
+import { sortByCreatedAtDesc } from "@/lib";
+import { safeOffset, safeLimit } from "@/lib";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,

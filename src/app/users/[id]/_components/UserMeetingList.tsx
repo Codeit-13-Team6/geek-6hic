@@ -7,9 +7,9 @@ import { PlusCircle } from "lucide-react";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import NumberPagination from "@/components/ui/NumberPagination";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
-import { isSecretMeeting } from "@/lib/meetingSecret";
+import { isSecretMeeting } from "@/lib";
 import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 

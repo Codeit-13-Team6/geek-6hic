@@ -2,7 +2,7 @@ import * as React from "react";
 
 import arrowLeft from "@/assets/icon/arrow/arrow-left.svg";
 import arrowRight from "@/assets/icon/arrow/arrow-right.svg";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { Button } from "@/components/ui/Button";
 import { MoreHorizontalIcon } from "lucide-react";
 

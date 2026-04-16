@@ -1,8 +1,8 @@
 import { serverFetch } from "@/lib/auth/fetcher.server";
-import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
-import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
-import { fetchAllCursor } from "@/lib/fetchAllCursor";
-import { safeOffset, safeLimit } from "@/lib/safePagination";
+import { getVisibleCursorPage } from "@/lib";
+import { sortByCreatedAtDesc } from "@/lib";
+import { fetchAllCursor } from "@/lib";
+import { safeOffset, safeLimit } from "@/lib";
 import type {
   GetMeetingsResponse,
   JoinedMeeting,

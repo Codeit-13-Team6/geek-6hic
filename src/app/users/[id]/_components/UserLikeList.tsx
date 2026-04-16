@@ -9,8 +9,8 @@ import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
 import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { useToggleFavorite } from "@/app/users/[id]/_hooks/useUser";
-import { isSecretMeeting } from "@/lib/meetingSecret";
-import { cn } from "@/lib/utils";
+import { isSecretMeeting } from "@/lib";
+import { cn } from "@/lib";
 
 const FAVORITES_PAGE_SIZE = 10;
 

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import Comment from "./Comment";
 import { Toast } from "@/components/ui/Toast";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
-import { extractUrlsFromText } from "@/lib/contentLinkUtils";
+import { extractUrlsFromText } from "@/lib";
 import { Textarea } from "@/components/ui/Textarea";
 import { CommentSectionProps } from "@/types";
 import { DeleteModal } from "@/components/modal/DeleteModal";
@@ -28,7 +28,7 @@ import {
   useEditComment,
   useGetComments,
 } from "@/hooks/queries/useComments";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 const COMMENTS_PAGE_LIMIT = 10;
 

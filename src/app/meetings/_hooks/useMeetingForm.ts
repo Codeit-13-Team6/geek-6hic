@@ -19,7 +19,7 @@ import {
   buildSecretDateTime,
   generateSecretTime,
   isSecretMeeting,
-} from "@/lib/meetingSecret";
+} from "@/lib";
 import {
   MeetingDetailApiData,
   MeetingDetailData,
@@ -30,7 +30,7 @@ import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
-import { threadKeyword } from "@/lib/threadKeyword";
+import { isThread } from "@/lib";
 
 export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   const secretTime = formValues.isPrivate ? generateSecretTime() : null;
@@ -289,7 +289,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       const newMeetingId = newMeeting.id;
 
       const newPost = await createPost({
-        title: threadKeyword.build(newMeetingId),
+        title: isThread.build(newMeetingId),
         content:
           "모임 스레드가 생성되었습니다. 자유롭게 이야기와 링크를 나눠보세요!",
       });
