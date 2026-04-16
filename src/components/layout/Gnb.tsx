@@ -49,6 +49,7 @@ export function Gnb({ initialUser }: GnbProps) {
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const user = storeUser ?? initialUser;
   const isLoggedIn = !!user;
+  const isBlobUrl = user?.image?.startsWith("blob:");
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
@@ -146,7 +147,7 @@ export function Gnb({ initialUser }: GnbProps) {
 
         {/* 오른쪽 영역 */}
         <div className="flex h-full items-center gap-0 sm:gap-2 md:gap-4">
-          {!isAuthReady ? null : isLoggedIn ? (
+          {isLoggedIn ? (
             <div
               className="flex items-center gap-0 md:gap-2"
               ref={notificationRef}

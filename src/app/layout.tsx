@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import GnbSessionShell from "@/components/layout/GnbSessionShell";
+import { Gnb } from "@/components/layout/Gnb";
 import { Footer } from "@/components/layout/Footer";
 import { ToasterProvider } from "@/providers/ToasterProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { MemberProvider } from "@/providers/MemberProvider";
 import LoginModalProvider from "@/providers/LoginModalProvider";
 import { BtnTop } from "@/components/features/btn/BtnTop";
+import { getSessionUser } from "@/lib/auth/sessionUser.server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +41,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialUser = await getSessionUser();
+
   return (
     <html lang="ko">
       <body
@@ -50,7 +54,9 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
         <QueryProvider>
-          <GnbSessionShell>
+          <MemberProvider initialUser={initialUser}>
+            <Gnb initialUser={initialUser} />
+
             <ToasterProvider />
             <LoginModalProvider />
             <main className="min-h-[calc(100dvh-72px)]">
@@ -59,7 +65,7 @@ export default async function RootLayout({
             </main>
             <BtnTop />
             <Footer />
-          </GnbSessionShell>
+          </MemberProvider>
         </QueryProvider>
       </body>
     </html>
