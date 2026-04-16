@@ -12,6 +12,10 @@ interface Props extends MemberProviderProps {
 export function MemberProvider({ children, initialUser }: Props) {
   // const initialized = useRef(false);
   useEffect(() => {
+    // layout에서 initialUser를 전달하지 않는 모드에서는
+    // AuthBootstrapProvider가 auth 상태를 확정하도록 여기서는 상태를 건드리지 않습니다.
+    if (typeof initialUser === "undefined") return;
+
     useAuthStore.setState((prev) => {
       if (!initialUser) {
         return {
