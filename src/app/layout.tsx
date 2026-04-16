@@ -9,7 +9,6 @@ import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 import LoginModalProvider from "@/providers/LoginModalProvider";
 import { BtnTop } from "@/components/features/btn/BtnTop";
-import { getSessionUser } from "@/lib/auth/sessionUser.server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,8 +40,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialUser = await getSessionUser();
-
   return (
     <html lang="ko">
       <body
@@ -54,8 +51,8 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
         <QueryProvider>
-          <MemberProvider initialUser={initialUser}>
-            <Gnb initialUser={initialUser} />
+          <MemberProvider>
+            <Gnb />
 
             <ToasterProvider />
             <LoginModalProvider />
