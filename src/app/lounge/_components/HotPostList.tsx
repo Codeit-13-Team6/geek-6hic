@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Post } from "@/types";
 import { HotPostCard } from "./HotPostCard";
-import { useGetHotPosts } from "@/hooks/queries/usePosts";
+import { useGetHotPosts } from "@/app/lounge/_hooks/useLoungePosts";
 import { Flame } from "lucide-react";
 import { useDragScroll } from "@/hooks/useDragScroll";
 

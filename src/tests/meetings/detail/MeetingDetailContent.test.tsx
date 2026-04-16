@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MeetingDetailContent } from "@/app/meetings/[id]/_components/MeetingDetailContent";
-import { useMeetingDetailQueries } from "@/hooks";
+import { useMeetingDetailQueries } from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import { MeetingDetailApiData, MeetingParticipant } from "@/types";
 // 이 테스트는 상세 설명과 하위 섹션이 화면에 렌더링되는지만 확인한다.
@@ -65,7 +65,7 @@ const mockDetail: MeetingDetailApiData = {
   isJoined: true,
 };
 
-jest.mock("@/hooks", () => ({
+jest.mock("@/app/meetings/[id]/_hooks/useMeetingDetail", () => ({
   useMeetingDetailQueries: jest.fn(),
 }));
 

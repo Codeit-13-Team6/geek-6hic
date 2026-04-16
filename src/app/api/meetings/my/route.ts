@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMyMeetingsBFF } from "@/app/api/_services/meetings";
+import { getMyMeetingsBFF } from "@/bff/meetings";
 import type { MyMeetingsPageResponse } from "@/types";
 
 export async function GET(request: Request) {

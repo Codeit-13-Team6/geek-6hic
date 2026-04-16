@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import PostList from "@/components/features/list/PostList";
-import LoungeSearchSection from "@/app/lounge/_component/LoungeSearchSection";
+import LoungeSearchSection from "@/app/lounge/_components/LoungeSearchSection";
 import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
-import { usePostList } from "@/hooks";
+import { usePostList } from "@/hooks/queries/usePostList";
 
 const mockPush = jest.fn();
 
@@ -17,7 +17,7 @@ jest.mock("next/navigation", () => ({
   usePathname: () => "/lounge",
 }));
 
-jest.mock("@/components/ui/SelectCommon", () => ({
+jest.mock("@/components/ui/Select", () => ({
   Select: ({ children, onValueChange, value }: any) => (
     <select
       data-testid="mock-select"
@@ -36,7 +36,7 @@ jest.mock("@/components/ui/SelectCommon", () => ({
   ),
 }));
 
-jest.mock("@/hooks/queries/usePosts", () => ({
+jest.mock("@/hooks/queries/usePostList", () => ({
   usePostList: jest.fn(),
 }));
 

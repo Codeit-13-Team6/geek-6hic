@@ -22,7 +22,7 @@ import { Link2 } from "lucide-react";
 import { CompactLinkList } from "@/components/features/list/CompactLinkList";
 import { PostDetailCardProps } from "@/types";
 import { cn } from "@/lib/utils";
-import { HeartIcon } from "@/components/icon/HeartIcon";
+import { HeartIcon } from "@/components/ui/HeartIcon";
 import { CodeBlock } from "./CodeBlock";
 import FallbackImage from "@/components/img/FallbackImage";
 

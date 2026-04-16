@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { useMeetingTypes } from "@/app/meetings/_hooks/useMeetingTypes";
 import { BtnCreate } from "@/components/ui/BtnCreate";
 
 function getMeetingCategoryIcon(name: string) {

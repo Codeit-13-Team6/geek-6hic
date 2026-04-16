@@ -33,7 +33,7 @@ export default function LinkCard({
         {link.image && (
           <img
             src={link.image}
-            alt="좋아요 아이콘"
+            alt="게시물 썸네일"
             className="z-10 size-12 shrink-0 rounded-lg object-cover sm:size-16"
             onError={(e) => {
               (e.target as HTMLImageElement).style.opacity = "0";

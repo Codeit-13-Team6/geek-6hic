@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/Dropdown";
 import { DeleteModal } from "@/components/modal/DeleteModal";
-import { HeartIcon } from "@/components/icon/HeartIcon";
+import { HeartIcon } from "@/components/ui/HeartIcon";
 import FallbackImage from "@/components/img/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import {
@@ -31,7 +31,7 @@ import {
   useMeetingHostMutations,
   useMeetingAttendMutation,
   useMeetingDetailFavoriteMutation,
-} from "@/hooks";
+} from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingHeaderSectionProps } from "@/types";
 import { Toast } from "@/components/ui/Toast";

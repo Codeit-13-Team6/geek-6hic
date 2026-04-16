@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { UserCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import FallbackImage from "@/components/img/FallbackImage";
-import { HeartIcon } from "@/components/icon/HeartIcon";
+import { HeartIcon } from "@/components/ui/HeartIcon";
 
 export function UserCard({
   title = "제목이 없습니다.",

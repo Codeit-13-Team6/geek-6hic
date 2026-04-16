@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useUrlQuery } from "@/hooks/useUrlQuery";
-import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { useMeetingTypes } from "@/app/meetings/_hooks/useMeetingTypes";
 
 export default function MeetingTypeTabs() {
   const [isMounted, setIsMounted] = useState(false);

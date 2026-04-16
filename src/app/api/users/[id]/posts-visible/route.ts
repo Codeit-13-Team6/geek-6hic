@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserPostsBFF } from "@/app/api/_services/users";
+import { getUserPostsBFF } from "@/bff/users";
 import type { VisiblePostsPageResponse } from "@/types";
 
 interface RouteParams {

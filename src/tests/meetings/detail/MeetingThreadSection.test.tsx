@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { MeetingThreadSection } from "@/app/meetings/[id]/_components/MeetingThreadSection";
-import { useMeetingThread } from "@/hooks/queries/useThread";
+import { useMeetingThread } from "@/app/meetings/[id]/_hooks/useThread";
 // 이 테스트는 실제 스레드 생성/조회 로직이 아니라 스레드 영역의 렌더링만 확인한다.
 
 // 실제 스레드 훅을 mock 처리해서 렌더링 결과만 확인한다.
-jest.mock("@/hooks/queries/useThread", () => ({
+jest.mock("@/app/meetings/[id]/_hooks/useThread", () => ({
   useMeetingThread: jest.fn(),
 }));
 

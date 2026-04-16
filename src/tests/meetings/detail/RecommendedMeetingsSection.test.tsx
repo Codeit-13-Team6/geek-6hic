@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/_components/RecommendedMeetingsSection";
-import { useMeetingRecommendationsQuery } from "@/hooks";
+import { useMeetingRecommendationsQuery } from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { RecommendedMeetingItem } from "@/types";
 // 이 테스트는 추천 데이터가 들어왔을 때 추천 모임 링크가 화면에 보이는지만 확인한다.
 
@@ -18,7 +18,7 @@ const mockRecommendations: RecommendedMeetingItem[] = [
   },
 ];
 
-jest.mock("@/hooks", () => ({
+jest.mock("@/app/meetings/[id]/_hooks/useMeetingDetail", () => ({
   useMeetingRecommendationsQuery: jest.fn(),
 }));
 

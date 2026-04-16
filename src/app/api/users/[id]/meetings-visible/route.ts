@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserMeetingsBFF } from "@/app/api/_services/users";
+import { getUserMeetingsBFF } from "@/bff/users";
 import type { MyMeetingsPageResponse } from "@/types";
 
 interface RouteParams {
