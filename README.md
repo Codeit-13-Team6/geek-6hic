@@ -126,6 +126,7 @@ src/
 ├── hooks/
 │   └── queries/                           # TanStack Query 기반 데이터 훅
 ├── lib/                                   # 공통 유틸 및 인증 관련 로직
+│   └── auth/                              # auth 관련 유틸 로직
 ├── providers/                             # Query, Toast 등 전역 Provider
 ├── store/                                 # Zustand 상태 관리
 ├── tests/                                 # 테스트 코드
