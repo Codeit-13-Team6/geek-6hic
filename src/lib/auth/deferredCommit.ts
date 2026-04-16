@@ -1,21 +1,18 @@
-import type { NextResponse } from "next/server";
-import { setAuthCookies } from "@/lib/auth/cookies";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import { NextResponse } from "next/server";
+import {
+  AUTH_SYNC_REQUIRED_CODE,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/serverFetcher";
 
 export function applyAuthCookiesFromContext(
   response: NextResponse,
   context?: DeferredAuthCommitContext,
 ) {
-  const refreshedTokens = context?.refreshedTokens;
-  if (!refreshedTokens) {
+  if (!context?.authSyncRequired) {
     return response;
   }
-
-  const { accessToken, refreshToken } = refreshedTokens;
-  setAuthCookies(response, {
-    accessToken,
-    ...(refreshToken ? { refreshToken } : {}),
-  });
-
-  return response;
+  return NextResponse.json(
+    { message: "Unauthorized", code: AUTH_SYNC_REQUIRED_CODE },
+    { status: 401 },
+  );
 }

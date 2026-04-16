@@ -1,5 +1,8 @@
 import type { AxiosResponse } from "axios";
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  redirectToAuthSyncIfNeeded,
+  serverFetch,
+} from "@/lib/auth/serverFetcher";
 import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,
@@ -11,24 +14,34 @@ const PARTICIPANTS_PAGE_SIZE = 100;
 const ATTENDANCE_COMMENT_PREFIX = "onlyScore_";
 
 export async function getMeetingDetail(meetingId: number) {
-  const response = await serverFetch<MeetingDetailApiData>({
-    url: `/meetings/${meetingId}`,
-    method: "GET",
-  });
+  try {
+    const response = await serverFetch<MeetingDetailApiData>({
+      url: `/meetings/${meetingId}`,
+      method: "GET",
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
 
 export async function getMeetingParticipants(meetingId: number) {
-  const response = await serverFetch<MeetingParticipantsResponse>({
-    url: `/meetings/${meetingId}/participants`,
-    method: "GET",
-    params: {
-      size: PARTICIPANTS_PAGE_SIZE,
-    },
-  });
+  try {
+    const response = await serverFetch<MeetingParticipantsResponse>({
+      url: `/meetings/${meetingId}/participants`,
+      method: "GET",
+      params: {
+        size: PARTICIPANTS_PAGE_SIZE,
+      },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
 
 
@@ -39,7 +52,8 @@ export async function getCurrentUserOnServer() {
       url: "/users/me",
     });
     return response.data;
-  } catch {
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
     return null;
   }
 }
@@ -97,7 +111,8 @@ export async function getTodayAttendanceStatus({
 
       cursor = response.data.nextCursor;
     }
-  } catch {
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
     return false;
   }
 }

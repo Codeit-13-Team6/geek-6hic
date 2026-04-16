@@ -10,6 +10,7 @@ import { X, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SideBarProps } from "@/types";
 import { cn } from "@/lib";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const NAV_LINKS = [
   { name: "모임 찾기", href: "/meetings" },
@@ -25,6 +26,7 @@ export default function SideBar({
   onClose,
 }: SideBarProps) {
   const pathname = usePathname();
+  const { user } = useAuthStore();
 
   return (
     <SheetContent
@@ -71,13 +73,37 @@ export default function SideBar({
             </Link>
           );
         })}
+
+        {isLoggedIn && (
+          <Link
+            href={`/users/${user?.id}`}
+            onClick={onClose}
+            className={cn(
+              "group flex items-center justify-between rounded-2xl px-4 py-4 transition-all active:scale-[0.98]",
+              pathname.startsWith("/users")
+                ? "text-main-purple bg-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]"
+                : "text-slate-500 hover:text-slate-900",
+            )}
+          >
+            <span className="text-[15px] font-bold tracking-tight">
+              마이페이지
+            </span>
+            {pathname.startsWith("/users") && (
+              <ChevronRight className="size-4 stroke-[3px]" />
+            )}
+          </Link>
+        )}
       </nav>
 
       {/* 하단 영역: 심플한 인사말 및 액션 */}
       <div className="mt-auto flex flex-col gap-6 px-3">
         {isLoggedIn ? (
           <div className="flex flex-col gap-5">
-            <p className="text-[15px] font-bold text-slate-900">안녕하세요.</p>
+            {/* 💡 유저 인사말: 담백하게 텍스트로만 구성 */}
+            <p className="text-[15px] font-bold text-slate-900">
+              안녕하세요,{" "}
+              <span className="text-main-purple">{user?.name || ""}</span>님
+            </p>
 
             <button
               onClick={handleLogout}

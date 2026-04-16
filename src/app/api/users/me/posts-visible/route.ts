@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getMyPostsBFF } from "@/bff/users";
 import type { VisiblePostsPageResponse } from "@/types";
 import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 export async function GET(request: Request) {
   const authContext: DeferredAuthCommitContext = {};

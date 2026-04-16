@@ -1,6 +1,9 @@
 import { cache } from "react";
 import type { User } from "@/types";
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  redirectToAuthSyncIfNeeded,
+  serverFetch,
+} from "@/lib/auth/serverFetcher";
 
 type SessionUser = Pick<User, "id" | "name" | "image">;
 
@@ -15,7 +18,8 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
       name: data.name,
       image: data.image ?? null,
     };
-  } catch {
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
     return null;
   }
 });

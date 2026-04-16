@@ -1,8 +1,9 @@
 import {
   collectDeferredAuthTokens,
+  redirectToAuthSyncIfNeeded,
   serverFetch,
   type DeferredAuthCommitContext,
-} from "@/lib/auth/fetcher.server";
+} from "@/lib/auth/serverFetcher";
 import { CursorResponse } from "@/types";
 import { fetchAllCursor } from "@/lib";
 
@@ -39,89 +40,97 @@ interface CommentItem {
 }
 
 export async function getRankingBFF(authContext?: DeferredAuthCommitContext) {
-  const meetingMap: MeetingRankMap = {};
+  try {
+    const meetingMap: MeetingRankMap = {};
 
-  const meetings = await fetchAllCursor<MeetingItem>({
-    fetchPage: (cursor) =>
-      serverFetch<CursorResponse<MeetingItem>>(
-        {
-          method: "GET",
-          url: "/meetings",
-          params: { cursor },
-        },
-        {
-          deferredCommitMode: authContext ? "bubble" : "redirect",
-        },
-      ).then((r) => {
-        collectDeferredAuthTokens(authContext, r);
-        return r.data;
-      }),
-  });
+    const meetings = await fetchAllCursor<MeetingItem>({
+      fetchPage: (cursor) =>
+        serverFetch<CursorResponse<MeetingItem>>(
+          {
+            method: "GET",
+            url: "/meetings",
+            params: { cursor },
+          },
+          {
+            authSyncMode: authContext ? "response" : "throw",
+          },
+        ).then((r) => {
+          collectDeferredAuthTokens(authContext, r);
+          return r.data;
+        }),
+    });
 
-  meetings.forEach((item) => {
-    meetingMap[item.id] = {
-      totalUserLeng: item.participantCount,
-      commentLeng: 0,
-      checkScore: 0,
-      commentingUserList: [],
-      meetType: item.type,
-      meetName: item.name,
-      image: item.image,
-      dateTime: item.dateTime,
-      rankScore: 0,
-      linkPostId: Number(item.region),
-    };
-  });
+    meetings.forEach((item) => {
+      meetingMap[item.id] = {
+        totalUserLeng: item.participantCount,
+        commentLeng: 0,
+        checkScore: 0,
+        commentingUserList: [],
+        meetType: item.type,
+        meetName: item.name,
+        dateTime: item.dateTime,
 
-  await Promise.all(
-    Object.entries(meetingMap).map(async ([, meeting]) => {
-      if (!meeting.linkPostId) return;
+        image: item.image,
+        rankScore: 0,
+        linkPostId: Number(item.region),
+      };
+    });
 
-      try {
-        const comments = await fetchAllCursor<CommentItem>({
-          fetchPage: (cursor) =>
-            serverFetch<CursorResponse<CommentItem>>(
-              {
-                method: "GET",
-                url: `/posts/${meeting.linkPostId}/comments`,
-                params: { cursor },
-              },
-              {
-                deferredCommitMode: authContext ? "bubble" : "redirect",
-              },
-            ).then((r) => {
-              collectDeferredAuthTokens(authContext, r);
-              return r.data;
-            }),
-        });
+    await Promise.all(
+      Object.entries(meetingMap).map(async ([, meeting]) => {
+        if (!meeting.linkPostId) return;
 
-        for (const item of comments) {
-          if (item.content.startsWith("onlyScore_")) {
-            meeting.checkScore += Number(item.content.split("_")[2]);
-          } else {
-            meeting.commentLeng += 1;
-            if (!meeting.commentingUserList.includes(item.authorId)) {
-              meeting.commentingUserList.push(item.authorId);
+        try {
+          const comments = await fetchAllCursor<CommentItem>({
+            fetchPage: (cursor) =>
+              serverFetch<CursorResponse<CommentItem>>(
+                {
+                  method: "GET",
+                  url: `/posts/${meeting.linkPostId}/comments`,
+                  params: { cursor },
+                },
+                {
+                  authSyncMode: authContext ? "response" : "throw",
+                },
+              ).then((r) => {
+                collectDeferredAuthTokens(authContext, r);
+                return r.data;
+              }),
+          });
+
+          for (const item of comments) {
+            if (item.content.startsWith("onlyScore_")) {
+              meeting.checkScore += Number(item.content.split("_")[2]);
+            } else {
+              meeting.commentLeng += 1;
+              if (!meeting.commentingUserList.includes(item.authorId)) {
+                meeting.commentingUserList.push(item.authorId);
+              }
             }
           }
+        } catch {
+          // 존재하지 않는 postId → 스킵
         }
-      } catch {
-        // 존재하지 않는 postId → 스킵
-      }
-    }),
-  );
+      }),
+    );
 
-  return Object.entries(meetingMap)
-    .map(([id, data]) => {
-      const commentScore = data.commentLeng * 3;
-      const userScore = data.commentingUserList.length * 30;
-      const rankScore = commentScore + data.checkScore + userScore;
+    return Object.entries(meetingMap)
+      .map(([id, data]) => {
+        const commentScore = data.commentLeng * 3;
+        const userScore = data.commentingUserList.length * 30;
+        const rankScore = commentScore + data.checkScore + userScore;
 
-      return {
-        id: Number(id),
-        ...data,
-        rankScore,
-      };
-    })
-    .sort((a, b) => b.rankScore - a.rankScore);
+        return {
+          id: Number(id),
+          ...data,
+          rankScore,
+        };
+      })
+      .sort((a, b) => b.rankScore - a.rankScore);
+  } catch (error) {
+    if (!authContext) {
+      redirectToAuthSyncIfNeeded(error);
+    }
+    throw error;
+  }
 }

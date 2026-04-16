@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { serverAxios, type TokenPair } from "@/lib/auth/fetcher.server";
-import { setAuthCookies } from "@/lib/auth/cookies";
+import {
+  AUTH_SYNC_REQUIRED_CODE,
+  isAuthSyncRequiredError,
+  serverAxios,
+} from "@/lib/auth/serverFetcher";
 import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {
   config?: {
-    _deferredCookieCommit?: boolean;
-    _refreshedTokens?: TokenPair;
+    _authSyncRequired?: boolean;
   };
   response?: {
     data?: { code?: string; [key: string]: unknown };
@@ -27,23 +29,19 @@ interface RouteRule {
   requiresAuth: boolean;
 }
 
-function applyDeferredAuthCookies(
+function applyAuthSyncRequiredResponse(
   response: NextResponse,
-  maybeDeferred?: {
-    _deferredCookieCommit?: boolean;
-    _refreshedTokens?: TokenPair;
+  maybeAuth?: {
+    _authSyncRequired?: boolean;
   },
 ) {
-  if (!maybeDeferred?._deferredCookieCommit || !maybeDeferred._refreshedTokens) {
+  if (!maybeAuth?._authSyncRequired) {
     return response;
   }
-
-  const { accessToken, refreshToken } = maybeDeferred._refreshedTokens;
-  setAuthCookies(response, {
-    accessToken,
-    ...(refreshToken ? { refreshToken } : {}),
-  });
-  return response;
+  return NextResponse.json(
+    { message: "Unauthorized", code: AUTH_SYNC_REQUIRED_CODE },
+    { status: 401 },
+  );
 }
 
 // 백엔드로 프록시할 라우트 화이트리스트
@@ -219,20 +217,22 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
 
     // server-fetcher interceptor가 토큰 세팅 + 401 시 refresh 자동 처리
     const axiosResponse = await serverAxios(axiosOptions);
-    const { data, status } = axiosResponse;
-
-    const response = NextResponse.json(data, { status });
-
-    return applyDeferredAuthCookies(response, axiosResponse);
-  } catch (err) {
-    const error = err as AxiosErrorLike;
-    // REFRESH_FAILED: 리프레시 토큰 만료 → 클라이언트에서 로그인 페이지로 처리
-    if (error.response?.data?.code === "REFRESH_FAILED") {
-      const response = NextResponse.json(
-        { message: "Unauthorized", code: "REFRESH_FAILED" },
+    if (axiosResponse._authSyncRequired) {
+      return NextResponse.json(
+        { message: "Unauthorized", code: AUTH_SYNC_REQUIRED_CODE },
         { status: 401 },
       );
-      return applyDeferredAuthCookies(response, error.config);
+    }
+    return NextResponse.json(axiosResponse.data, { status: axiosResponse.status });
+  } catch (err) {
+    const error = err as AxiosErrorLike;
+    // AUTH_SYNC_REQUIRED: 클라이언트가 /api/auth/sync 경유하도록 전달
+    if (isAuthSyncRequiredError(error)) {
+      const response = NextResponse.json(
+        { message: "Unauthorized", code: AUTH_SYNC_REQUIRED_CODE },
+        { status: 401 },
+      );
+      return applyAuthSyncRequiredResponse(response, error.config);
     }
 
     // 백엔드에서  떨어지는 다른 에러
@@ -241,7 +241,7 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
       error.response?.data ?? { message: "Internal Server Error" },
       { status: error.response?.status ?? 500 },
     );
-    return applyDeferredAuthCookies(response, error.config);
+    return applyAuthSyncRequiredResponse(response, error.config);
   }
 }
 

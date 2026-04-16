@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getHotPostsBFF } from "@/bff/hot";
 import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 export const revalidate = 600;
 

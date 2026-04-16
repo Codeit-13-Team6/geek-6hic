@@ -3,7 +3,10 @@ import type {
   GetPostsResponse,
   MyMeetingsPageResponse,
 } from "@/types";
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  redirectToAuthSyncIfNeeded,
+  serverFetch,
+} from "@/lib/auth/serverFetcher";
 import { filterThreadPosts } from "@/lib";
 
 export async function getFavorites(
@@ -14,13 +17,18 @@ export async function getFavorites(
     size?: number;
   } = {},
 ): Promise<FavoritesPageResponse> {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/favorites",
-    params: { ...params, sortBy: "meetingCreatedAt", sortOrder: "desc" },
-  });
+  try {
+    const { data } = await serverFetch({
+      method: "GET",
+      url: "/favorites",
+      params: { ...params, sortBy: "meetingCreatedAt", sortOrder: "desc" },
+    });
 
-  return data;
+    return data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
 
 export async function getMyMeetings(
@@ -31,27 +39,37 @@ export async function getMyMeetings(
     size?: number;
   } = {},
 ): Promise<MyMeetingsPageResponse> {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/meetings/my",
-    params,
-  });
-  return data;
+  try {
+    const { data } = await serverFetch({
+      method: "GET",
+      url: "/meetings/my",
+      params,
+    });
+    return data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
 
 export async function getLoungePosts(
   cursor?: string,
 ): Promise<GetPostsResponse> {
-  const { data } = await serverFetch({
-    method: "GET",
-    url: "/posts",
-    params: {
-      keyword: "",
-      sortBy: "createdAt",
-      sortOrder: "desc",
-      size: 10,
-      ...(cursor ? { cursor } : {}),
-    },
-  });
-  return filterThreadPosts(data);
+  try {
+    const { data } = await serverFetch({
+      method: "GET",
+      url: "/posts",
+      params: {
+        keyword: "",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        size: 10,
+        ...(cursor ? { cursor } : {}),
+      },
+    });
+    return filterThreadPosts(data);
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
