@@ -4,8 +4,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogPortal,
-} from "@/shared/components/shadcn/dialog";
-import { Button } from "@/shared/components/shadcn/button";
+} from "@/shared/components/ui/dialog";
+import { Button } from "@/shared/components/ui/Button";
 import { XIcon } from "lucide-react";
 import { ModalCommonProps } from "@/shared/types";
 import { cn } from "@/shared/lib/utils";

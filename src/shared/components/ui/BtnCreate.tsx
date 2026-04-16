@@ -1,4 +1,4 @@
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import { cn } from "@/shared/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +13,7 @@ export function BtnCreate({
   title: string;
 }) {
   const ButtonContent = (
-    <BtnCommon
+    <Button
       variant="default"
       onClick={onClick}
       className={cn(
@@ -31,7 +31,7 @@ export function BtnCreate({
       <span className="hidden text-[13px] font-black tracking-widest uppercase sm:block">
         {title}
       </span>
-    </BtnCommon>
+    </Button>
   );
 
   if (path) {

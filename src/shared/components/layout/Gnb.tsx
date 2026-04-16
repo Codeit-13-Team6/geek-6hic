@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Bell, Menu } from "lucide-react";
 import { getNotifications } from "@/shared/api/client/notifications";
-import { Sheet, SheetTrigger } from "@/shared/components/shadcn/sheet";
+import { Sheet, SheetTrigger } from "@/shared/components/ui/sheet";
 import { useAuthStore } from "@/infra/store/useAuthStore";
 import Notification from "@/shared/components/layout/notification/Notification";
 import axiosInstance from "@/infra/auth/fetcher.client";

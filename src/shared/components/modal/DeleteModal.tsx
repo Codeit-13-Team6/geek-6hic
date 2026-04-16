@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle } from "lucide-react";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import ModalBase from "@/shared/components/modal/ModalBase";
 
 interface ConfirmDeleteModalProps {
@@ -57,21 +57,21 @@ export function DeleteModal({
         </div>
 
         <div className="grid w-full grid-cols-2 gap-3">
-          <BtnCommon
+          <Button
             variant="teritary"
             onClick={handleCancel}
             disabled={isLoading}
             className="h-12 !w-full !rounded-2xl font-black tracking-widest text-slate-400 transition-all hover:bg-slate-50 sm:h-14"
           >
             취소
-          </BtnCommon>
-          <BtnCommon
+          </Button>
+          <Button
             onClick={onConfirm}
             disabled={isLoading}
             className="h-12 !w-full !rounded-2xl bg-red-500 font-black tracking-widest text-white shadow-[0_10px_20px_rgba(239,68,68,0.2)] transition-all hover:bg-red-600 active:scale-95 sm:h-14"
           >
             {isLoading ? "삭제 중..." : "삭제"}
-          </BtnCommon>
+          </Button>
         </div>
       </div>
     </ModalBase>

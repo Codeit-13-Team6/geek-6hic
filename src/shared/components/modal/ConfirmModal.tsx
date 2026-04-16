@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle } from "lucide-react";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import ModalBase from "@/shared/components/modal/ModalBase";
 
 interface ConfirmDeleteModalProps {
@@ -55,7 +55,7 @@ export function ConfirmModal({
       </div>
 
       <div className="mt-10 flex flex-col gap-2 sm:gap-3">
-        <BtnCommon
+        <Button
           type="button"
           className="bg-main-purple h-14 w-full rounded-2xl font-black text-white transition-all hover:bg-slate-950"
           disabled={isLoading}
@@ -64,18 +64,18 @@ export function ConfirmModal({
           <span className="text-base">
             {isLoading ? "처리 중..." : confirmButtonLabel}
           </span>
-        </BtnCommon>
+        </Button>
 
         {onCancel && (
           <p className="mt-1 text-xs font-medium text-slate-300">
-            <BtnCommon
+            <Button
               type="button"
               className="h-14 w-full rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
               disabled={isLoading}
               onClick={handleCancel}
             >
               <span className="text-base">{cancelButtonLabel}</span>
-            </BtnCommon>
+            </Button>
           </p>
         )}
       </div>

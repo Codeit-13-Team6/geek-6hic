@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/shared/components/shadcn/card";
+import { Card } from "@/shared/components/ui/card";
 
 import { TopRankCardProps } from "@/shared/types";
 

@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/infra/store/useAuthStore";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import Comment from "./Comment";
 import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 import { CompactLinkList } from "@/shared/components/features/list/CompactLinkList";
@@ -183,13 +183,13 @@ export default function CommentSection({
               maxLength={1000}
             />
             <div className="flex justify-end">
-              <BtnCommon
+              <Button
                 className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
                 onClick={() => loginGuardAction(handlePostComment)}
                 disabled={!threadContent.trim() || isPosting}
               >
                 작성하기
-              </BtnCommon>
+              </Button>
             </div>
           </div>
           {linkObjects.length > 0 && (
@@ -219,13 +219,13 @@ export default function CommentSection({
           />
 
           <div className="flex justify-end">
-            <BtnCommon
+            <Button
               onClick={() => loginGuardAction(handlePostComment)}
               disabled={isPosting}
               className="h-11 w-full !rounded-xl text-sm font-bold sm:w-24"
             >
               등록
-            </BtnCommon>
+            </Button>
           </div>
         </div>
       )}

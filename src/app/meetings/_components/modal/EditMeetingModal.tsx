@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import ModalBase from "@/shared/components/modal/ModalBase";
 import { useEditMeetingForm } from "@/app/meetings/_hooks/useMeetingForm";
 import { EditMeetingModalProps } from "@/shared/types";
@@ -73,22 +73,22 @@ export function EditMeetingModal({
           </div>
 
           <div className="flex gap-4 pt-10">
-            <BtnCommon
+            <Button
               type="button"
               className="h-14 flex-1 rounded-2xl bg-slate-50 font-bold text-slate-400 transition-all hover:bg-slate-100"
               disabled={isSubmitting}
               onClick={requestClose}
             >
               취소
-            </BtnCommon>
-            <BtnCommon
+            </Button>
+            <Button
               type="button"
               className="bg-main-purple h-14 flex-1 rounded-2xl font-black tracking-widest text-white shadow-[0_10px_20px_rgba(38,6,86,0.15)] transition-all hover:bg-slate-950"
               disabled={isImageUploading || isSubmitting}
               onClick={handleSubmit}
             >
               {isSubmitting ? "저장 중..." : "저장"}
-            </BtnCommon>
+            </Button>
           </div>
         </div>
       </ModalBase>

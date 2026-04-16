@@ -7,7 +7,7 @@ import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -406,9 +406,9 @@ export function MeetingHeaderSection({
           )}
 
           <div className="mt-5 flex items-center gap-4 sm:mt-10">
-            <BtnCommon
+            <Button
               type="button"
-              size="md"
+              size="responsive-lg"
               disabled={action.disabled || isActionPending || isAuthLoading}
               onClick={() => loginGuardAction(() => void action.handler())}
               className="bg-main-purple hover:bg-main-purple/80 h-16 flex-1 !rounded-[24px] font-bold tracking-[0.1em] text-white shadow-[0_15px_30px_rgba(38,6,86,0.2)] transition-all active:scale-[0.98]"
@@ -416,7 +416,7 @@ export function MeetingHeaderSection({
               <span className="tracking-widest sm:text-sm">
                 {isActionPending ? "진행중..." : action.label}
               </span>
-            </BtnCommon>
+            </Button>
             {menuConfig.showShare && (
               <button
                 type="button"
@@ -518,9 +518,9 @@ export function MeetingHeaderSection({
             isDestructive={Boolean(secretError)}
             hintText={secretError}
           />
-          <BtnCommon
+          <Button
             type="button"
-            size="md"
+            size="responsive-lg"
             disabled={isJoinPending || !secretInput}
             onClick={() => {
               if (!verifySecretCode(secretInput, detail.dateTime)) {
@@ -533,7 +533,7 @@ export function MeetingHeaderSection({
             className="bg-main-purple hover:bg-main-purple/80 h-14 w-full !rounded-[20px] font-bold text-white"
           >
             참여하기
-          </BtnCommon>
+          </Button>
         </div>
       </ModalBase>
 

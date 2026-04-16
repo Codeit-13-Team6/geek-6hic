@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import deleteLgIcon from "@/assets/icon/delete/delete-lg.svg";
 import deleteSmIcon from "@/assets/icon/delete/delete-sm.svg";
 import { cn } from "@/shared/lib/utils";
-import { Input } from "@/shared/components/shadcn/input";
+import { Input } from "@/shared/components/ui/input";
 
 /**
  * 예시)

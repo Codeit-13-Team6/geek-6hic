@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Users, Calendar, LucideLock, Lock } from "lucide-react";
-import { Card } from "@/shared/components/shadcn/card";
+import { Card } from "@/shared/components/ui/card";
 import { UserCardProps } from "@/shared/types";
 import { cn } from "@/shared/lib/utils";
 import FallbackImage from "@/shared/components/img/FallbackImage";

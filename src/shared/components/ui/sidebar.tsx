@@ -7,22 +7,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { useIsMobile } from "@/shared/hooks/useMobile";
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/components/shadcn/button";
-import { Input } from "@/shared/components/shadcn/input";
-import { Separator } from "@/shared/components/shadcn/separator";
+import { Button } from "@/shared/components/ui/Button";
+import { Input } from "@/shared/components/ui/input";
+import { Separator } from "@/shared/components/ui/separator";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/shared/components/shadcn/sheet";
-import { Skeleton } from "@/shared/components/shadcn/skeleton";
+} from "@/shared/components/ui/sheet";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/shared/components/shadcn/tooltip";
+} from "@/shared/components/ui/tooltip";
 import { PanelLeftIcon } from "lucide-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -263,7 +263,7 @@ function SidebarTrigger({
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
-      size="icon-sm"
+      size="icon-xs"
       className={cn(className)}
       onClick={(event) => {
         onClick?.(event);

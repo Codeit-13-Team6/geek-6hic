@@ -8,13 +8,13 @@ import parse, {
   DOMNode,
 } from "html-react-parser";
 import meatballsIcon from "@/assets/icon/meatballs/meatballs-xl.svg";
-import { Card, CardContent, CardTitle } from "@/shared/components/shadcn/card";
+import { Card, CardContent, CardTitle } from "@/shared/components/ui/card";
 import thumbsUpIcon from "@/assets/icon/thumbsUp/state-false.svg";
 import messageIcon from "@/assets/icon/message/message.svg";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from "@/shared/components/shadcn/dropdown-menu";
+} from "@/shared/components/ui/dropdown-menu";
 import {
   DropdownMenuContent,
   DropdownMenuItem,

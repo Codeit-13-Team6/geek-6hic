@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { InputCommon } from "@/shared/components/ui/InputCommon";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/shared/types";
@@ -215,7 +215,7 @@ export default function LoginForm({
           onClear={() => setValue("password", "")}
         />
 
-        <BtnCommon
+        <Button
           variant={"default"}
           size={"md"}
           type="submit"
@@ -224,7 +224,7 @@ export default function LoginForm({
           className="mt-2 h-12 rounded-xl! font-black tracking-widest transition-transform active:scale-95"
         >
           로그인
-        </BtnCommon>
+        </Button>
       </form>
 
       {error && (

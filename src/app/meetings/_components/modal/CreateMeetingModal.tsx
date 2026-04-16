@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import ModalBase from "@/shared/components/modal/ModalBase";
 import { useCreateMeetingForm } from "@/app/meetings/_hooks/useMeetingForm";
 import {
@@ -174,14 +174,14 @@ export function CreateMeetingModal() {
         </div>
 
         <div className="mt-8 flex gap-3">
-          <BtnCommon
+          <Button
             type="button"
             className="h-12 flex-1 rounded-xl bg-slate-50 text-base font-bold text-slate-400 transition-all hover:bg-slate-100 sm:h-14 sm:rounded-2xl"
             onClick={currentStep === 1 ? requestCloseModal : handlePrevStep}
           >
             {currentStep === 1 ? "취소" : "이전"}
-          </BtnCommon>
-          <BtnCommon
+          </Button>
+          <Button
             type="button"
             disabled={isSubmitting}
             className="bg-main-purple h-12 flex-1 rounded-xl text-base font-bold text-white shadow-[0_10px_20px_rgba(38,6,86,0.15)] transition-all hover:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:rounded-2xl"
@@ -194,7 +194,7 @@ export function CreateMeetingModal() {
               : isSubmitting
                 ? "생성 중..."
                 : "생성"}
-          </BtnCommon>
+          </Button>
         </div>
       </ModalBase>
 

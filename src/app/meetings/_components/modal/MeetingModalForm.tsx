@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/shadcn/select";
+} from "@/shared/components/ui/select";
 import { InputCommon } from "@/shared/components/ui/InputCommon";
 import { TextareaCommon } from "@/shared/components/ui/TextareaCommon";
 import { CheckboxCommon } from "@/shared/components/ui/CheckboxCommon";

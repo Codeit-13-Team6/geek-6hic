@@ -1,7 +1,7 @@
 "use client";
 
 import { InputCommon } from "@/shared/components/ui/InputCommon";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -174,7 +174,7 @@ export default function SignUp() {
               onClear={() => setValue("introduce", "")}
             />
 
-            <BtnCommon
+            <Button
               variant={"default"}
               size={"md"}
               type="submit"
@@ -182,7 +182,7 @@ export default function SignUp() {
               className="mt-4 h-12 !rounded-xl font-black tracking-widest transition-all"
             >
               {isLoading ? "가입 중..." : "회원가입"}
-            </BtnCommon>
+            </Button>
           </form>
 
           <div className="mt-12 flex flex-col items-center justify-center gap-2">

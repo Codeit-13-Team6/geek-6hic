@@ -5,7 +5,7 @@ import {
   SheetContent,
   SheetClose,
   SheetTitle,
-} from "@/shared/components/shadcn/sheet";
+} from "@/shared/components/ui/sheet";
 import { X, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/infra/store/useAuthStore";

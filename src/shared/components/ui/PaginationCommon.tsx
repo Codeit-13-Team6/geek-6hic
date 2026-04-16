@@ -3,7 +3,7 @@ import * as React from "react";
 import arrowLeft from "@/assets/icon/arrow/arrow-left.svg";
 import arrowRight from "@/assets/icon/arrow/arrow-right.svg";
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/components/shadcn/button";
+import { Button } from "@/shared/components/ui/Button";
 import { MoreHorizontalIcon } from "lucide-react";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
@@ -40,7 +40,7 @@ type PaginationArrowDirection = "left" | "right";
 // 페이지 링크 타입
 interface PaginationLinkProps
   extends
-    Pick<React.ComponentProps<typeof Button>, "size">,
+    Partial<Pick<React.ComponentProps<typeof Button>, "size">>,
     React.ComponentProps<"a"> {
   // 현재 페이지 여부
   isActive?: boolean;
@@ -102,7 +102,7 @@ function PaginationLink({
   className,
   disabled = false,
   isActive,
-  size = "icon",
+  size = "icon-sm",
   ...props
 }: PaginationLinkProps) {
   return (
@@ -140,9 +140,9 @@ function PaginationPrevious({
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn("pl-1.5!", className)}
       {...props}
+      size="xs"
+      className={cn("pl-1.5!", className)}
     >
       <PaginationArrowIcon
         direction="left"
@@ -163,9 +163,9 @@ function PaginationNext({
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn("pr-1.5!", className)}
       {...props}
+      size="xs"
+      className={cn("pr-1.5!", className)}
     >
       <PaginationArrowIcon
         direction="right"

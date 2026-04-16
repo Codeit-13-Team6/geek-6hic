@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { Metadata } from "next";
 import { Tab } from "@/shared/components/ui/Tab";
-import { TabsContent } from "@/shared/components/shadcn/tabs";
+import { TabsContent } from "@/shared/components/ui/tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
 import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";

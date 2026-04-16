@@ -7,7 +7,7 @@ import { User, UserProfileUpdateProps } from "@/shared/types";
 import { useAuthStore } from "@/infra/store/useAuthStore";
 import ModalBase from "@/shared/components/modal/ModalBase";
 import { InputCommon } from "@/shared/components/ui/InputCommon";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import { ImageUploadInput } from "@/shared/components/img/ImageUploadInput";
 import { Settings2 } from "lucide-react";
 import FallbackImage from "@/shared/components/img/FallbackImage";
@@ -231,21 +231,21 @@ export default function ProfileSection({
             </div>
 
             <div className="flex gap-4 pt-8">
-              <BtnCommon
+              <Button
                 variant="teritary"
                 className="flex-1 rounded-2xl border-slate-200 font-black"
                 onClick={requestCloseModal}
               >
                 취소
-              </BtnCommon>
-              <BtnCommon
+              </Button>
+              <Button
                 variant="default"
                 className="flex-1 rounded-2xl font-black"
                 type="submit"
                 disabled={isPending}
               >
                 저장
-              </BtnCommon>
+              </Button>
             </div>
           </form>
         </ModalBase>

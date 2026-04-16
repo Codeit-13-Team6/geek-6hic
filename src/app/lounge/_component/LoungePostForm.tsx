@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Link2, Loader2 } from "lucide-react";
-import { BtnCommon } from "@/shared/components/ui/BtnCommon";
+import { Button } from "@/shared/components/ui/Button";
 import LoungeEditor from "@/app/lounge/_component/editor/LoungeEditor";
 import { ToastCommon } from "@/shared/components/ui/ToastCommon";
 import { useLoungeLink } from "@/app/lounge/_hooks/useLoungeLink";
@@ -162,13 +162,13 @@ export default function LoungePostForm({
             /{TITLE_MAX_LENGTH}
           </span>
         </div>
-        <BtnCommon
+        <Button
           onClick={handleLocalSubmit}
           disabled={isSubmitting}
           className="!h-[40px] flex-0 !rounded-[12px] px-4 text-xs font-semibold disabled:bg-gray-200 sm:!h-[50px] sm:px-6 sm:text-lg"
         >
           {submitButtonText}
-        </BtnCommon>
+        </Button>
       </div>
 
       {/* 메인 카드 영역 */}
