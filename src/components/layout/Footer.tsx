@@ -17,7 +17,10 @@ export function Footer() {
   }
 
   return (
-    <footer id="global-footer" className="w-full border-t border-slate-200 bg-slate-50/50 py-10">
+    <footer
+      id="global-footer"
+      className="w-full border-t border-slate-200 bg-slate-50/50 py-10"
+    >
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-4 sm:flex-row sm:items-end sm:justify-between 2xl:px-0">
         {/* 좌측: 로고 및 프로젝트 슬로건 */}
         <div className="flex flex-col gap-2">
@@ -35,7 +38,7 @@ export function Footer() {
         </div>
 
         {/* 우측: 핵심 링크 및 카피라이트 */}
-        <div className="2xl:static 2xl:left-[unset] 2xl:translate-0 sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex flex-col items-start gap-5 sm:items-end">
+        <div className="flex flex-col items-start gap-5 sm:items-end 2xl:static 2xl:left-[unset] 2xl:translate-0">
           {/* 네비게이션 링크 */}
           <div className="flex items-center gap-6">
             <Link

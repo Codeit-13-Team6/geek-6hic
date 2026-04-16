@@ -49,13 +49,13 @@ const PALETTE_ITEMS = [
   { name: "Text", hex: "#0F172A" },
 ];
 
-type ToolItem = {
+interface ToolItem {
   label: string;
   bgColor: string;
   textColor?: string;
   icon?: IconType;
   iconClassName?: string;
-};
+}
 
 const TOOL_ITEMS: ToolItem[] = [
   {
@@ -181,7 +181,7 @@ const NAME_ITEMS = [
 ] as const;
 
 const CONTRIBUTE_BODY =
-  "우리가 만든 구조와 기록이 여기서 닫히지 않고, 이후의 스프린터도 이어서 참여할 수 있기를 바랐습니다.\n더 나은 기능이 떠올랐거나, 고치고 싶은 지점이 있다면 이 저장소 위에 당신의 방식도 남겨 주세요.";
+  "우리가 만든 구조와 기록이 여기서 닫히지 않고, 이후의 스프린터도 이어서 참여할 수 있기를 바랐습니다.\n더 나은 기능이 떠올랐거나, 고치고 싶은 지점이 있다면 본 레포지토리에 이슈로 당신의 아이디어를 남겨 주세요.";
 
 function StackChips({
   items,
@@ -333,27 +333,32 @@ function StoryBody({
           존박, 윈터, 카리나 등 닮은 연예인을 이야기하며 분위기가 풀리기도 했고,
           그만큼 편하게 의견을 주고받을 수 있는 환경이 만들어졌습니다.
           <br />
-          랭킹보드와 게이미피케이션 요소 같은 부분을 위해 제공된 API를 그대로
-          사용하는 것이 아니라, 제공되었던 리뷰 API 데이터를 직접 조합하거나
-          우회적으로 끌어내며 기능을 구현해야 했고, 그 과정에서 시행착오를
-          반복하며 데이터 흐름을 다시 맞춰 나갔습니다.
           <br />
-          일부 데이터 구조를 프론트에서 보완하며 기능을 구현해야 했고, 제공된
-          API와 맞지 않는 부분은 기획을 다시 조정하는 과정을 반복했습니다.
+          랭킹보드와 코지드 가든 같은 부분을 구현해내기 위해 제공된 API를 그대로
+          사용하는 것이 아니라, 제공되었던 리뷰 API 데이터를 <br />
+          직접 조합하거나 우회적으로 끌어내며 아이디어를 실현해냈습니다. 그
+          과정에서 다양한 시행착오를반복하며 데이터 흐름을 천천히, 하나씩 맞춰
+          나갔습니다.
           <br />
-          그 과정에서 “이게 맞나?”라는 질문이 자연스럽게 나오기 시작했고, 답을
+          일부 데이터 구조를 프론트에서 보완하며 기능을 구현하면서 제공된 API와
+          맞지 않는 부분은 기획을 다시 조정하는 과정을 무한반복했습니다.
+          <br />
+          그 과정에서 “이게 맞나?”라는 질문이 자연스럽게 나오기도 했지만, 답을
           찾는 방식도 점점 팀의 방식으로 정리되어 갔습니다.
           <br />
-          개발 과정은 매끄럽기보다는, 문제를 정의하고 해결 방식을 계속 수정해
+          <br />
+          개발 과정은 쉽기만하기보다는, 문제를 정의하고 해결 방식을 계속 수정해
           나가는 반복에 가까웠습니다.
           <br />
           머지 충돌과 구현 방식에 대한 의견 차이는 있었지만, 초기 단계에서
           컨벤션을 정리하고 공유하며 코드 스타일과 작업 방식은 일관성을 유지한
-          채 협업을 이어갔습니다.
+          채 서로 격려하며 즐겁게 협업을 이어갔습니다.
           <br />
-          결과적으로 co-git은 단순한 결과물을 넘어, 팀의 기준을 함께 만들어간
-          과정이자 스프린터들을 위한 오픈된 생태계로 이어지는 프로젝트가
-          되었습니다.
+          결과적으로 저희에게 co-git는 단순한 결과물을 넘어, 팀의 기준을 함께
+          만들어간 과정이자 스프린터들을 위한 오픈된 생태계로 이어지는
+          프로젝트가 되었습니다. <br />
+          앞으로도 co-git가 스프린터들에게 유용한 공간이 될 수 있도록 계속
+          발전시켜 나가겠습니다. 즐거운 프로젝트였습니다!
         </p>
       </div>
       <div className="mt-8">
@@ -389,7 +394,7 @@ function ContributeBlock({
         className={buttonClassName}
       >
         <Github className="size-5" />
-        <span>기록남기러 가기</span>
+        <span>이슈 남기러 가기</span>
       </Link>
     </section>
   );
@@ -487,8 +492,9 @@ export default function AboutTeamPage() {
               </span>
             </h1>
             <p className="mt-8 text-lg leading-relaxed font-medium tracking-tight text-slate-500 md:text-xl">
-              정성껏 쓴 노션 페이지는 기수가 끝나면 닫힙니다.
-              <br className="hidden md:block" />
+              정성껏 쓴 노션 페이지는 기수가 끝나면 닫히고, <br /> 열심히 올려둔
+              디스코드 메시지는 스크롤 속으로 사라집니다.
+              <br />
               우리는 밤새워 고민했던 코드와 꿀팁들이 허공으로 사라지는 것이
               아쉬웠습니다.
             </p>
@@ -524,7 +530,7 @@ export default function AboutTeamPage() {
             <p className="mt-5 text-lg leading-8 font-bold text-slate-200">
               기다림을 줄이고, 결을 맞추고, 흐름을 이었습니다.
             </p>
-            <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 sm:flex-col sm:overflow-visible 2xl:grid 2xl:grid-cols-3">
+            <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 sm:flex-col sm:overflow-visible md:grid md:grid-cols-3">
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-white/10 bg-white/5 p-8 text-slate-100 sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Server className="mb-6 size-8 text-blue-300" />
                 <h3 className="text-2xl font-black">
@@ -551,7 +557,7 @@ export default function AboutTeamPage() {
                   <br />
                   브라우저가 토큰을 직접 다루며 겪던 불안정함의 완화,
                   <br />
-                  프론트엔드에 더 적합한 데이터 형태.
+                  프론트엔드에 더 적합한 데이터 형태를 제공합니다.
                   <br />
                   <br />
                   이제 기다리는 일은, 저희가 하겠습니다.
@@ -585,7 +591,7 @@ export default function AboutTeamPage() {
                   같은 감각이 반복되는 경험을 만들었습니다.
                   <br />
                   <br />
-                  저희의 첫 인상이, 마지막 사용 순간까지 이어지도록.
+                  저희의 첫 인상이 마지막 사용 순간까지 이어지도록!
                 </p>
                 <div className="mt-8">
                   <PaletteStrip dark />
@@ -599,25 +605,25 @@ export default function AboutTeamPage() {
                   머무는 모든 순간이 끊기지 않도록.
                 </h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-                  오랜시간 고민해 온 기획들은 <br />
+                  최선을 다해 고민해낸 기획들은 <br />
                   제공된 API 만으론 온전히 담아낼 수 없었습니다. <br /> <br />
-                  우린 더 이상 프론트엔드에 머물지 않고, <br />
-                  우리만의 방식으로 엮어낸 설계로 <br /> <br />
+                  우린 프론트엔드에 머물지 않고, <br />
+                  우리만의 방식으로 엮어낸 설계를 지향합니다.
+                  <br /> <br />
                   하나밖에 남길 수 없던 모임 댓글은 <br />
-                  마음껏 대화를 이어갈 수 있는 공간이 되었고, <br /> <br />
+                  마음껏 대화를 이어갈 수 있는 공간이 되었고, <br />
                   누구나 들어올 수 있던 모임은 <br />
                   우리만의 비밀 이야기로 가득 찰 수 있게 되었습니다. <br />{" "}
                   <br />
-                  비밀모임, 랭킹, Hot 게시물, 모임 스레드 댓글, 활동 지표,{" "}
-                  <br />
+                  비밀 모임, 랭킹, Hot 게시물, 모임 스레드, 활동 차트, <br />
                   이 모든것은 저희가 끝까지 고민한 흔적입니다. <br /> <br />
                   사용자가 부족함을 느끼지 않도록, <br />
                   부족한 API 스펙이 서비스의 모자람으로 포장되지 않도록. <br />{" "}
                   <br />
                   이렇게 설계한 흐름은 머무는 이유가 되고, <br />
-                  다시 돌아올 이유가 되었습니다. <br /> <br />
-                  다음 행동이 자연스럽게 이어지도록 흐름을 우선했기에, <br />
-                  기능이 동작하는 수준을 넘어 자연스러운 경험을 만들었습니다.
+                  다시 돌아올 이유가 될 것 입니다. <br /> <br />
+                  다음 행동이 자연스럽게 이어지도록 흐름을 우선했기에 <br />
+                  기능이 동작하는 수준 이상의 자연스러운 경험을 만들어냅니다.
                 </p>
               </article>
             </div>
@@ -637,7 +643,7 @@ export default function AboutTeamPage() {
           data-fade-up
         >
           <h2 className="mt-6 text-3xl font-black tracking-tighter text-slate-950 md:text-4xl">
-            이 모든 걸 버텨낸 팀원들
+            이 모든 걸 함께한 팀원들
           </h2>
           <div className="mt-10">
             <SurvivorGrid
