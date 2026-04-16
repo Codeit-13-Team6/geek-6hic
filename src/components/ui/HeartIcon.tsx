@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 interface HeartIconProps {
   /** 좋아요 상태 여부 */

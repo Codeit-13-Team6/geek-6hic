@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { threadKeyword } from "@/lib/threadKeyword";
+import { cn } from "@/lib";
+import { isThread } from "@/lib";
 import { NotificationItem, NotificationCardProps } from "@/types";
 import FallbackImage from "@/components/ui/FallbackImage";
 
@@ -29,7 +29,7 @@ function getNotificationTitle(notification: NotificationItem) {
 function isThreadComment(notification: NotificationItem) {
   return (
     notification.type === "COMMENT" &&
-    threadKeyword.is(notification.data.postTitle)
+    isThread.is(notification.data.postTitle)
   );
 }
 

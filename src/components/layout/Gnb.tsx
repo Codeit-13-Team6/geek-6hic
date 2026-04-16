@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { Bell, Menu } from "lucide-react";
 import { logoutUser } from "@/api/client/auth";
 import { getNotifications } from "@/api/client/notifications";

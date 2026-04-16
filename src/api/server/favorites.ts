@@ -4,7 +4,7 @@ import type {
   MyMeetingsPageResponse,
 } from "@/types";
 import { serverFetch } from "@/lib/auth/fetcher.server";
-import { filterThreadPosts } from "@/lib/postUtils";
+import { filterThreadPosts } from "@/lib";
 
 export async function getFavorites(
   params: {

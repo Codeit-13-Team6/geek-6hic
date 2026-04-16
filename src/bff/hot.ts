@@ -1,7 +1,7 @@
 import { Post } from "@/types";
 import { getPosts } from "@/api/server";
-import { fetchAllCursor } from "@/lib/fetchAllCursor";
-import { threadKeyword } from "@/lib/threadKeyword";
+import { fetchAllCursor } from "@/lib";
+import { isThread } from "@/lib";
 
 export async function getHotPostsBFF(): Promise<Post[]> {
   const oneWeekAgo = new Date();
@@ -11,7 +11,7 @@ export async function getHotPostsBFF(): Promise<Post[]> {
     fetchPage: (cursor) =>
       getPosts({ cursor, size: 20, sortBy: "createdAt", sortOrder: "desc" }),
     earlyExit: (post) => new Date(post.createdAt) < oneWeekAgo,
-    filter: (post) => !threadKeyword.is(post.title),
+    filter: (post) => !isThread.is(post.title),
   });
 
   const GRAVITY = 0.8;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { ChevronUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { usePathname } from "next/navigation";
 
 export function BtnTop() {

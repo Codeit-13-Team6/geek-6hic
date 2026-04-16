@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/Card";
 
 import { TopRankCardProps } from "@/types";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import FallbackImage from "@/components/ui/FallbackImage";
 import { ArrowUpRight } from "lucide-react";
 

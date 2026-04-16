@@ -9,7 +9,7 @@ import type {
   MeetingSortBy,
   JoinedMeeting
 } from "@/types";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 import {
   InfiniteData,
   QueryKey,

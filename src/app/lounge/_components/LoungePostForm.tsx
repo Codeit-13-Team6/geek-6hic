@@ -7,8 +7,8 @@ import LoungeEditor from "@/app/lounge/_components/editor/LoungeEditor";
 import { Toast } from "@/components/ui/Toast";
 import { useLoungeLink } from "@/app/lounge/_hooks/useLoungeLink";
 import LinkCard from "@/app/lounge/_components/LinkCard";
-import { parsePostData, stitchPostData } from "@/lib/contentLinkUtils";
-import { decodeHtmlEntities } from "@/lib/decodeHtmlEntities";
+import { parsePostData, stitchPostData } from "@/lib";
+import { decodeHtmlEntities } from "@/lib";
 import { PostPayload, LoungePostFormProps } from "@/types";
 import { BtnBack } from "@/components/ui/BtnBack";
 

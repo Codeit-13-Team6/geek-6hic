@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { ToastProps } from "@/types";
 import { CheckCircle2, AlertCircle, Info } from "lucide-react";
 

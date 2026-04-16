@@ -1,5 +1,5 @@
 import { SearchX, Ghost, MessageSquareX, LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 type NoResultType = "search" | "meetings" | "myMeetings" | "lounge";
 
