@@ -42,7 +42,7 @@ export default function MyRankingSection() {
             <ChartColumn className="text-main-purple size-4" />
           </div>
           <p className="text-sm font-bold text-slate-700 sm:text-[15px]">
-            현재 나의 모임 최고 랭킹은{" "}
+            현재 참여중인 모임 최고 랭킹은{" "}
             <span className="text-main-purple font-black">{highestRank}위</span>
             입니다
             <Sparkles className="ml-1.5 inline-block size-4 -translate-y-0.5 text-yellow-400 transition-transform group-hover:scale-110 group-hover:rotate-12" />
@@ -54,8 +54,9 @@ export default function MyRankingSection() {
             {isOpen ? "접어두기" : "자세히 보기"}
           </span>
           <ChevronDown
-            className={`group-hover:text-main-purple size-5 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-              }`}
+            className={`group-hover:text-main-purple size-5 text-slate-400 transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </div>
       </button>
@@ -71,7 +72,7 @@ export default function MyRankingSection() {
           >
             <div
               {...dragProps}
-              className="custom-scrollbar flex w-full gap-4 overflow-x-auto pt-6 pb-4 sm:pb-6"
+              className="custom-scrollbar flex w-full gap-4 overflow-x-auto px-2 pt-6 pb-4 sm:pb-6"
             >
               {myMeetings.map((meet) => (
                 <div

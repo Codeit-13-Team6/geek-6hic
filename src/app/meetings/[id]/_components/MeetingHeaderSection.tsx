@@ -35,11 +35,7 @@ import {
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingHeaderSectionProps } from "@/types";
 import { Toast } from "@/components/ui/Toast";
-import {
-  extractSecretCode,
-  isSecretMeeting,
-  verifySecretCode,
-} from "@/lib";
+import { extractSecretCode, isSecretMeeting, verifySecretCode } from "@/lib";
 import ModalBase from "@/components/modal/ModalBase";
 import { Input } from "@/components/ui/Input";
 import { shareLink } from "@/app/meetings/[id]/_lib/share";
@@ -347,17 +343,13 @@ export function MeetingHeaderSection({
           >
             <div className="custom-scrollbar flex max-h-[380px] flex-col gap-1.5 overflow-y-auto pr-1 pb-2">
               {participants.map((participant) => (
-                <div
+                <button
                   key={participant.user.id}
+                  onClick={() => router.push(`/users/${participant.user.id}`)}
                   className="group flex items-center justify-between rounded-[20px] p-2.5 transition-all duration-200 hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
                 >
                   <div className="flex items-center gap-3.5">
-                    <button
-                      onClick={() =>
-                        router.push(`/users/${participant.user.id}`)
-                      }
-                      className="group-hover:border-main-purple/20 focus-visible:ring-main-purple relative size-11 shrink-0 overflow-hidden rounded-full border border-slate-100 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_12px_rgba(109,40,217,0.15)] focus-visible:ring-2 focus-visible:outline-none"
-                    >
+                    <div className="group-hover:border-main-purple/20 focus-visible:ring-main-purple relative size-11 shrink-0 overflow-hidden rounded-full border border-slate-100 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_12px_rgba(109,40,217,0.15)] focus-visible:ring-2 focus-visible:outline-none">
                       <FallbackImage
                         src={
                           hasUsableProfileImage(participant.user.image)
@@ -369,7 +361,7 @@ export function MeetingHeaderSection({
                         fill
                         className="object-cover"
                       />
-                    </button>
+                    </div>
 
                     <span className="text-[15px] font-bold text-slate-700 transition-colors group-hover:text-slate-900">
                       {participant.user.name || "사용자"}
@@ -383,7 +375,7 @@ export function MeetingHeaderSection({
                       </span>
                     </div>
                   )}
-                </div>
+                </button>
               ))}
             </div>
           </ModalBase>

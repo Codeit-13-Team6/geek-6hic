@@ -2,7 +2,7 @@
 
 import { RankCardProps } from "@/types";
 import FallbackImage from "@/components/ui/FallbackImage";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
 
 export default function RankCard({
   title = "모임 이름이 없습니다.",
@@ -10,6 +10,7 @@ export default function RankCard({
   rank = 0,
   meetType = "스터디",
   image,
+  isSecret = false,
   onDetailClick = () => {},
 }: RankCardProps) {
   return (
@@ -38,6 +39,15 @@ export default function RankCard({
             fill
             className="object-cover grayscale-[20%] transition-transform duration-500 group-hover:scale-105 group-hover:grayscale-0"
           />
+          {isSecret && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+                  <Lock className="size-4 text-slate-300" />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-col justify-center gap-1">

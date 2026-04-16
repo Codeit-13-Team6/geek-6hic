@@ -48,7 +48,7 @@ export default function ModalBase({
                 variant="ghost"
                 size="icon-lg"
                 className={cn(
-                  "fixed top-10 right-10 rounded-full bg-slate-100 hover:bg-slate-200",
+                  "fixed top-5 right-5 h-12 w-12 rounded-full bg-slate-100 hover:bg-slate-200",
                   closeButtonClassName,
                 )}
               />
