@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { GetPostsResponse, LoungeSortBy, SortOrder } from "@/types";
 import { getLoungePostsPageBFF } from "@/bff/lounge";
 import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 export const dynamic = "force-dynamic";
 

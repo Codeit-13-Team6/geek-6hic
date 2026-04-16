@@ -1,4 +1,7 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  redirectToAuthSyncIfNeeded,
+  serverFetch,
+} from "@/lib/auth/serverFetcher";
 import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 
 export async function getJoinedMeetingsServer(params: {
@@ -8,13 +11,18 @@ export async function getJoinedMeetingsServer(params: {
   sortBy?: '"dateTime" | "registrationEnd" | "joinedAt"';
   completed?: boolean;
 }): Promise<JoinedMeetingsResponse> {
-  const { data } = await serverFetch<JoinedMeetingsResponse>({
-    method: "GET",
-    url: "/meetings/joined",
-    params: { ...params, sortBy: "joinedAt" },
-  });
+  try {
+    const { data } = await serverFetch<JoinedMeetingsResponse>({
+      method: "GET",
+      url: "/meetings/joined",
+      params: { ...params, sortBy: "joinedAt" },
+    });
 
-  return data;
+    return data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }
 
 export async function getMeetingList(params: {
@@ -24,11 +32,16 @@ export async function getMeetingList(params: {
   sortOrder: SortOrder;
   size: number;
 }): Promise<JoinedMeetingsResponse> {
-  const { data } = await serverFetch<JoinedMeetingsResponse>({
-    method: "GET",
-    url: "/meetings",
-    params,
-  });
+  try {
+    const { data } = await serverFetch<JoinedMeetingsResponse>({
+      method: "GET",
+      url: "/meetings",
+      params,
+    });
 
-  return data;
+    return data;
+  } catch (error) {
+    redirectToAuthSyncIfNeeded(error);
+    throw error;
+  }
 }

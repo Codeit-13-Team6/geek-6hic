@@ -145,8 +145,8 @@ co-git는 Next.js 서버 레이어를 거치는 BFF 구조를 중심으로 설�
   - 일부 응답은 서버에서 다시 조합해 화면에 맞는 형태로 반환합니다.
 
 - `Server / Client Fetcher 분리`
-  - `src/lib/auth/fetcher.server.ts`: 쿠키 기반 토큰 처리, refresh, retry, `refreshMap`을 통한 동시 요청 제어
-  - `src/lib/auth/fetcher.client.ts`: `/api` 기준 호출, `REFRESH_FAILED` 응답 시 로그인 라우팅 처리
+  - `src/lib/auth/serverFetcher.ts`: 쿠키 기반 토큰 처리, refresh, retry, `refreshMap`을 통한 동시 요청 제어
+  - `src/lib/auth/clientFetcher.ts`: `/api` 기준 호출, `REFRESH_FAILED` 응답 시 로그인 라우팅 처리
 
 - `호출 구조 분리`
   - API 호출 함수는 순수 호출만 담당합니다.
@@ -192,7 +192,7 @@ co-git는 Next.js 서버 레이어를 거치는 BFF 구조를 중심으로 설�
 
 ### Client API Calls
 
-- `src/lib/auth/fetcher.client.ts`
+- `src/lib/auth/clientFetcher.ts`
 - `src/api/client/*`
 - `src/hooks/queries/*`
 

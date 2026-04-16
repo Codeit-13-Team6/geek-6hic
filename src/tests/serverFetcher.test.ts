@@ -9,7 +9,7 @@ import {
   isPublicPath,
   serverAxios,
   serverFetch,
-} from "@/lib/auth/fetcher.server";
+} from "@/lib/auth/serverFetcher";
 import { GET as proxyRouteGET } from "@/app/api/[...slug]/route";
 import { GET as myPostsVisibleRouteGET } from "@/app/api/users/me/posts-visible/route";
 
@@ -123,7 +123,7 @@ describe("request interceptor", () => {
     );
 
     await expect(serverAxios.get("/users/me")).rejects.toMatchObject({
-      response: { status: 401, data: { code: "REFRESH_FAILED" } },
+      response: { status: 401, data: { code: "AUTH_SYNC_REQUIRED" } },
     });
     expect(meCallCount).toBe(0);
   });
@@ -191,7 +191,7 @@ describe("request interceptor", () => {
     );
 
     await expect(serverAxios.get("/meetings")).rejects.toMatchObject({
-      response: { status: 401, data: { code: "REFRESH_FAILED" } },
+      response: { status: 401, data: { code: "AUTH_SYNC_REQUIRED" } },
     });
     expect(meetingsCallCount).toBe(0);
   });
@@ -250,7 +250,7 @@ describe("response interceptor", () => {
     );
 
     await expect(serverAxios.get("/users/me")).rejects.toMatchObject({
-      response: { data: { code: "REFRESH_FAILED" } },
+      response: { data: { code: "AUTH_SYNC_REQUIRED" } },
     });
     expect(meCallCount).toBe(1);
     expect(refreshCallCount).toBe(1);
@@ -303,7 +303,7 @@ describe("response interceptor", () => {
     expect(refreshCallCount).toBe(0);
   });
 
-  it("401 응답에서 refreshToken 이 없으면 REFRESH_FAILED 로 차단한다", async () => {
+  it("401 응답에서 refreshToken 이 없으면 AUTH_SYNC_REQUIRED 로 차단한다", async () => {
     const accessToken = makeMockJwt("1");
     setupCookies({ accessToken }); // refreshToken 없음
 
@@ -312,7 +312,7 @@ describe("response interceptor", () => {
     );
 
     await expect(serverAxios.get("/users/me")).rejects.toMatchObject({
-      response: { status: 401, data: { code: "REFRESH_FAILED" } },
+      response: { status: 401, data: { code: "AUTH_SYNC_REQUIRED" } },
     });
   });
 });
@@ -513,7 +513,7 @@ describe("serverFetch wrapper", () => {
     expect(redirect).not.toHaveBeenCalled();
   });
 
-  it("SSR에서 쿠키 커밋이 deferred 되면 /api/auth/sync 로 redirect 한다", async () => {
+  it("SSR에서 refresh가 발생하면 AUTH_SYNC_REQUIRED 에러를 던진다", async () => {
     setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
 
     server.use(
@@ -526,25 +526,22 @@ describe("serverFetch wrapper", () => {
       http.get(`${BASE}/users/me`, () => HttpResponse.json({ id: 1, name: "tester" })),
     );
 
-    await expect(
-      serverFetch({ method: "GET", url: "/users/me" }),
-    ).rejects.toThrow("NEXT_REDIRECT");
-
-    expect(redirect).toHaveBeenCalledWith("/api/auth/sync");
+    await expect(serverFetch({ method: "GET", url: "/users/me" })).rejects.toMatchObject({
+      response: { status: 401, data: { code: "AUTH_SYNC_REQUIRED" } },
+    });
+    expect(redirect).not.toHaveBeenCalled();
   });
 
-  it("REFRESH_FAILED 에러 → redirect('/login') 를 호출한다", async () => {
-    setupCookies({}); // 토큰 없음 + private path → REFRESH_FAILED
+  it("refreshToken 이 없으면 AUTH_SYNC_REQUIRED 에러를 반환한다", async () => {
+    setupCookies({});
 
-    // redirect() 가 NEXT_REDIRECT 를 throw 하므로 rejects 처리
-    await expect(
-      serverFetch({ method: "GET", url: "/users/me" }),
-    ).rejects.toThrow("NEXT_REDIRECT");
-
-    expect(redirect).toHaveBeenCalledWith("/login");
+    await expect(serverFetch({ method: "GET", url: "/users/me" })).rejects.toMatchObject({
+      response: { status: 401, data: { code: "AUTH_SYNC_REQUIRED" } },
+    });
+    expect(redirect).not.toHaveBeenCalled();
   });
 
-  it("REFRESH_FAILED 가 아닌 에러(500) → redirect 없이 그냥 throw", async () => {
+  it("AUTH_SYNC_REQUIRED 가 아닌 에러(500) → 그대로 throw", async () => {
     const accessToken = makeMockJwt("1");
     const refreshToken = makeMockJwt("1");
     setupCookies({ accessToken, refreshToken });
@@ -564,7 +561,7 @@ describe("serverFetch wrapper", () => {
 });
 
 describe("SSR deferred cookie commit", () => {
-  it("[...slug] Route Handler: SSR에서 cookies().set 실패해도 응답에서 auth 쿠키를 커밋한다", async () => {
+  it("[...slug] Route Handler: refresh 발생 시 AUTH_SYNC_REQUIRED 를 반환한다", async () => {
     setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
 
     server.use(
@@ -582,13 +579,15 @@ describe("SSR deferred cookie commit", () => {
       params: Promise.resolve({ slug: ["users", "me"] }),
     });
 
-    expect(response.status).toBe(200);
-    expect((await response.json()).id).toBe(1);
-    expect(response.cookies.get("accessToken")?.value).toBe("deferred-access-token");
-    expect(response.cookies.get("refreshToken")?.value).toBe(makeMockJwt("1"));
+    expect(response.status).toBe(401);
+    await expect(response.json()).resolves.toMatchObject({
+      code: "AUTH_SYNC_REQUIRED",
+    });
+    expect(response.cookies.get("accessToken")?.value).toBeUndefined();
+    expect(response.cookies.get("refreshToken")?.value).toBeUndefined();
   });
 
-  it("BFF Route Handler(/api/users/me/posts-visible): deferred 토큰을 응답 쿠키로 커밋한다", async () => {
+  it("BFF Route Handler(/api/users/me/posts-visible): refresh 발생 시 AUTH_SYNC_REQUIRED 를 반환한다", async () => {
     setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
 
     server.use(
@@ -632,11 +631,9 @@ describe("SSR deferred cookie commit", () => {
     const response = await myPostsVisibleRouteGET(request);
     const body = await response.json();
 
-    expect(response.status).toBe(200);
-    expect(Array.isArray(body.data)).toBe(true);
-    expect(response.cookies.get("accessToken")?.value).toBe(
-      "deferred-access-token-bff",
-    );
-    expect(response.cookies.get("refreshToken")?.value).toBe(makeMockJwt("1"));
+    expect(response.status).toBe(401);
+    expect(body).toMatchObject({ code: "AUTH_SYNC_REQUIRED" });
+    expect(response.cookies.get("accessToken")?.value).toBeUndefined();
+    expect(response.cookies.get("refreshToken")?.value).toBeUndefined();
   });
 });

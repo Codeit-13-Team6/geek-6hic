@@ -2,7 +2,7 @@ import { Post } from "@/types";
 import { getPosts } from "@/api/server";
 import { fetchAllCursor } from "@/lib";
 import { isThread } from "@/lib";
-import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
+import type { DeferredAuthCommitContext } from "@/lib/auth/serverFetcher";
 
 export async function getHotPostsBFF(
   authContext?: DeferredAuthCommitContext,

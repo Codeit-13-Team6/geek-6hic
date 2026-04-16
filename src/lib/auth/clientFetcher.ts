@@ -16,7 +16,27 @@ axiosInstance.interceptors.response.use(
       error.config?.url?.startsWith(path),
     );
 
-    // 401 + err.res.code = REFRESH_FAILED 인건 node 단에서 리프레쉬 토큰 갱신 불가거나 없을때 강제로 집어넣은 코드라 바로 로그인으로 떨어뜨림
+    // 401 + AUTH_SYNC_REQUIRED 면 /api/auth/sync 를 거쳐 쿠키 동기화
+    if (
+      !shouldSkipRedirect &&
+      error.response?.status === 401 &&
+      error.response?.data?.code === "AUTH_SYNC_REQUIRED"
+    ) {
+      if (
+        window.location.pathname === "/login" ||
+        window.location.pathname === "/signup" ||
+        window.location.pathname === "/oauth/kakao"
+      ) {
+        return Promise.reject(error);
+      }
+      const nextPath = `${window.location.pathname}${window.location.search}`;
+      window.location.href = `/api/auth/sync?next=${encodeURIComponent(nextPath)}`;
+      const errorWithFlag = error;
+      errorWithFlag._isRedirecting = true;
+      return Promise.reject(errorWithFlag);
+    }
+
+    // 401 + REFRESH_FAILED(레거시) 는 바로 로그인으로 떨어뜨림
     if (
       !shouldSkipRedirect &&
       error.response?.status === 401 &&

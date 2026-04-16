@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/auth/fetcher.client";
+import axiosInstance from "@/lib/auth/clientFetcher";
 import {
   JoinedMeetingsResponse,
   Meeting,

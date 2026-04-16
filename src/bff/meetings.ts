@@ -1,8 +1,9 @@
 import {
   collectDeferredAuthTokens,
+  redirectToAuthSyncIfNeeded,
   serverFetch,
   type DeferredAuthCommitContext,
-} from "@/lib/auth/fetcher.server";
+} from "@/lib/auth/serverFetcher";
 import { getVisibleCursorPage } from "@/lib";
 import { sortByCreatedAtDesc } from "@/lib";
 import { fetchAllCursor } from "@/lib";
@@ -24,58 +25,72 @@ export async function getMyMeetingsBFF({
 } = {},
 authContext?: DeferredAuthCommitContext,
 ): Promise<MyMeetingsPageResponse> {
-  const offset = safeOffset(rawOffset);
-  const limit = safeLimit(rawLimit);
-  const data = await getVisibleCursorPage<MeetingResponse>({
-    offset,
-    limit,
-    fetchPage: async ({ cursor, size }) => {
-      const response = await serverFetch<GetMeetingsResponse>({
-        method: "GET",
-        url: "/meetings/my",
-        params: {
-          size,
-          ...(cursor ? { cursor } : {}),
-        },
-      }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
-      });
-      collectDeferredAuthTokens(authContext, response);
+  try {
+    const offset = safeOffset(rawOffset);
+    const limit = safeLimit(rawLimit);
+    const data = await getVisibleCursorPage<MeetingResponse>({
+      offset,
+      limit,
+      fetchPage: async ({ cursor, size }) => {
+        const response = await serverFetch<GetMeetingsResponse>({
+          method: "GET",
+          url: "/meetings/my",
+          params: {
+            size,
+            ...(cursor ? { cursor } : {}),
+          },
+        }, {
+          authSyncMode: authContext ? "response" : "throw",
+        });
+        collectDeferredAuthTokens(authContext, response);
 
-      return {
-        ...response.data,
-        data: sortByCreatedAtDesc(response.data.data),
-      };
-    },
-    filter: () => true,
-  });
+        return {
+          ...response.data,
+          data: sortByCreatedAtDesc(response.data.data),
+        };
+      },
+      filter: () => true,
+    });
 
-  return {
-    ...data,
-    data: sortByCreatedAtDesc(data.data),
-  };
+    return {
+      ...data,
+      data: sortByCreatedAtDesc(data.data),
+    };
+  } catch (error) {
+    if (!authContext) {
+      redirectToAuthSyncIfNeeded(error);
+    }
+    throw error;
+  }
 }
 
 export async function getJoinedMeetingIdsBFF(
   authContext?: DeferredAuthCommitContext,
 ): Promise<number[]> {
-  const meetings = await fetchAllCursor<JoinedMeeting>({
-    fetchPage: (cursor) =>
-      serverFetch<JoinedMeetingsResponse>({
-        method: "GET",
-        url: "/meetings/joined",
-        params: {
-          size: 50,
-          sortBy: "joinedAt",
-          ...(cursor ? { cursor } : {}),
-        },
-      }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
-      }).then((r) => {
-        collectDeferredAuthTokens(authContext, r);
-        return r.data;
-      }),
-  });
+  try {
+    const meetings = await fetchAllCursor<JoinedMeeting>({
+      fetchPage: (cursor) =>
+        serverFetch<JoinedMeetingsResponse>({
+          method: "GET",
+          url: "/meetings/joined",
+          params: {
+            size: 50,
+            sortBy: "joinedAt",
+            ...(cursor ? { cursor } : {}),
+          },
+        }, {
+          authSyncMode: authContext ? "response" : "throw",
+        }).then((r) => {
+          collectDeferredAuthTokens(authContext, r);
+          return r.data;
+        }),
+    });
 
-  return meetings.map((m) => m.id);
+    return meetings.map((m) => m.id);
+  } catch (error) {
+    if (!authContext) {
+      redirectToAuthSyncIfNeeded(error);
+    }
+    throw error;
+  }
 }
