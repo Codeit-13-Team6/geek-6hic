@@ -55,9 +55,8 @@ export default function ProfileSection({
     updateProfile(
       { ...data, ...(image && { image }) },
       {
-        onSuccess: (updatedData) => {
+        onSuccess: () => {
           setIsEditModalOpen(false);
-          setUser(updatedData);
           router.refresh();
         },
       },

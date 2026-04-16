@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { serverAxios } from "@/lib/auth/fetcher.server";
-import { setUserDisplayCookie } from "@/lib/auth/cookies";
+import { serverAxios, type TokenPair } from "@/lib/auth/fetcher.server";
+import { setAuthCookies } from "@/lib/auth/cookies";
 import type { AxiosRequestConfig } from "axios";
 
 interface AxiosErrorLike {
+  config?: {
+    _deferredCookieCommit?: boolean;
+    _refreshedTokens?: TokenPair;
+  };
   response?: {
     data?: { code?: string; [key: string]: unknown };
     status?: number;
@@ -21,6 +25,25 @@ interface RouteRule {
   pattern: RegExp;
   methods: NextRequest["method"][];
   requiresAuth: boolean;
+}
+
+function applyDeferredAuthCookies(
+  response: NextResponse,
+  maybeDeferred?: {
+    _deferredCookieCommit?: boolean;
+    _refreshedTokens?: TokenPair;
+  },
+) {
+  if (!maybeDeferred?._deferredCookieCommit || !maybeDeferred._refreshedTokens) {
+    return response;
+  }
+
+  const { accessToken, refreshToken } = maybeDeferred._refreshedTokens;
+  setAuthCookies(response, {
+    accessToken,
+    ...(refreshToken ? { refreshToken } : {}),
+  });
+  return response;
 }
 
 // 백엔드로 프록시할 라우트 화이트리스트
@@ -195,31 +218,30 @@ async function handleProxy(request: NextRequest, { params }: RouteParams) {
     }
 
     // server-fetcher interceptor가 토큰 세팅 + 401 시 refresh 자동 처리
-    const { data, status } = await serverAxios(axiosOptions);
+    const axiosResponse = await serverAxios(axiosOptions);
+    const { data, status } = axiosResponse;
 
     const response = NextResponse.json(data, { status });
 
-    if (targetPath === "/users/me" && request.method === "PATCH") {
-      setUserDisplayCookie(response, data);
-    }
-
-    return response;
+    return applyDeferredAuthCookies(response, axiosResponse);
   } catch (err) {
     const error = err as AxiosErrorLike;
     // REFRESH_FAILED: 리프레시 토큰 만료 → 클라이언트에서 로그인 페이지로 처리
     if (error.response?.data?.code === "REFRESH_FAILED") {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { message: "Unauthorized", code: "REFRESH_FAILED" },
         { status: 401 },
       );
+      return applyDeferredAuthCookies(response, error.config);
     }
 
     // 백엔드에서  떨어지는 다른 에러
     console.error("BFF Proxy Error:", error.response?.data || error.message);
-    return NextResponse.json(
+    const response = NextResponse.json(
       error.response?.data ?? { message: "Internal Server Error" },
       { status: error.response?.status ?? 500 },
     );
+    return applyDeferredAuthCookies(response, error.config);
   }
 }
 

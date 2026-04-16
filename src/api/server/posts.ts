@@ -1,4 +1,8 @@
-import { serverFetch, serverAxios } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import type {
   GetCommentsResponse,
   GetPostsParams,
@@ -24,8 +28,9 @@ export async function getPostCommentsServer(
     offset?: number;
     limit?: number;
   } = {},
+  authContext?: DeferredAuthCommitContext,
 ): Promise<GetCommentsResponse> {
-  const { data } = await serverFetch({
+  const response = await serverFetch({
     method: "GET",
     url: `/posts/${postId}/comments`,
     params: {
@@ -33,14 +38,18 @@ export async function getPostCommentsServer(
       offset: params.offset ?? 0,
       limit: params.limit ?? 100,
     },
+  }, {
+    deferredCommitMode: authContext ? "bubble" : "redirect",
   });
-  return data;
+  collectDeferredAuthTokens(authContext, response);
+  return response.data;
 }
 
 export async function getPosts(
   params: GetPostsParams = {},
+  authContext?: DeferredAuthCommitContext,
 ): Promise<GetPostsResponse> {
-  const { data } = await serverFetch({
+  const response = await serverFetch({
     method: "GET",
     url: "/posts",
     params: {
@@ -50,9 +59,12 @@ export async function getPosts(
       size: params.size || 10,
       ...(params.cursor ? { cursor: params.cursor } : {}),
     },
+  }, {
+    deferredCommitMode: authContext ? "bubble" : "redirect",
   });
+  collectDeferredAuthTokens(authContext, response);
 
-  return filterThreadPosts(data);
+  return filterThreadPosts(response.data);
 }
 
 export async function getMyPostsServer(
@@ -67,17 +79,16 @@ export async function getMyPostsServer(
       limit: params.limit ?? 10,
     },
     async ({ offset, limit }) => {
-      const { data } = await serverAxios.get<GetPostsResponse>(
-        "/users/me/posts",
-        {
-          params: {
-            sortBy: "createdAt",
-            sortOrder: "desc",
-            offset,
-            limit,
-          },
+      const { data } = await serverFetch<GetPostsResponse>({
+        method: "GET",
+        url: "/users/me/posts",
+        params: {
+          sortBy: "createdAt",
+          sortOrder: "desc",
+          offset,
+          limit,
         },
-      );
+      });
 
       return data;
     },

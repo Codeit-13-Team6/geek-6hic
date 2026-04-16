@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { Metadata } from "next";
 import { TabsContent } from "@/components/ui/Tabs";
 import ProfileSectionContainer from "@/app/users/[id]/_components/ProfileSectionContainer";
@@ -24,6 +23,7 @@ import UserLikeList from "@/app/users/[id]/_components/UserLikeList";
 import UserMeetingList from "@/app/users/[id]/_components/UserMeetingList";
 import UserPostList from "@/app/users/[id]/_components/UserPostList";
 import UserTabController from "./_components/UserTabController";
+import { getSessionUser } from "@/lib/auth/sessionUser.server";
 
 const FAVORITES_PAGE_SIZE = 10;
 
@@ -49,11 +49,9 @@ export default async function Page({
   const { id } = await params;
   const { tab } = await searchParams;
 
-  const cookieStore = await cookies();
-  const raw = cookieStore.get("user_display")?.value;
-  const initialUser = raw ? JSON.parse(raw) : null;
-  const isOwnProfile = initialUser?.id === Number(id);
+  const sessionUser = await getSessionUser();
   const profileUserId = Number(id);
+  const isOwnProfile = sessionUser?.id === profileUserId;
 
   const basicStatsPromise = getBasicProfileStats({
     isOwnProfile,
@@ -74,8 +72,12 @@ export default async function Page({
   const profileUserPromise = Number.isFinite(profileUserId)
     ? getPublicUserProfile({
         userId: profileUserId,
-      })
-    : Promise.resolve(initialUser);
+      }).then((user) => ({
+        ...user,
+        image: user.image ?? null,
+        email: user.email ?? "",
+      }))
+    : Promise.resolve(null);
 
   const tabs = isOwnProfile
     ? [

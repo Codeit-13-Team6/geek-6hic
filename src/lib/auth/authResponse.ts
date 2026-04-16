@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import type { User } from "@/types";
-import { setAuthCookies, setUserDisplayCookie } from "@/lib/auth/cookies";
+import { setAuthCookies } from "@/lib/auth/cookies";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,7 +17,6 @@ export async function createAuthSuccessResponse(tokens: AuthTokens) {
 
   const response = NextResponse.json({ ok: true, user: meData });
   setAuthCookies(response, tokens);
-  setUserDisplayCookie(response, meData);
 
   return response;
 }

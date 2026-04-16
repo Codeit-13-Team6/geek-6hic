@@ -2,14 +2,20 @@ import { Post } from "@/types";
 import { getPosts } from "@/api/server";
 import { fetchAllCursor } from "@/lib";
 import { isThread } from "@/lib";
+import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
 
-export async function getHotPostsBFF(): Promise<Post[]> {
+export async function getHotPostsBFF(
+  authContext?: DeferredAuthCommitContext,
+): Promise<Post[]> {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
   const allValidPosts = await fetchAllCursor<Post>({
     fetchPage: (cursor) =>
-      getPosts({ cursor, size: 20, sortBy: "createdAt", sortOrder: "desc" }),
+      getPosts(
+        { cursor, size: 20, sortBy: "createdAt", sortOrder: "desc" },
+        authContext,
+      ),
     earlyExit: (post) => new Date(post.createdAt) < oneWeekAgo,
     filter: (post) => !isThread.is(post.title),
   });

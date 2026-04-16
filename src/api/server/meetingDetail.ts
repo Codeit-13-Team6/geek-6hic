@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import { serverAxios, serverFetch } from "@/lib/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 import type { User } from "@/types";
 import {
   MeetingAttendanceCommentsResponse,
@@ -34,7 +34,10 @@ export async function getMeetingParticipants(meetingId: number) {
 
 export async function getCurrentUserOnServer() {
   try {
-    const response = await serverAxios.get<User>("/users/me");
+    const response = await serverFetch<User>({
+      method: "GET",
+      url: "/users/me",
+    });
     return response.data;
   } catch {
     return null;

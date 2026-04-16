@@ -11,9 +11,9 @@ import {
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
-interface TokenPair {
+export interface TokenPair {
   accessToken: string;
-  refreshToken: string;
+  refreshToken: string | null;
 }
 
 interface RefreshFailedResponse {
@@ -30,7 +30,34 @@ interface RefreshFailedError extends Error {
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  _refreshedTokens?: TokenPair;
+  _deferredCookieCommit?: boolean;
 }
+
+interface AuthMetaCarrier {
+  _refreshedTokens?: TokenPair;
+  _deferredCookieCommit?: boolean;
+}
+
+interface RefreshResult {
+  tokenPair: TokenPair | null;
+  deferredCookieCommit: boolean;
+}
+
+type DeferredCommitMode = "redirect" | "bubble";
+
+interface ServerFetchOptions {
+  deferredCommitMode?: DeferredCommitMode;
+  syncPath?: string;
+}
+
+export interface DeferredAuthCommitContext {
+  refreshedTokens?: TokenPair;
+}
+
+const COOKIE_WRITE_FORBIDDEN_MESSAGE =
+  "Cookies can only be modified in a Server Action or Route Handler";
+const TEST_COOKIE_WRITE_FORBIDDEN_MESSAGE = "set-cookie-not-available";
 
 // 모듈 떨어지는거 테스팅
 // const MODULE_INSTANCE_ID = Math.random().toString(36).slice(2, 8);
@@ -95,13 +122,48 @@ async function setTokenCookies(tokens: TokenPair) {
   }
 }
 
+function collectDeferredAuthTokens(
+  context: DeferredAuthCommitContext | undefined,
+  carrier?: AuthMetaCarrier,
+) {
+  if (!context) {
+    return;
+  }
+  if (!carrier?._deferredCookieCommit || !carrier._refreshedTokens) {
+    return;
+  }
+  context.refreshedTokens = carrier._refreshedTokens;
+}
+
+function isDeferredCookieCommitError(err: unknown): boolean {
+  if (!(err instanceof Error)) {
+    return false;
+  }
+  return (
+    err.message.includes(COOKIE_WRITE_FORBIDDEN_MESSAGE) ||
+    err.message.includes(TEST_COOKIE_WRITE_FORBIDDEN_MESSAGE)
+  );
+}
+
+async function setTokenCookiesOrMarkDeferred(tokens: TokenPair) {
+  try {
+    await setTokenCookies(tokens);
+    return { deferredCookieCommit: false };
+  } catch (err) {
+    if (isDeferredCookieCommitError(err)) {
+      return { deferredCookieCommit: true };
+    }
+    throw err;
+  }
+}
+
 // 리프레시 토큰으로 새 액세스 토큰을 발급받는 함수
 // 리턴값은 tokenPair  또는 null ( 보통은 리프레쉬 토큰이 만료되었을때 )
 const refreshAccessToken = async (
   userId: string,
   requestUrl: string,
   forceRefresh = false,
-): Promise<TokenPair | null> => {
+): Promise<RefreshResult> => {
   // 리프레쉬 맵에 유저아이디가 있을때  토큰 캐시처리 로직
   if (refreshMap.has(userId)) {
     // 포스리프레쉬가 아닐떄 , 포스리프레쉬는 강제로 리프레쉬해버리니까 아래 로직이 필요없음
@@ -111,11 +173,14 @@ const refreshAccessToken = async (
 
       const cachedTokenPair = await refreshMap.get(userId)!;
       if (cachedTokenPair) {
-        try {
-          await setTokenCookies(cachedTokenPair);
-        } catch {}
+        const { deferredCookieCommit } =
+          await setTokenCookiesOrMarkDeferred(cachedTokenPair);
+        return {
+          tokenPair: cachedTokenPair,
+          deferredCookieCommit,
+        };
       }
-      return cachedTokenPair;
+      return { tokenPair: null, deferredCookieCommit: false };
     }
 
     //   [Promise 생성] ─────── [resolve] ──────────────────── [401로 forceRefresh delete]
@@ -159,11 +224,11 @@ const refreshAccessToken = async (
       if (current && current !== existing) {
         const result = await current;
         if (result) {
-          try {
-            await setTokenCookies(result);
-          } catch {}
+          const { deferredCookieCommit } =
+            await setTokenCookiesOrMarkDeferred(result);
+          return { tokenPair: result, deferredCookieCommit };
         }
-        return result;
+        return { tokenPair: null, deferredCookieCommit: false };
       }
 
       refreshMap.delete(userId);
@@ -198,12 +263,6 @@ const refreshAccessToken = async (
         { refreshToken },
       );
 
-      // 쿠키 세팅 실패가 토큰 갱신 자체를 실패시키면 안되는 상황이라 분리
-      // 특정 모듈 컨텍스트에서 cookies().set()이 실패할 수 있음 ( 서버컴포넌트 )
-      try {
-        await setTokenCookies(data as TokenPair);
-      } catch {}
-
       return data as TokenPair;
     } catch {
       // 리프레쉬 api 에서 실패난거라 리프레쉬 토큰 자체가 만료된것
@@ -213,7 +272,15 @@ const refreshAccessToken = async (
   })();
 
   refreshMap.set(userId, promise); // await 없이 즉시 등록
-  return promise;
+  const tokenPair = await promise;
+
+  if (!tokenPair) {
+    return { tokenPair: null, deferredCookieCommit: false };
+  }
+
+  const { deferredCookieCommit } =
+    await setTokenCookiesOrMarkDeferred(tokenPair);
+  return { tokenPair, deferredCookieCommit };
 };
 
 // 인증 없이 요청 가능한 경로 (정규식으로 정확히 매칭)
@@ -265,11 +332,16 @@ serverAxios.interceptors.request.use(async (config) => {
     const userId = getUserIdFromToken(refreshToken);
     const refreshed = await refreshAccessToken(userId, config.url ?? "");
 
-    if (!refreshed) {
+    if (!refreshed.tokenPair) {
       // refresh 시도했는데도 accessToken 못 받으면 차단
       return Promise.reject(createRefreshFailedError());
     }
-    accessToken = refreshed.accessToken;
+    accessToken = refreshed.tokenPair.accessToken;
+
+    if (refreshed.deferredCookieCommit) {
+      config._refreshedTokens = refreshed.tokenPair;
+      config._deferredCookieCommit = true;
+    }
   }
 
   config.headers.Authorization = `Bearer ${accessToken}`;
@@ -281,7 +353,13 @@ serverAxios.interceptors.request.use(async (config) => {
 // 여기에서는 토큰이 만료된경우를 처리
 // response 의 에러만  핸들링함
 serverAxios.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.config._deferredCookieCommit && response.config._refreshedTokens) {
+      response._deferredCookieCommit = true;
+      response._refreshedTokens = response.config._refreshedTokens;
+    }
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryableRequestConfig | undefined;
 
@@ -313,13 +391,28 @@ serverAxios.interceptors.response.use(
       );
 
       // 리프레쉬 요청이 실패했다는건 리프레쉬 토큰도 만료되었다는것 에러처리
-      if (!refreshed) {
+      if (!refreshed.tokenPair) {
         return Promise.reject(createRefreshFailedError());
       }
 
       // 새 토큰으로 원래 요청 재시도
-      originalRequest.headers.Authorization = `Bearer ${refreshed.accessToken}`;
-      return serverAxios(originalRequest);
+      originalRequest.headers.Authorization =
+        `Bearer ${refreshed.tokenPair.accessToken}`;
+
+      if (refreshed.deferredCookieCommit) {
+        originalRequest._deferredCookieCommit = true;
+        originalRequest._refreshedTokens = refreshed.tokenPair;
+      } else {
+        delete originalRequest._deferredCookieCommit;
+        delete originalRequest._refreshedTokens;
+      }
+
+      const retryResponse = await serverAxios(originalRequest);
+      if (refreshed.deferredCookieCommit) {
+        retryResponse._deferredCookieCommit = true;
+        retryResponse._refreshedTokens = refreshed.tokenPair;
+      }
+      return retryResponse;
     }
 
     return Promise.reject(error);
@@ -327,14 +420,29 @@ serverAxios.interceptors.response.use(
 );
 
 // 서버 컴포넌트 전용 리프레쉬 토큰 없거나 만료되었을때 저절로 redirect 처리하기 위해 래퍼로 감싸둠
-async function serverFetch<T = unknown>(config: AxiosRequestConfig<T>) {
+async function serverFetch<T = unknown>(
+  config: AxiosRequestConfig<T>,
+  options: ServerFetchOptions = {},
+) {
+  const {
+    deferredCommitMode = "redirect",
+    syncPath = "/api/auth/sync",
+  } = options;
+
   try {
-    return await serverAxios(config);
+    const response = await serverAxios(config);
+
+    if (response._deferredCookieCommit && response._refreshedTokens) {
+      if (deferredCommitMode === "bubble") {
+        return response;
+      }
+      redirect(syncPath);
+    }
+
+    return response;
   } catch (err) {
     const error = err as RefreshFailedError;
     if (error.response?.data?.code === "REFRESH_FAILED") {
-      const cookieStore = await cookies();
-      cookieStore.delete("user_display");
       redirect("/login");
     }
     throw err;
@@ -349,4 +457,5 @@ export {
   serverFetch,
   isPublicPath,
   getUserIdFromToken,
+  collectDeferredAuthTokens,
 };

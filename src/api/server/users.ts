@@ -1,4 +1,4 @@
-import { serverAxios } from "@/lib/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,
@@ -11,7 +11,10 @@ import { getVisibleCursorPage } from "@/lib";
 import { getVisiblePostsPage } from "@/lib";
 
 export async function getPublicUserProfile({ userId }: { userId: number }) {
-  const response = await serverAxios.get<User>(`/users/${userId}`);
+  const response = await serverFetch<User>({
+    method: "GET",
+    url: `/users/${userId}`,
+  });
   return response.data;
 }
 
@@ -28,7 +31,9 @@ export async function getUserMeetingsPageServer({
     offset,
     limit,
     fetchPage: async ({ cursor, size }) => {
-      const { data } = await serverAxios.get<GetMeetingsResponse>("/meetings", {
+      const { data } = await serverFetch<GetMeetingsResponse>({
+        method: "GET",
+        url: "/meetings",
         params: {
           sortBy: "dateTime",
           sortOrder: "desc",
@@ -58,7 +63,9 @@ export async function getUserPostsPageServer({
   return getVisiblePostsPage(
     { offset, limit },
     async ({ offset: pageOffset, limit: pageLimit }) => {
-      const { data } = await serverAxios.get<GetPostsResponse>("/posts", {
+      const { data } = await serverFetch<GetPostsResponse>({
+        method: "GET",
+        url: "/posts",
         params: {
           keyword: "",
           sortBy: "createdAt",

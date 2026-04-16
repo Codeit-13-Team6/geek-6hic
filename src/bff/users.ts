@@ -1,4 +1,8 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import { getVisibleCursorPage } from "@/lib";
 import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib";
 import { sortByCreatedAtDesc } from "@/lib";
@@ -19,7 +23,9 @@ export async function getUserMeetingsBFF({
   userId: number;
   offset?: number;
   limit?: number;
-}): Promise<MyMeetingsPageResponse> {
+},
+authContext?: DeferredAuthCommitContext,
+): Promise<MyMeetingsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit);
 
@@ -36,7 +42,10 @@ export async function getUserMeetingsBFF({
           size,
           ...(cursor ? { cursor } : {}),
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return {
         ...response.data,
@@ -63,7 +72,9 @@ export async function getUserPostsBFF({
   userId: number;
   offset?: number;
   limit?: number;
-}): Promise<VisiblePostsPageResponse> {
+},
+authContext?: DeferredAuthCommitContext,
+): Promise<VisiblePostsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit);
 
@@ -80,7 +91,10 @@ export async function getUserPostsBFF({
           offset: pageOffset,
           limit: pageLimit,
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return response.data;
     },
@@ -94,7 +108,9 @@ export async function getMyPostsBFF({
 }: {
   offset?: number;
   limit?: number;
-} = {}): Promise<VisiblePostsPageResponse> {
+} = {},
+authContext?: DeferredAuthCommitContext,
+): Promise<VisiblePostsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit, 20);
 
@@ -110,7 +126,10 @@ export async function getMyPostsBFF({
           offset: pageOffset,
           limit: pageLimit,
         },
+      }, {
+        deferredCommitMode: authContext ? "bubble" : "redirect",
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return response.data;
     },

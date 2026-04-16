@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { getRecommendedMeetingsBFF } from "@/bff/recommend";
+import { applyAuthCookiesFromContext } from "@/lib/auth/deferredCommit";
+import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const authContext: DeferredAuthCommitContext = {};
   const { id } = await params;
   const meetingId = Number(id);
   const { searchParams } = new URL(request.url);
@@ -24,12 +27,17 @@ export async function GET(
   }
 
   try {
-    const data = await getRecommendedMeetingsBFF({ meetingId, meetingType });
-    return NextResponse.json({ data });
+    const data = await getRecommendedMeetingsBFF(
+      { meetingId, meetingType },
+      authContext,
+    );
+    const response = NextResponse.json({ data });
+    return applyAuthCookiesFromContext(response, authContext);
   } catch {
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Failed to load meeting recommendations" },
       { status: 500 },
     );
+    return applyAuthCookiesFromContext(response, authContext);
   }
 }
