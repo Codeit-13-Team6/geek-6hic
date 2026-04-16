@@ -8,11 +8,10 @@ import crew2 from "@/assets/img/crew/crew2.png";
 import crew3 from "@/assets/img/crew/crew3.png";
 import crew4 from "@/assets/img/crew/crew4.png";
 import crew5 from "@/assets/img/crew/crew5.png";
-import lpaCharacterImg from "@/assets/img/character/lpa.png";
+
 import lpiCharacterImg from "@/assets/img/character/lpi.png";
 import lsaCharacterImg from "@/assets/img/character/lsa.png";
-import lsiCharacterImg from "@/assets/img/character/lsi.png";
-import wpaCharacterImg from "@/assets/img/character/wpa.png";
+
 import wpiCharacterImg from "@/assets/img/character/wpi.png";
 import wsaCharacterImg from "@/assets/img/character/wsa.png";
 import wsiCharacterImg from "@/assets/img/character/wsi.png";
@@ -28,6 +27,15 @@ import {
   Zap,
 } from "lucide-react";
 
+import type { IconType } from "react-icons";
+import {
+  SiNextdotjs,
+  SiReact,
+  SiReactquery,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const GITHUB_HREF = "https://github.com/Codeit-13-Team6/geek-6hic";
@@ -41,18 +49,77 @@ const PALETTE_ITEMS = [
   { name: "Text", hex: "#0F172A" },
 ];
 
-const TOOL_ITEMS = [
-  "React",
-  "next.js",
-  "zustand",
-  "BFF",
-  "prefetch",
-  "TypeScript",
-  "TanStack Query",
-  "Route Handler",
-  "tailwind",
-  "Web Accessibility",
-  "Semantic Markup",
+type ToolItem = {
+  label: string;
+  bgColor: string;
+  textColor?: string;
+  icon?: IconType;
+  iconClassName?: string;
+};
+
+const TOOL_ITEMS: ToolItem[] = [
+  {
+    label: "React",
+    bgColor: "#61DAFB",
+    textColor: "#0F172A",
+    icon: SiReact,
+  },
+  {
+    label: "next.js",
+    bgColor: "#111111",
+    textColor: "#FFFFFF",
+    icon: SiNextdotjs,
+  },
+  {
+    label: "tailwind",
+    bgColor: "#38BDF8",
+    textColor: "#082F49",
+    icon: SiTailwindcss,
+  },
+  {
+    label: "TypeScript",
+    bgColor: "#3178C6",
+    textColor: "#FFFFFF",
+    icon: SiTypescript,
+  },
+  {
+    label: "TanStack Query",
+    bgColor: "#FF4154",
+    textColor: "#FFFFFF",
+    icon: SiReactquery,
+  },
+  {
+    label: "zustand",
+    bgColor: "#8B5A36",
+    textColor: "#FFFFFF",
+  },
+  {
+    label: "BFF",
+    bgColor: "#5B21B6",
+    textColor: "#FFFFFF",
+  },
+  {
+    label: "prefetch",
+    bgColor: "#0F766E",
+    textColor: "#FFFFFF",
+  },
+
+  {
+    label: "Route Handler",
+    bgColor: "#1D4ED8",
+    textColor: "#FFFFFF",
+  },
+
+  {
+    label: "Web Accessibility",
+    bgColor: "#65A30D",
+    textColor: "#FFFFFF",
+  },
+  {
+    label: "Semantic Markup",
+    bgColor: "#EA580C",
+    textColor: "#FFFFFF",
+  },
 ];
 
 const SURVIVORS = [
@@ -120,19 +187,33 @@ function StackChips({
   items,
   className = "",
 }: {
-  items: string[];
+  items: ToolItem[];
   className?: string;
 }) {
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
-      {items.map((item) => (
-        <span
-          key={item}
-          className="rounded-full border border-current/10 bg-white/70 px-3 py-1 text-xs font-bold"
-        >
-          {item}
-        </span>
-      ))}
+    <div className={`flex flex-wrap gap-4 ${className}`}>
+      {items.map((item) => {
+        const Icon = item.icon;
+
+        return (
+          <span
+            key={item.label}
+            className="inline-flex h-8 items-center gap-0.5 rounded-xl px-2 py-3 text-xs leading-none font-extrabold whitespace-nowrap shadow-[0_4px_14px_rgba(15,23,42,0.14)]"
+            style={{
+              backgroundColor: item.bgColor,
+              color: item.textColor ?? "#FFFFFF",
+            }}
+          >
+            {Icon ? (
+              <Icon
+                className={`size-3 shrink-0 ${item.iconClassName ?? ""}`}
+                aria-hidden="true"
+              />
+            ) : null}
+            <span>{item.label}</span>
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -148,8 +229,9 @@ function PaletteStrip({ dark = false }: { dark?: boolean }) {
           />
           <div className="text-center">
             <p
-              className={`text-[10px] font-black tracking-[0.2em] uppercase ${dark ? "text-slate-400" : "text-slate-500"
-                }`}
+              className={`text-[10px] font-black tracking-[0.2em] uppercase ${
+                dark ? "text-slate-400" : "text-slate-500"
+              }`}
             >
               {item.name}
             </p>
@@ -235,17 +317,43 @@ function StoryBody({
       <h2 className={titleClassName}>5명의 프론트엔더 이야기</h2>
       <div className={bodyClassName}>
         <p>
-          디자인도, 백엔드도 없는 상태에서 프론트엔드 5명의 이야기가 시작됐습니다.<br />
-          피그마 다룰 줄 아시는 분? 이라는 질문에서 출발해, 각자 참고할 레퍼런스를 찾고 화면을 하나씩 맞춰가며 프로젝트를 구성해 나갔습니다.<br />
-          기획서와 간단한 구조만 있는 상황에서, 직접 화면을 구성하고 데이터 흐름을 맞추며 서비스를 만들어야 했습니다.<br />
-          온라인으로 협업을 이어가며 10시간 이상을 소통하다보니 자연스럽게 팀원 간의 유대감도 형성되었고, 기술적인 논의뿐 아니라 서로의 취향이나 일상까지 공유하게 되었습니다.<br />
-          존박, 윈터, 카리나 등 닮은 연예인을 이야기하며 분위기가 풀리기도 했고, 그만큼 편하게 의견을 주고받을 수 있는 환경이 만들어졌습니다.<br />
-          랭킹보드와 게이미피케이션 요소 같은 부분을 위해 제공된 API를 그대로 사용하는 것이 아니라, 제공되었던 리뷰 API 데이터를 직접 조합하거나 우회적으로 끌어내며 기능을 구현해야 했고, 그 과정에서 시행착오를 반복하며 데이터 흐름을 다시 맞춰 나갔습니다.<br />
-          일부 데이터 구조를 프론트에서 보완하며 기능을 구현해야 했고, 제공된 API와 맞지 않는 부분은 기획을 다시 조정하는 과정을 반복했습니다.<br />
-          그 과정에서 “이게 맞나?”라는 질문이 자연스럽게 나오기 시작했고, 답을 찾는 방식도 점점 팀의 방식으로 정리되어 갔습니다.<br />
-          개발 과정은 매끄럽기보다는, 문제를 정의하고 해결 방식을 계속 수정해 나가는 반복에 가까웠습니다.<br />
-          머지 충돌과 구현 방식에 대한 의견 차이는 있었지만, 초기 단계에서 컨벤션을 정리하고 공유하며 코드 스타일과 작업 방식은 일관성을 유지한 채 협업을 이어갔습니다.<br />
-          결과적으로 co-git은 단순한 결과물을 넘어, 팀의 기준을 함께 만들어간 과정이자 스프린터들을 위한 오픈된 생태계로 이어지는 프로젝트가 되었습니다.
+          디자인도, 백엔드도 없는 상태에서 프론트엔드 5명의 이야기가
+          시작됐습니다.
+          <br />
+          피그마 다룰 줄 아시는 분? 이라는 질문에서 출발해, 각자 참고할
+          레퍼런스를 찾고 화면을 하나씩 맞춰가며 프로젝트를 구성해 나갔습니다.
+          <br />
+          기획서와 간단한 구조만 있는 상황에서, 직접 화면을 구성하고 데이터
+          흐름을 맞추며 서비스를 만들어야 했습니다.
+          <br />
+          온라인으로 협업을 이어가며 10시간 이상을 소통하다보니 자연스럽게 팀원
+          간의 유대감도 형성되었고, 기술적인 논의뿐 아니라 서로의 취향이나
+          일상까지 공유하게 되었습니다.
+          <br />
+          존박, 윈터, 카리나 등 닮은 연예인을 이야기하며 분위기가 풀리기도 했고,
+          그만큼 편하게 의견을 주고받을 수 있는 환경이 만들어졌습니다.
+          <br />
+          랭킹보드와 게이미피케이션 요소 같은 부분을 위해 제공된 API를 그대로
+          사용하는 것이 아니라, 제공되었던 리뷰 API 데이터를 직접 조합하거나
+          우회적으로 끌어내며 기능을 구현해야 했고, 그 과정에서 시행착오를
+          반복하며 데이터 흐름을 다시 맞춰 나갔습니다.
+          <br />
+          일부 데이터 구조를 프론트에서 보완하며 기능을 구현해야 했고, 제공된
+          API와 맞지 않는 부분은 기획을 다시 조정하는 과정을 반복했습니다.
+          <br />
+          그 과정에서 “이게 맞나?”라는 질문이 자연스럽게 나오기 시작했고, 답을
+          찾는 방식도 점점 팀의 방식으로 정리되어 갔습니다.
+          <br />
+          개발 과정은 매끄럽기보다는, 문제를 정의하고 해결 방식을 계속 수정해
+          나가는 반복에 가까웠습니다.
+          <br />
+          머지 충돌과 구현 방식에 대한 의견 차이는 있었지만, 초기 단계에서
+          컨벤션을 정리하고 공유하며 코드 스타일과 작업 방식은 일관성을 유지한
+          채 협업을 이어갔습니다.
+          <br />
+          결과적으로 co-git은 단순한 결과물을 넘어, 팀의 기준을 함께 만들어간
+          과정이자 스프린터들을 위한 오픈된 생태계로 이어지는 프로젝트가
+          되었습니다.
         </p>
       </div>
       <div className="mt-8">
@@ -357,73 +465,6 @@ export default function AboutTeamPage() {
   const sectionRef2 = useRef<HTMLHeadingElement | null>(null);
   const sectionRef3 = useRef<HTMLHeadingElement | null>(null);
 
-  // 모션 start
-  // 우리가 만든 방식
-  // useEffect(() => {
-  //   const sectionEl = sectionRef3.current;
-
-  //   if (!sectionEl) return;
-  //   const vh = window.innerHeight;
-  //   const articles = sectionEl.querySelector(".calc-area");
-  //   const fadeUp = sectionEl.querySelector(".fade-up-gsap");
-  //   const articlesH = (articles as HTMLElement).offsetHeight;
-  //   const offset = (vh - articlesH) / 2;
-
-  //   const mm = gsap.matchMedia();
-
-  //   mm.add("(min-width: 1280px)", () => {
-  //     const articleList = sectionEl.querySelectorAll("article");
-  //     if (!articleList.length) return;
-
-  //     gsap.set(articleList, {
-  //       opacity: 0,
-  //       y: 60,
-  //     });
-
-  //     const tl = gsap.timeline({
-  //       scrollTrigger: {
-  //         trigger: sectionEl,
-  //         start: `top +=${offset}`,
-  //         end: "bottom top",
-  //         pin: true,
-  //         scrub: 1,
-  //         // markers: true,
-  //       },
-  //     });
-
-  //     ScrollTrigger.refresh();
-
-  //     // 타임라인 시작
-  //     tl.to(fadeUp, {
-  //       opacity: 1,
-  //       y: 0,
-  //       duration: 0.8,
-  //       ease: "power3.out",
-  //     })
-
-  //     articleList.forEach((article, index) => {
-  //       tl.to(
-  //         article,
-  //         {
-  //           opacity: 1,
-  //           y: 0,
-  //           duration: 1,
-  //         },
-  //         index
-  //       );
-  //     });
-
-  //     return () => {
-  //       tl.scrollTrigger?.kill();
-  //       tl.kill();
-  //     };
-  //   });
-
-  //   return () => {
-  //     mm.revert();
-  //   };
-  // }, []);
-
   return (
     <div className="relative bg-[linear-gradient(180deg,#fdfbff_0%,#faf7ff_16%,#ffffff_42%,#fcf9ff_74%,#ffffff_100%)] pb-28 break-keep text-slate-900">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-8 2xl:px-0">
@@ -481,45 +522,70 @@ export default function AboutTeamPage() {
               우리가 만든 방식
             </h2>
             <p className="mt-5 text-lg leading-8 font-bold text-slate-200">
-
               기다림을 줄이고, 결을 맞추고, 흐름을 이었습니다.
             </p>
             <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 sm:flex-col sm:overflow-visible 2xl:grid 2xl:grid-cols-3">
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-white/10 bg-white/5 p-8 text-slate-100 sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Server className="mb-6 size-8 text-blue-300" />
-                <h3 className="text-2xl font-black">기다립니다. <br /> 기다림을 줄이기 위해.</h3>
+                <h3 className="text-2xl font-black">
+                  기다립니다. <br /> 기다림을 줄이기 위해.
+                </h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-                  디자인이 아무리 시선을 끌어도,<br />
-                  기다리는 시간은 언제나 길게 느껴지니까요.<br /><br />
-
+                  디자인이 아무리 시선을 끌어도,
+                  <br />
+                  기다리는 시간은 언제나 길게 느껴지니까요.
+                  <br />
+                  <br />
                   Server-side Prefetch와 HydrationBoundary로 <br />
-                  첫 화면에 필요한 데이터를 먼저 준비했습니다.<br /><br />
-
-                  이 선택은 BFF 설계로 이어졌습니다.<br />
-                  화면에 필요한 정보를 더 빠르게 보여줄 수 없을까,<br />
-                  그 고민이 저희를 Next 서버 중심 구조로 이끌었습니다.<br /><br />
-
-                  서버 중심의 인증과 데이터 흐름,<br />
-                  브라우저가 토큰을 직접 다루며 겪던 불안정함의 완화,<br />
-                  프론트엔드에 더 적합한 데이터 형태.<br /><br />
-
+                  첫 화면에 필요한 데이터를 먼저 준비했습니다.
+                  <br />
+                  <br />
+                  이 선택은 BFF 설계로 이어졌습니다.
+                  <br />
+                  화면에 필요한 정보를 더 빠르게 보여줄 수 없을까,
+                  <br />
+                  그 고민이 저희를 Next 서버 중심 구조로 이끌었습니다.
+                  <br />
+                  <br />
+                  서버 중심의 인증과 데이터 흐름,
+                  <br />
+                  브라우저가 토큰을 직접 다루며 겪던 불안정함의 완화,
+                  <br />
+                  프론트엔드에 더 적합한 데이터 형태.
+                  <br />
+                  <br />
                   이제 기다리는 일은, 저희가 하겠습니다.
                 </p>
               </article>
 
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-[#c27aff]/20 bg-[linear-gradient(180deg,rgba(194,122,255,0.14),rgba(255,255,255,0.04))] p-8 text-slate-100 shadow-[0_0_0_1px_rgba(194,122,255,0.05)] sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Palette className="text-main-purple-light mb-6 size-8" />
-                <h3 className="text-2xl font-black">맞춰갑니다. <br />오래 남는 인상을 위해.</h3>
+                <h3 className="text-2xl font-black">
+                  맞춰갑니다. <br />
+                  오래 남는 인상을 위해.
+                </h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-
-                  강한 대비와 선명한 포인트 컬러,<br />굵은 타이포와 리듬감 있는 여백으로 먼저 시선을 끌었습니다.<br /><br />
-
-
-                  하지만 겉모습의 화려함에만 머물진 않았습니다.<br />
-                  <br />신중하게 쌓은 컴포넌트 규칙과<br />Surface, Primary, Point, Light, Text<br />다섯 가지 기준으로 화면의 결을 정리했습니다.<br /><br />
-
-                  보이는 아름다움과 쓰이는 아름다움이 함께 가도록,<br />같은 감각이 반복되는 경험을 만들었습니다.<br /><br />
-                  저희의 첫 인상이,  마지막 사용 순간까지 이어지도록.
+                  강한 대비와 선명한 포인트 컬러,
+                  <br />
+                  굵은 타이포와 리듬감 있는 여백으로 먼저 시선을 끌었습니다.
+                  <br />
+                  <br />
+                  하지만 겉모습의 화려함에만 머물진 않았습니다.
+                  <br />
+                  <br />
+                  신중하게 쌓은 컴포넌트 규칙과
+                  <br />
+                  Surface, Primary, Point, Light, Text
+                  <br />
+                  다섯 가지 기준으로 화면의 결을 정리했습니다.
+                  <br />
+                  <br />
+                  보이는 아름다움과 쓰이는 아름다움이 함께 가도록,
+                  <br />
+                  같은 감각이 반복되는 경험을 만들었습니다.
+                  <br />
+                  <br />
+                  저희의 첫 인상이, 마지막 사용 순간까지 이어지도록.
                 </p>
                 <div className="mt-8">
                   <PaletteStrip dark />
@@ -528,31 +594,30 @@ export default function AboutTeamPage() {
 
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-yellow-200/10 bg-[linear-gradient(180deg,rgba(250,204,21,0.1),rgba(255,255,255,0.04))] p-8 text-slate-100 sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Zap className="mb-6 size-8 text-yellow-300" />
-                <h3 className="text-2xl font-black">흘러갑니다. <br />머무는 모든 순간이 끊기지 않도록.</h3>
+                <h3 className="text-2xl font-black">
+                  흘러갑니다. <br />
+                  머무는 모든 순간이 끊기지 않도록.
+                </h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-오랜시간 고민해 온 기획들은  <br />
-제공된 API 만으론 온전히 담아낼 수 없었습니다.  <br /> <br />
-
-우린 더 이상 프론트엔드에 머물지 않고, <br />
-우리만의 방식으로 엮어낸 설계로  <br /> <br />
-
-하나밖에 남길 수 없던 모임 댓글은 <br />
-마음껏 대화를 이어갈 수 있는 공간이 되었고, <br /> <br />
-
-누구나 들어올 수 있던 모임은  <br />
-우리만의 비밀 이야기로 가득 찰 수 있게 되었습니다.  <br /> <br />
-
-비밀모임, 랭킹, Hot 게시물, 모임 스레드 댓글, 활동 지표, <br />
-이 모든것은 저희가 끝까지 고민한 흔적입니다. <br /> <br />
-
-사용자가 부족함을 느끼지 않도록,  <br />
-부족한 API 스펙이 서비스의 모자람으로 포장되지 않도록. <br /> <br />
-
-이렇게 설계한 흐름은 머무는 이유가 되고,  <br />
-다시 돌아올 이유가 되었습니다. <br /> <br />
-
-다음 행동이 자연스럽게 이어지도록 흐름을 우선했기에, <br />
-기능이 동작하는 수준을 넘어 자연스러운 경험을 만들었습니다.
+                  오랜시간 고민해 온 기획들은 <br />
+                  제공된 API 만으론 온전히 담아낼 수 없었습니다. <br /> <br />
+                  우린 더 이상 프론트엔드에 머물지 않고, <br />
+                  우리만의 방식으로 엮어낸 설계로 <br /> <br />
+                  하나밖에 남길 수 없던 모임 댓글은 <br />
+                  마음껏 대화를 이어갈 수 있는 공간이 되었고, <br /> <br />
+                  누구나 들어올 수 있던 모임은 <br />
+                  우리만의 비밀 이야기로 가득 찰 수 있게 되었습니다. <br />{" "}
+                  <br />
+                  비밀모임, 랭킹, Hot 게시물, 모임 스레드 댓글, 활동 지표,{" "}
+                  <br />
+                  이 모든것은 저희가 끝까지 고민한 흔적입니다. <br /> <br />
+                  사용자가 부족함을 느끼지 않도록, <br />
+                  부족한 API 스펙이 서비스의 모자람으로 포장되지 않도록. <br />{" "}
+                  <br />
+                  이렇게 설계한 흐름은 머무는 이유가 되고, <br />
+                  다시 돌아올 이유가 되었습니다. <br /> <br />
+                  다음 행동이 자연스럽게 이어지도록 흐름을 우선했기에, <br />
+                  기능이 동작하는 수준을 넘어 자연스러운 경험을 만들었습니다.
                 </p>
               </article>
             </div>
