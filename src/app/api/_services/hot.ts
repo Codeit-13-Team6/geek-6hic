@@ -1,7 +1,7 @@
-import { Post } from "@/shared/types";
-import { getPosts } from "@/shared/api/server";
-import { fetchAllCursor } from "@/shared/lib/fetchAllCursor";
-import { threadKeyword } from "@/shared/lib/threadKeyword";
+import { Post } from "@/types";
+import { getPosts } from "@/api/server";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
+import { threadKeyword } from "@/lib/threadKeyword";
 
 export async function getHotPostsBFF(): Promise<Post[]> {
   const oneWeekAgo = new Date();

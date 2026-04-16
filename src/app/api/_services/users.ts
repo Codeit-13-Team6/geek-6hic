@@ -1,15 +1,15 @@
-import { serverFetch } from "@/infra/auth/fetcher.server";
-import { getVisibleCursorPage } from "@/shared/lib/visibleCursorPage";
-import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/shared/lib/myVisiblePosts";
-import { sortByCreatedAtDesc } from "@/shared/lib/sortByCreatedAt";
-import { safeOffset, safeLimit } from "@/shared/lib/safePagination";
+import { serverFetch } from "@/auth/fetcher.server";
+import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
+import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib/myVisiblePosts";
+import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
+import { safeOffset, safeLimit } from "@/lib/safePagination";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,
   MeetingResponse,
   MyMeetingsPageResponse,
   VisiblePostsPageResponse,
-} from "@/shared/types";
+} from "@/types";
 
 export async function getUserMeetingsBFF({
   userId,

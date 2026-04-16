@@ -1,4 +1,4 @@
-import { copyToClipboard } from "@/shared/lib/utils";
+import { copyToClipboard } from "@/lib/utils";
 
 export interface ShareLinkParams {
   title: string;

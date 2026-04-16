@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { ToastCommon } from "@/shared/components/ui/ToastCommon";
+import { Toast } from "@/components/ui/Toast";
 import {
   getNormalizedMeetingLink,
   hasMeetingValidationError,
@@ -19,18 +19,18 @@ import {
   buildSecretDateTime,
   generateSecretTime,
   isSecretMeeting,
-} from "@/shared/lib/meetingSecret";
+} from "@/lib/meetingSecret";
 import {
   MeetingDetailApiData,
   MeetingDetailData,
   MeetingFormErrors,
   MeetingFormValues,
-} from "@/shared/types";
-import { createMeeting, createPost, updateMeeting } from "@/shared/api/client";
+} from "@/types";
+import { createMeeting, createPost, updateMeeting } from "@/api/client";
 import { useRouter } from "next/navigation";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
-import { threadKeyword } from "@/shared/lib/threadKeyword";
+import { threadKeyword } from "@/lib/threadKeyword";
 
 export const toCreateMeetingPayload = (formValues: MeetingFormValues) => {
   const secretTime = formValues.isPrivate ? generateSecretTime() : null;
@@ -147,7 +147,7 @@ function useMeetingFormBase({
       clearImageError: onClearImageError,
       setImageError: onSetImageError,
       onUploadError: () => {
-        ToastCommon({
+        Toast({
           message: "이미지 업로드에 실패했습니다.",
           type: "error",
         });
@@ -297,7 +297,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       await updateMeeting(newMeetingId, { region: String(newPost.id) });
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.meetings.root });
-      ToastCommon({
+      Toast({
         message: "새로운 모임이 시작되었습니다!",
         type: "success",
       });
@@ -305,7 +305,7 @@ export function useCreateMeetingForm(onSuccess?: () => void) {
       router.push(`/meetings/${newMeetingId}`);
     } catch (error) {
       console.error("meeting create error", error);
-      ToastCommon({ message: "모임 생성에 실패했습니다.", type: "error" });
+      Toast({ message: "모임 생성에 실패했습니다.", type: "error" });
     } finally {
       isSubmittingRef.current = false;
       setIsSubmitting(false);

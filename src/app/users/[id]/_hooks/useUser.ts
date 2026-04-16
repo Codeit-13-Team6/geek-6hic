@@ -1,9 +1,9 @@
-import { deleteFavorites } from "@/shared/api/client";
-import { updateUserProfile } from "@/shared/api/client/user";
-import { ToastCommon } from "@/shared/components/ui/ToastCommon";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import { useAuthStore } from "@/infra/store/useAuthStore";
-import { UserProfileUpdateProps } from "@/shared/types";
+import { deleteFavorites } from "@/api/client";
+import { updateUserProfile } from "@/api/client/user";
+import { Toast } from "@/components/ui/Toast";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import { useAuthStore } from "@/store/useAuthStore";
+import { UserProfileUpdateProps } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useUpdateProfile = () => {
@@ -15,7 +15,7 @@ export const useUpdateProfile = () => {
       setUser(updated); // Gnb 즉시 반영
     },
     onError: () => {
-      ToastCommon({ message: "프로필 수정에 실패했습니다.", type: "error" });
+      Toast({ message: "프로필 수정에 실패했습니다.", type: "error" });
     },
   });
 };

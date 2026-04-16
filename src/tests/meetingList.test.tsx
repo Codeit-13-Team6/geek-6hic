@@ -1,8 +1,8 @@
 // 준비 완료된 상태(false)에서 "바닥에 닿는 사건(Act)'을 일으켜서, 함수가 "실행됨(True)"으로 변하는 그 찰나의 순간을 테스트
 import { render, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import MeetingList from "@/shared/components/features/list/MeetingList";
-import * as meetingHooks from "@/shared/hooks/queries/useMeetings";
+import MeetingList from "@/components/features/list/MeetingList";
+import * as meetingHooks from "@/hooks/queries/useMeetings";
 
 global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
@@ -11,7 +11,7 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
 }));
 
 // 1. 필요한 외부 모듈 모킹
-jest.mock("@/shared/hooks/queries/useMeetings");
+jest.mock("hooks/queries/useMeetings");
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),

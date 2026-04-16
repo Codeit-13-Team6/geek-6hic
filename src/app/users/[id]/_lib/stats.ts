@@ -6,14 +6,14 @@ import type {
   MeetingResponse,
   MyMeetingsPageResponse,
   ParticipantStats,
-} from "@/shared/types";
-import { getMyMeetings } from "@/shared/api/server/favorites";
-import { getMyPostsServer } from "@/shared/api/server/posts";
-import { getMeetingsCursorPageForStats } from "@/shared/api/server/stats";
+} from "@/types";
+import { getMyMeetings } from "@/api/server/favorites";
+import { getMyPostsServer } from "@/api/server/posts";
+import { getMeetingsCursorPageForStats } from "@/api/server/stats";
 import {
   getUserMeetingsPageServer,
   getUserPostsPageServer,
-} from "@/shared/api/server/users";
+} from "@/api/server/users";
 
 type ParticipantMeeting = Pick<Meeting, "type" | "participantCount">;
 const MEETING_SCAN_SIZE = 100;

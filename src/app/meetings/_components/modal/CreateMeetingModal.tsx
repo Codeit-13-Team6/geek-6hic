@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
-import { Button } from "@/shared/components/ui/Button";
-import ModalBase from "@/shared/components/modal/ModalBase";
+import { Button } from "@/components/ui/Button";
+import ModalBase from "@/components/modal/ModalBase";
 import { useCreateMeetingForm } from "@/app/meetings/_hooks/useMeetingForm";
 import {
   Plus,
@@ -16,11 +16,11 @@ import {
   FolderKanban,
   Briefcase,
 } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
-import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
-import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
-import { useMeetingTypes } from "@/shared/hooks/queries/useMeetings";
-import { BtnCreate } from "@/shared/components/ui/BtnCreate";
+import { cn } from "@/lib/utils";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
+import { useMeetingTypes } from "@/hooks/queries/useMeetings";
+import { BtnCreate } from "@/components/ui/BtnCreate";
 
 function getMeetingCategoryIcon(name: string) {
   switch (name) {

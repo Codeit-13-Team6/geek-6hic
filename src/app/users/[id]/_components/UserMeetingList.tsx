@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { getMeeting, getUserMeetingsPage } from "@/shared/api/client/meetings";
+import { getMeeting, getUserMeetingsPage } from "@/api/client/meetings";
 import { UserCard } from "@/app/users/[id]/_components/UserCard";
 import { PlusCircle } from "lucide-react";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import NumberPagination from "@/shared/components/ui/NumberPagination";
-import { useOffsetPaginationQuery } from "@/shared/hooks/useOffsetPaginationQuery";
-import { isSecretMeeting } from "@/shared/lib/meetingSecret";
-import { UserTabSkeleton } from "@/shared/components/skeleton/UserTabSkeleton";
-import { cn } from "@/shared/lib/utils";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+import { isSecretMeeting } from "@/lib/meetingSecret";
+import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
+import { cn } from "@/lib/utils";
 
 const MY_MEETINGS_PAGE_SIZE = 10;
 

@@ -1,4 +1,4 @@
-import { MeetingFormErrors, MeetingFormValues } from "@/shared/types";
+import { MeetingFormErrors, MeetingFormValues } from "@/types";
 
 export const getNormalizedMeetingLink = (link: string) => {
   const trimmedLink = link.trim();

@@ -5,10 +5,10 @@ import { MeetingHeaderSection } from "@/app/meetings/[id]/_components/MeetingHea
 import { MeetingLinkSection } from "@/app/meetings/[id]/_components/MeetingLinkSection";
 import { MeetingThreadSection } from "@/app/meetings/[id]/_components/MeetingThreadSection";
 import { RecommendedMeetingsSection } from "@/app/meetings/[id]/_components/RecommendedMeetingsSection";
-import { useMeetingDetailQueries } from "@/shared/hooks";
-import { useAuthStore } from "@/infra/store/useAuthStore";
-import type { MeetingDetailContentProps } from "@/shared/types";
-import { cn } from "@/shared/lib/utils";
+import { useMeetingDetailQueries } from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
+import type { MeetingDetailContentProps } from "@/types";
+import { cn } from "@/lib/utils";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export function MeetingDetailErrorView() {

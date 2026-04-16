@@ -1,5 +1,5 @@
-import { getPosts } from "@/shared/api/server";
-import type { GetPostsParams, GetPostsResponse, Post } from "@/shared/types";
+import { getPosts } from "@/api/server";
+import type { GetPostsParams, GetPostsResponse, Post } from "@/types";
 
 const MAX_SIZE = 50;
 const DEFAULT_SIZE = 10;

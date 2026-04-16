@@ -1,6 +1,6 @@
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import axiosInstance from "@/infra/auth/fetcher.client";
-import { RankedItem } from "@/shared/types";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import axiosInstance from "@/auth/fetcher.client";
+import { RankedItem } from "@/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const useRanking = () => {

@@ -1,5 +1,5 @@
-import { getComments, getThreadPost } from "@/shared/api/client";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import { getComments, getThreadPost } from "@/api/client";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import { useQuery } from "@tanstack/react-query";
 
 export const useMeetingThread = (meetingId: number) => {

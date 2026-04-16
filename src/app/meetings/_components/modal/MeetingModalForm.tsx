@@ -1,18 +1,18 @@
 "use client";
 
-import { ImageUploadInput } from "@/shared/components/img/ImageUploadInput";
+import { ImageUploadInput } from "@/components/img/ImageUploadInput";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { InputCommon } from "@/shared/components/ui/InputCommon";
-import { TextareaCommon } from "@/shared/components/ui/TextareaCommon";
-import { CheckboxCommon } from "@/shared/components/ui/CheckboxCommon";
-import { MeetingModalFormProps } from "@/shared/types";
-import { useMeetingTypes } from "@/shared/hooks/queries/useMeetings";
+} from "@/components/ui/Select";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { MeetingModalFormProps } from "@/types";
+import { useMeetingTypes } from "@/hooks/queries/useMeetings";
 
 export function MeetingModalForm({
   values,
@@ -70,7 +70,7 @@ export function MeetingModalForm({
         </div>
       ) : null}
 
-      <InputCommon
+      <Input
         label="모임 이름"
         isRequired
         value={values.name}
@@ -85,7 +85,7 @@ export function MeetingModalForm({
         hintText={errors.name}
       />
 
-      <TextareaCommon
+      <Textarea
         label="모임 설명"
         isRequired
         value={values.description}
@@ -98,7 +98,7 @@ export function MeetingModalForm({
         maxLength={999}
       />
 
-      <InputCommon
+      <Input
         label="모임 링크"
         isRequired
         value={values.link}
@@ -113,7 +113,7 @@ export function MeetingModalForm({
         hintText={errors.link}
       />
 
-      <InputCommon
+      <Input
         id="capacity"
         type="text"
         inputMode="numeric"
@@ -131,7 +131,7 @@ export function MeetingModalForm({
         hintText={errors.capacity}
       />
 
-      <CheckboxCommon
+      <Checkbox
         label="비밀 모임으로 생성"
         checked={values.isPrivate}
         onChange={(event) => {

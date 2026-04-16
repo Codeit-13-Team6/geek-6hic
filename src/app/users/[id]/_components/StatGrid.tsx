@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 import { Ghost, SearchX } from "lucide-react";
 import { ParticipantBarChart } from "./ParticipantBarChart";
 

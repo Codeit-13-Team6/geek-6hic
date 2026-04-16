@@ -1,15 +1,15 @@
-import { serverFetch } from "@/infra/auth/fetcher.server";
-import { getVisibleCursorPage } from "@/shared/lib/visibleCursorPage";
-import { sortByCreatedAtDesc } from "@/shared/lib/sortByCreatedAt";
-import { fetchAllCursor } from "@/shared/lib/fetchAllCursor";
-import { safeOffset, safeLimit } from "@/shared/lib/safePagination";
+import { serverFetch } from "@/auth/fetcher.server";
+import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
+import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
+import { safeOffset, safeLimit } from "@/lib/safePagination";
 import type {
   GetMeetingsResponse,
   JoinedMeeting,
   JoinedMeetingsResponse,
   MeetingResponse,
   MyMeetingsPageResponse,
-} from "@/shared/types";
+} from "@/types";
 
 export async function getMyMeetingsBFF({
   offset: rawOffset,

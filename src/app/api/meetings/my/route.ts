@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getMyMeetingsBFF } from "@/app/api/_services/meetings";
-import type { MyMeetingsPageResponse } from "@/shared/types";
+import type { MyMeetingsPageResponse } from "@/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

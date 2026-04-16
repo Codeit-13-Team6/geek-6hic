@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import LoginForm from "@/app/(auth)/login/LoginForm";
-import { loginUser } from "@/shared/api/client";
+import LoginForm from "@/components/features/form/LoginForm";
+import { loginUser } from "@/api/client";
 
 const mockSetUser = jest.fn(); // 로그인 성공 시 store에 유저정보 저장되는지 확인
 const mockCloseLoginModal = jest.fn();
@@ -37,19 +37,19 @@ jest.mock("next/image", () => {
 });
 
 // api 모킹
-jest.mock("@/shared/api/client", () => ({
+jest.mock("api/client", () => ({
   loginUser: jest.fn(),
   bindAuthTokens: jest.fn(),
   loginWithGoogleToken: jest.fn(),
 }));
 
 // 구글토큰 모킹 /// 카카오는 기존에 토큰 요청없어서 안해도 됌
-jest.mock("@/infra/auth/googleAuth", () => ({
+jest.mock("auth/googleAuth", () => ({
   requestGoogleAccessToken: jest.fn(),
 }));
 
 // store의 setUser 확인용 모킹
-jest.mock("@/infra/store/useAuthStore", () => ({
+jest.mock("store/useAuthStore", () => ({
   useAuthStore: (selector: (state: { setUser: typeof mockSetUser }) => unknown) =>
     selector({
       setUser: mockSetUser,
@@ -57,7 +57,7 @@ jest.mock("@/infra/store/useAuthStore", () => ({
 }));
 
 // store의 modal 확인용 모킹
-jest.mock("@/infra/store/useLoginModalStore", () => ({
+jest.mock("store/useLoginModalStore", () => ({
   useLoginModalStore: (
     selector: (state: { closeLoginModal: typeof mockCloseLoginModal }) => unknown,
   ) =>
@@ -67,8 +67,8 @@ jest.mock("@/infra/store/useLoginModalStore", () => ({
 }));
 
 // 토스트 모킹(검증은 안하고 모킹만) // 라이브러리 테스트는 안하는데 실제 사용중이면 모킹은 필요하다고 함
-jest.mock("@/shared/components/ui/ToastCommon", () => ({
-  ToastCommon: jest.fn(),
+jest.mock("components/ui/Toast", () => ({
+  Toast: jest.fn(),
 }));
 
 describe("LoginForm", () => {

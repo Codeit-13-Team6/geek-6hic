@@ -1,18 +1,18 @@
 import { Metadata } from "next";
-import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
-import { getMeetingList } from "@/shared/api/server";
-import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/shared/types";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import { getMeetingList } from "@/api/server";
+import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-import { getNextPageParam } from "@/shared/lib/pagination";
+import { getNextPageParam } from "@/lib/pagination";
 import { Suspense } from "react";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import MeetingList from "@/shared/components/features/list/MeetingList";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import MeetingList from "@/components/features/list/MeetingList";
 import { CreateMeetingModal } from "./_components/modal/CreateMeetingModal";
-import { MeetingsControlSkeleton } from "@/shared/components/skeleton/MeetingsControlSkeleton";
+import { MeetingsControlSkeleton } from "@/components/skeleton/MeetingsControlSkeleton";
 import { MeetingsHeroSection } from "./_components/MeetingsHeroSection";
-import SearchFilterBar from "@/shared/components/features/composite/SearchFilterBar";
+import SearchFilterBar from "@/components/ui/SearchFilterBar";
 import MeetingTypeTabs from "./_components/MettingTypeTabs";
-import MeetingsSkeleton from "@/shared/components/skeleton/MeetingsSkeleton";
+import MeetingsSkeleton from "@/components/skeleton/MeetingsSkeleton";
 
 export const metadata: Metadata = {
   title: "모임 찾기",

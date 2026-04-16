@@ -1,12 +1,12 @@
-import { serverFetch } from "@/infra/auth/fetcher.server";
-import { fetchAllCursor } from "@/shared/lib/fetchAllCursor";
-import { isSecretMeeting } from "@/shared/lib/meetingSecret";
+import { serverFetch } from "@/auth/fetcher.server";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
+import { isSecretMeeting } from "@/lib/meetingSecret";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,
   MeetingResponse,
   RecommendedMeetingItem,
-} from "@/shared/types";
+} from "@/types";
 
 const THREAD_KEYWORD = "isThread_";
 const MEETING_PAGE_SIZE = 50;

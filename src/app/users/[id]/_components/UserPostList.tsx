@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { getMyPosts, getUserPostsPage } from "@/shared/api/client/posts";
-import PostCard from "@/shared/components/features/card/PostCard";
-import { useAuthStore } from "@/infra/store/useAuthStore";
-import { Post } from "@/shared/types";
+import { getMyPosts, getUserPostsPage } from "@/api/client/posts";
+import PostCard from "@/components/features/card/PostCard";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Post } from "@/types";
 import { Loader2, FileText } from "lucide-react";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import NumberPagination from "@/shared/components/ui/NumberPagination";
-import { useOffsetPaginationQuery } from "@/shared/hooks/useOffsetPaginationQuery";
-import { UserTabSkeleton } from "@/shared/components/skeleton/UserTabSkeleton";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
+import { UserTabSkeleton } from "@/components/skeleton/UserTabSkeleton";
 
 const MY_POSTS_PAGE_SIZE = 10;
 

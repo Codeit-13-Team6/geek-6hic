@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getUserMeetingsBFF } from "@/app/api/_services/users";
-import type { MyMeetingsPageResponse } from "@/shared/types";
+import type { MyMeetingsPageResponse } from "@/types";
 
 interface RouteParams {
   params: Promise<{ id: string }>;

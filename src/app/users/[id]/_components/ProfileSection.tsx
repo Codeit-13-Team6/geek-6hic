@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { uploadProfileImage } from "@/shared/api/client/user";
-import { User, UserProfileUpdateProps } from "@/shared/types";
-import { useAuthStore } from "@/infra/store/useAuthStore";
-import ModalBase from "@/shared/components/modal/ModalBase";
-import { InputCommon } from "@/shared/components/ui/InputCommon";
-import { Button } from "@/shared/components/ui/Button";
-import { ImageUploadInput } from "@/shared/components/img/ImageUploadInput";
+import { uploadProfileImage } from "@/api/client/user";
+import { User, UserProfileUpdateProps } from "@/types";
+import { useAuthStore } from "@/store/useAuthStore";
+import ModalBase from "@/components/modal/ModalBase";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { ImageUploadInput } from "@/components/img/ImageUploadInput";
 import { Settings2 } from "lucide-react";
-import FallbackImage from "@/shared/components/img/FallbackImage";
-import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
+import FallbackImage from "@/components/img/FallbackImage";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useUpdateProfile } from "@/app/users/[id]/_hooks/useUser";
 import { useRouter } from "next/navigation";
 
@@ -185,7 +185,7 @@ export default function ProfileSection({
                 control={profileForm.control}
                 rules={{ required: "이름을 입력해주세요." }}
                 render={({ field, fieldState }) => (
-                  <InputCommon
+                  <Input
                     {...field}
                     label="닉네임"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
@@ -201,7 +201,7 @@ export default function ProfileSection({
                 control={profileForm.control}
                 rules={{ required: "이메일을 입력해주세요." }}
                 render={({ field, fieldState }) => (
-                  <InputCommon
+                  <Input
                     {...field}
                     label="이메일"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"
@@ -217,7 +217,7 @@ export default function ProfileSection({
                 name="companyName"
                 control={profileForm.control}
                 render={({ field, fieldState }) => (
-                  <InputCommon
+                  <Input
                     {...field}
                     label="한줄소개"
                     className="focus:!border-main-purple !rounded-xl !border-slate-100 !bg-slate-50 focus:!bg-white"

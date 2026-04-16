@@ -7,38 +7,38 @@ import Lottie from "lottie-react";
 import checkAnim from "@/assets/lottie/check-anim.json";
 import meatballsLgIcon from "@/assets/icon/meatballs/meatballs-lg.svg";
 import { EditMeetingModal } from "@/app/meetings/_components/modal/EditMeetingModal";
-import { Button } from "@/shared/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/shared/components/ui/DropdownCommon";
-import { DeleteModal } from "@/shared/components/modal/DeleteModal";
-import { HeartIcon } from "@/shared/components/icon/HeartIcon";
-import FallbackImage from "@/shared/components/img/FallbackImage";
-import { useLoginModalStore } from "@/infra/store/useLoginModalStore";
+} from "@/components/ui/Dropdown";
+import { DeleteModal } from "@/components/modal/DeleteModal";
+import { HeartIcon } from "@/components/icon/HeartIcon";
+import FallbackImage from "@/components/img/FallbackImage";
+import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ChessQueenIcon, Crown, Lock, Share2Icon, Users2 } from "lucide-react";
 import {
   useMeetingJoinMutations,
   useMeetingHostMutations,
   useMeetingAttendMutation,
   useMeetingDetailFavoriteMutation,
-} from "@/shared/hooks";
-import { useAuthStore } from "@/infra/store/useAuthStore";
-import type { MeetingHeaderSectionProps } from "@/shared/types";
-import { ToastCommon } from "@/shared/components/ui/ToastCommon";
+} from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
+import type { MeetingHeaderSectionProps } from "@/types";
+import { Toast } from "@/components/ui/Toast";
 import {
   extractSecretCode,
   isSecretMeeting,
   verifySecretCode,
-} from "@/shared/lib/meetingSecret";
-import ModalBase from "@/shared/components/modal/ModalBase";
-import { InputCommon } from "@/shared/components/ui/InputCommon";
+} from "@/lib/meetingSecret";
+import ModalBase from "@/components/modal/ModalBase";
+import { Input } from "@/components/ui/Input";
 import { shareLink } from "@/app/meetings/[id]/_lib/share";
-import { copyToClipboard } from "@/shared/lib/utils";
+import { copyToClipboard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 
 const hasUsableProfileImage = (value: string | null): value is string =>
   Boolean(value) &&
@@ -91,11 +91,11 @@ export function MeetingHeaderSection({
     });
 
     if (shareResult.result === "failed") {
-      return ToastCommon({ message: "링크 복사에 실패했어요.", type: "error" });
+      return Toast({ message: "링크 복사에 실패했어요.", type: "error" });
     }
 
     if (shareResult.result === "copied-by-app") {
-      ToastCommon({
+      Toast({
         message: isSecret
           ? "링크 복사 성공! 시크릿 코드와 함께 전달해 보세요."
           : "모임 링크가 복사되었어요.",
@@ -391,7 +391,7 @@ export function MeetingHeaderSection({
                   const isCopied = await copyToClipboard(
                     extractSecretCode(detail.dateTime),
                   );
-                  ToastCommon({
+                  Toast({
                     message: isCopied
                       ? "비밀 코드가 복사되었어요."
                       : "복사에 실패했습니다.",
@@ -507,7 +507,7 @@ export function MeetingHeaderSection({
           <p className="text-sm text-slate-500">
             호스트에게 비밀 코드를 받아 입력해 주세요.
           </p>
-          <InputCommon
+          <Input
             label="비밀 코드"
             placeholder="비밀 코드를 입력해 주세요"
             value={secretInput}

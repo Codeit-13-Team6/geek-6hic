@@ -1,14 +1,14 @@
 import { Metadata } from "next";
-import RankingList from "@/app/ranking/_component/RankingList";
-import { RankingHeroSection } from "./_component/RankingHeroSection";
-import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
-import { RankedItem } from "@/shared/types";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
+import RankingList from "@/app/ranking/_components/RankingList";
+import { RankingHeroSection } from "./_components/RankingHeroSection";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
+import { RankedItem } from "@/types";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import { Suspense } from "react";
 import { getRankingBFF } from "@/app/api/_services/ranking";
 import { getJoinedMeetingIdsBFF } from "@/app/api/_services/meetings";
-import RankingListSkeleton from "@/shared/components/skeleton/RankingListSkeleton";
-import MyRankingSection from "@/app/ranking/_component/MyRankingSection";
+import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
+import MyRankingSection from "@/app/ranking/_components/MyRankingSection";
 
 export const metadata: Metadata = {
   title: "랭킹 보드",

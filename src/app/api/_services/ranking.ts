@@ -1,6 +1,6 @@
-import { serverFetch } from "@/infra/auth/fetcher.server";
-import { CursorResponse } from "@/shared/types";
-import { fetchAllCursor } from "@/shared/lib/fetchAllCursor";
+import { serverFetch } from "@/auth/fetcher.server";
+import { CursorResponse } from "@/types";
+import { fetchAllCursor } from "@/lib/fetchAllCursor";
 
 interface MeetingRankData {
   commentLeng: number;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
-import type { OAuthLoginResult } from "@/shared/types";
+import type { OAuthLoginResult } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;

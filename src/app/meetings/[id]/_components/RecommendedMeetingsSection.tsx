@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import type { RecommendedMeetingsSectionProps } from "@/shared/types";
+import type { RecommendedMeetingsSectionProps } from "@/types";
 import { Sparkles, ArrowUpRight, ArrowRight } from "lucide-react";
-import FallbackImage from "@/shared/components/img/FallbackImage";
-import { useMeetingRecommendationsQuery } from "@/shared/hooks";
+import FallbackImage from "@/components/img/FallbackImage";
+import { useMeetingRecommendationsQuery } from "@/hooks";
 
-import { useDragScroll } from "@/shared/hooks/useDragScroll";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 export function RecommendedMeetingsSection({
   meetingId,

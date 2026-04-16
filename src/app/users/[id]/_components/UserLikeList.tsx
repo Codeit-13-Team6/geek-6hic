@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { getFavorites } from "@/shared/api/client/meetings";
+import { getFavorites } from "@/api/client/meetings";
 import { UserCard } from "@/app/users/[id]/_components/UserCard";
 import { HeartOff } from "lucide-react";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import NumberPagination from "@/shared/components/ui/NumberPagination";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import NumberPagination from "@/components/ui/NumberPagination";
 import { useEffect } from "react";
-import { useOffsetPaginationQuery } from "@/shared/hooks/useOffsetPaginationQuery";
+import { useOffsetPaginationQuery } from "@/hooks/useOffsetPaginationQuery";
 import { useToggleFavorite } from "@/app/users/[id]/_hooks/useUser";
-import { isSecretMeeting } from "@/shared/lib/meetingSecret";
-import { cn } from "@/shared/lib/utils";
+import { isSecretMeeting } from "@/lib/meetingSecret";
+import { cn } from "@/lib/utils";
 
 const FAVORITES_PAGE_SIZE = 10;
 

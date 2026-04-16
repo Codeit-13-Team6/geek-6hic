@@ -1,20 +1,20 @@
 import { Metadata } from "next";
-import HotPostList from "@/app/lounge/_component/HotPostList";
-import PrefetchBoundary from "@/shared/components/boundary/PrefetchBoundary";
+import HotPostList from "@/app/lounge/_components/HotPostList";
+import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { Suspense } from "react";
-import LoungeSkeleton from "@/shared/components/skeleton/LoungeSkeleton";
-import HotPostListSkeleton from "@/shared/components/skeleton/HotPostListSkeleton";
+import LoungeSkeleton from "@/components/skeleton/LoungeSkeleton";
+import HotPostListSkeleton from "@/components/skeleton/HotPostListSkeleton";
 import { getLoungePostsPageBFF } from "@/app/api/_services/lounge";
 import { getHotPostsBFF } from "@/app/api/_services/hot";
-import { getNextPageParam } from "@/shared/lib/pagination";
-import { QUERY_KEYS } from "@/shared/constants/queryKey";
-import LoungeSearchSection from "./_component/LoungeSearchSection";
-import PostList from "@/shared/components/features/list/PostList";
-import { GetPostsResponse, LoungeSortBy } from "@/shared/types/post";
-import { SortOrder } from "@/shared/types";
+import { getNextPageParam } from "@/lib/pagination";
+import { QUERY_KEYS } from "@/constants/queryKey";
+import LoungeSearchSection from "./_components/LoungeSearchSection";
+import PostList from "@/components/features/list/PostList";
+import { GetPostsResponse, LoungeSortBy } from "@/types/post";
+import { SortOrder } from "@/types";
 import { InfiniteData } from "@tanstack/react-query";
-import { LoungeHeroSection } from "./_component/LoungeHeroSection";
-import { BtnCreate } from "@/shared/components/ui/BtnCreate";
+import { LoungeHeroSection } from "./_components/LoungeHeroSection";
+import { BtnCreate } from "@/components/ui/BtnCreate";
 
 export const metadata: Metadata = {
   title: "스프린트 라운지",

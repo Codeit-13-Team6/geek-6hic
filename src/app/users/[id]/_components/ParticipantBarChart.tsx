@@ -15,7 +15,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/shared/components/ui/chart";
+} from "@/components/ui/Chart";
 
 // 도넛 차트와 완전히 동일한 브랜드 컬러 유지
 const chartConfig = {

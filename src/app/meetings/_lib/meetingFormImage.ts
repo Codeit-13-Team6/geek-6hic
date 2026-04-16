@@ -1,7 +1,7 @@
 "use client";
 
-import { uploadMeetingImage } from "@/shared/api/client/meetingDetail";
-import { ChangeMeetingImageParams, RemoveMeetingImageParams } from "@/shared/types";
+import { uploadMeetingImage } from "@/api/client/meetingDetail";
+import { ChangeMeetingImageParams, RemoveMeetingImageParams } from "@/types";
 
 // 미리보기로 만든 blob URL만 직접 해제한다.
 export const revokeMeetingPreviewImageUrl = (previewImageUrl: string) => {

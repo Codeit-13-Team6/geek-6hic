@@ -1,7 +1,7 @@
 import { useState, DragEvent } from "react";
-import { getOgData } from "@/shared/api/client/og";
-import { ToastCommon } from "@/shared/components/ui/ToastCommon";
-import { LinkItem } from "@/shared/types";
+import { getOgData } from "@/api/client/og";
+import { Toast } from "@/components/ui/Toast";
+import { LinkItem } from "@/types";
 import axios from "axios";
 
 export const useLoungeLink = () => {
@@ -15,11 +15,11 @@ export const useLoungeLink = () => {
     const trimmedUrl = linkUrl.trim();
 
     if (!trimmedUrl) {
-      return ToastCommon({ message: "링크를 입력해주세요.", type: "info" });
+      return Toast({ message: "링크를 입력해주세요.", type: "info" });
     }
 
     if (!/^(http:\/\/|https:\/\/)/i.test(trimmedUrl)) {
-      ToastCommon({
+      Toast({
         message: "올바른 웹 주소(http/https) 형식이 아닙니다.",
         type: "error",
       });
@@ -65,7 +65,7 @@ export const useLoungeLink = () => {
       } else if (status === 404) {
         errorMessage = "존재하지 않거나 삭제된 페이지입니다.";
       }
-      ToastCommon({ message: errorMessage, type: "error" });
+      Toast({ message: errorMessage, type: "error" });
       return false;
     } finally {
       setIsLoading(false);
@@ -87,7 +87,7 @@ export const useLoungeLink = () => {
   const selectThumbnail = (imageUrl: string) => {
     if (!imageUrl) return;
     setThumbnailImage(imageUrl);
-    ToastCommon({ message: "대표 썸네일로 설정되었습니다.", type: "success" });
+    Toast({ message: "대표 썸네일로 설정되었습니다.", type: "success" });
   };
 
   // 4. 드래그 앤 드롭 핸들러

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { MeetingModalForm } from "@/app/meetings/_components/modal/MeetingModalForm";
-import { Button } from "@/shared/components/ui/Button";
-import ModalBase from "@/shared/components/modal/ModalBase";
+import { Button } from "@/components/ui/Button";
+import ModalBase from "@/components/modal/ModalBase";
 import { useEditMeetingForm } from "@/app/meetings/_hooks/useMeetingForm";
-import { EditMeetingModalProps } from "@/shared/types";
+import { EditMeetingModalProps } from "@/types";
 import { AlertCircle } from "lucide-react";
-import { ConfirmModal } from "@/shared/components/modal/ConfirmModal";
+import { ConfirmModal } from "@/components/modal/ConfirmModal";
 
 export function EditMeetingModal({
   isOpen,
