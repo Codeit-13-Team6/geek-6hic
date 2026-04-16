@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/Dropdown";
 import { DeleteModal } from "@/components/modal/DeleteModal";
 import { HeartIcon } from "@/components/ui/HeartIcon";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import {
   ChessQueenIcon,

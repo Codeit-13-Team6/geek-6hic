@@ -1,4 +1,4 @@
-import { serverFetch } from "@/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 import { getVisibleCursorPage } from "@/lib/visibleCursorPage";
 import { sortByCreatedAtDesc } from "@/lib/sortByCreatedAt";
 import { fetchAllCursor } from "@/lib/fetchAllCursor";

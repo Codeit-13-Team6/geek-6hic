@@ -1,4 +1,4 @@
-import { serverFetch } from "@/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 import type { GetMeetingsResponse } from "@/types";
 
 export async function getMeetingsCursorPageForStats(

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAuthSuccessResponse } from "@/auth/authResponse";
+import { createAuthSuccessResponse } from "@/lib/auth/authResponse";
 
 // 토큰을 받아서 httpOnly 쿠키에 바인딩하는 엔드포인트
 // 소셜 로그인 콜백에서 사용

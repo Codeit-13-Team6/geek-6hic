@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { threadKeyword } from "@/lib/threadKeyword";
 import { NotificationItem, NotificationCardProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 const NOTIFICATION_TITLE: Record<string, string> = {
   MEETING_CONFIRMED: "모임 확정",

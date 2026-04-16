@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "@/auth/fetcher.client";
+import axiosInstance from "@/lib/auth/fetcher.client";
 import { User, UserProfileUpdateProps, UploadImageResponse } from "@/types";
 
 export async function getUser(): Promise<User> {

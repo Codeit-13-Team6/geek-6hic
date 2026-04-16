@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { clearAuthCookies, clearUserDisplayCookie } from "@/auth/cookies";
+import { clearAuthCookies, clearUserDisplayCookie } from "@/lib/auth/cookies";
 
 export function POST() {
   const response = NextResponse.json({ ok: true });

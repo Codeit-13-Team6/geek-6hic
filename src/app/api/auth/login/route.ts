@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import type { LoginFormValues, OAuthLoginResult } from "@/types";
-import { createAuthSuccessResponse } from "@/auth/authResponse";
+import { createAuthSuccessResponse } from "@/lib/auth/authResponse";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 

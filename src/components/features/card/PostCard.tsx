@@ -3,7 +3,7 @@
 import { ThumbsUp, MessageSquare } from "lucide-react";
 import { getPlainText } from "@/lib/contentLinkUtils";
 import { PostCardProps } from "@/types";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 export default function PostCard({
   title,

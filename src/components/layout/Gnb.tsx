@@ -9,9 +9,9 @@ import { logoutUser } from "@/api/client/auth";
 import { getNotifications } from "@/api/client/notifications";
 import { Sheet, SheetTrigger } from "@/components/ui/Sheet";
 import { useAuthStore } from "@/store/useAuthStore";
-import Notification from "@/components/layout/notification/Notification";
+import Notification from "@/components/layout/Notification";
 import SideBar from "./SideBar";
-import FallbackImage from "../img/FallbackImage";
+import FallbackImage from "../ui/FallbackImage";
 
 const BellIcon = ({ hasUnread }: { hasUnread: boolean }) => (
   <div className="bell-hover relative flex items-center justify-center p-1">

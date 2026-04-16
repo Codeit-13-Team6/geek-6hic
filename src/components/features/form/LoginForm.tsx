@@ -11,7 +11,7 @@ import kakaoIcon from "@/assets/icon/kakao/kakao-logo.svg";
 import googleIcon from "@/assets/icon/google/google-logo.svg";
 import type { LoginFormValues } from "@/types";
 import { bindAuthTokens, loginUser, loginWithGoogleToken } from "@/api/client";
-import { requestGoogleAccessToken } from "@/auth/googleAuth";
+import { requestGoogleAccessToken } from "@/lib/auth/googleAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { Toast } from "@/components/ui/Toast";

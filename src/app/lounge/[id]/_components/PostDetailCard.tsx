@@ -24,7 +24,7 @@ import { PostDetailCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/ui/HeartIcon";
 import { CodeBlock } from "./CodeBlock";
-import FallbackImage from "@/components/img/FallbackImage";
+import FallbackImage from "@/components/ui/FallbackImage";
 
 export function PostDetailCard({
   title = "제목이 없습니다.",
