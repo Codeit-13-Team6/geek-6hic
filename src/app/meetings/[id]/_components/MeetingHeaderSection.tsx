@@ -39,11 +39,11 @@ import {
   extractSecretCode,
   isSecretMeeting,
   verifySecretCode,
-} from "@/lib/meetingSecret";
+} from "@/lib";
 import ModalBase from "@/components/modal/ModalBase";
 import { Input } from "@/components/ui/Input";
 import { shareLink } from "@/app/meetings/[id]/_lib/share";
-import { copyToClipboard } from "@/lib/utils";
+import { copyToClipboard } from "@/lib";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
 

@@ -16,7 +16,7 @@ import {
   updatePost,
 } from "@/api/client/posts";
 import { getOgData } from "@/api/client/og";
-import { parsePostData } from "@/lib/contentLinkUtils";
+import { parsePostData } from "@/lib";
 import { Toast } from "@/components/ui/Toast";
 import { Post, PostPayload } from "@/types";
 import { useOptimisticMutation } from "@/hooks/useOptimisticUpdate";

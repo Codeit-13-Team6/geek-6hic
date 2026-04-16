@@ -1,6 +1,6 @@
 import { serverFetch } from "@/lib/auth/fetcher.server";
-import { fetchAllCursor } from "@/lib/fetchAllCursor";
-import { isSecretMeeting } from "@/lib/meetingSecret";
+import { fetchAllCursor } from "@/lib";
+import { isSecretMeeting } from "@/lib";
 import type {
   GetMeetingsResponse,
   GetPostsResponse,

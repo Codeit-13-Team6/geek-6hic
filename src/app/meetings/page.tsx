@@ -3,7 +3,7 @@ import PrefetchBoundary from "@/components/boundary/PrefetchBoundary";
 import { getMeetingList } from "@/api/server";
 import type { JoinedMeetingsResponse, MeetingSortBy, SortOrder } from "@/types";
 import type { InfiniteData } from "@tanstack/react-query";
-import { getNextPageParam } from "@/lib/pagination";
+import { getNextPageParam } from "@/lib";
 import { Suspense } from "react";
 import { QUERY_KEYS } from "@/constants/queryKey";
 import MeetingList from "@/components/features/list/MeetingList";

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Users, Calendar, LucideLock, Lock } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { UserCardProps } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import FallbackImage from "@/components/ui/FallbackImage";
 import { HeartIcon } from "@/components/ui/HeartIcon";
 

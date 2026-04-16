@@ -16,7 +16,7 @@ import {
   FolderKanban,
   Briefcase,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { useLoginModalStore } from "@/store/useLoginModalStore";
 import { ConfirmModal } from "@/components/modal/ConfirmModal";
 import { useMeetingTypes } from "@/app/meetings/_hooks/useMeetingTypes";

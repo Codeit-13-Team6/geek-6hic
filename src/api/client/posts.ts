@@ -1,12 +1,12 @@
 import axiosInstance from "@/lib/auth/fetcher.client";
-import { filterThreadPosts } from "@/lib/postUtils";
+import { filterThreadPosts } from "@/lib";
 import {
   GetPostsParams,
   GetPostsResponse,
   MyPostsPageResponse,
   Post,
 } from "@/types";
-import { threadKeyword } from "@/lib/threadKeyword";
+import { isThread } from "@/lib";
 
 export async function getHotPosts(): Promise<Post[]> {
   const { data } = await axiosInstance.get<Post[]>("/hot");
@@ -109,7 +109,7 @@ export async function getLoungePosts(params: GetPostsParams): Promise<GetPostsRe
 
 export async function getThreadPost(meetingId: number): Promise<Post> {
   const { data } = await axiosInstance.get("/posts", {
-    params: { keyword: threadKeyword.build(meetingId) },
+    params: { keyword: isThread.build(meetingId) },
   });
   return data?.data?.[0] || null;
 }

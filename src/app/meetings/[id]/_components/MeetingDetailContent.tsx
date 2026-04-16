@@ -8,7 +8,7 @@ import { RecommendedMeetingsSection } from "@/app/meetings/[id]/_components/Reco
 import { useMeetingDetailQueries } from "@/app/meetings/[id]/_hooks/useMeetingDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { MeetingDetailContentProps } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export function MeetingDetailErrorView() {

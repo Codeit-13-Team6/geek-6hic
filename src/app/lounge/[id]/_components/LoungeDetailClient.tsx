@@ -3,7 +3,7 @@
 import { PostDetailCard } from "@/app/lounge/[id]/_components/PostDetailCard";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { parsePostData } from "@/lib/contentLinkUtils";
+import { parsePostData } from "@/lib";
 import {
   useDeletePost,
   useGetPostDetail,
