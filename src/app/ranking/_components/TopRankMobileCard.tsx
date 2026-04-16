@@ -3,14 +3,17 @@
 import { RankedItem } from "@/types";
 import { cn } from "@/lib";
 import FallbackImage from "@/components/ui/FallbackImage";
+import { Lock } from "lucide-react";
 
 export default function TopRankMobileCard({
   rank,
   item,
+  isSecret = false,
   onDetailClick,
 }: {
   rank: number;
   item: RankedItem;
+  isSecret?: boolean;
   onDetailClick: () => void;
 }) {
   const isFirst = rank === 1;
@@ -35,7 +38,18 @@ export default function TopRankMobileCard({
         fill
         className="object-cover"
       />
-
+      {isSecret && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+          <div className="absolute top-4 right-3 flex flex-col items-center gap-2">
+            <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+              <Lock className="size-4 text-slate-300" />
+            </div>
+            <span className="text-[10px] font-bold tracking-[0.2em] text-slate-300">
+              SECRET
+            </span>
+          </div>
+        </div>
+      )}
       <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-800/60 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
 

@@ -7,12 +7,14 @@ export interface RankedItem {
   rankScore: number;
   meetName: string;
   meetType: string;
+  dateTime: string;
   image?: string;
 }
 
 export interface TopRankCardProps {
   rank: number;
   item: RankedItem;
+  isSecret?: boolean;
   onDetailClick?: () => void;
 }
 
@@ -20,6 +22,7 @@ export interface RankCardProps {
   title?: string;
   point?: number;
   rank?: number;
+  isSecret?: boolean;
   meetType?: string;
   onDetailClick?: () => void;
   image?: string;

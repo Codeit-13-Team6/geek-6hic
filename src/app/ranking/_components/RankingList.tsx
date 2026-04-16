@@ -5,6 +5,7 @@ import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
 import { useRanking } from "@/app/ranking/_hooks/useRanking";
+import { isSecretMeeting } from "@/lib";
 
 export default function RankingList() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function RankingList() {
         <ul className="hidden items-end gap-6 md:flex lg:gap-10">
           <li className="flex-1">
             <TopRankCard
+              isSecret={isSecretMeeting(top3List[1]?.dateTime)}
               rank={2}
               item={top3List[1]}
               onDetailClick={() => router.push(`/meetings/${top3List[1]?.id}`)}
@@ -28,6 +30,7 @@ export default function RankingList() {
           </li>
           <li className="flex-1 -translate-y-8">
             <TopRankCard
+              isSecret={isSecretMeeting(top3List[0]?.dateTime)}
               rank={1}
               item={top3List[0]}
               onDetailClick={() => router.push(`/meetings/${top3List[0]?.id}`)}
@@ -35,6 +38,7 @@ export default function RankingList() {
           </li>
           <li className="flex-1">
             <TopRankCard
+              isSecret={isSecretMeeting(top3List[2]?.dateTime)}
               rank={3}
               item={top3List[2]}
               onDetailClick={() => router.push(`/meetings/${top3List[2]?.id}`)}
@@ -46,6 +50,7 @@ export default function RankingList() {
         <ul className="flex flex-col gap-3 md:hidden">
           {top3List.map((item, idx) => (
             <TopRankMobileCard
+              isSecret={isSecretMeeting(item.dateTime)}
               key={item.id || idx}
               rank={idx + 1}
               item={item}
@@ -60,6 +65,7 @@ export default function RankingList() {
         {top10List.map((item, index) => (
           <RankCard
             key={item.id}
+            isSecret={isSecretMeeting(item.dateTime)}
             title={item.meetName}
             point={item.rankScore}
             rank={index + 4}

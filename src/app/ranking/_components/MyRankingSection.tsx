@@ -75,7 +75,7 @@ export default function MyRankingSection() {
           >
             <div
               {...dragProps}
-              className="custom-scrollbar flex w-full gap-4 overflow-x-auto pt-6 pb-4 sm:pb-6"
+              className="custom-scrollbar flex w-full gap-4 overflow-x-auto px-2 pt-6 pb-4 sm:pb-6"
             >
               {myMeetings.map((meet) => (
                 <div

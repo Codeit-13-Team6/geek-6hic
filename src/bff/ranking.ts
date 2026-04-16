@@ -14,6 +14,7 @@ interface MeetingRankData {
   rankScore: number;
   meetName: string;
   meetType: string;
+  dateTime: string;
   linkPostId: number;
   image?: string;
 }
@@ -25,6 +26,7 @@ interface MeetingItem {
   participantCount: number;
   type: string;
   name: string;
+  dateTime: string;
   latitude: number;
   region: string;
   image?: string;
@@ -36,20 +38,21 @@ interface CommentItem {
   content: string;
 }
 
-export async function getRankingBFF(
-  authContext?: DeferredAuthCommitContext,
-) {
+export async function getRankingBFF(authContext?: DeferredAuthCommitContext) {
   const meetingMap: MeetingRankMap = {};
 
   const meetings = await fetchAllCursor<MeetingItem>({
     fetchPage: (cursor) =>
-      serverFetch<CursorResponse<MeetingItem>>({
-        method: "GET",
-        url: "/meetings",
-        params: { cursor },
-      }, {
-        deferredCommitMode: authContext ? "bubble" : "redirect",
-      }).then((r) => {
+      serverFetch<CursorResponse<MeetingItem>>(
+        {
+          method: "GET",
+          url: "/meetings",
+          params: { cursor },
+        },
+        {
+          deferredCommitMode: authContext ? "bubble" : "redirect",
+        },
+      ).then((r) => {
         collectDeferredAuthTokens(authContext, r);
         return r.data;
       }),
@@ -64,6 +67,7 @@ export async function getRankingBFF(
       meetType: item.type,
       meetName: item.name,
       image: item.image,
+      dateTime: item.dateTime,
       rankScore: 0,
       linkPostId: Number(item.region),
     };
@@ -76,13 +80,16 @@ export async function getRankingBFF(
       try {
         const comments = await fetchAllCursor<CommentItem>({
           fetchPage: (cursor) =>
-            serverFetch<CursorResponse<CommentItem>>({
-              method: "GET",
-              url: `/posts/${meeting.linkPostId}/comments`,
-              params: { cursor },
-            }, {
-              deferredCommitMode: authContext ? "bubble" : "redirect",
-            }).then((r) => {
+            serverFetch<CursorResponse<CommentItem>>(
+              {
+                method: "GET",
+                url: `/posts/${meeting.linkPostId}/comments`,
+                params: { cursor },
+              },
+              {
+                deferredCommitMode: authContext ? "bubble" : "redirect",
+              },
+            ).then((r) => {
               collectDeferredAuthTokens(authContext, r);
               return r.data;
             }),

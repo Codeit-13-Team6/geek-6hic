@@ -6,11 +6,12 @@ import { TopRankCardProps } from "@/types";
 
 import { cn } from "@/lib";
 import FallbackImage from "@/components/ui/FallbackImage";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
 
 export default function TopRankCard({
   rank,
   item,
+  isSecret = false,
   onDetailClick,
 }: TopRankCardProps) {
   const isFirst = rank === 1;
@@ -32,6 +33,18 @@ export default function TopRankCard({
         fill
         className="object-cover transition-transform duration-700 select-none group-hover:scale-105"
       />
+      {isSecret && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+          <div className="absolute top-5 left-5 flex flex-col items-center gap-2">
+            <div className="flex size-10 items-center justify-center rounded-full bg-slate-800/80 shadow-lg ring-1 ring-slate-700/50">
+              <Lock className="size-5 text-slate-300" />
+            </div>
+            <span className="text-[10px] font-bold tracking-[0.2em] text-slate-300 lg:text-xs">
+              SECRET
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
 
