@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { cookies } from "next/headers";
 import { Gnb } from "@/components/layout/Gnb";
 import { Footer } from "@/components/layout/Footer";
 import { ToasterProvider } from "@/providers/ToasterProvider";
@@ -10,7 +9,7 @@ import { QueryProvider } from "@/providers/QueryProvider";
 import { MemberProvider } from "@/providers/MemberProvider";
 import LoginModalProvider from "@/providers/LoginModalProvider";
 import { BtnTop } from "@/components/features/btn/BtnTop";
-import type { User } from "@/types";
+import { getSessionUser } from "@/lib/auth/sessionUser.server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,14 +41,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const displayCookie = cookieStore.get("user_display")?.value;
-  let initialUser: Pick<User, "id" | "name" | "image"> | null = null;
-  try {
-    initialUser = displayCookie ? JSON.parse(displayCookie) : null;
-  } catch {
-    initialUser = null;
-  }
+  const initialUser = await getSessionUser();
 
   return (
     <html lang="ko">

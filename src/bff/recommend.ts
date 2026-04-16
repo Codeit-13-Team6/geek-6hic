@@ -1,4 +1,8 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import { fetchAllCursor } from "@/lib";
 import { isSecretMeeting } from "@/lib";
 import type {
@@ -72,7 +76,9 @@ function compareMeetingCandidate(
   );
 }
 
-async function getMeetingCandidateList() {
+async function getMeetingCandidateList(
+  authContext?: DeferredAuthCommitContext,
+) {
   return fetchAllCursor<MeetingResponse>({
     fetchPage: (cursor) =>
       serverFetch<GetMeetingsResponse>({
@@ -84,12 +90,17 @@ async function getMeetingCandidateList() {
           size: MEETING_PAGE_SIZE,
           ...(cursor ? { cursor } : {}),
         },
-      }).then((r) => r.data),
+      }).then((r) => {
+        collectDeferredAuthTokens(authContext, r);
+        return r.data;
+      }),
     maxItems: MEETING_MAX_COUNT,
   });
 }
 
-async function getThreadActivityMap() {
+async function getThreadActivityMap(
+  authContext?: DeferredAuthCommitContext,
+) {
   const threadPostList = await fetchAllCursor<GetPostsResponse["data"][number]>({
     fetchPage: (cursor) =>
       serverFetch<GetPostsResponse>({
@@ -103,7 +114,10 @@ async function getThreadActivityMap() {
           size: THREAD_PAGE_SIZE,
           ...(cursor ? { cursor } : {}),
         },
-      }).then((r) => r.data),
+      }).then((r) => {
+        collectDeferredAuthTokens(authContext, r);
+        return r.data;
+      }),
     maxItems: THREAD_MAX_COUNT,
   });
 
@@ -205,10 +219,12 @@ export async function getRecommendedMeetingsBFF({
 }: {
   meetingId: number;
   meetingType: string;
-}): Promise<RecommendedMeetingItem[]> {
+},
+authContext?: DeferredAuthCommitContext,
+): Promise<RecommendedMeetingItem[]> {
   const [meetingCandidateList, threadActivityMap] = await Promise.all([
-    getMeetingCandidateList(),
-    getThreadActivityMap(),
+    getMeetingCandidateList(authContext),
+    getThreadActivityMap(authContext),
   ]);
 
   return selectRecommendedMeetingList({

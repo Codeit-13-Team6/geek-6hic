@@ -1,4 +1,8 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import { getVisibleCursorPage } from "@/lib";
 import { getVisiblePostsPage, getVisibleMyPostsPage } from "@/lib";
 import { sortByCreatedAtDesc } from "@/lib";
@@ -19,7 +23,9 @@ export async function getUserMeetingsBFF({
   userId: number;
   offset?: number;
   limit?: number;
-}): Promise<MyMeetingsPageResponse> {
+},
+authContext?: DeferredAuthCommitContext,
+): Promise<MyMeetingsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit);
 
@@ -37,6 +43,7 @@ export async function getUserMeetingsBFF({
           ...(cursor ? { cursor } : {}),
         },
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return {
         ...response.data,
@@ -63,7 +70,9 @@ export async function getUserPostsBFF({
   userId: number;
   offset?: number;
   limit?: number;
-}): Promise<VisiblePostsPageResponse> {
+},
+authContext?: DeferredAuthCommitContext,
+): Promise<VisiblePostsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit);
 
@@ -81,6 +90,7 @@ export async function getUserPostsBFF({
           limit: pageLimit,
         },
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return response.data;
     },
@@ -94,7 +104,9 @@ export async function getMyPostsBFF({
 }: {
   offset?: number;
   limit?: number;
-} = {}): Promise<VisiblePostsPageResponse> {
+} = {},
+authContext?: DeferredAuthCommitContext,
+): Promise<VisiblePostsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit, 20);
 
@@ -111,6 +123,7 @@ export async function getMyPostsBFF({
           limit: pageLimit,
         },
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return response.data;
     },

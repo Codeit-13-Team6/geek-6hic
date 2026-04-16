@@ -60,9 +60,14 @@ export function Gnb({ initialUser }: GnbProps) {
   const isAuthReady = !isAuthLoading;
 
   const handleLogout = async () => {
-    await logoutUser();
-    clearAuth();
-    window.location.replace("/login");
+    try {
+      await logoutUser();
+    } catch {
+      // 네트워크 실패여도 클라이언트 세션은 정리해서 잔상 UI를 방지
+    } finally {
+      clearAuth();
+      window.location.replace("/login");
+    }
   };
 
   const handleLogin = async () => router.push("/login");

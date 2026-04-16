@@ -1,4 +1,8 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import { getVisibleCursorPage } from "@/lib";
 import { sortByCreatedAtDesc } from "@/lib";
 import { fetchAllCursor } from "@/lib";
@@ -17,7 +21,9 @@ export async function getMyMeetingsBFF({
 }: {
   offset?: number;
   limit?: number;
-} = {}): Promise<MyMeetingsPageResponse> {
+} = {},
+authContext?: DeferredAuthCommitContext,
+): Promise<MyMeetingsPageResponse> {
   const offset = safeOffset(rawOffset);
   const limit = safeLimit(rawLimit);
   const data = await getVisibleCursorPage<MeetingResponse>({
@@ -32,6 +38,7 @@ export async function getMyMeetingsBFF({
           ...(cursor ? { cursor } : {}),
         },
       });
+      collectDeferredAuthTokens(authContext, response);
 
       return {
         ...response.data,
@@ -47,7 +54,9 @@ export async function getMyMeetingsBFF({
   };
 }
 
-export async function getJoinedMeetingIdsBFF(): Promise<number[]> {
+export async function getJoinedMeetingIdsBFF(
+  authContext?: DeferredAuthCommitContext,
+): Promise<number[]> {
   const meetings = await fetchAllCursor<JoinedMeeting>({
     fetchPage: (cursor) =>
       serverFetch<JoinedMeetingsResponse>({
@@ -58,7 +67,10 @@ export async function getJoinedMeetingIdsBFF(): Promise<number[]> {
           sortBy: "joinedAt",
           ...(cursor ? { cursor } : {}),
         },
-      }).then((r) => r.data),
+      }).then((r) => {
+        collectDeferredAuthTokens(authContext, r);
+        return r.data;
+      }),
   });
 
   return meetings.map((m) => m.id);

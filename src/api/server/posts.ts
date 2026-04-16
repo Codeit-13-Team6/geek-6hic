@@ -1,4 +1,9 @@
-import { serverFetch, serverAxios } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  serverAxios,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import type {
   GetCommentsResponse,
   GetPostsParams,
@@ -24,8 +29,9 @@ export async function getPostCommentsServer(
     offset?: number;
     limit?: number;
   } = {},
+  authContext?: DeferredAuthCommitContext,
 ): Promise<GetCommentsResponse> {
-  const { data } = await serverFetch({
+  const response = await serverFetch({
     method: "GET",
     url: `/posts/${postId}/comments`,
     params: {
@@ -34,13 +40,15 @@ export async function getPostCommentsServer(
       limit: params.limit ?? 100,
     },
   });
-  return data;
+  collectDeferredAuthTokens(authContext, response);
+  return response.data;
 }
 
 export async function getPosts(
   params: GetPostsParams = {},
+  authContext?: DeferredAuthCommitContext,
 ): Promise<GetPostsResponse> {
-  const { data } = await serverFetch({
+  const response = await serverFetch({
     method: "GET",
     url: "/posts",
     params: {
@@ -51,8 +59,9 @@ export async function getPosts(
       ...(params.cursor ? { cursor: params.cursor } : {}),
     },
   });
+  collectDeferredAuthTokens(authContext, response);
 
-  return filterThreadPosts(data);
+  return filterThreadPosts(response.data);
 }
 
 export async function getMyPostsServer(

@@ -1,5 +1,6 @@
 import { getPosts } from "@/api/server";
 import type { GetPostsParams, GetPostsResponse, Post } from "@/types";
+import type { DeferredAuthCommitContext } from "@/lib/auth/fetcher.server";
 
 const MAX_SIZE = 50;
 const DEFAULT_SIZE = 10;
@@ -10,6 +11,7 @@ const DEFAULT_SIZE = 10;
  */
 export async function getLoungePostsPageBFF(
   params: GetPostsParams & { size?: number },
+  authContext?: DeferredAuthCommitContext,
 ): Promise<GetPostsResponse> {
   const {
     size: rawSize,
@@ -26,13 +28,16 @@ export async function getLoungePostsPageBFF(
   let lastNextCursor: string | null = null;
 
   while (collected.length < size) {
-    const response = await getPosts({
-      ...rest,
-      sortBy,
-      sortOrder,
-      cursor: currentCursor,
-      size,
-    });
+    const response = await getPosts(
+      {
+        ...rest,
+        sortBy,
+        sortOrder,
+        cursor: currentCursor,
+        size,
+      },
+      authContext,
+    );
 
     collected.push(...response.data);
 

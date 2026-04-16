@@ -1,4 +1,8 @@
-import { serverFetch } from "@/lib/auth/fetcher.server";
+import {
+  collectDeferredAuthTokens,
+  serverFetch,
+  type DeferredAuthCommitContext,
+} from "@/lib/auth/fetcher.server";
 import { CursorResponse } from "@/types";
 import { fetchAllCursor } from "@/lib";
 
@@ -32,13 +36,21 @@ interface CommentItem {
   content: string;
 }
 
-export async function getRankingBFF() {
+export async function getRankingBFF(
+  authContext?: DeferredAuthCommitContext,
+) {
   const meetingMap: MeetingRankMap = {};
 
   const meetings = await fetchAllCursor<MeetingItem>({
     fetchPage: (cursor) =>
-      serverFetch<CursorResponse<MeetingItem>>({ method: "GET", url: "/meetings", params: { cursor } })
-        .then((r) => r.data),
+      serverFetch<CursorResponse<MeetingItem>>({
+        method: "GET",
+        url: "/meetings",
+        params: { cursor },
+      }).then((r) => {
+        collectDeferredAuthTokens(authContext, r);
+        return r.data;
+      }),
   });
 
   meetings.forEach((item) => {
@@ -66,7 +78,10 @@ export async function getRankingBFF() {
               method: "GET",
               url: `/posts/${meeting.linkPostId}/comments`,
               params: { cursor },
-            }).then((r) => r.data),
+            }).then((r) => {
+              collectDeferredAuthTokens(authContext, r);
+              return r.data;
+            }),
         });
 
         for (const item of comments) {

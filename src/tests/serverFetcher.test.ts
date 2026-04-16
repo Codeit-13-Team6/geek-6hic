@@ -4,11 +4,14 @@ import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { NextRequest } from "next/server";
 import {
   isPublicPath,
   serverAxios,
   serverFetch,
 } from "@/lib/auth/fetcher.server";
+import { GET as proxyRouteGET } from "@/app/api/[...slug]/route";
+import { GET as myPostsVisibleRouteGET } from "@/app/api/users/me/posts-visible/route";
 
 
 
@@ -537,5 +540,83 @@ describe("serverFetch wrapper", () => {
     ).rejects.toMatchObject({ response: { status: 500 } });
 
     expect(redirect).not.toHaveBeenCalled();
+  });
+});
+
+describe("SSR deferred cookie commit", () => {
+  it("[...slug] Route Handler: SSR에서 cookies().set 실패해도 응답에서 auth 쿠키를 커밋한다", async () => {
+    setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
+
+    server.use(
+      http.post(`${BASE}/auth/refresh`, () =>
+        HttpResponse.json({
+          accessToken: "deferred-access-token",
+          refreshToken: makeMockJwt("1"),
+        }),
+      ),
+      http.get(`${BASE}/users/me`, () => HttpResponse.json({ id: 1, name: "tester" })),
+    );
+
+    const request = new NextRequest("http://localhost:3000/api/users/me");
+    const response = await proxyRouteGET(request, {
+      params: Promise.resolve({ slug: ["users", "me"] }),
+    });
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).id).toBe(1);
+    expect(response.cookies.get("accessToken")?.value).toBe("deferred-access-token");
+    expect(response.cookies.get("refreshToken")?.value).toBe(makeMockJwt("1"));
+  });
+
+  it("BFF Route Handler(/api/users/me/posts-visible): deferred 토큰을 응답 쿠키로 커밋한다", async () => {
+    setupCookiesWithSetFailure({ refreshToken: makeMockJwt("1") });
+
+    server.use(
+      http.post(`${BASE}/auth/refresh`, () =>
+        HttpResponse.json({
+          accessToken: "deferred-access-token-bff",
+          refreshToken: makeMockJwt("1"),
+        }),
+      ),
+      http.get(`${BASE}/users/me/posts`, () =>
+        HttpResponse.json({
+          data: [
+            {
+              id: 100,
+              teamId: "t1",
+              title: "hello",
+              content: "world",
+              image: null,
+              authorId: 1,
+              viewCount: 0,
+              likeCount: 0,
+              createdAt: "2026-01-01T00:00:00.000Z",
+              updatedAt: "2026-01-01T00:00:00.000Z",
+              author: { id: 1, name: "tester", image: null },
+              _count: { comments: 0 },
+              comments: [],
+              isLiked: false,
+            },
+          ],
+          totalCount: 1,
+          hasMore: false,
+          nextCursor: null,
+          limit: 10,
+        }),
+      ),
+    );
+
+    const request = new Request(
+      "http://localhost:3000/api/users/me/posts-visible?offset=0&limit=10",
+    );
+    const response = await myPostsVisibleRouteGET(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(response.cookies.get("accessToken")?.value).toBe(
+      "deferred-access-token-bff",
+    );
+    expect(response.cookies.get("refreshToken")?.value).toBe(makeMockJwt("1"));
   });
 });
