@@ -1,12 +1,15 @@
 import { cache } from "react";
 import type { User } from "@/types";
-import { serverAxios } from "@/lib/auth/fetcher.server";
+import { serverFetch } from "@/lib/auth/fetcher.server";
 
 type SessionUser = Pick<User, "id" | "name" | "image">;
 
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   try {
-    const { data } = await serverAxios.get<User>("/users/me");
+    const { data } = await serverFetch<User>({
+      method: "GET",
+      url: "/users/me",
+    });
     return {
       id: data.id,
       name: data.name,

@@ -1,7 +1,6 @@
 import {
   collectDeferredAuthTokens,
   serverFetch,
-  serverAxios,
   type DeferredAuthCommitContext,
 } from "@/lib/auth/fetcher.server";
 import type {
@@ -76,17 +75,16 @@ export async function getMyPostsServer(
       limit: params.limit ?? 10,
     },
     async ({ offset, limit }) => {
-      const { data } = await serverAxios.get<GetPostsResponse>(
-        "/users/me/posts",
-        {
-          params: {
-            sortBy: "createdAt",
-            sortOrder: "desc",
-            offset,
-            limit,
-          },
+      const { data } = await serverFetch<GetPostsResponse>({
+        method: "GET",
+        url: "/users/me/posts",
+        params: {
+          sortBy: "createdAt",
+          sortOrder: "desc",
+          offset,
+          limit,
         },
-      );
+      });
 
       return data;
     },
