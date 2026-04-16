@@ -168,7 +168,7 @@ export default function Notification({
         </button>
       </div>
 
-      <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain sm:max-h-[420px]">
+      <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain max-h-[420px] lg:max-h-[500px]">
         {isLoading ? (
           <div
             className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm font-medium text-slate-300"

@@ -109,7 +109,7 @@ export function RecommendedMeetingsSection({
               </Link>
             ))}
 
-            <div className="w-1 shrink-0 sm:w-2 lg:w-4" />
+            {/* <div className="w-1 shrink-0 sm:w-2 lg:w-4" /> */}
           </div>
         </div>
       )}

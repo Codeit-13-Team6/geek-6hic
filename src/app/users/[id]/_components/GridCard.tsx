@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { UserType } from "@/app/users/[id]/_lib/userType";
 import {
@@ -16,6 +16,23 @@ interface GradeCardProps {
 export default function GradeCard({ userType }: GradeCardProps) {
   const [isMobileFlipped, setIsMobileFlipped] = useState(false);
   const character = (userType && CHARACTER_MAP[userType]) || DEFAULT_CHARACTER;
+
+  // sm이상으로 갈때 flip 정보 원복시키는 로직
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 640px)");
+  
+    const handleMediaChange = () => {
+      if (media.matches) {
+        setIsMobileFlipped(false);
+      }
+    };
+  
+    handleMediaChange();
+  
+    media.addEventListener("change", handleMediaChange);
+    return () =>
+      media.removeEventListener("change", handleMediaChange);
+  }, []);
 
   return (
     <div
