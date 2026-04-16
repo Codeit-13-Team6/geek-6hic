@@ -260,6 +260,7 @@ export const useMeetingDetailFavoriteMutation = (meetingId: number) => {
         QUERY_KEYS.meetings.detail(meetingId),
         QUERY_KEYS.meetings.list,
         QUERY_KEYS.favorites.root,
+        QUERY_KEYS.posts.root
       ],
       onErrorMessage: "찜하기 처리 중 문제가 발생했어요.",
     }),

@@ -108,7 +108,8 @@ export default function GradeCard({ userType }: GradeCardProps) {
         {/* 텍스트 영역 */}
         <div className="flex flex-[1.2] flex-col justify-start sm:gap-10 sm:p-6 sm:pl-10 lg:gap-3 lg:pl-6 lg:text-center">
           {/* 태블릿용 타이틀 */}
-          <div className="mb-3 hidden flex-col gap-1 sm:flex lg:hidden">
+          <div className="mb-3 hidden flex-col gap-1 sm:
+          lex lg:hidden">
             <span
               className={cn(
                 "text-[9px] font-black tracking-[0.2em] uppercase opacity-60",

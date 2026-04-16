@@ -148,9 +148,8 @@ function PaletteStrip({ dark = false }: { dark?: boolean }) {
           />
           <div className="text-center">
             <p
-              className={`text-[10px] font-black tracking-[0.2em] uppercase ${
-                dark ? "text-slate-400" : "text-slate-500"
-              }`}
+              className={`text-[10px] font-black tracking-[0.2em] uppercase ${dark ? "text-slate-400" : "text-slate-500"
+                }`}
             >
               {item.name}
             </p>
@@ -236,14 +235,17 @@ function StoryBody({
       <h2 className={titleClassName}>5명의 프론트엔더 이야기</h2>
       <div className={bodyClassName}>
         <p>
-          "우리 디자인은 누가 해?" 프로젝트 첫 주, 피그마에 놓인 박스들을 보며
-          다 같이 멈칫했습니다. 하지만 곧 화면 레퍼런스를 찾고, border-radius
-          1px 차이까지 이야기하는 팀이 되어갔습니다. 물론 고요한 날만 있었던 건
-          아닙니다. 새벽 디스코드에서 401 에러와 씨름하던 날, 머지 충돌에 동시에
-          멘탈이 흔들리던 날, API가 없어서 서버에서 데이터를 다시 모아야 했던
-          날도 있었습니다. 그 시간을 지나고 보니 남은 건 단순한 결과물이 아니라,
-          같이 부딪히며 기준을 세운 팀의 흔적이었습니다. co-git도 그런 흔적 위에
-          서 있습니다.
+          디자인도, 백엔드도 없는 상태에서 프론트엔드 5명의 이야기가 시작됐습니다.<br />
+          피그마 다룰 줄 아시는 분? 이라는 질문에서 출발해, 각자 참고할 레퍼런스를 찾고 화면을 하나씩 맞춰가며 프로젝트를 구성해 나갔습니다.<br />
+          기획서와 간단한 구조만 있는 상황에서, 직접 화면을 구성하고 데이터 흐름을 맞추며 서비스를 만들어야 했습니다.<br />
+          온라인으로 협업을 이어가며 10시간 이상을 소통하다보니 자연스럽게 팀원 간의 유대감도 형성되었고, 기술적인 논의뿐 아니라 서로의 취향이나 일상까지 공유하게 되었습니다.<br />
+          존박, 윈터, 카리나 등 닮은 연예인을 이야기하며 분위기가 풀리기도 했고, 그만큼 편하게 의견을 주고받을 수 있는 환경이 만들어졌습니다.<br />
+          랭킹보드와 게이미피케이션 요소 같은 부분을 위해 제공된 API를 그대로 사용하는 것이 아니라, 제공되었던 리뷰 API 데이터를 직접 조합하거나 우회적으로 끌어내며 기능을 구현해야 했고, 그 과정에서 시행착오를 반복하며 데이터 흐름을 다시 맞춰 나갔습니다.<br />
+          일부 데이터 구조를 프론트에서 보완하며 기능을 구현해야 했고, 제공된 API와 맞지 않는 부분은 기획을 다시 조정하는 과정을 반복했습니다.<br />
+          그 과정에서 “이게 맞나?”라는 질문이 자연스럽게 나오기 시작했고, 답을 찾는 방식도 점점 팀의 방식으로 정리되어 갔습니다.<br />
+          개발 과정은 매끄럽기보다는, 문제를 정의하고 해결 방식을 계속 수정해 나가는 반복에 가까웠습니다.<br />
+          머지 충돌과 구현 방식에 대한 의견 차이는 있었지만, 초기 단계에서 컨벤션을 정리하고 공유하며 코드 스타일과 작업 방식은 일관성을 유지한 채 협업을 이어갔습니다.<br />
+          결과적으로 co-git은 단순한 결과물을 넘어, 팀의 기준을 함께 만들어간 과정이자 스프린터들을 위한 오픈된 생태계로 이어지는 프로젝트가 되었습니다.
         </p>
       </div>
       <div className="mt-8">
@@ -270,7 +272,7 @@ function ContributeBlock({
   return (
     <section className={wrapperClassName}>
       <MessagesSquare className="text-main-purple mb-6 size-10" />
-      <h2 className={titleClassName}>co-git는 다음 기수에게도 열려 있습니다</h2>
+      <h2 className={titleClassName}>co-git는 모든기수에 열려 있습니다.</h2>
       <p className={bodyClassName}>{CONTRIBUTE_BODY}</p>
       <Link
         href={GITHUB_HREF}
@@ -279,7 +281,7 @@ function ContributeBlock({
         className={buttonClassName}
       >
         <Github className="size-5" />
-        <span>같이 놀기</span>
+        <span>기록남기러 가기</span>
       </Link>
     </section>
   );
@@ -424,7 +426,7 @@ export default function AboutTeamPage() {
 
   return (
     <div className="relative bg-[linear-gradient(180deg,#fdfbff_0%,#faf7ff_16%,#ffffff_42%,#fcf9ff_74%,#ffffff_100%)] pb-28 break-keep text-slate-900">
-      <div className="mx-auto max-w-[1360px] px-4 sm:px-8 2xl:px-0">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-8 2xl:px-0">
         <section
           ref={sectionRef1}
           id="section1"
@@ -444,8 +446,7 @@ export default function AboutTeamPage() {
               </span>
             </h1>
             <p className="mt-8 text-lg leading-relaxed font-medium tracking-tight text-slate-500 md:text-xl">
-              슬랙 메시지는 휘발되고, 정성껏 쓴 노션 페이지는 기수가 끝나면
-              닫힙니다.
+              정성껏 쓴 노션 페이지는 기수가 끝나면 닫힙니다.
               <br className="hidden md:block" />
               우리는 밤새워 고민했던 코드와 꿀팁들이 허공으로 사라지는 것이
               아쉬웠습니다.
@@ -480,37 +481,45 @@ export default function AboutTeamPage() {
               우리가 만든 방식
             </h2>
             <p className="mt-5 text-lg leading-8 font-bold text-slate-200">
-              구조와 톤, 그리고 기다리는 순간까지 함께 설계했습니다.
+
+              기다림을 줄이고, 결을 맞추고, 흐름을 이었습니다.
             </p>
             <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 sm:flex-col sm:overflow-visible 2xl:grid 2xl:grid-cols-3">
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-white/10 bg-white/5 p-8 text-slate-100 sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Server className="mb-6 size-8 text-blue-300" />
-                <h3 className="text-2xl font-black">구조를 세운 방식</h3>
+                <h3 className="text-2xl font-black">기다립니다. <br /> 기다림을 줄이기 위해.</h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-                  인증과 데이터 흐름을 브라우저가 아니라 서버 중심으로 다시
-                  정리했습니다.
-                  <br />
-                  Next.js App Router 안에서 BFF 레이어를 두고, 클라이언트가 직접
-                  토큰과 인증 흐름을 복잡하게 다루지 않도록 만들었습니다.
-                  <br />
-                  첫 진입에 필요한 데이터는 서버에서 먼저 가져와 페이지가 바로
-                  그려질 수 있게 구성했습니다.
-                  <br />
-                  기존 API만으로 부족한 데이터는 서버에서 다시 조합해 화면에
-                  맞는 형태로 넘겨주도록 처리했습니다.
-                  <br />
-                  복잡한 문제를 화면단에서 임시로 막기보다, 구조 자체를 바꿔
-                  안정적으로 굴러가게 만드는 쪽을 택했습니다.
+                  디자인이 아무리 시선을 끌어도,<br />
+                  기다리는 시간은 언제나 길게 느껴지니까요.<br /><br />
+
+                  Server-side Prefetch와 HydrationBoundary로 <br />
+                  첫 화면에 필요한 데이터를 먼저 준비했습니다.<br /><br />
+
+                  이 선택은 BFF 설계로 이어졌습니다.<br />
+                  화면에 필요한 정보를 더 빠르게 보여줄 수 없을까,<br />
+                  그 고민이 저희를 Next 서버 중심 구조로 이끌었습니다.<br /><br />
+
+                  서버 중심의 인증과 데이터 흐름,<br />
+                  브라우저가 토큰을 직접 다루며 겪던 불안정함의 완화,<br />
+                  프론트엔드에 더 적합한 데이터 형태.<br /><br />
+
+                  이제 기다리는 일은, 저희가 하겠습니다.
                 </p>
               </article>
 
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-[#c27aff]/20 bg-[linear-gradient(180deg,rgba(194,122,255,0.14),rgba(255,255,255,0.04))] p-8 text-slate-100 shadow-[0_0_0_1px_rgba(194,122,255,0.05)] sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Palette className="text-main-purple-light mb-6 size-8" />
-                <h3 className="text-2xl font-black">톤을 맞춘 방식</h3>
+                <h3 className="text-2xl font-black">맞춰갑니다. <br />오래 남는 인상을 위해.</h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-                  co-git다운 화면이 남도록 컬러와 간격의 결을 맞췄습니다.
-                  <br />
-                  컴포넌트를 늘리기보다, 같은 인상을 남기는 데 집중했습니다.
+
+                  강한 대비와 선명한 포인트 컬러,<br />굵은 타이포와 리듬감 있는 여백으로 먼저 시선을 끌었습니다.<br /><br />
+
+
+                  하지만 겉모습의 화려함에만 머물진 않았습니다.<br />
+                  <br />신중하게 쌓은 컴포넌트 규칙과<br />Surface, Primary, Point, Light, Text<br />다섯 가지 기준으로 화면의 결을 정리했습니다.<br /><br />
+
+                  보이는 아름다움과 쓰이는 아름다움이 함께 가도록,<br />같은 감각이 반복되는 경험을 만들었습니다.<br /><br />
+                  저희의 첫 인상이,  마지막 사용 순간까지 이어지도록.
                 </p>
                 <div className="mt-8">
                   <PaletteStrip dark />
@@ -519,22 +528,31 @@ export default function AboutTeamPage() {
 
               <article className="max-h-[400px] w-full shrink-0 snap-start overflow-y-auto rounded-[2rem] border border-yellow-200/10 bg-[linear-gradient(180deg,rgba(250,204,21,0.1),rgba(255,255,255,0.04))] p-8 text-slate-100 sm:max-h-[unset] sm:min-w-0 sm:overflow-visible">
                 <Zap className="mb-6 size-8 text-yellow-300" />
-                <h3 className="text-2xl font-black">기다림을 줄인 방식</h3>
+                <h3 className="text-2xl font-black">흘러갑니다. <br />머무는 모든 순간이 끊기지 않도록.</h3>
                 <p className="mt-4 text-sm leading-7 break-keep text-slate-300">
-                  인증과 데이터 요청 흐름을 App Router와 BFF 구조 안에서 다시
-                  세웠습니다.
-                  <br />
-                  브라우저가 직접 토큰을 들고 여러 요청을 처리하기보다, 서버가
-                  중간에서 인증과 데이터 연결을 맡도록 정리했습니다.
-                  <br />
-                  server-side prefetch와 HydrationBoundary를 이용해 첫 진입
-                  데이터를 서버에서 먼저 준비했습니다.
-                  <br />
-                  화면에 필요한 정보가 API 하나로 오지 않는 경우엔, 서버에서
-                  여러 응답을 다시 조합해 내려주도록 만들었습니다.
-                  <br />
-                  결국 이 섹션에서 말하고 싶은 건, 기능을 더하기 전에 흐름이 덜
-                  흔들리도록 구조부터 바꿨다는 점입니다.
+오랜시간 고민해 온 기획들은  <br />
+제공된 API 만으론 온전히 담아낼 수 없었습니다.  <br /> <br />
+
+우린 더 이상 프론트엔드에 머물지 않고, <br />
+우리만의 방식으로 엮어낸 설계로  <br /> <br />
+
+하나밖에 남길 수 없던 모임 댓글은 <br />
+마음껏 대화를 이어갈 수 있는 공간이 되었고, <br /> <br />
+
+누구나 들어올 수 있던 모임은  <br />
+우리만의 비밀 이야기로 가득 찰 수 있게 되었습니다.  <br /> <br />
+
+비밀모임, 랭킹, Hot 게시물, 모임 스레드 댓글, 활동 지표, <br />
+이 모든것은 저희가 끝까지 고민한 흔적입니다. <br /> <br />
+
+사용자가 부족함을 느끼지 않도록,  <br />
+부족한 API 스펙이 서비스의 모자람으로 포장되지 않도록. <br /> <br />
+
+이렇게 설계한 흐름은 머무는 이유가 되고,  <br />
+다시 돌아올 이유가 되었습니다. <br /> <br />
+
+다음 행동이 자연스럽게 이어지도록 흐름을 우선했기에, <br />
+기능이 동작하는 수준을 넘어 자연스러운 경험을 만들었습니다.
                 </p>
               </article>
             </div>

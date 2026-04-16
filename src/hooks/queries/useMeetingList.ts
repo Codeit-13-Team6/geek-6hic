@@ -136,7 +136,7 @@ export const useMeetingFavoriteMutation = (
           ),
         })),
       }),
-      invalidateKeys: [QUERY_KEYS.meetings.root, QUERY_KEYS.favorites.root],
+      invalidateKeys: [QUERY_KEYS.meetings.root, QUERY_KEYS.favorites.root,QUERY_KEYS.posts.root],
       onErrorMessage: "즐겨찾기 처리에 실패했습니다.",
     }),
   });
