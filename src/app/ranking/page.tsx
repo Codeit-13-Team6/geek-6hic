@@ -10,6 +10,7 @@ import { getJoinedMeetingIdsBFF } from "@/bff/meetings";
 import RankingListSkeleton from "@/components/skeleton/RankingListSkeleton";
 import MyRankingSection from "@/app/ranking/_components/MyRankingSection";
 
+
 export const metadata: Metadata = {
   title: "랭킹 보드",
   description:

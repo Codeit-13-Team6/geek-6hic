@@ -1,19 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ChartColumn, ArrowUpRight } from "lucide-react";
-import { useJoinedMeetingIds, useRanking } from "@/app/ranking/_hooks/useRanking";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRanking } from "@/app/ranking/_hooks/useRanking";
+import { QUERY_KEYS } from "@/constants/queryKey";
 import { useDragScroll } from "@/hooks/useDragScroll";
 
 export default function MyRankingSection() {
   const router = useRouter();
   const { dragProps } = useDragScroll();
   const [isOpen, setIsOpen] = useState(false);
+  const [stableJoinedIds, setStableJoinedIds] = useState<number[]>([]);
 
+  const queryClient = useQueryClient();
   const { data: rankedList } = useRanking();
-  const { data: joinedIds } = useJoinedMeetingIds();
+  const joinedIdsFromCache = queryClient.getQueryData<number[]>(
+    QUERY_KEYS.meetings.joinedIds,
+  );
+
+  useEffect(() => {
+    if (joinedIdsFromCache !== undefined) {
+      setStableJoinedIds(joinedIdsFromCache);
+    }
+  }, [joinedIdsFromCache]);
+
+  const joinedIds = joinedIdsFromCache ?? stableJoinedIds;
 
   if (!rankedList) return null;
 

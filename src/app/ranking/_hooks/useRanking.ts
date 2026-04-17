@@ -1,24 +1,15 @@
 import { QUERY_KEYS } from "@/constants/queryKey";
 import axiosInstance from "@/lib/auth/clientFetcher";
-import { getJoinedMeetingIds } from "@/api/client/meetings";
 import { RankedItem } from "@/types";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const useRanking = () => {
-  return useSuspenseQuery<RankedItem[]>({
+  return useQuery<RankedItem[]>({
     queryKey: QUERY_KEYS.ranking.root,
     queryFn: async () => {
       const { data } = await axiosInstance.get("/ranking");
       return data;
     },
     staleTime: 1000 * 60 * 10,
-  });
-};
-
-export const useJoinedMeetingIds = () => {
-  return useSuspenseQuery<number[]>({
-    queryKey: QUERY_KEYS.meetings.joinedIds,
-    queryFn: () => getJoinedMeetingIds(),
-    staleTime: 1000 * 60,
   });
 };
