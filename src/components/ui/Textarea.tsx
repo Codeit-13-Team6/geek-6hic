@@ -22,7 +22,7 @@ const textareaVariants = cva(
   {
     variants: {
       isDestructive: {
-        true: "border-red-500 focus:border-error focus:ring-[2px] focus:ring-error/20",
+        true: "border-red-500",
         false:
           "border-gray-300 focus-visible:ring-[2px] focus-visible:ring-black",
       },
