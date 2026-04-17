@@ -4,16 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ChartColumn, ArrowUpRight } from "lucide-react";
-import { useJoinedMeetingIds, useRanking } from "@/app/ranking/_hooks/useRanking";
+import { RankedItem } from "@/types";
 import { useDragScroll } from "@/hooks/useDragScroll";
 
-export default function MyRankingSection() {
+interface MyRankingSectionProps {
+  rankedList: RankedItem[];
+  joinedIds: number[];
+}
+
+export default function MyRankingSection({
+  rankedList,
+  joinedIds,
+}: MyRankingSectionProps) {
   const router = useRouter();
   const { dragProps } = useDragScroll();
   const [isOpen, setIsOpen] = useState(false);
-
-  const { data: rankedList } = useRanking();
-  const { data: joinedIds } = useJoinedMeetingIds();
 
   if (!rankedList) return null;
 

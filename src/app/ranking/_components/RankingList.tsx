@@ -4,13 +4,15 @@ import TopRankCard from "./TopRankCard";
 import TopRankMobileCard from "./TopRankMobileCard";
 import RankCard from "./RankCard";
 import { useRouter } from "next/navigation";
-import { useRanking } from "@/app/ranking/_hooks/useRanking";
+import { RankedItem } from "@/types";
 import { isSecretMeeting } from "@/lib";
 
-export default function RankingList() {
-  const router = useRouter();
+interface RankingListProps {
+  rankedList: RankedItem[];
+}
 
-  const { data: rankedList } = useRanking();
+export default function RankingList({ rankedList }: RankingListProps) {
+  const router = useRouter();
 
   const top3List = rankedList.slice(0, 3);
   const top10List = rankedList.slice(3, 20);
