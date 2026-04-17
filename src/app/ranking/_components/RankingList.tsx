@@ -10,7 +10,7 @@ import { isSecretMeeting } from "@/lib";
 export default function RankingList() {
   const router = useRouter();
 
-  const { data: rankedList } = useRanking();
+  const { data: rankedList = [] } = useRanking();
 
   const top3List = rankedList.slice(0, 3);
   const top10List = rankedList.slice(3, 20);
